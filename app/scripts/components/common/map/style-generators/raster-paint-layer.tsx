@@ -52,7 +52,24 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      const tileParamsAsString = qs.stringify(updatedTileParams, {
+      // Create a modified version of the parameters
+      const processedParams = { ...updatedTileParams };
+
+      if (Array.isArray(processedParams.bands)) {
+        // Convert array to string manually using the format you want
+        processedParams.bands = processedParams.bands
+          .map((band) => `bands=${encodeURIComponent(band)}`)
+          .join('&');
+      }
+
+      if (Array.isArray(processedParams.assets)) {
+        processedParams.assets = processedParams.assets
+          .map((asset) => `assets=${encodeURIComponent(asset)}`)
+          .join('&');
+      }
+
+      // Stringify the rest normally
+      const tileParamsAsString = qs.stringify(processedParams, {
         arrayFormat: 'comma'
       });
 
