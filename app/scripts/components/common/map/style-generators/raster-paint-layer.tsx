@@ -56,28 +56,29 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       const processedParams = { ...updatedTileParams } as {
         reScale?: number[];
         colormap_name?: string;
-        bands?: string;
-        assets?: string;
+        bands?: string[];
+        assets?: string[];
         [key: string]: any;
       };
 
-      if (Array.isArray(processedParams.bands)) {
-        // Convert array to string manually using the format you want
-        processedParams.bands = processedParams.bands
-          .map((band) => `bands=${encodeURIComponent(band)}`)
-          .join('&');
-      }
+      // bands and assets need to be sent as repeat query params
+      const { bands, assets, ...regularParams } = processedParams;
 
-      if (Array.isArray(processedParams.assets)) {
-        processedParams.assets = processedParams.assets
-          .map((asset) => `assets=${encodeURIComponent(asset)}`)
-          .join('&');
-      }
+      const repeatParams: Record<string, string[] | undefined> = {};
+      if (Array.isArray(bands)) repeatParams.bands = bands;
+      if (Array.isArray(assets)) repeatParams.assets = assets;
 
-      // Stringify the rest normally
-      const tileParamsAsString = qs.stringify(processedParams, {
+      const regularParamsString = qs.stringify(regularParams, {
         arrayFormat: 'comma'
       });
+
+      const repeatParamsString = qs.stringify(repeatParams, {
+        arrayFormat: 'repeat'
+      });
+
+      const tileParamsAsString = [regularParamsString, repeatParamsString]
+        .filter(Boolean) // Remove empty strings
+        .join('&');
 
       const zarrSource: RasterSourceSpecification = {
         type: 'raster',
