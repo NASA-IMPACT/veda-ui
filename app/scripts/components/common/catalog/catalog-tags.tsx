@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import FilterTag from './filter-tag';
-import FilterTagLegacy from './catalog-legacy/filter-tag-legacy';
+import FilterTagLegacy from './catalog-legacy/filter-tag';
 
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { variableBaseType } from '$styles/variable-utils';

@@ -7,9 +7,9 @@ import { prepareDatasets } from '../prepare-datasets';
 import { CatalogCard } from '../catalog-card';
 import { FilterActions } from '../utils';
 
-import FiltersControlLegacy from './filters-control-legacy';
+import FiltersControlLegacy from './filters-control';
 
-import CatalogTagsContainerLegacy from './catalog-tags-legacy';
+import CatalogTagsContainerLegacy from './catalog-tags';
 
 import { DatasetData } from '$types/veda';
 import { CardList } from '$components/common/card/styles';

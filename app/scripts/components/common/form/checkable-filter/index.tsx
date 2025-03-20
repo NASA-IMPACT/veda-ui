@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { USWDSAccordion, USWDSCheckbox } from '$components/common/uswds';
+import './checkable-filter.scss';
 
 interface CheckableFiltersProps {
   title: string;
@@ -117,7 +118,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
       key={title}
       title={title}
       bordered={true}
-      className='bg-base-lightest'
+      className='bg-base-lightest margin-bottom-3'
       items={[
         {
           title: title,

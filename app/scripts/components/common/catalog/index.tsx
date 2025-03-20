@@ -28,7 +28,7 @@ const CatalogFoldHeader = styled(FoldHeader)`
 export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 const CatalogContent = lazy(() => import('./catalog-content'));
-const CatalogContentLegacy = lazy(() => import('./catalog-legacy/catalog-content-legacy'));
+const CatalogContentLegacy = lazy(() => import('./catalog-legacy/catalog-content'));
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
