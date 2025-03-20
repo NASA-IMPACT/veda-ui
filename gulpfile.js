@@ -89,7 +89,7 @@ function copyUswdsImages() {
 function parcelBuildLib(cb) {
   const args = [
     'build',
-    'app/scripts/index.ts',
+    'app/scripts/libs/index.ts',
     '--dist-dir=lib',
     '--config',
     parcelLibConfig

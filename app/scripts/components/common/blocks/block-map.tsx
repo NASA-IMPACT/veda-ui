@@ -142,7 +142,7 @@ const getDataLayer = (
   };
 };
 
-function MapBlock(props: MapBlockProps) {
+export default function MapBlock(props: MapBlockProps) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
@@ -387,5 +387,3 @@ function MapBlock(props: MapBlockProps) {
     </Carto>
   );
 }
-
-export default MapBlock;

@@ -64,7 +64,9 @@ interface ExplorationAndAnalysisProps {
   openDatasetsSelectionModal?: () => void;
 }
 
-function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
+export default function ExplorationAndAnalysis(
+  props: ExplorationAndAnalysisProps
+) {
   const { datasets, setDatasets, openDatasetsSelectionModal } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
@@ -121,4 +123,3 @@ function ExplorationAndAnalysis(props: ExplorationAndAnalysisProps) {
     </Container>
   );
 }
-export default ExplorationAndAnalysis;

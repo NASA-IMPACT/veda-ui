@@ -3,7 +3,7 @@ import { csv, json, DSVRowArray } from 'd3';
 
 import { FormattedTimeSeriesData, getFData } from './utils';
 import { fileExtensionRegex } from './constant';
-import Chart, { CommonLineChartProps, UniqueKeyUnit } from '.';
+import ChartContent, { CommonLineChartProps, UniqueKeyUnit } from '.';
 
 import useAsyncError from '$utils/use-async-error';
 interface BlockChartProp extends CommonLineChartProps {
@@ -15,7 +15,7 @@ interface BlockChartProp extends CommonLineChartProps {
 
 const subIdKey = 'subIdeKey';
 
-function BlockChart(props: BlockChartProp) {
+export default function Chart(props: BlockChartProp) {
   const { dataPath, idKey, xKey, yKey, dateFormat } = props;
 
   const [chartData, setChartData] = useState<FormattedTimeSeriesData[]>([]);
@@ -29,17 +29,19 @@ function BlockChart(props: BlockChartProp) {
   useEffect(() => {
     const getData = async () => {
       try {
-      const data =
-      extension === 'csv'
-        ? (await csv(dataPath)) as DSVRowArray
-        : (await json(dataPath).then(d => [d].flat())) as object[];
+        const data =
+          extension === 'csv'
+            ? ((await csv(dataPath)) as DSVRowArray)
+            : ((await json(dataPath).then((d) => [d].flat())) as object[]);
 
         // if no idKey is provided (when there are only two columns in the data), sub it with empty data
-        const dataToUse = idKey? data: data.map(e => ({...e, [subIdKey]: ''}));
+        const dataToUse = idKey
+          ? data
+          : data.map((e) => ({ ...e, [subIdKey]: '' }));
 
         const { fData, uniqueKeys } = getFData({
           data: dataToUse,
-          idKey: idKey? idKey: subIdKey,
+          idKey: idKey ? idKey : subIdKey,
           xKey,
           yKey,
           dateFormat
@@ -52,10 +54,9 @@ function BlockChart(props: BlockChartProp) {
         }));
         setChartData(fData);
         setUniqueKeys(formattedUniqueKeys);
-      } catch(e) {
+      } catch (e) {
         throwAsyncError(e);
       }
-
     };
 
     getData();
@@ -72,7 +73,7 @@ function BlockChart(props: BlockChartProp) {
   ]);
 
   return (
-    <Chart
+    <ChartContent
       {...props}
       chartData={chartData}
       uniqueKeys={uniqueKeys}
@@ -80,5 +81,3 @@ function BlockChart(props: BlockChartProp) {
     />
   );
 }
-
-export default BlockChart;
