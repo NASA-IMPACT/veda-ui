@@ -10,7 +10,7 @@ export type DatasetLayerType =
   | 'vector'
   | 'zarr'
   | 'cmr'
-  | 'arc'
+  | 'wms'
   | 'feature';
 
 //

@@ -117,7 +117,7 @@ export async function requestDatasetTimeseriesData({
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
-  const arcFlag =  datasetData.type === 'arc';
+  const arcFlag =  datasetData.type === 'wms';
 
   if (datasetData.analysis?.exclude) {
     return {

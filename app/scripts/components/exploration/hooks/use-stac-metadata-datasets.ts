@@ -110,13 +110,11 @@ async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
     };
-  } else if (type === 'arc') {
+  } else if (type === 'wms') {
     let domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
-    // @TODO: remove this after the collection is fixed
-    domain = domain.map((d: string) => d.endsWith('Z') ? d.slice(0, -1) : d);
 
     // @TODO: what to do with timeless data? Setting up as today as a temporary solution
     if (data['dashboard:is_timeless']) {

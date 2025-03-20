@@ -166,7 +166,7 @@ const hasValidSourceParams = (params) => {
 export const isRenderParamsApplicable = (
   datasetType: DatasetLayerType
 ): boolean => {
-  const nonApplicableTypes = ['vector', 'arc'];
+  const nonApplicableTypes = ['vector', 'wms'];
 
   return !nonApplicableTypes.includes(datasetType);
 };

@@ -6,7 +6,7 @@ import useGeneratorParams from '../hooks/use-generator-params';
 import useMapStyle from '../hooks/use-map-style';
 import { BaseGeneratorParams } from '../types';
 
-import { useArc } from '$components/common/map/style-generators/hooks';
+import { useWMS } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
 
 import { userTzDate2utcString } from '$utils/date';
@@ -46,7 +46,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
 
   const [minZoom] = zoomExtent ?? [0, 20];
 
-  const generatorId = 'arc-' + id;
+  const generatorId = 'wms-' + id;
 
   const generatorParams = useGeneratorParams({
     generatorOrder,
@@ -76,7 +76,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
         ...sourceParams
       });
 
-      const arcSource: RasterSourceSpecification = {
+      const wmsSource: RasterSourceSpecification = {
         type: 'raster',
         tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`],
         tileSize: 256
@@ -84,7 +84,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
 
       const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-      const arcLayer: RasterLayerSpecification = {
+      const wmsLayer: RasterLayerSpecification = {
         id: id,
         type: 'raster',
         source: id,
@@ -107,9 +107,9 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
       };
 
       const sources = {
-        [id]: arcSource
+        [id]: wmsSource
       };
-      const layers = [arcLayer];
+      const layers = [wmsLayer];
 
       updateStyle({
         generatorId,
@@ -150,11 +150,11 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
   return null;
 }
 
-export function Arc(props: MapLayerArcProps) {
+export function WMSTimeseries(props: MapLayerArcProps) {
   const { id, stacCol, stacApiEndpoint, onStatusChange } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-  const wmsUrl = useArc({ id, stacCol, stacApiEndpointToUse, onStatusChange });
+  const wmsUrl = useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange });
 
   return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
 }

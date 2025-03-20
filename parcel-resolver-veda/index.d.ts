@@ -11,7 +11,7 @@ declare module 'veda' {
     | 'vector'
     | 'zarr'
     | 'cmr'
-    | 'arc'
+    | 'wms'
     | 'feature';
 
   //
