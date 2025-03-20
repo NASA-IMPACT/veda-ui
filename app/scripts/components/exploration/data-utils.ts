@@ -1,6 +1,9 @@
+import add from 'date-fns/add';
 import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
 import eachDayOfInterval from 'date-fns/eachDayOfInterval';
 import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import isBefore from 'date-fns/isBefore';
+import isEqual from 'date-fns/isEqual';
 import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
@@ -90,7 +93,7 @@ export function resolveLayerTemporalExtent(
   datasetId: string,
   datasetData: StacDatasetData
 ): Date[] {
-  const { domain, isPeriodic, timeDensity } = datasetData;
+  const { domain, isPeriodic, timeInterval } = datasetData;
 
   if (!domain || domain.length === 0) {
     throw new Error(`Invalid domain on dataset [${datasetId}]`);
@@ -98,26 +101,54 @@ export function resolveLayerTemporalExtent(
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
-  switch (timeDensity) {
-    case TimeDensity.YEAR:
-      return eachYearOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.MONTH:
-      return eachMonthOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.DAY:
-      return eachDayOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
+  const start = utcString2userTzDate(domain[0]);
+  const end = utcString2userTzDate(domain[domain.length - 1]);
+
+  if (!timeInterval) {
+    throw new Error(
+      `Missing time interval for periodic dataset [${datasetId}]`
+    );
+  }
+
+  const intervalDuration = timeInterval.toUpperCase();
+
+  switch (intervalDuration) {
+    case 'P1Y': // Every year
+      return eachYearOfInterval({ start, end });
+    case 'P1M': // Every month
+      return eachMonthOfInterval({ start, end });
+    case 'P1D': // Every day
+      return eachDayOfInterval({ start, end });
     default:
+      if (intervalDuration.startsWith('P')) {
+        return generateDates(start, end, intervalDuration);
+      }
       throw new Error(
-        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
+        `Unsupported time interval [${timeInterval}] on dataset [${datasetId}]`
       );
+  }
+
+  function generateDates(
+    start: Date,
+    end: Date,
+    interval: string
+  ): Date[] {
+    const match = interval.match(
+      /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+    );
+    if (!match) throw new Error("Invalid ISO duration");
+
+    const [, years, months, weeks, days, hours, minutes, seconds] = match.map(v => (v ? parseInt(v) : 0));
+
+    let currentDate = start;
+    const validDates: Date[] = [];
+
+    while (isBefore(currentDate, end) || isEqual(currentDate, end)) {
+        validDates.push(currentDate);
+        currentDate = add(currentDate, { years, months, weeks, days, hours, minutes, seconds });
+    }
+
+    return validDates;
   }
 }
 
