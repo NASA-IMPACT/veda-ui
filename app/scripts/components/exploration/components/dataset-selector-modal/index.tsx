@@ -10,7 +10,7 @@ import ModalFooterRender from './footer';
 import { reconcileDatasets } from '$components/exploration/data-utils';
 import { getLayersFromDatasetLayers } from '$utils/data-utils';
 import CatalogContent from '$components/common/catalog/catalog-content';
-import CatalogContentLegacy from '$components/common/catalog/catalog-legacy/catalog-content-legacy';
+import CatalogContentLegacy from '$components/common/catalog/catalog-legacy/catalog-content';
 
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
