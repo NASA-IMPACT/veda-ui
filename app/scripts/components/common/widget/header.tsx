@@ -46,6 +46,7 @@ const Header = ({
     <div
       ref={containerRef}
       className='padding-2 display-flex flex-justify space-between flex-align-center'
+      data-testid='widget-header'
     >
       {isExpanded ? <h1>{heading}</h1> : <h6>{heading}</h6>}
 
@@ -54,8 +55,13 @@ const Header = ({
         outline={true}
         className='margin-0 margin-left-3'
         onClick={handleExpansion}
+        data-testid='widget-toggle'
       >
-        {isExpanded ? <USWDSIcon.Close size={3} /> : <USWDSIcon.ZoomOutMap />}
+        {isExpanded ? (
+          <USWDSIcon.Close size={3} role='img' aria-label='Exit fullscreen' />
+        ) : (
+          <USWDSIcon.ZoomOutMap role='img' aria-label='Enter fullscreen' />
+        )}
 
         {showText && (
           <span>{isExpanded ? 'Exit fullscreen' : 'Enter fullscreen'}</span>
