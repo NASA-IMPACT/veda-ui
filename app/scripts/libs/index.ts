@@ -17,9 +17,14 @@ Object.defineProperty(Array.prototype, 'last', {
 });
 
 // Files with only named exports
-export * from './enum';
 export * from './types';
-export * from './atoms';
+
+export { NavItemType } from './enum';
+export {
+  datasetLayersAtom,
+  externalDatasetsAtom,
+  timelineDatasetsAtom
+} from './atoms';
 
 export {
   DevseedUiThemeProvider,
@@ -28,6 +33,7 @@ export {
   useTimelineDatasetAtom,
   useFiltersWithQS
 } from './hooks';
+
 export {
   Block,
   Image,
@@ -43,6 +49,7 @@ export {
   CompareImage,
   Embed
 } from './mdx-components';
+
 export {
   CatalogContent,
   ExplorationAndAnalysis,
