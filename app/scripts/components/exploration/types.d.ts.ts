@@ -17,6 +17,7 @@ export enum DatasetStatus {
 export interface StacDatasetData {
   isPeriodic: boolean;
   isTimeless?: boolean;
+  timeInterval: string;
   timeDensity: TimeDensity;
   domain: string[];
   renders?: Record<string, any> | undefined;
