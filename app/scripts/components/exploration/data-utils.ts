@@ -198,8 +198,13 @@ export function resolveRenderParams(
   // Return user defined source parameters if there is one
   if (datasetSourceParams?.assets) return rest;
   // 3. Return dashboard namespace render extension data
-  if (queryDataRenders && queryDataRenders[RENDER_KEY])
+  if (
+    queryDataRenders &&
+    queryDataRenders[RENDER_KEY] &&
+    !Array.isArray(queryDataRenders[RENDER_KEY].bidx)
+  ) {
     return formatRenderExtensionData(queryDataRenders[RENDER_KEY]);
+  }
   // 4. return user defined source params (which can be an empty object)
   return rest;
 }
