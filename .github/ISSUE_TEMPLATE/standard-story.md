@@ -16,6 +16,8 @@ assignees: ''
 - [ ] Given when then
 - [ ] Given when then
 
-## Related Tickets
+## Definition of Done
 
-[If applicable, link any tickets that are related]
+- [ ] Unit tests
+- [ ] (Where applicable) Automated playwright tests to cover primary use case(s)
+- [ ] Merged to develop in relevant repo
