@@ -1,33 +1,31 @@
 /* eslint-disable playwright/no-conditional-in-test */
 import { Locator, Page, test } from '@playwright/test';
 
-type FooterLinkName = 'learn' | 'feedback';
+type FooterLinkName = 'about' | 'contact';
 
 export default class FooterComponent {
   readonly page: Page;
   readonly footer: Locator;
-  readonly learnMoreLink: Locator;
-  readonly giveFeedbackLink: Locator;
+  readonly aboutLink: Locator;
+  readonly contactUsLink: Locator;
 
   constructor(page: Page) {
     this.page = page;
-    this.footer = this.page
-      .getByRole('heading', { level: 2, name: /about/i })
-      .locator('..');
-    this.learnMoreLink = this.footer.getByRole('link', { name: /learn more/i });
-    this.giveFeedbackLink = this.footer.getByRole('link', {
-      name: /give feedback/i
+    this.footer = this.page.locator('footer');
+    this.aboutLink = this.footer.getByRole('link', { name: /about/i });
+    this.contactUsLink = this.footer.getByRole('button', {
+      name: /contact/i
     });
   }
 
   async clickLink(linkName: FooterLinkName) {
     await test.step(`click on ${linkName} link`, async () => {
       switch (linkName) {
-        case 'learn':
-          await this.learnMoreLink.click();
+        case 'about':
+          await this.aboutLink.click();
           break;
-        case 'feedback':
-          await this.giveFeedbackLink.click();
+        case 'contact':
+          await this.contactUsLink.click();
           break;
         default:
           throw new Error('unknown link referenced in footer test');

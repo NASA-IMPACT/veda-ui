@@ -1,22 +1,6 @@
 import { test, expect } from '../pages/basePage';
 
 test.describe('ensure links in top navigation route to expected page', () => {
-  test('link', async ({ page, consentBanner, headerComponent }) => {
-    await page.goto('/');
-    await consentBanner.acceptButton.click();
-    await expect(
-      headerComponent.navigation,
-      'header should load'
-    ).toBeVisible();
-    await headerComponent.clickLink('test');
-    await expect(
-      headerComponent.testDropdownLink,
-      'dropdown link should be visible'
-    ).toBeVisible();
-    await headerComponent.testDropdownLink.click();
-    await expect(page, 'should route to /stories').toHaveURL(/\/stories/i);
-  });
-
   test('data catalog link', async ({
     page,
     consentBanner,

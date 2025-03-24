@@ -27,8 +27,8 @@ test('catalogs displayed on /data-catalog route', async ({
   for (const item of catalogs) {
     await test.step(`locate ${item} catalog card`, async () => {
       const catalogCard = catalogPage.mainContent
-        .getByRole('article')
-        .getByRole('heading', { level: 3, name: item, exact: true })
+        .getByTestId('CardGroup')
+        .getByRole('heading', { level: 2, name: item, exact: true })
         .last();
       await catalogCard.scrollIntoViewIfNeeded();
       await expect(

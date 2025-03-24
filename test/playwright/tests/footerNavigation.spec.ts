@@ -1,7 +1,7 @@
 import { test, expect } from '../pages/basePage';
 
 test.describe('ensure links in footer route to expected page', () => {
-  test('learn more link', async ({
+  test('about link', async ({
     page,
     consentBanner,
     footerComponent,
@@ -10,12 +10,12 @@ test.describe('ensure links in footer route to expected page', () => {
     await page.goto('/');
     await consentBanner.acceptButton.click();
     await expect(footerComponent.footer).toBeVisible();
-    await footerComponent.clickLink('learn');
+    await footerComponent.clickLink('about');
     await expect(aboutPage.aboutParagraph).toBeVisible();
     await expect(page).toHaveURL(/\/about/i);
   });
 
-  test('give feedback link', async ({
+  test('contact link', async ({
     page,
     consentBanner,
     footerComponent,
@@ -28,7 +28,7 @@ test.describe('ensure links in footer route to expected page', () => {
       footerComponent.footer,
       'footer should be visible'
     ).toBeVisible();
-    await footerComponent.clickLink('feedback');
+    await footerComponent.clickLink('contact');
     await expect(contactModal.header).toBeVisible();
   });
 });

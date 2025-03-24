@@ -11,6 +11,7 @@ type HeaderLinkName =
 
 export default class HeaderComponent {
   readonly page: Page;
+  readonly header: Locator;
   readonly navigation: Locator;
   readonly testLink: Locator;
   readonly testDropdownLink: Locator;
@@ -22,7 +23,8 @@ export default class HeaderComponent {
 
   constructor(page: Page) {
     this.page = page;
-    this.navigation = this.page.getByLabel('Global Navigation');
+    this.header = this.page.getByTestId('header');
+    this.navigation = this.header.locator('nav');
     this.dataCatalogLink = this.navigation.getByRole('link', {
       name: /data catalog/i
     });

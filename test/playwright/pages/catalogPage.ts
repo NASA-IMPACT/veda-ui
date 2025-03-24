@@ -25,8 +25,8 @@ export default class CatalogPage {
   async clickCatalogCard(item: string) {
     await test.step(`click on catalog card for ${item}`, async () => {
       const catalogCard = this.mainContent
-        .getByRole('article')
-        .getByRole('heading', { level: 3, name: item, exact: true })
+        .getByTestId('CardGroup')
+        .getByRole('heading', { level: 2, name: item, exact: true })
         .first();
       await catalogCard.scrollIntoViewIfNeeded();
       // eslint-disable-next-line playwright/no-force-option
