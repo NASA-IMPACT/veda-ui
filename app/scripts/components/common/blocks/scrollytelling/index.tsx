@@ -406,7 +406,7 @@ function Scrollytelling(props) {
         <SwitchTransition>
           <CSSTransition
             key={name}
-            timeout={!activeChapterLayer ? 1 : undefined}
+            timeout={1}
             addEndListener={(node, done) => {
               if (!activeChapterLayer) return;
               node?.addEventListener('transitionend', done, false);
