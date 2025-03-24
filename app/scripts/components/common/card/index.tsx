@@ -202,6 +202,8 @@ export default function CardComponent(
       data.description &&
       data.footerContent
     ) {
+      baseProps['uswds'] = true;
+      baseProps['to'] = to;
       baseProps['children'] = (
         <FlagCard
           imgSrc={data.imgSrc}
@@ -212,7 +214,6 @@ export default function CardComponent(
           cardLabel='data_collection'
         />
       );
-      baseProps['style'] = { width: '100%' };
     }
 
     return baseProps;
@@ -222,6 +223,9 @@ export default function CardComponent(
 
   // Link variant
   if (to) {
+    if (baseProps['uswds']) {
+      return <LinkWrapper to={to}>{baseProps['children']}</LinkWrapper>;
+    }
     return (
       <ElementInteractive
         {...baseProps}
@@ -277,5 +281,17 @@ export function ExternalLinkFlag() {
       <FlagText>External Link</FlagText>
       <CollecticonExpandTopRight size='small' meaningful={false} />
     </ExternalLinkMark>
+  );
+}
+
+function LinkWrapper({ children, to }: { children: any; to: string }) {
+  const { Link } = useVedaUI();
+  return (
+    <Link
+      to={to}
+      style={{ width: '100%', margin: 0, padding: 0, overflow: 'hidden' }}
+    >
+      {children}
+    </Link>
   );
 }
