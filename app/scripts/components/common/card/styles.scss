@@ -4,4 +4,9 @@
   &:hover {
     box-shadow: 2px 4px 4px themeVars.$veda-uswds-color-base-lighter;
   }
+
+  &:focus {
+    outline: 4px solid themeVars.$veda-uswds-link-focus-color;
+    outline-offset: 4px;
+  }
 }
