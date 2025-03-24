@@ -13,12 +13,14 @@ export default class ExplorePage {
     this.layersHeading = this.page.getByRole('heading', { name: 'Layers' });
     this.mapboxCanvas = this.page.getByLabel('Map', { exact: true });
     this.firstDatasetItem = this.page.getByRole('article');
-    this.closeFeatureTourButton = this.page.getByRole('button', { name: 'Close feature tour' });
+    this.closeFeatureTourButton = this.page.getByRole('button', {
+      name: 'Close feature tour'
+    });
     this.presetSelector = this.page.getByTestId('preset-selector');
   }
 
   async closeFeatureTour() {
-    await test.step('close feature tour', async() => {
+    await test.step('close feature tour', async () => {
       await this.closeFeatureTourButton.click();
     });
   }

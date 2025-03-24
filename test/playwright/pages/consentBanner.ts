@@ -8,7 +8,9 @@ export default class ConsentBanner {
 
   constructor(page: Page) {
     this.page = page;
-    this.consentBanner  = this.page.locator('#cookie-consent');
-    this.acceptButton = this.consentBanner.getByRole('button', {name: /accept cookies/i});
+    this.consentBanner = this.page.locator('#cookie-consent');
+    this.acceptButton = this.consentBanner.getByRole('button', {
+      name: /accept cookies/i
+    });
   }
 }
