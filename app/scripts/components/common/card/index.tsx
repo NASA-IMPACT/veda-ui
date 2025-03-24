@@ -18,6 +18,7 @@ import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { variableGlsp } from '$styles/variable-utils';
+import './styles.scss';
 
 /**
  * @NOTE: This component is the controller where a cardType can be passed in.
@@ -284,12 +285,19 @@ export function ExternalLinkFlag() {
   );
 }
 
-function LinkWrapper({ children, to }: { children: any; to: string }) {
+function LinkWrapper({ children, to }: { children: JSX.Element; to: string }) {
   const { Link } = useVedaUI();
   return (
     <Link
+      className='card-a11y-states'
       to={to}
-      style={{ width: '100%', margin: 0, padding: 0, overflow: 'hidden' }}
+      style={{
+        width: '100%',
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden',
+        borderRadius: '0.5rem'
+      }}
     >
       {children}
     </Link>

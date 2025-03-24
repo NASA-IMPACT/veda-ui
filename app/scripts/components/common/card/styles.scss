@@ -1,0 +1,7 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+.card-a11y-states {
+  &:hover {
+    box-shadow: 2px 4px 4px themeVars.$veda-uswds-color-base-lighter;
+  }
+}
