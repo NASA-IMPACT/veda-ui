@@ -16,6 +16,7 @@ test.describe('catalog card routing', () => {
       let pageErrorCalled = false;
       // Log all uncaught errors to the terminal
       page.on('pageerror', (exception) => {
+        // eslint-disable-next-line no-console
         console.log(`Uncaught exception: "${exception}"`);
         pageErrorCalled = true;
       });

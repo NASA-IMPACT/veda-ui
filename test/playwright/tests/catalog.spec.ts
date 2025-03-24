@@ -1,6 +1,7 @@
 import { test, expect } from '../pages/basePage';
 
 const catalogs = JSON.parse(
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('fs').readFileSync('test/playwright/playwrightTestData.json', 'utf8')
 )['catalogs'];
 
@@ -12,6 +13,7 @@ test('catalogs displayed on /data-catalog route', async ({
   let pageErrorCalled = false;
   // Log all uncaught errors to the terminal
   page.on('pageerror', (exception) => {
+    // eslint-disable-next-line no-console
     console.log(`Uncaught exception: "${exception}"`);
     pageErrorCalled = true;
   });

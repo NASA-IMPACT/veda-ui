@@ -19,6 +19,7 @@ test.describe('explore dataset', () => {
       let pageErrorCalled = false;
       // Log all uncaught errors to the terminal to be visible in trace
       page.on('pageerror', (exception) => {
+        // eslint-disable-next-line no-console
         console.log(`Uncaught exception: "${JSON.stringify(exception)}"`);
         pageErrorCalled = true;
       });

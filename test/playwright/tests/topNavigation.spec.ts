@@ -1,6 +1,6 @@
 import { test, expect } from '../pages/basePage';
 
-test.describe('ensure links in top navigation route to expected page', async () => {
+test.describe('ensure links in top navigation route to expected page', () => {
   test('link', async ({ page, consentBanner, headerComponent }) => {
     await page.goto('/');
     await consentBanner.acceptButton.click();

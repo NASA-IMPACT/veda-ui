@@ -1,6 +1,7 @@
 import { test, expect } from '../pages/basePage';
 
 const stories = JSON.parse(
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   require('fs').readFileSync('test/playwright/playwrightTestData.json', 'utf8')
 )['stories'];
 
@@ -15,6 +16,7 @@ test.describe('stories card routing', () => {
         let pageErrorCalled = false;
         // Log all uncaught errors to the terminal
         page.on('pageerror', (exception) => {
+          // eslint-disable-next-line no-console
           console.log(`Uncaught exception: "${exception}"`);
           pageErrorCalled = true;
         });

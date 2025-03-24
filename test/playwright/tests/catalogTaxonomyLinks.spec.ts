@@ -33,7 +33,7 @@ test.describe('catalog card taxonomy pills have valid hyperlinks', () => {
         });
         await test.step(`testing that ${linkName} has an href`, async () => {
           const href = await link.getAttribute('href');
-          expect(href).not.toBeNull;
+          expect(href).not.toBeNull();
         });
       }
     });

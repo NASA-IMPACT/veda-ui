@@ -1,6 +1,6 @@
 import { test, expect } from '../pages/basePage';
 
-test.describe('ensure links in footer route to expected page', async () => {
+test.describe('ensure links in footer route to expected page', () => {
   test('learn more link', async ({
     page,
     consentBanner,

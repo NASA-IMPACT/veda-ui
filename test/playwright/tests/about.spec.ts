@@ -8,6 +8,7 @@ test('about page should have no javascript errors', async ({
   let pageErrorCalled = false;
   // Log all uncaught errors to the terminal
   page.on('pageerror', (exception) => {
+    // eslint-disable-next-line no-console
     console.warn(`Uncaught exception: "${exception}"`);
     pageErrorCalled = true;
   });
