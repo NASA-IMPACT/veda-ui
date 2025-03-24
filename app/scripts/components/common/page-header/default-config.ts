@@ -77,7 +77,7 @@ if (process.env.GOOGLE_FORM !== undefined) {
 }
 
 const mainNavItems =
-  getNavItemsFromVedaConfig()?.headerNavItems ?? defaultMainNavItems;
+  getNavItemsFromVedaConfig()?.mainNavItems ?? defaultMainNavItems;
 const subNavItems =
   getNavItemsFromVedaConfig()?.subNavItems ?? defaultSubNavItems;
 

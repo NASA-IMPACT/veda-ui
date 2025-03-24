@@ -3,7 +3,7 @@ const { parsed: config } = dotEnvConfig;
 
 const dataCatalogNavItem = {
   id: 'data-catalog',
-  title: 'Data Catalog',
+  title: 'Data toolkit',
   to: '/data-catalog',
   type: 'internalLink'
 };
@@ -36,7 +36,7 @@ const contactUsNavItem = {
   type: 'action'
 };
 
-let headerNavItems = [
+let mainNavItems = [
   {
     id: 'test',
     title: 'TestDropdown1',
@@ -64,7 +64,7 @@ let headerNavItems = [
     ]
   },
   dataCatalogNavItem,
-  explorationNavItem,
+  // explorationNavItem,
   storiesNavItem
 ];
 
@@ -99,8 +99,8 @@ let footerSettings = {
 };
 
 if (!!config.HUB_URL && !!config.HUB_NAME)
-  headerNavItems = [
-    ...headerNavItems,
+  mainNavItems = [
+    ...mainNavItems,
     {
       id: 'hub',
       title: process.env.HUB_NAME,
@@ -183,7 +183,7 @@ module.exports = {
     showIcon: true
   },
   navItems: {
-    headerNavItems,
+    mainNavItems,
     footerNavItems,
     subNavItems,
     footerSubNavItems
