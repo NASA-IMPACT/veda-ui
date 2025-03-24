@@ -10,7 +10,6 @@ import {
 } from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
 import { datasets } from 'veda';
-
 import { DatasetData } from '$types/veda';
 import { HintedError } from '$utils/hinted-error';
 import { variableGlsp } from '$styles/variable-utils';
