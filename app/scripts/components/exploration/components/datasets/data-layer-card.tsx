@@ -26,7 +26,7 @@ import {
   colorMapScale
 } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
-import { ParentDatasetTitle } from '$components/common/catalog/catalog-content-legacy';
+import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 import { checkEnvFlag } from '$utils/utils';
 
 import 'tippy.js/dist/tippy.css';
