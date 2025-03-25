@@ -1,5 +1,5 @@
 import React from 'react';
-import { FacadeCardProps } from './types';
+import { FacadeCardProps, CardElement } from './types';
 import BaseCard from './base-card';
 import { USWDSIcon } from '$uswds';
 
@@ -65,7 +65,7 @@ export default function TopicCard(props: TopicCardProps) {
     </h4>
   );
 
-  const cardMedia = {
+  const cardMedia: CardElement = {
     element: (
       <img
         src={imgSrc}
@@ -76,12 +76,12 @@ export default function TopicCard(props: TopicCardProps) {
     className: 'height-card-md width-full overflow-hidden'
   };
 
-  const cardBody = {
+  const cardBody: CardElement = {
     element: <h3 className='font-body-lg margin-y-0'>{description}</h3>,
     className: 'topic-card__body padding-x-2 padding-y-2'
   };
 
-  const cardFooter = {
+  const cardFooter: CardElement = {
     element: callToAction,
     className: 'padding-x-2 padding-bottom-2 padding-top-0 margin-top-auto'
   };
