@@ -3,21 +3,9 @@ import { FacadeCardProps } from '../types';
 import BaseCard from '..';
 import { USWDSIcon } from '$uswds';
 
-// export type TopicCardProps = {
-//   id?: string;
-//   className?: string;
-//   gridLayout?: unknown;
-//   mediaUrl?: string;
-//   mediaAlt?: string;
-//   fullBg?: boolean;
-//   description?: string | React.ReactElement;
-//   footerTitle?: string;
-//   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-// };
-
-export interface TopicCardProps extends FacadeCardProps {
+export interface TopicCardProps extends Omit<FacadeCardProps, 'footer'> {
   fullBg?: boolean;
-  // footerTitle?: string;
+  footerTitle?: string;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
@@ -26,14 +14,11 @@ export default function TopicCard(props: TopicCardProps) {
     id,
     className = '',
     gridLayout,
-    // mediaUrl,
-    // mediaAlt = '',
     cardLabel,
     imgSrc,
     imgAlt = '',
     fullBg = true,
     description,
-    // footerTitle = 'Explore Topic',
     footerTitle = 'Explore Topic',
     onClick
   } = props;
