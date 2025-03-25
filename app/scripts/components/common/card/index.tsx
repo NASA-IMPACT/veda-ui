@@ -204,7 +204,6 @@ export default function CardComponent(
       data.footerContent
     ) {
       baseProps['uswds'] = true;
-      baseProps['to'] = to;
       baseProps['children'] = (
         <FlagCard
           imgSrc={data.imgSrc}
@@ -225,7 +224,7 @@ export default function CardComponent(
   // Link variant
   if (to) {
     if (baseProps['uswds']) {
-      return <LinkWrapper to={to}>{baseProps['children']}</LinkWrapper>;
+      return <CardLinkWrapper to={to}>{baseProps['children']}</CardLinkWrapper>;
     }
     return (
       <ElementInteractive
@@ -285,7 +284,13 @@ export function ExternalLinkFlag() {
   );
 }
 
-function LinkWrapper({ children, to }: { children: JSX.Element; to: string }) {
+function CardLinkWrapper({
+  children,
+  to
+}: {
+  children: JSX.Element;
+  to: string;
+}) {
   const { Link } = useVedaUI();
   return (
     <Link
