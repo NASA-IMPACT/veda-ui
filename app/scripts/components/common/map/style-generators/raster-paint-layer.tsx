@@ -52,9 +52,33 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      const tileParamsAsString = qs.stringify(updatedTileParams, {
+      // Create a modified version of the parameters
+      const processedParams = { ...updatedTileParams } as {
+        reScale?: number[];
+        colormap_name?: string;
+        bands?: string[];
+        assets?: string[];
+        [key: string]: any;
+      };
+
+      // bands and assets need to be sent as repeat query params
+      const { bands, assets, ...regularParams } = processedParams;
+
+      const repeatParams: Record<string, string[] | undefined> = {};
+      if (Array.isArray(bands)) repeatParams.bands = bands;
+      if (Array.isArray(assets)) repeatParams.assets = assets;
+
+      const regularParamsString = qs.stringify(regularParams, {
         arrayFormat: 'comma'
       });
+
+      const repeatParamsString = qs.stringify(repeatParams, {
+        arrayFormat: 'repeat'
+      });
+
+      const tileParamsAsString = [regularParamsString, repeatParamsString]
+        .filter(Boolean) // Remove empty strings
+        .join('&');
 
       const zarrSource: RasterSourceSpecification = {
         type: 'raster',
