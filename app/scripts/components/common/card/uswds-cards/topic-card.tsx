@@ -1,6 +1,6 @@
 import React from 'react';
 import { FacadeCardProps } from './types';
-import BaseCard from '.';
+import BaseCard from './base-card';
 import { USWDSIcon } from '$uswds';
 
 export interface TopicCardProps extends Omit<FacadeCardProps, 'footer'> {

@@ -1,6 +1,6 @@
 import React from 'react';
 import { FacadeCardProps, CardElement } from './types';
-import BaseCard from '.';
+import BaseCard from './base-card';
 
 export default function DefaultCard(props: FacadeCardProps) {
   const {
@@ -14,7 +14,7 @@ export default function DefaultCard(props: FacadeCardProps) {
   } = props;
   const defaultGridLayout = gridLayout ? gridLayout : { desktop: { col: 3 } };
 
-  if (!heading || !description || !imgSrc || !imgAlt) <></>;
+  if (!(heading || description || imgSrc || imgAlt)) <></>;
 
   const cardHeader: CardElement = {
     element: <h2 className='usa-card__heading card-header'>{heading}</h2>

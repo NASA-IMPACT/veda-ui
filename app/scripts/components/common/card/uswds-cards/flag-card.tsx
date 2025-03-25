@@ -1,6 +1,6 @@
 import React from 'react';
 import { FacadeCardProps, CardElement } from './types';
-import BaseCard from '.';
+import BaseCard from './base-card';
 
 type FlagCardProps = FacadeCardProps & {
   layout?: 'flagDefault' | 'flagMediaRight';
@@ -20,7 +20,7 @@ export default function FlagCard(props: FlagCardProps) {
   const defaultLayout = layout ? layout : 'flagDefault';
   const defaultGridLayout = gridLayout ? gridLayout : { desktop: { col: 12 } }; // Full Width
 
-  if (!heading || !description || !imgSrc || !imgAlt) <></>;
+  if (!(heading || description || imgSrc || imgAlt)) <></>;
 
   const cardHeader: CardElement = {
     element: <h2 className='usa-card__heading card-header'>{heading}</h2>
