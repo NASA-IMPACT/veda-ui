@@ -28,7 +28,7 @@ const CatalogFoldHeader = styled(FoldHeader)`
 export const sortOptions = [{ id: 'name', name: 'Name' }];
 
 const CatalogContent = lazy(() => import('./catalog-content'));
-const CatalogContentLegacy = lazy(() => import('./catalog-content-legacy'));
+const CatalogContentLegacy = lazy(() => import('./catalog-legacy/catalog-content'));
 
 export interface CatalogViewProps {
   datasets: DatasetData[];
@@ -51,17 +51,24 @@ function CatalogView({
 
   const { search, taxonomies, onAction } = onFilterChanges();
 
+  const headerElement = (
+    <CatalogFoldHeader
+      style={{
+        scrollMarginTop: `${headerHeight + 16}px`
+      }}
+    >
+      <FoldHeadline>
+        <FoldTitle>Search datasets</FoldTitle>
+      </FoldHeadline>
+    </CatalogFoldHeader>
+  );
   return (
     <CatalogWrapper>
-      <CatalogFoldHeader
-        style={{
-          scrollMarginTop: `${headerHeight + 16}px`
-        }}
-      >
-        <FoldHeadline>
-          <FoldTitle>Search datasets</FoldTitle>
-        </FoldHeadline>
-      </CatalogFoldHeader>
+      {enableUSWDSDataCatalog ? (
+        <div className='display-none tablet:display-block'>{headerElement}</div>
+      ) : (
+        headerElement
+      )}
       {enableUSWDSDataCatalog ? (
         <CatalogContent
           datasets={datasets}

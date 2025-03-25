@@ -132,7 +132,7 @@ export default function Banner({
       </USWDSBannerHeader>
 
       <USWDSBannerContent id={contentId} isOpen={isOpen}>
-        <div className='grid-row grid-gap-lg'>
+        <div className='grid-row grid-gap-6'>
           <GuidanceBlock content={leftContent} className='tablet:grid-col-6' />
           <GuidanceBlock content={rightContent} className='tablet:grid-col-6' />
         </div>
