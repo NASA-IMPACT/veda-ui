@@ -6,6 +6,8 @@ export default class AboutPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.aboutParagraph = this.page.getByText("The VEDA Dashboard is one of several user interfaces in the VEDA project");
+    this.aboutParagraph = this.page.getByText(
+      'The VEDA Dashboard is one of several user interfaces in the VEDA project'
+    );
   }
 }

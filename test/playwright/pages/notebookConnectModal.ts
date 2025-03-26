@@ -6,6 +6,8 @@ export default class NotebookConnectModal {
 
   constructor(page: Page) {
     this.page = page;
-    this.heading = this.page.getByRole('heading', { name: /how to use this dataset/i });
+    this.heading = this.page.getByRole('heading', {
+      name: /how to use this dataset/i
+    });
   }
 }
