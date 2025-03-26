@@ -3,7 +3,7 @@ const { parsed: config } = dotEnvConfig;
 
 const dataCatalogNavItem = {
   id: 'data-catalog',
-  title: 'Data toolkit',
+  title: 'Data Catalog',
   to: '/data-catalog',
   type: 'internalLink'
 };
@@ -64,7 +64,7 @@ let mainNavItems = [
     ]
   },
   dataCatalogNavItem,
-  // explorationNavItem,
+  explorationNavItem,
   storiesNavItem
 ];
 
