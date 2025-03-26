@@ -18,6 +18,7 @@ import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { variableGlsp } from '$styles/variable-utils';
+import './styles.scss';
 
 /**
  * @NOTE: This component is the controller where a cardType can be passed in.
@@ -202,6 +203,7 @@ export default function CardComponent(
       data.description &&
       data.footerContent
     ) {
+      baseProps['uswds'] = true;
       baseProps['children'] = (
         <FlagCard
           imgSrc={data.imgSrc}
@@ -212,7 +214,6 @@ export default function CardComponent(
           cardLabel='data_collection'
         />
       );
-      baseProps['style'] = { width: '100%' };
     }
 
     return baseProps;
@@ -222,6 +223,9 @@ export default function CardComponent(
 
   // Link variant
   if (to) {
+    if (baseProps['uswds']) {
+      return <CardLinkWrapper to={to}>{baseProps['children']}</CardLinkWrapper>;
+    }
     return (
       <ElementInteractive
         {...baseProps}
@@ -277,5 +281,30 @@ export function ExternalLinkFlag() {
       <FlagText>External Link</FlagText>
       <CollecticonExpandTopRight size='small' meaningful={false} />
     </ExternalLinkMark>
+  );
+}
+
+function CardLinkWrapper({
+  children,
+  to
+}: {
+  children: JSX.Element;
+  to: string;
+}) {
+  const { Link } = useVedaUI();
+  return (
+    <Link
+      className='card-a11y-states'
+      to={to}
+      style={{
+        width: '100%',
+        margin: 0,
+        padding: 0,
+        overflow: 'hidden',
+        borderRadius: '0.5rem'
+      }}
+    >
+      {children}
+    </Link>
   );
 }
