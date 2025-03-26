@@ -35,7 +35,6 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 import Pagination from '$components/common/pagination';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
-import Pagination from '$components/common/pagination';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';

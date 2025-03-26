@@ -124,14 +124,14 @@ export default function FiltersControl(props: FiltersMenuProps) {
             key={title}
             items={items}
             title={title}
-            onChanges={(item) =>
+            onChanges={(item) => {
               handleChanges(
                 item,
                 allSelected.some((selected) => selected.id === item.id)
                   ? 'remove'
                   : 'add'
-              )
-            }
+              );
+            }}
             globallySelected={allSelected}
             tagItemCleared={{
               item: clearedTagItem,
