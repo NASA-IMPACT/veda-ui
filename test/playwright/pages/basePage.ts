@@ -11,7 +11,6 @@ import HeaderComponent from './headerComponent';
 import NotebookConnectModal from './notebookConnectModal';
 import StoriesPage from './storiesPage';
 
-
 export const test = base.extend<{
   aboutPage: AboutPage;
   catalogPage: CatalogPage;
@@ -24,40 +23,40 @@ export const test = base.extend<{
   headerComponent: HeaderComponent;
   notebookConnectModal: NotebookConnectModal;
   storiesPage: StoriesPage;
-}> ({
-  aboutPage: async ({page}, use) => {
+}>({
+  aboutPage: async ({ page }, use) => {
     await use(new AboutPage(page));
   },
-  catalogPage: async ({page}, use) => {
+  catalogPage: async ({ page }, use) => {
     await use(new CatalogPage(page));
   },
-  contactModal: async ({page}, use) => {
+  contactModal: async ({ page }, use) => {
     await use(new ContactModal(page));
   },
-  consentBanner: async ({page}, use) => {
+  consentBanner: async ({ page }, use) => {
     await use(new ConsentBanner(page));
   },
-  datasetPage: async ({page}, use) => {
+  datasetPage: async ({ page }, use) => {
     await use(new DatasetPage(page));
   },
-  datasetSelectorComponent: async ({page}, use) => {
+  datasetSelectorComponent: async ({ page }, use) => {
     await use(new DatasetSelectorComponent(page));
   },
-  explorePage: async ({page}, use) => {
+  explorePage: async ({ page }, use) => {
     await use(new ExplorePage(page));
   },
-  footerComponent: async ({page}, use) => {
+  footerComponent: async ({ page }, use) => {
     await use(new FooterComponent(page));
   },
-  headerComponent: async ({page}, use) => {
+  headerComponent: async ({ page }, use) => {
     await use(new HeaderComponent(page));
   },
-  notebookConnectModal: async ({page}, use) => {
+  notebookConnectModal: async ({ page }, use) => {
     await use(new NotebookConnectModal(page));
   },
-  storiesPage: async ({page}, use) => {
+  storiesPage: async ({ page }, use) => {
     await use(new StoriesPage(page));
-  },
+  }
 });
 
 export const expect = test.expect;

@@ -1,10 +1,17 @@
 /* eslint-disable playwright/no-conditional-in-test */
 import { Locator, Page, test } from '@playwright/test';
 
-type HeaderLinkName = "about" | "dataCatalog" | "exploration" | "stories" | "test" | "contact";
+type HeaderLinkName =
+  | 'about'
+  | 'dataCatalog'
+  | 'exploration'
+  | 'stories'
+  | 'test'
+  | 'contact';
 
 export default class HeaderComponent {
   readonly page: Page;
+  readonly header: Locator;
   readonly navigation: Locator;
   readonly testLink: Locator;
   readonly testDropdownLink: Locator;
@@ -16,18 +23,27 @@ export default class HeaderComponent {
 
   constructor(page: Page) {
     this.page = page;
-    this.navigation = this.page.getByLabel('Global Navigation');
-    this.dataCatalogLink = this.navigation.getByRole('link', { name: /data catalog/i} );
-    this.explorationLink = this.navigation.getByRole('link', { name: /exploration/i} );
-    this.storiesLink = this.navigation.getByRole('link', { name: /stories/i} );
-    this.testLink = this.navigation.getByRole('button', { name: /test/i} );
-    this.testDropdownLink = this.page.getByRole('link', { name: /test dropdown/i} );
-    this.aboutLink = this.navigation.getByRole('link', { name: /about/i} );
-    this.contactButton = this.navigation.getByRole('button', { name: /contact us/i} );
+    this.header = this.page.getByTestId('header');
+    this.navigation = this.header.locator('nav');
+    this.dataCatalogLink = this.navigation.getByRole('link', {
+      name: /data catalog/i
+    });
+    this.explorationLink = this.navigation.getByRole('link', {
+      name: /exploration/i
+    });
+    this.storiesLink = this.navigation.getByRole('link', { name: /stories/i });
+    this.testLink = this.navigation.getByRole('button', { name: /test/i });
+    this.testDropdownLink = this.page.getByRole('link', {
+      name: /test dropdown/i
+    });
+    this.aboutLink = this.navigation.getByRole('link', { name: /about/i });
+    this.contactButton = this.navigation.getByRole('button', {
+      name: /contact us/i
+    });
   }
 
   async clickLink(linkName: HeaderLinkName) {
-    await test.step(`click on ${linkName} link`, async() => {
+    await test.step(`click on ${linkName} link`, async () => {
       switch (linkName) {
         case 'about':
           await this.aboutLink.click();
