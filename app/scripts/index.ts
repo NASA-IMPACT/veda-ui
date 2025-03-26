@@ -42,6 +42,7 @@ import './styles/veda-components.scss';
 import CatalogContent from '$components/common/catalog/catalog-content';
 import DefaultCard from '$components/common/card/uswds-cards/default-card';
 import FlagCard from '$components/common/card/uswds-cards/flag-card';
+import TopicCard from '$components/common/card/uswds-cards/topic-card';
 
 // Adding .last property to array
 /* eslint-disable-next-line fp/no-mutating-methods */
@@ -83,6 +84,7 @@ export {
   // CARDS
   FlagCard,
   DefaultCard,
+  TopicCard,
 
   // HOOKS
   useTimelineDatasetAtom,

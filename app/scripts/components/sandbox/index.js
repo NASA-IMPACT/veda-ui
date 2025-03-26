@@ -19,6 +19,7 @@ import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
 import Pagination from './pagination';
+import SandboxUswdsCards from './cards';
 import { Figure } from '$components/common/figure';
 import { Caption } from '$components/common/blocks/images';
 import { LazyMap as Map } from '$components/common/blocks/lazy-components';
@@ -112,6 +113,11 @@ const pages = [
     id: 'pagination',
     name: 'USWDS Pagination',
     component: Pagination
+  },
+  {
+    id: 'uswds-cards',
+    name: 'USWDS Cards',
+    component: SandboxUswdsCards
   }
 ];
 
@@ -169,6 +175,13 @@ function Sandbox() {
                       linkLabel='View more'
                       title='USWDS Pagination'
                       to='pagination'
+                    />
+                  </Grid>
+                  <Grid col={4} className='margin-bottom-3'>
+                    <Card
+                      linkLabel='View more'
+                      title='USWDS Cards'
+                      to='uswds-cards'
                     />
                   </Grid>
 

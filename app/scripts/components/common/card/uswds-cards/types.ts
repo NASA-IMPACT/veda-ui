@@ -1,4 +1,4 @@
-export type LabelType = 'data_collection' | 'story';
+export type LabelType = 'data_collection' | 'story' | 'topic' | 'widget';
 
 export interface CardProps {
   layout?: string;
@@ -9,4 +9,5 @@ export interface CardProps {
   description: string | JSX.Element;
   gridLayout?: any;
   cardLabel?: LabelType;
+  className?: string;
 }
