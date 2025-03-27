@@ -1,7 +1,4 @@
 import add from 'date-fns/add';
-import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
-import eachDayOfInterval from 'date-fns/eachDayOfInterval';
-import eachYearOfInterval from 'date-fns/eachYearOfInterval';
 import isBefore from 'date-fns/isBefore';
 import isEqual from 'date-fns/isEqual';
 import startOfDay from 'date-fns/startOfDay';
@@ -112,44 +109,59 @@ export function resolveLayerTemporalExtent(
 
   const intervalDuration = timeInterval.toUpperCase();
 
-  switch (intervalDuration) {
-    case 'P1Y': // Every year
-      return eachYearOfInterval({ start, end });
-    case 'P1M': // Every month
-      return eachMonthOfInterval({ start, end });
-    case 'P1D': // Every day
-      return eachDayOfInterval({ start, end });
-    default:
-      if (intervalDuration.startsWith('P')) {
-        return generateDates(start, end, intervalDuration);
-      }
-      throw new Error(
-        `Unsupported time interval [${timeInterval}] on dataset [${datasetId}]`
-      );
-  }
-
-  function generateDates(
-    start: Date,
-    end: Date,
-    interval: string
-  ): Date[] {
-    const match = interval.match(
-      /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+  if (intervalDuration.startsWith('P')) {
+    return generateDates(start, end, intervalDuration);
+  } else {
+    throw new Error(
+      `Unsupported time interval [${timeInterval}] on dataset [${datasetId}]`
     );
-    if (!match) throw new Error("Invalid ISO duration");
-
-    const [, years, months, weeks, days, hours, minutes, seconds] = match.map(v => (v ? parseInt(v) : 0));
-
-    let currentDate = start;
-    const validDates: Date[] = [];
-
-    while (isBefore(currentDate, end) || isEqual(currentDate, end)) {
-        validDates.push(currentDate);
-        currentDate = add(currentDate, { years, months, weeks, days, hours, minutes, seconds });
-    }
-
-    return validDates;
   }
+}
+
+/**
+ * Generates an array of dates between a start and end date based on a specified ISO 8601 duration interval.
+ *
+ * @param start - The starting date of the range.
+ * @param end - The ending date of the range.
+ * @param interval - An ISO 8601 duration string (e.g., "P1Y2M10D" for 1 year, 2 months, and 10 days).
+ * @returns An array of `Date` objects representing the generated dates.
+ * @throws Will throw an error if the provided interval is not a valid ISO 8601 duration string.
+ *
+ * @example
+ * ```typescript
+ * const start = new Date('2023-01-01');
+ * const end = new Date('2023-01-10');
+ * const interval = 'P1D'; // 1 day interval
+ * const dates = generateDates(start, end, interval);
+ * console.log(dates); // [2023-01-01, 2023-01-02, ..., 2023-01-10]
+ * ```
+ */
+function generateDates(start: Date, end: Date, interval: string): Date[] {
+  const match = interval.match(
+    /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+  );
+  if (!match) throw new Error('Invalid ISO duration');
+
+  const [, years, months, weeks, days, hours, minutes, seconds] = match.map(
+    (v) => (v ? parseInt(v) : 0)
+  );
+
+  let currentDate = start;
+  let validDates: Date[] = [];
+
+  while (isBefore(currentDate, end) || isEqual(currentDate, end)) {
+    validDates = [...validDates, currentDate];
+    currentDate = add(currentDate, {
+      years,
+      months,
+      weeks,
+      days,
+      hours,
+      minutes,
+      seconds
+    });
+  }
+  return validDates;
 }
 
 /**
