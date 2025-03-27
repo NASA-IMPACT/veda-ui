@@ -61,7 +61,8 @@ export {
   PageHeader,
   PageFooter,
   DefaultCard,
-  FlagCard
+  FlagCard,
+  Widget
 } from './uswds-components';
 
 export { PageHero, LegacyGlobalStyles };
