@@ -12,6 +12,7 @@ export const Figure = styled.figure`
   position: relative;
   display: inline-block;
   vertical-align: top;
+  width: 100%;
 
   > a {
     display: block;
