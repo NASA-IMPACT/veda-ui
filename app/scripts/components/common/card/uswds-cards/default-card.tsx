@@ -14,8 +14,6 @@ export default function DefaultCard(props: FacadeCardProps) {
   } = props;
   const defaultGridLayout = gridLayout ? gridLayout : { desktop: { col: 3 } };
 
-  if (!(heading || description || imgSrc || imgAlt)) <></>;
-
   const cardHeader: CardElement = {
     element: <h2 className='usa-card__heading card-header'>{heading}</h2>
   };

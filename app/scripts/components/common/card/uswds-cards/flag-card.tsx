@@ -20,8 +20,6 @@ export default function FlagCard(props: FlagCardProps) {
   const defaultLayout = layout ? layout : 'flagDefault';
   const defaultGridLayout = gridLayout ? gridLayout : { desktop: { col: 12 } }; // Full Width
 
-  if (!(heading || description || imgSrc || imgAlt)) <></>;
-
   const cardHeader: CardElement = {
     element: <h2 className='usa-card__heading card-header'>{heading}</h2>
   };
