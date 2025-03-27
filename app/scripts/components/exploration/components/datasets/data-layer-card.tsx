@@ -128,9 +128,12 @@ export default function DataLayerCard(props: CardProps) {
     onClickLayerInfo
   } = props;
   const layerInfo = dataset.data.info;
-  const [min, max] = datasetLegend?.type === 'gradient' && datasetLegend.min != null && datasetLegend.max != null
-    ? [datasetLegend.min, datasetLegend.max]
-    : dataset.data.sourceParams?.rescale || [0, 1];
+  const [min, max] =
+    datasetLegend?.type === 'gradient' &&
+    datasetLegend.min != null &&
+    datasetLegend.max != null
+      ? [datasetLegend.min, datasetLegend.max]
+      : dataset.data.sourceParams?.rescale || [0, 1];
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
 
@@ -155,7 +158,8 @@ export default function DataLayerCard(props: CardProps) {
   const showConfigurableCmap =
     showConfigurableColorMap &&
     dataset.status === 'success' &&
-    datasetLegend?.type === 'gradient' && colorMap;
+    datasetLegend?.type === 'gradient' &&
+    colorMap;
   const showNonConfigurableCmap =
     !showConfigurableColorMap && datasetLegend?.type === 'gradient';
 
@@ -244,8 +248,8 @@ export default function DataLayerCard(props: CardProps) {
               className='colormap-options'
               content={
                 <ColormapOptions
-                  min={min}
-                  max={max}
+                  min={Number(min)}
+                  max={Number(max)}
                   colorMap={colorMap}
                   setColorMap={setColorMap}
                   setColorMapScale={setColorMapScale}
