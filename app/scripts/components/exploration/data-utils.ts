@@ -1,4 +1,5 @@
 import add from 'date-fns/add';
+import closestTo from 'date-fns/closestTo';
 import isBefore from 'date-fns/isBefore';
 import isEqual from 'date-fns/isEqual';
 import startOfDay from 'date-fns/startOfDay';
@@ -173,7 +174,8 @@ function generateDates(start: Date, end: Date, interval: string): Date[] {
 export const isRenderParamsApplicable = (
   datasetType: DatasetLayerType
 ): boolean => {
-  const nonApplicableTypes = ['vector'];
+  // @TODO revisit later for `wms`
+  const nonApplicableTypes = ['vector', 'wms'];
 
   return !nonApplicableTypes.includes(datasetType);
 };
@@ -261,6 +263,36 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   }
 
   return startOfDay(date);
+}
+
+export function getRelevantDate(
+  date: Date,
+  domain: Date[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  timeDensity: TimeDensity
+) {
+  // Return the date that falls into the same year? Or closest one?
+  // Returning the close one now, but then it is weird when timeDensity is set up as year and
+  // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)
+  // but user will see that the timeline head is in the middle of 2020
+  const closestDate = closestTo(date, domain);
+  if (!closestDate) {
+    throw new Error('No closest date found');
+  }
+  return closestDate;
+  // switch (timeDensity) {
+  //   // @FLAG: time_density is flagged in unexpected way ex.esi - day
+  //   case TimeDensity.DAY:
+  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()) && (d.getDate() === date.getDate()));
+  //   case TimeDensity.MONTH:
+  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()));
+  //   case TimeDensity.YEAR:
+  //     return domain.find(d => d.getFullYear() === date.getFullYear());
+  //   default:
+  //     return closestTo(date, domain);
+  // }
+
+  // return closestTo(date, domain);
 }
 
 // Define an order for TimeDensity, where smaller numbers indicate finer granularity
