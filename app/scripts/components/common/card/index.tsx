@@ -200,14 +200,15 @@ export default function CardComponent(
       data.imgSrc &&
       data.imgAlt &&
       data.description &&
-      data.footerContent
+      data.footerContent &&
+      data.title
     ) {
       baseProps['children'] = (
         <FlagCard
           imgSrc={data.imgSrc}
           imgAlt={data.imgAlt}
-          heading={data.title}
-          description={data.description}
+          heading={data.title as string}
+          description={data.description as string}
           footer={data.footerContent}
           cardLabel='data_collection'
         />

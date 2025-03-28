@@ -1,36 +1,25 @@
 import React from 'react';
-import { LabelDisplay, LabelIcon } from './utils';
-import {
-  USWDSCardComponent,
-  USWDSCardBody,
-  USWDSCardFooter,
-  USWDSCardMedia,
-  USWDSIcon,
-  USWDSTag
-} from '$uswds';
+import { FacadeCardProps, CardElement } from './types';
+import BaseCard from './base-card';
+import { USWDSIcon } from '$uswds';
 
-export type TopicCardProps = {
-  id?: string;
-  className?: string;
-  gridLayout?: unknown;
-  mediaUrl?: string;
-  mediaAlt?: string;
+export interface TopicCardProps extends Omit<FacadeCardProps, 'footer'> {
   fullBg?: boolean;
-  description?: string | React.ReactElement;
-  actionLabel?: string;
+  footerTitle?: string;
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
-};
+}
 
 export default function TopicCard(props: TopicCardProps) {
   const {
     id,
     className = '',
     gridLayout,
-    mediaUrl,
-    mediaAlt = '',
+    cardLabel,
+    imgSrc,
+    imgAlt = '',
     fullBg = true,
     description,
-    actionLabel = 'Explore Topic',
+    footerTitle = 'Explore Topic',
     onClick
   } = props;
 
@@ -48,7 +37,7 @@ export default function TopicCard(props: TopicCardProps) {
     .join(' ');
 
   const cardStyle =
-    fullBg && mediaUrl ? { backgroundImage: `url(${mediaUrl})` } : undefined;
+    fullBg && imgSrc ? { backgroundImage: `url(${imgSrc})` } : undefined;
 
   const callToAction = fullBg ? (
     <h2
@@ -57,7 +46,7 @@ export default function TopicCard(props: TopicCardProps) {
         textDecoration: 'none'
       }}
     >
-      {actionLabel}
+      {footerTitle}
       <span className='display-flex flex-align-center flex-justify-center radius-pill bg-primary width-4 height-4 padding-05 margin-left-2'>
         <USWDSIcon.ArrowForward />
       </span>
@@ -69,50 +58,45 @@ export default function TopicCard(props: TopicCardProps) {
         textDecoration: 'none'
       }}
     >
-      {actionLabel}
+      {footerTitle}
       <span className='display-flex flex-align-center flex-justify-center radius-pill text-white bg-primary width-3 height-3 padding-05 margin-left-1'>
         <USWDSIcon.ArrowForward />
       </span>
     </h4>
   );
 
-  return (
-    <USWDSCardComponent
-      id={id}
-      layout={fullBg ? 'default' : 'mediaTop'}
-      gridLayout={gridLayout}
-      className={cardClasses}
-      style={cardStyle}
-      tabindex='0'
-      onClick={onClick}
-    >
-      {!fullBg && mediaUrl && (
-        <USWDSCardMedia className='height-card-md width-full overflow-hidden'>
-          <img
-            src={mediaUrl}
-            alt={mediaAlt}
-            className='width-full height-full object-fit-cover'
-          />
-        </USWDSCardMedia>
-      )}
+  const cardMedia: CardElement = {
+    element: (
+      <img
+        src={imgSrc}
+        alt={imgAlt}
+        className='width-full height-full object-fit-cover'
+      />
+    ),
+    className: 'height-card-md width-full overflow-hidden'
+  };
 
-      <USWDSTag className='position-absolute top-2 left-2 bg-white line-height-sans-2 padding-x-05'>
-        {LabelIcon['topic']}
+  const cardBody: CardElement = {
+    element: <h3 className='font-body-lg margin-y-0'>{description}</h3>,
+    className: 'topic-card__body padding-x-2 padding-y-2'
+  };
 
-        <span className='text-no-uppercase font-ui-3xs font-normal font-sans-3xs text-center text-base-dark margin-left-05 line-height-sans-2'>
-          {LabelDisplay['topic']}
-        </span>
-      </USWDSTag>
+  const cardFooter: CardElement = {
+    element: callToAction,
+    className: 'padding-x-2 padding-bottom-2 padding-top-0 margin-top-auto'
+  };
 
-      {!fullBg && (
-        <USWDSCardBody className='topic-card__body padding-x-2 padding-y-2'>
-          <h3 className='font-body-lg margin-y-0'>{description}</h3>
-        </USWDSCardBody>
-      )}
+  const cardProps = {
+    id: id,
+    layout: fullBg ? 'default' : 'mediaTop',
+    gridLayout: gridLayout,
+    className: cardClasses,
+    cardLabel: cardLabel,
+    style: cardStyle,
+    ...(!fullBg && imgSrc && { media: cardMedia }),
+    ...(!fullBg && { body: cardBody }),
+    footer: cardFooter
+  };
 
-      <USWDSCardFooter className='padding-x-2 padding-bottom-2 padding-top-0 margin-top-auto'>
-        {callToAction}
-      </USWDSCardFooter>
-    </USWDSCardComponent>
-  );
+  return <BaseCard {...cardProps} />;
 }
