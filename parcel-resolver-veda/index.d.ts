@@ -1,3 +1,5 @@
+// import { LayerLegendText } from '$types/veda';
+
 declare module 'veda' {
   import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
@@ -72,7 +74,7 @@ declare module 'veda' {
     basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
     analysis?: {
       metrics: string[];
       exclude: boolean;
