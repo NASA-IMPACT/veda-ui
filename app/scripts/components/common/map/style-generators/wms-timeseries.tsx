@@ -12,8 +12,8 @@ import { ActionStatus } from '$utils/status';
 
 import { userTzDate2utcString } from '$utils/date';
 
-// @NOTE: Some ArcGIS Layers don't have a timestamp
-export interface MapLayerArcProps extends BaseGeneratorParams {
+// @NOTE: Some WMS Layers don't have a timestamp
+export interface MapLayerWMSProps extends BaseGeneratorParams {
   id: string;
   date?: Date;
   stacCol: string;
@@ -154,7 +154,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
   return null;
 }
 
-export function WMSTimeseries(props: MapLayerArcProps) {
+export function WMSTimeseries(props: MapLayerWMSProps) {
   const { id, stacCol, stacApiEndpoint, onStatusChange } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
