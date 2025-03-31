@@ -20,7 +20,8 @@ export default function BaseCard({
   cardLabel,
   style,
   body,
-  className
+  className,
+  isCardFocusable
 }: BaseCardProps) {
   return (
     <USWDSCardComponent
@@ -29,6 +30,7 @@ export default function BaseCard({
       gridLayout={gridLayout}
       style={style}
       className={className}
+      tabIndex={isCardFocusable ? 0 : undefined}
     >
       {header && (
         <USWDSCardHeader className={header.className}>

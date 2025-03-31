@@ -20,6 +20,7 @@ function SandboxUswdsCards() {
             fullBg={true}
             footerTitle='Sea Level Rise'
             cardLabel='topic'
+            isCardFocusable={true}
           />
         </div>
 
@@ -31,6 +32,7 @@ function SandboxUswdsCards() {
             footerTitle='Explore Topic'
             description='Sea Level Rise'
             cardLabel='topic'
+            isCardFocusable={true}
           />
         </div>
       </div>

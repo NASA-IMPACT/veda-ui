@@ -27,4 +27,5 @@ export interface BaseCardProps extends CommonCardProps {
   media?: CardElement;
   body?: CardElement;
   footer: CardElement;
+  isCardFocusable?: boolean;
 }

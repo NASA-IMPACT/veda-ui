@@ -47,8 +47,7 @@ export default function TopicCard(props: TopicCardProps) {
     imgAlt = '',
     fullBg = true,
     description,
-    footerTitle = 'Explore Topic',
-    onClick
+    footerTitle = 'Explore Topic'
   } = props;
 
   const cardClasses = [
@@ -103,7 +102,8 @@ export default function TopicCard(props: TopicCardProps) {
     style: cardStyle,
     ...(!fullBg && imgSrc && { media: cardMedia }),
     ...(!fullBg && { body: cardBody }),
-    footer: cardFooter
+    footer: cardFooter,
+    ...props
   };
 
   return <BaseCard {...cardProps} />;
