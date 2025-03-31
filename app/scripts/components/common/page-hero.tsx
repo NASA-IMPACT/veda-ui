@@ -145,7 +145,7 @@ interface PageHeroProps {
   isHidden?: boolean;
 }
 
-function PageHero(props: PageHeroProps) {
+export function PageHero(props: PageHeroProps) {
   const {
     title,
     description,
@@ -200,7 +200,6 @@ function PageHero(props: PageHeroProps) {
 export default styled(PageHero)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
-
 
 export function PageOverlineDate(props: { date?: Date }) {
   const { date } = props;
