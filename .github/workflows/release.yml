@@ -14,8 +14,6 @@ permissions:
 
 jobs:
   release:
-    # Trigger events regardless of weekindex if it is manually triggered 
-    if: ${{github.event_name == 'workflow_dispatch'}}
     runs-on: ubuntu-latest
     steps:
       - name: Generate a token
