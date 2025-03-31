@@ -2,6 +2,7 @@ import React, { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
 
+import useFitBbox from '../hooks/use-fit-bbox';
 import useGeneratorParams from '../hooks/use-generator-params';
 import useMapStyle from '../hooks/use-map-style';
 import { BaseGeneratorParams } from '../types';
@@ -28,6 +29,7 @@ interface ArcPaintLayerProps extends BaseGeneratorParams {
   date?: Date;
   zoomExtent?: number[];
   wmsUrl: string;
+  bounds: [number, number, number, number];
 }
 
 export function ArcPaintLayer(props: ArcPaintLayerProps) {
@@ -37,6 +39,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
     sourceParams,
     zoomExtent,
     wmsUrl,
+    bounds,
     generatorOrder,
     hidden,
     opacity
@@ -146,6 +149,8 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
     };
   }, [updateStyle, generatorId]);
 
+  useFitBbox(false, undefined, bounds);
+
   return null;
 }
 
@@ -153,7 +158,12 @@ export function WMSTimeseries(props: MapLayerArcProps) {
   const { id, stacCol, stacApiEndpoint, onStatusChange } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-  const wmsUrl = useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange });
+  const { wmsUrl, bounds } = useWMS({
+    id,
+    stacCol,
+    stacApiEndpointToUse,
+    onStatusChange
+  });
 
-  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} />;
+  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} bounds={bounds} />;
 }

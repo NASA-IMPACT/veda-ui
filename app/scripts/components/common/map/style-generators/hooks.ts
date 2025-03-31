@@ -30,8 +30,14 @@ interface Link {
   'wms:layers': string[];
   'wms:styles': string[];
 }
+
 interface WMSResponseData {
   links: Link[];
+  extent: {
+    spatial: {
+      bbox: [number, number, number, number][];
+    };
+  };
 }
 
 export function useZarr({
@@ -149,6 +155,9 @@ export function useCMR({
 
 export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
   const [wmsUrl, setWmsUrl] = useState('');
+  const [bounds, setBounds] = useState<[number, number, number, number]>([
+    -180, -90, 180, 90
+  ]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -161,6 +170,8 @@ export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
           method: 'GET',
           controller
         });
+        const bounds = data.extent.spatial.bbox[0];
+        setBounds(bounds);
         const wms = data.links.find((l) => l.rel === 'wms');
         if (wms) setWmsUrl(wms.href);
         else throw new Error('no wms link');
@@ -181,5 +192,8 @@ export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
     };
   }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
 
-  return wmsUrl;
+  return {
+    wmsUrl,
+    bounds
+  };
 }
