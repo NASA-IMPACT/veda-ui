@@ -242,6 +242,35 @@ layers:
         - rgb(123,203,112)
         - rgb(0,101,91)
         - rgb(0,104, 59)
+  - id: bcb_amphibian_richness_habitat30m
+    stacApiEndpoint: https://dev.openveda.cloud/api/stac
+    stacCol: bcb_amphibian_richness_habitat30m
+    name: amphibian richness habitat
+    type: wms 
+    description: lis_vsm_percentile_10cm
+    sourceParams:
+      layers: 0
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 20
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: -3.0
+      max: 3.0
+      stops:
+        - rgb(231,61,52)
+        - rgb(255,141,90)
+        - rgb(255,212,137)
+        - rgb(255,255,196)
+        - rgb(200,234,140)
+        - rgb(123,203,112)
+        - rgb(0,101,91)
+        - rgb(0,104, 59)
 ---
 <Block>
 <Prose>
