@@ -69,12 +69,15 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
       if (!wmsUrl) return;
 
       const tileParams = qs.stringify({
+        // these are mostly gonna be same for wms layers, but users can override using sourceParams
         format: 'image/png',
         service: 'WMS',
         request: 'GetMap',
-        transparent: 'true', // @TODO: get from sourceparams maybe
+        transparent: 'true',
         width: '256',
         height: '256',
+        version: '1.3.0',
+        crs: 'EPSG:3857',
         ...(date && { date: userTzDate2utcString(date) }),
         ...sourceParams
       });
