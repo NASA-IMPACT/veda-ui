@@ -1,0 +1,22 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+@use 'uswds-core/src/styles/mixins/utilities' as mixins;
+
+.card-a11y-states {
+  text-decoration: none;
+  &:hover {
+    @include mixins.u-shadow(2);
+
+    .usa-card__heading {
+      text-decoration: underline;
+    }
+  }
+
+  &:focus {
+    outline: 4px solid themeVars.$veda-uswds-link-focus-color;
+    outline-offset: 4px;
+
+    .usa-card__heading {
+      text-decoration: underline;
+    }
+  }
+}

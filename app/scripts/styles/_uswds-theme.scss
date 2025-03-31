@@ -19,5 +19,30 @@
   $theme-font-type-serif: 'public-sans',
   $theme-font-type-sans: 'public-sans',
   $theme-color-base-darkest: 'gray-cool-80',
-  $theme-color-base-ink: 'gray-cool-90'
+  $theme-color-base-ink: 'gray-cool-90',
+  $theme-color-primary-vivid: 'blue-40v',
+  $overflow-settings: (
+    responsive: true
+  ),
+  $position-settings: (
+    responsive: true
+  ),
+  $top-settings: (
+    responsive: true
+  ),
+  $right-settings: (
+    responsive: true
+  ),
+  $left-settings: (
+    responsive: true
+  ),
+  $bottom-settings: (
+    responsive: true
+  ),
+  $z-index-settings: (
+    responsive: true
+  ),
+  $background-color-settings: (
+    responsive: true
+  )
 );

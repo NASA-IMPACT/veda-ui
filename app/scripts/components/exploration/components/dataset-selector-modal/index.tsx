@@ -9,11 +9,14 @@ import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
 import { reconcileDatasets } from '$components/exploration/data-utils';
 import { getLayersFromDatasetLayers } from '$utils/data-utils';
-import CatalogContent from '$components/common/catalog/catalog-content-legacy';
+import CatalogContent from '$components/common/catalog/catalog-content';
+import CatalogContentLegacy from '$components/common/catalog/catalog-legacy/catalog-content';
+
 import { useFiltersWithURLAtom } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { FilterActions } from '$components/common/catalog/utils';
 import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 import { DatasetData, DatasetLayer } from '$types/veda';
+import { checkEnvFlag } from '$utils/utils';
 
 const DatasetModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -84,6 +87,10 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     timelineDatasets.map((dataset) => dataset.data.id)
   );
 
+  const isUSWDSDataCatalogEnabled = checkEnvFlag(
+    process.env.ENABLE_USWDS_DATA_CATALOG
+  );
+
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
   const { search: searchTerm, taxonomies, onAction } = useFiltersWithURLAtom();
 
@@ -122,16 +129,29 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       onCloseClick={close}
       renderHeadline={() => <RenderModalHeader />}
       content={
-        <CatalogContent
-          datasets={datasets}
-          search={searchTerm}
-          taxonomies={taxonomies}
-          selectedIds={selectedIds}
-          setSelectedIds={setSelectedIds}
-          onAction={onAction}
-          filterLayers={true}
-          {...(emptyStateContent ? { emptyStateContent } : {})}
-        />
+        isUSWDSDataCatalogEnabled ? (
+          <CatalogContent
+            datasets={datasets}
+            search={searchTerm}
+            taxonomies={taxonomies}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            onAction={onAction}
+            filterLayers={true}
+            {...(emptyStateContent ? { emptyStateContent } : {})}
+          />
+        ) : (
+          <CatalogContentLegacy
+            datasets={datasets}
+            search={searchTerm}
+            taxonomies={taxonomies}
+            selectedIds={selectedIds}
+            setSelectedIds={setSelectedIds}
+            onAction={onAction}
+            filterLayers={true}
+            {...(emptyStateContent ? { emptyStateContent } : {})}
+          />
+        )
       }
       footerContent={
         <ModalFooterRender

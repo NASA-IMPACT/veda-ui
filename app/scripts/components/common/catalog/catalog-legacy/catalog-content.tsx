@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import TextHighlight from '../text-highlight';
-import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import { prepareDatasets } from './prepare-datasets';
-import FiltersControl from './filters-control';
-import { CatalogCard } from './catalog-card';
-import CatalogTagsContainer from './catalog-tags';
+import TextHighlight from '../../text-highlight';
+import { CollecticonDatasetLayers } from '../../icons/dataset-layers';
+import { prepareDatasets } from '../prepare-datasets';
+import { CatalogCard } from '../catalog-card';
+import { FilterActions } from '../utils';
 
-import { FilterActions } from './utils';
+import FiltersControlLegacy from './filters-control';
+
+import CatalogTagsContainerLegacy from './catalog-tags';
+
 import { DatasetData } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';
@@ -22,6 +24,7 @@ import { OptionItem } from '$components/common/form/checkable-filter';
 import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
+import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
@@ -237,7 +240,7 @@ function CatalogContent({
 
   return (
     <Content>
-      <FiltersControl
+      <FiltersControlLegacy
         search={search}
         onAction={onAction}
         taxonomiesOptions={datasetTaxonomies}
@@ -250,7 +253,7 @@ function CatalogContent({
         openByDefault={false}
       />
       <Catalog>
-        <CatalogTagsContainer
+        <CatalogTagsContainerLegacy
           allSelectedFilters={selectedFilters}
           urlTaxonomyItems={urlTaxonomyItems}
           handleClearTag={handleClearTag}
@@ -371,8 +374,10 @@ const Content = styled.div`
   margin-bottom: 8rem;
   position: relative;
   gap: 24px;
+  * {
+    ${legacyGlobalStyleCSSBlock}
+  }
 `;
-
 const Catalog = styled.div`
   width: 100%;
 `;

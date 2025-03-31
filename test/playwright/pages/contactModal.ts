@@ -6,6 +6,9 @@ export default class ContactModal {
 
   constructor(page: Page) {
     this.page = page;
-    this.header = this.page.getByRole("heading", {level: 1, name: /contact us/i });
+    this.header = this.page.getByRole('heading', {
+      level: 1,
+      name: /contact us/i
+    });
   }
 }

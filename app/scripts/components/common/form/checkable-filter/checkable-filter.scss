@@ -1,0 +1,5 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+.usa-accordion__button {
+  height: themeVars.$veda-uswds-spacing-6;
+}

@@ -1,7 +1,11 @@
 @use '$styles/veda-ui-theme-vars.scss' as themeVars;
 
 .usa-card {
-  margin-bottom: 0;
+  margin: 0 !important;
+}
+
+.usa-card__container {
+  margin: 0;
 }
 
 .card-header {
