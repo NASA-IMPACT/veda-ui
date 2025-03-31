@@ -45,7 +45,7 @@ export default function BaseCard({
       )}
 
       {cardLabel && (
-        <div style={{ position: 'absolute', padding: '15px' }}>
+        <div className='position-absolute padding-2'>
           {createCardLabel(cardLabel)}
         </div>
       )}
