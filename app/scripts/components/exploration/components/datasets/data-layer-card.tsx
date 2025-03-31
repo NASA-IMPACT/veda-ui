@@ -161,8 +161,7 @@ export default function DataLayerCard(props: CardProps) {
     datasetLegend?.type === 'gradient' &&
     colorMap;
   const showNonConfigurableCmap =
-    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
-
+    !showConfigurableCmap && datasetLegend?.type === 'gradient';
   return (
     <>
       <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
