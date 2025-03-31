@@ -101,8 +101,7 @@ export function ArcPaintLayer(props: ArcPaintLayerProps) {
         metadata: {
           id,
           layerOrderPosition: 'raster',
-          xyzTileUrl: '',
-          wmtsTileUrl: `${wmsUrl}?${tileParams}`
+          wmsTileUrl: `${wmsUrl}?${tileParams}`
         }
       };
 
