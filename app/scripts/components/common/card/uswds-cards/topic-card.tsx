@@ -9,6 +9,34 @@ export interface TopicCardProps extends Omit<FacadeCardProps, 'footer'> {
   onClick?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }
 
+const FeatureHeader = ({ title }: { title: string }) => (
+  <h2
+    className='font-heading-xl font-body font-weight-bold line-height-1 text-white padding-y-2 padding-x-05 width-full maxw-mobile-lg no-underline display-flex flex-align-center flex-justify-between border-0'
+    style={{
+      textDecoration: 'none'
+    }}
+  >
+    {title}
+    <span className='display-flex flex-align-center flex-justify-center radius-pill bg-primary width-4 height-4 padding-05 margin-left-2'>
+      <USWDSIcon.ArrowForward />
+    </span>
+  </h2>
+);
+
+const CompactHeader = ({ title }: { title: string }) => (
+  <h4
+    className='font-body-sm bg-primary-darkest font-body font-weight-bold font-size-sm line-height-1 padding-x-05 width-full maxw-mobile-lg no-underline display-flex flex-align-center flex-justify-between border-0'
+    style={{
+      textDecoration: 'none'
+    }}
+  >
+    {title}
+    <span className='display-flex flex-align-center flex-justify-center radius-pill text-white bg-primary width-3 height-3 padding-05 margin-left-1'>
+      <USWDSIcon.ArrowForward />
+    </span>
+  </h4>
+);
+
 export default function TopicCard(props: TopicCardProps) {
   const {
     id,
@@ -40,29 +68,9 @@ export default function TopicCard(props: TopicCardProps) {
     fullBg && imgSrc ? { backgroundImage: `url(${imgSrc})` } : undefined;
 
   const callToAction = fullBg ? (
-    <h2
-      className='font-heading-xl font-body font-weight-bold line-height-1 text-white padding-y-2 padding-x-05 width-full maxw-mobile-lg no-underline display-flex flex-align-center flex-justify-between border-0'
-      style={{
-        textDecoration: 'none'
-      }}
-    >
-      {footerTitle}
-      <span className='display-flex flex-align-center flex-justify-center radius-pill bg-primary width-4 height-4 padding-05 margin-left-2'>
-        <USWDSIcon.ArrowForward />
-      </span>
-    </h2>
+    <FeatureHeader title={footerTitle} />
   ) : (
-    <h4
-      className='font-body-sm bg-primary-darkest font-body font-weight-bold font-size-sm line-height-1 padding-x-05 width-full maxw-mobile-lg no-underline display-flex flex-align-center flex-justify-between border-0'
-      style={{
-        textDecoration: 'none'
-      }}
-    >
-      {footerTitle}
-      <span className='display-flex flex-align-center flex-justify-center radius-pill text-white bg-primary width-3 height-3 padding-05 margin-left-1'>
-        <USWDSIcon.ArrowForward />
-      </span>
-    </h4>
+    <CompactHeader title={footerTitle} />
   );
 
   const cardMedia: CardElement = {
