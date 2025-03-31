@@ -222,7 +222,7 @@ export function ColorRangeSlider({
             }}
             className={`thumb ${thumbPosition} z-index-30`}
             style={{
-              zIndex: minVal >= max - 10 * minMaxBuffer ? '500' : '300'
+              zIndex: minVal >= max - 10 * minMaxBuffer ? 500 : 300
             }}
           />
           <input
@@ -243,7 +243,7 @@ export function ColorRangeSlider({
             }}
             className={`thumb ${thumbPosition} z-400`}
             style={{
-              zIndex: minVal <= max - 10 * minMaxBuffer ? '500' : '400'
+              zIndex: minVal <= max - 10 * minMaxBuffer ? 500 : 400
             }}
           />
           <div className='slider width-card position-relative height-3 display-flex flex-align-center'>
