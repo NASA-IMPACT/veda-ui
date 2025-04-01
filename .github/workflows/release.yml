@@ -79,4 +79,4 @@ jobs:
               - type: "section"
                 text:
                   type: "mrkdwn"
-                  text: "Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+                  text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
