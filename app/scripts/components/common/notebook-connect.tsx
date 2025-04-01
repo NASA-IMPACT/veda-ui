@@ -9,8 +9,9 @@ import {
   CollecticonDownload2
 } from '@devseed-ui/collecticons';
 import { Modal } from '@devseed-ui/modal';
-import { DatasetData, datasets } from 'veda';
+import { datasets } from 'veda';
 
+import { DatasetData } from '$types/veda';
 import { HintedError } from '$utils/hinted-error';
 import { variableGlsp } from '$styles/variable-utils';
 
@@ -134,7 +135,11 @@ export function NotebookConnectModal(props: {
           <DatasetUsages>
             {datasetUsagesWithIcon.map((datasetUsage) => (
               <li key={datasetUsage.url}>
-                <DatasetUsageLink href={datasetUsage.url} target='_blank' rel='noopener'>
+                <DatasetUsageLink
+                  href={datasetUsage.url}
+                  target='_blank'
+                  rel='noopener'
+                >
                   {IconByType[datasetUsage.type]}
                   <DatasetUsageLabel>
                     <h4>{datasetUsage.title}</h4>
@@ -240,7 +245,7 @@ function NotebookConnectCalloutSelf(props: NotebookConnectCalloutProps) {
       <NotebookConnectButton
         // compact={false}
         variation='base-outline'
-        dataset={dataset.data}
+        dataset={dataset.data as DatasetData}
       />
     </div>
   );
