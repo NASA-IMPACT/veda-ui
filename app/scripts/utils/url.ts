@@ -1,10 +1,6 @@
 import React from 'react';
 import { LinkProps } from 'react-router-dom';
 
-export function isExternalLink(link: string): boolean {
-  return /^https?:\/\//.test(link) && !link.includes(window.location.hostname);
-}
-
 export const getLinkProps = (
   linkTo: string,
   as?: React.ForwardRefExoticComponent<
@@ -18,10 +14,10 @@ export const getLinkProps = (
     ? {
         href: linkTo,
         to: linkTo,
-        ...{ target: '_blank', rel: 'noopener noreferrer' },
+        ...{ target: '_blank', rel: 'noopener noreferrer' }
       }
     : {
         ...(as ? { as: as } : {}),
-        to: linkTo,
+        to: linkTo
       };
 };
