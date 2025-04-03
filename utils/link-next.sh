@@ -49,6 +49,9 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+echo -e "${GREEN}Cleaning .next cache in next-veda-ui...${NC}"
+rm -rf "$NEXT_DIR/.next"
+
 echo -e "${GREEN}Watching for changes in veda-ui and rebuilding...${NC}"
 cd "$VEDA_UI_DIR"
 ./node_modules/.bin/chokidar "app/scripts/**/*" -c "yarn buildlib" --initial &
