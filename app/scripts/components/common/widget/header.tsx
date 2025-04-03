@@ -48,7 +48,7 @@ const Header = ({
       className='padding-2 display-flex flex-justify space-between flex-align-center'
       data-testid='widget-header'
     >
-      {isExpanded ? <h1>{heading}</h1> : <h6>{heading}</h6>}
+      {isExpanded ? <h1>{heading}</h1> : <h4>{heading}</h4>}
 
       <USWDSButton
         type='button'

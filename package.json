@@ -261,6 +261,7 @@
     "$context": "~/app/scripts/context",
     "$data-layer": "~/app/scripts/data-layer",
     "$uswds": "~/app/scripts/components/common/uswds",
+    "$libs": "~/app/scripts/libs",
     "$test": "~/test",
     "$static": "~/static"
   },
