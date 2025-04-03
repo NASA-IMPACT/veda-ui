@@ -57,7 +57,8 @@ export function useLayerStatus({
   requestsToTrack = []
 }: UseLayersParams) {
   const initialStatuses = {
-    global: S_IDLE as ActionStatus, // Global flag to mark that all layers are loaded
+    // Global flag to track all the requests
+    global: (requestsToTrack.length ? S_IDLE : S_SUCCEEDED) as ActionStatus,
     ...requestsToTrack.reduce(
       (acc, context) => ({
         ...acc,
@@ -72,7 +73,6 @@ export function useLayerStatus({
   const changeStatus = useCallback(
     ({ status, context }: { status: ActionStatus; context: STATUS_KEY }) => {
       statuses.current[context] = status;
-
       const layersToCheck = requestsToTrack.map(
         (context) => statuses.current[context]
       );
