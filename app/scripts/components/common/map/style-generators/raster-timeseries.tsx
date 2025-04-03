@@ -46,20 +46,19 @@ export enum STATUS_KEY {
 interface UseLayersParams {
   id: string;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  layersToTrack: STATUS_KEY[];
+  requestsToTrack: STATUS_KEY[];
 }
 
-// Some layers are consist of more than one layer
-// (ex. markers for low zoom, rasters for high zoom)
-// Check all the layers if they are loaded
+// Some layers require multiple requests to load the layer
+// ex. raster-timeseries require stac (low zoom markers, metadata) & mosaic (for raster data tiling)
 export function useLayerStatus({
   id,
   onStatusChange,
-  layersToTrack = []
+  requestsToTrack = []
 }: UseLayersParams) {
   const initialStatuses = {
     global: S_IDLE as ActionStatus, // Global flag to mark that all layers are loaded
-    ...layersToTrack.reduce(
+    ...requestsToTrack.reduce(
       (acc, context) => ({
         ...acc,
         [context]: S_IDLE
@@ -74,7 +73,7 @@ export function useLayerStatus({
     ({ status, context }: { status: ActionStatus; context: STATUS_KEY }) => {
       statuses.current[context] = status;
 
-      const layersToCheck = layersToTrack.map(
+      const layersToCheck = requestsToTrack.map(
         (context) => statuses.current[context]
       );
 
@@ -96,7 +95,7 @@ export function useLayerStatus({
         onStatusChange?.({ status: newStatus, id });
       }
     },
-    [id, onStatusChange, layersToTrack]
+    [id, onStatusChange, requestsToTrack]
   );
 
   return {
@@ -111,7 +110,10 @@ export function useStacResponse({
   stacCol,
   date,
   stacApiEndpointToUse
-}) {
+}): [
+  StacFeature[],
+  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
+] {
   //
   // Load stac collection features
   //
@@ -145,7 +147,9 @@ export function useStacResponse({
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache<any>({
+        const responseData = await requestQuickCache<{
+          features: StacFeature[];
+        }>({
           url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
@@ -366,6 +370,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   const { updateStyle } = useMapStyle();
 
   const { current: mapInstance } = useMaps();
+  const theme = useTheme();
   const minZoom = zoomExtent?.[0] ?? 0;
   const generatorId = `raster-timeseries-${id}`;
 
@@ -375,7 +380,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   const { changeStatus } = useLayerStatus({
     id,
     onStatusChange,
-    layersToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
+    requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
   const [stacCollection, points] = useStacResponse({
@@ -603,7 +608,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   // FitBounds when needed
   //
   const layerBounds = useMemo(
-    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    () => (stacCollection?.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
   useFitBbox(!!isPositionSet, bounds, layerBounds);
