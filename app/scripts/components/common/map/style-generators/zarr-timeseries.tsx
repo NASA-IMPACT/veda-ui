@@ -32,7 +32,7 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
   const { changeStatus } = useLayerStatus({
     id,
     onStatusChange,
-    layersToTrack: [STATUS_KEY.Layer]
+    requestsToTrack: []
   });
   return (
     <RasterPaintLayer
