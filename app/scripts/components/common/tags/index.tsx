@@ -10,7 +10,7 @@ interface TagsProps {
 export const Tags = ({
   items,
   icon,
-  classNames = 'default-veda-tag text-no-uppercase'
+  classNames = 'default-veda-tag text-no-uppercase margin-bottom-1'
 }: TagsProps) => {
   return (
     <div

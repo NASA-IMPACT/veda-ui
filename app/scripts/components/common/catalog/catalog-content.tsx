@@ -302,7 +302,6 @@ export default function CatalogContent({
           setClearedTagItem={handleClearTag}
           allSelected={selectedFilters}
           exclusiveSourceSelected={exclusiveSourceSelected}
-          openByDefault={false}
           mobileFilterMenu={mobileFilterMenu}
           setMobileFilterMenu={setMobileFilterMenu}
         />
