@@ -1,6 +1,7 @@
-import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
-import eachDayOfInterval from 'date-fns/eachDayOfInterval';
-import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import add from 'date-fns/add';
+import closestTo from 'date-fns/closestTo';
+import isBefore from 'date-fns/isBefore';
+import isEqual from 'date-fns/isEqual';
 import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
@@ -90,7 +91,7 @@ export function resolveLayerTemporalExtent(
   datasetId: string,
   datasetData: StacDatasetData
 ): Date[] {
-  const { domain, isPeriodic, timeDensity } = datasetData;
+  const { domain, isPeriodic, timeInterval } = datasetData;
 
   if (!domain || domain.length === 0) {
     throw new Error(`Invalid domain on dataset [${datasetId}]`);
@@ -98,27 +99,70 @@ export function resolveLayerTemporalExtent(
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
-  switch (timeDensity) {
-    case TimeDensity.YEAR:
-      return eachYearOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.MONTH:
-      return eachMonthOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.DAY:
-      return eachDayOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    default:
-      throw new Error(
-        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
-      );
+  const start = utcString2userTzDate(domain[0]);
+  const end = utcString2userTzDate(domain[domain.length - 1]);
+
+  if (!timeInterval) {
+    throw new Error(
+      `Missing time interval for periodic dataset [${datasetId}]`
+    );
   }
+
+  const intervalDuration = timeInterval.toUpperCase();
+
+  if (intervalDuration.startsWith('P')) {
+    return generateDates(start, end, intervalDuration);
+  } else {
+    throw new Error(
+      `Unsupported time interval [${timeInterval}] on dataset [${datasetId}]`
+    );
+  }
+}
+
+/**
+ * Generates an array of dates between a start and end date based on a specified ISO 8601 duration interval.
+ *
+ * @param start - The starting date of the range.
+ * @param end - The ending date of the range.
+ * @param interval - An ISO 8601 duration string (e.g., "P1Y2M10D" for 1 year, 2 months, and 10 days).
+ * @returns An array of `Date` objects representing the generated dates.
+ * @throws Will throw an error if the provided interval is not a valid ISO 8601 duration string.
+ *
+ * @example
+ * ```typescript
+ * const start = new Date('2023-01-01');
+ * const end = new Date('2023-01-10');
+ * const interval = 'P1D'; // 1 day interval
+ * const dates = generateDates(start, end, interval);
+ * console.log(dates); // [2023-01-01, 2023-01-02, ..., 2023-01-10]
+ * ```
+ */
+function generateDates(start: Date, end: Date, interval: string): Date[] {
+  const match = interval.match(
+    /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+  );
+  if (!match) throw new Error('Invalid ISO duration');
+
+  const [, years, months, weeks, days, hours, minutes, seconds] = match.map(
+    (v) => (v ? parseInt(v) : 0)
+  );
+
+  let currentDate = start;
+  let validDates: Date[] = [];
+
+  while (isBefore(currentDate, end) || isEqual(currentDate, end)) {
+    validDates = [...validDates, currentDate];
+    currentDate = add(currentDate, {
+      years,
+      months,
+      weeks,
+      days,
+      hours,
+      minutes,
+      seconds
+    });
+  }
+  return validDates;
 }
 
 /**
@@ -130,7 +174,8 @@ export function resolveLayerTemporalExtent(
 export const isRenderParamsApplicable = (
   datasetType: DatasetLayerType
 ): boolean => {
-  const nonApplicableTypes = ['vector'];
+  // @TODO revisit later for `wms`
+  const nonApplicableTypes = ['vector', 'wms'];
 
   return !nonApplicableTypes.includes(datasetType);
 };
@@ -218,6 +263,36 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   }
 
   return startOfDay(date);
+}
+
+export function getRelevantDate(
+  date: Date,
+  domain: Date[],
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  timeDensity: TimeDensity
+) {
+  // Return the date that falls into the same year? Or closest one?
+  // Returning the close one now, but then it is weird when timeDensity is set up as year and
+  // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)
+  // but user will see that the timeline head is in the middle of 2020
+  const closestDate = closestTo(date, domain);
+  if (!closestDate) {
+    throw new Error('No closest date found');
+  }
+  return closestDate;
+  // switch (timeDensity) {
+  //   // @FLAG: time_density is flagged in unexpected way ex.esi - day
+  //   case TimeDensity.DAY:
+  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()) && (d.getDate() === date.getDate()));
+  //   case TimeDensity.MONTH:
+  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()));
+  //   case TimeDensity.YEAR:
+  //     return domain.find(d => d.getFullYear() === date.getFullYear());
+  //   default:
+  //     return closestTo(date, domain);
+  // }
+
+  // return closestTo(date, domain);
 }
 
 // Define an order for TimeDensity, where smaller numbers indicate finer granularity
