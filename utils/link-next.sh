@@ -34,8 +34,16 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
+echo -e "${GREEN}Cleaning previous links (if any)...${NC}"
+cd "$VEDA_UI_DIR"
+yarn unlink || true
+cd "$NEXT_DIR"
+yarn unlink @teamimpact/veda-ui || true
+
 echo -e "${GREEN}Running yarn link in veda-ui...${NC}"
+cd "$VEDA_UI_DIR"
 yarn link
+
 if [ $? -ne 0 ]; then
   echo -e "${RED}yarn link failed in veda-ui${NC}"
   exit 1
@@ -58,8 +66,8 @@ cd "$VEDA_UI_DIR"
 WATCH_PID=$!
 
 echo -e "${GREEN}Link setup complete. Verifying...${NC}"
-NODE_SCRIPT="require.resolve('@teamimpact/veda-ui')"
-if node -e "$NODE_SCRIPT"; then
+cd "$NEXT_DIR"
+if node -e "require.resolve('@teamimpact/veda-ui')" > /dev/null 2>&1; then
   echo -e "${GREEN}Link verified successfully${NC}"
 else
   echo -e "${RED}Link verification failed. Please check manually${NC}"
