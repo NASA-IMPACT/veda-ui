@@ -1,6 +1,6 @@
-import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
-import eachDayOfInterval from 'date-fns/eachDayOfInterval';
-import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import add from 'date-fns/add';
+import isBefore from 'date-fns/isBefore';
+import isEqual from 'date-fns/isEqual';
 import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
@@ -90,7 +90,7 @@ export function resolveLayerTemporalExtent(
   datasetId: string,
   datasetData: StacDatasetData
 ): Date[] {
-  const { domain, isPeriodic, timeDensity } = datasetData;
+  const { domain, isPeriodic, timeInterval } = datasetData;
 
   if (!domain || domain.length === 0) {
     throw new Error(`Invalid domain on dataset [${datasetId}]`);
@@ -98,27 +98,70 @@ export function resolveLayerTemporalExtent(
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
-  switch (timeDensity) {
-    case TimeDensity.YEAR:
-      return eachYearOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.MONTH:
-      return eachMonthOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.DAY:
-      return eachDayOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    default:
-      throw new Error(
-        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
-      );
+  const start = utcString2userTzDate(domain[0]);
+  const end = utcString2userTzDate(domain[domain.length - 1]);
+
+  if (!timeInterval) {
+    throw new Error(
+      `Missing time interval for periodic dataset [${datasetId}]`
+    );
   }
+
+  const intervalDuration = timeInterval.toUpperCase();
+
+  if (intervalDuration.startsWith('P')) {
+    return generateDates(start, end, intervalDuration);
+  } else {
+    throw new Error(
+      `Unsupported time interval [${timeInterval}] on dataset [${datasetId}]`
+    );
+  }
+}
+
+/**
+ * Generates an array of dates between a start and end date based on a specified ISO 8601 duration interval.
+ *
+ * @param start - The starting date of the range.
+ * @param end - The ending date of the range.
+ * @param interval - An ISO 8601 duration string (e.g., "P1Y2M10D" for 1 year, 2 months, and 10 days).
+ * @returns An array of `Date` objects representing the generated dates.
+ * @throws Will throw an error if the provided interval is not a valid ISO 8601 duration string.
+ *
+ * @example
+ * ```typescript
+ * const start = new Date('2023-01-01');
+ * const end = new Date('2023-01-10');
+ * const interval = 'P1D'; // 1 day interval
+ * const dates = generateDates(start, end, interval);
+ * console.log(dates); // [2023-01-01, 2023-01-02, ..., 2023-01-10]
+ * ```
+ */
+function generateDates(start: Date, end: Date, interval: string): Date[] {
+  const match = interval.match(
+    /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+  );
+  if (!match) throw new Error('Invalid ISO duration');
+
+  const [, years, months, weeks, days, hours, minutes, seconds] = match.map(
+    (v) => (v ? parseInt(v) : 0)
+  );
+
+  let currentDate = start;
+  let validDates: Date[] = [];
+
+  while (isBefore(currentDate, end) || isEqual(currentDate, end)) {
+    validDates = [...validDates, currentDate];
+    currentDate = add(currentDate, {
+      years,
+      months,
+      weeks,
+      days,
+      hours,
+      minutes,
+      seconds
+    });
+  }
+  return validDates;
 }
 
 /**
