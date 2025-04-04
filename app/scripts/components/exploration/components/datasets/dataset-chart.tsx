@@ -114,7 +114,7 @@ export function DatasetChart(props: DatasetChartProps) {
         </g>
         <g transform={`translate(0, ${CHART_MARGIN})`}>
           <AxisGrid
-            yLabel={dataset.data.legend?.unit?.label}
+            yLabel={dataset.data.legend?.type !== 'text' ? dataset.data.legend?.unit?.label : undefined}
             y={y}
             width={width}
             height={height}

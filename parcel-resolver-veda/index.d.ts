@@ -1,3 +1,5 @@
+// import { LayerLegendText } from '$types/veda';
+
 declare module 'veda' {
   import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
@@ -40,7 +42,7 @@ declare module 'veda' {
     type: DatasetLayerType;
     name: string;
     description: string;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
   }
 
   export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
@@ -72,7 +74,7 @@ declare module 'veda' {
     basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
     analysis?: {
       metrics: string[];
       exclude: boolean;
@@ -104,7 +106,7 @@ declare module 'veda' {
     time_density?: 'day' | 'month' | 'year';
     stacCol: string;
     type: DatasetLayerType;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
   }
 
   // export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
@@ -144,6 +146,10 @@ declare module 'veda' {
     type: 'categorical';
     unit?: LayerLegendUnit;
     stops: CategoricalStop[];
+  }
+
+  export interface LayerLegendText {
+    type: 'text';
   }
 
   /**
