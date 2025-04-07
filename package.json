@@ -33,7 +33,9 @@
     "pretest:e2e": "node test/playwright/generateTestData.js",
     "test:e2e": "yarn playwright test",
     "release": "release-it --",
-    "watch:buildlib": "chokidar \"app/scripts/**/*\" -c \"yarn buildlib\" --initial"
+    "watch:buildlib": "chokidar \"app/scripts/**/*\" -c \"yarn buildlib\" --initial",
+    "core:install": "cd core && yarn install",
+    "core:storybook": "cd core && yarn run storybook"
   },
   "targets": {
     "veda-app": {
