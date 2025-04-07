@@ -3,7 +3,7 @@ import React from 'react';
 import { BaseTimeseriesProps } from '../types';
 import { useZarr } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
-import { useLayerStatus, STATUS_KEY } from './raster-timeseries';
+import { useLayerStatus } from './raster-timeseries';
 
 export function ZarrTimeseries(props: BaseTimeseriesProps) {
   const {
