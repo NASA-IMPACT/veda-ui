@@ -102,7 +102,7 @@
         "@typescript-eslint/no-invalid-void-type": "warn",
         "@typescript-eslint/no-non-null-assertion": "warn",
         "@typescript-eslint/no-unused-expressions": "warn",
-        "@typescript-eslint/no-unused-vars": "warn"
+        "@typescript-eslint/no-unused-vars": "error"
       },
       // Weird behavior with no-unused-vars
       // See https://stackoverflow.com/a/58513127
