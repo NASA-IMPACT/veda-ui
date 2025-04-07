@@ -37,99 +37,83 @@ import {
 // Whether or not to print the request logs.
 const LOG = true;
 
-enum STATUS_KEY {
+export enum STATUS_KEY {
   Global,
   Layer,
   StacSearch
 }
 
-interface Statuses {
-  [STATUS_KEY.Global]: ActionStatus;
-  [STATUS_KEY.Layer]: ActionStatus;
-  [STATUS_KEY.StacSearch]: ActionStatus;
+interface UseLayersParams {
+  id: string;
+  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  requestsToTrack: STATUS_KEY[];
 }
 
-export function RasterTimeseries(props: RasterTimeseriesProps) {
-  const {
-    id,
-    stacCol,
-    date,
-    sourceParams,
-    zoomExtent,
-    bounds,
-    onStatusChange,
-    isPositionSet,
-    hidden,
-    opacity,
-    stacApiEndpoint,
-    tileApiEndpoint,
-    colorMap,
-    reScale,
-    envApiStacEndpoint,
-    envApiRasterEndpoint
-  } = props;
+// Some layers require multiple requests to load the layer
+// ex. raster-timeseries require stac (low zoom markers, metadata) & mosaic (for raster data tiling)
+export function useLayerStatus({
+  id,
+  onStatusChange,
+  requestsToTrack = []
+}: UseLayersParams) {
+  const initialStatuses = {
+    // Global flag to track all the requests
+    global: (requestsToTrack.length ? S_IDLE : S_SUCCEEDED) as ActionStatus,
+    ...requestsToTrack.reduce(
+      (acc, context) => ({
+        ...acc,
+        [context]: S_IDLE
+      }),
+      {}
+    )
+  };
 
-  const { current: mapInstance } = useMaps();
-
-  const theme = useTheme();
-  const { updateStyle } = useMapStyle();
-
-  const minZoom = zoomExtent?.[0] ?? 0;
-  const generatorId = `raster-timeseries-${id}`;
-
-  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
-  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
-
-  // Status tracking.
-  // A raster timeseries layer has a base layer and may have markers.
-  // The status is succeeded only if all requests succeed.
-  const statuses = useRef<Statuses>({
-    [STATUS_KEY.Global]: S_IDLE,
-    [STATUS_KEY.Layer]: S_IDLE,
-    [STATUS_KEY.StacSearch]: S_IDLE
-  });
+  const statuses = useRef(initialStatuses);
 
   const changeStatus = useCallback(
-    ({
-      status,
-      context
-    }: {
-      status: ActionStatus;
-      context: STATUS_KEY.StacSearch | STATUS_KEY.Layer;
-    }) => {
-      // Set the new status
+    ({ status, context }: { status: ActionStatus; context: STATUS_KEY }) => {
       statuses.current[context] = status;
+      const layersToCheck = requestsToTrack.map(
+        (context) => statuses.current[context]
+      );
 
-      const layersToCheck = [
-        statuses.current[STATUS_KEY.StacSearch],
-        statuses.current[STATUS_KEY.Layer]
-      ];
-
-      let newStatus = statuses.current[STATUS_KEY.Global];
-      // All must succeed to be considered successful.
+      let newStatus = statuses.current.global;
+      // All layers must succeed to be considered successful.
       if (layersToCheck.every((s) => s === S_SUCCEEDED)) {
         newStatus = S_SUCCEEDED;
-
-        // One failed status is enough for all.
-        // Failed takes priority over loading.
       } else if (layersToCheck.some((s) => s === S_FAILED)) {
         newStatus = S_FAILED;
-        // One loading status is enough for all.
       } else if (layersToCheck.some((s) => s === S_LOADING)) {
         newStatus = S_LOADING;
       } else if (layersToCheck.some((s) => s === S_IDLE)) {
         newStatus = S_IDLE;
       }
 
-      // Only emit on status change.
+      // Only emit when layers statuses change
       if (newStatus !== statuses.current[STATUS_KEY.Global]) {
         statuses.current[STATUS_KEY.Global] = newStatus;
         onStatusChange?.({ status: newStatus, id });
       }
     },
-    [id, onStatusChange]
+    [id, onStatusChange, requestsToTrack]
   );
 
+  return {
+    changeStatus,
+    statuses: statuses.current
+  };
+}
+
+export function useStacResponse({
+  id,
+  changeStatus,
+  stacCol,
+  date,
+  stacApiEndpointToUse
+}): [
+  StacFeature[],
+  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
+] {
   //
   // Load stac collection features
   //
@@ -163,7 +147,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         LOG && console.groupEnd();
         /* eslint-enable no-console */
 
-        const responseData = await requestQuickCache<any>({
+        const responseData = await requestQuickCache<{
+          features: StacFeature[];
+        }>({
           url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
@@ -226,6 +212,18 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     return points;
   }, [stacCollection]);
 
+  return [stacCollection, points];
+}
+
+function useMosaicUrl({
+  id,
+  stacCol,
+  date,
+  colorMap,
+  stacCollection,
+  changeStatus,
+  tileApiEndpointToUse
+}) {
   //
   // Tiles
   //
@@ -346,6 +344,62 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     // resulted in a race condition when adding the source to the map leading to
     // an error.
   ]);
+  return [mosaicUrl];
+}
+
+export function RasterTimeseries(props: RasterTimeseriesProps) {
+  const {
+    id,
+    stacCol,
+    date,
+    sourceParams,
+    zoomExtent,
+    bounds,
+    onStatusChange,
+    isPositionSet,
+    hidden,
+    opacity,
+    stacApiEndpoint,
+    tileApiEndpoint,
+    colorMap,
+    reScale,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  } = props;
+
+  const { updateStyle } = useMapStyle();
+
+  const { current: mapInstance } = useMaps();
+  const theme = useTheme();
+  const minZoom = zoomExtent?.[0] ?? 0;
+  const generatorId = `raster-timeseries-${id}`;
+
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
+  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
+
+  const { changeStatus } = useLayerStatus({
+    id,
+    onStatusChange,
+    requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
+  });
+
+  const [stacCollection, points] = useStacResponse({
+    id,
+    changeStatus,
+    stacCol,
+    date,
+    stacApiEndpointToUse
+  });
+
+  const [mosaicUrl] = useMosaicUrl({
+    id,
+    stacCol,
+    date,
+    colorMap,
+    stacCollection,
+    changeStatus,
+    tileApiEndpointToUse
+  });
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -554,7 +608,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   // FitBounds when needed
   //
   const layerBounds = useMemo(
-    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    () => (stacCollection?.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
   useFitBbox(!!isPositionSet, bounds, layerBounds);
