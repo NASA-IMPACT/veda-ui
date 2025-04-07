@@ -1,6 +1,6 @@
-import React from "react";
-import { Menu} from "@trussworks/react-uswds";
+import React from 'react';
+import { Menu } from '@trussworks/react-uswds';
 
-export function USWDSMenu (props) {
+export function USWDSMenu(props) {
   return <Menu {...props} />;
 }

@@ -1,6 +1,6 @@
-import React from "react";
-import { NavDropDownButton} from "@trussworks/react-uswds";
+import React from 'react';
+import { NavDropDownButton } from '@trussworks/react-uswds';
 
-export function USWDSNavDropDownButton (props) {
+export function USWDSNavDropDownButton(props) {
   return <NavDropDownButton {...props} />;
 }
