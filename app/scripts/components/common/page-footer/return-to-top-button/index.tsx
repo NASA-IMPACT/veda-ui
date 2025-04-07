@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { USWDSButton } from '$components/common/uswds';
+import { USWDSButton } from '$uswds';
 
 export default function ReturnToTopButton() {
   const [clicked, setClicked] = useState(false);

@@ -3,11 +3,7 @@ import { Icon } from '@trussworks/react-uswds';
 import { NavItem } from '../page-header/types';
 import { createDynamicNavMenuList } from '../page-header/nav/create-dynamic-nav-menu-list';
 import ReturnToTopButton from './return-to-top-button';
-import {
-  USWDSFooter,
-  USWDSFooterNav,
-  USWDSAddress
-} from '$components/common/uswds';
+import { USWDSFooter, USWDSFooterNav, USWDSAddress } from '$uswds';
 
 interface PageFooterProps {
   mainNavItems: NavItem[];

@@ -2,8 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Icon } from '@trussworks/react-uswds';
-import { USWDSTag } from '../uswds';
-import { USWDSButton } from '../uswds';
+import { USWDSButton, USWDSTag } from '$uswds';
 import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
 

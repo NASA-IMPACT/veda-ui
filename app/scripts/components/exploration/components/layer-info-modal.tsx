@@ -14,7 +14,7 @@ import { LayerInfo, ParentDatset } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 import { useVedaUI } from '$context/veda-ui-provider';
-import { USWDSButton } from '$components/common/uswds/button';
+import { USWDSButton } from '$uswds';
 
 const StyledModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
