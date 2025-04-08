@@ -1,17 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import qs from 'qs';
 import {
   LayerSpecification,
   SourceSpecification,
-  GeoJSONSourceSpecification,
   LngLatBoundsLike,
   RasterLayerSpecification,
-  RasterSourceSpecification,
-  SymbolLayerSpecification
+  RasterSourceSpecification
 } from 'mapbox-gl';
 import { useTheme } from 'styled-components';
-import { featureCollection, point } from '@turf/helpers';
 import { RasterTimeseriesProps, StacFeature } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import {
@@ -21,10 +24,10 @@ import {
   requestQuickCache
 } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
-import useLayerInteraction from '../hooks/use-layer-interaction';
-import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
 import useGeneratorParams from '../hooks/use-generator-params';
+
+import PointsLayer from './points-layer';
 
 import {
   ActionStatus,
@@ -502,40 +505,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         }
       }
 
-      if (points && minZoom > 0) {
-        const pointsSourceId = `${id}-points`;
-        const pointsSource: GeoJSONSourceSpecification = {
-          type: 'geojson',
-          data: featureCollection(
-            points.map((p) => point(p.center, { bounds: p.bounds }))
-          )
-        };
-
-        const pointsLayer: SymbolLayerSpecification = {
-          type: 'symbol',
-          id: pointsSourceId,
-          source: pointsSourceId,
-          layout: {
-            ...(MARKER_LAYOUT as any),
-            'icon-allow-overlap': true
-          },
-          paint: {
-            'icon-color': theme.color?.primary,
-            'icon-halo-color': theme.color?.base,
-            'icon-halo-width': 1
-          },
-          maxzoom: minZoom,
-          metadata: {
-            layerOrderPosition: 'markers'
-          }
-        };
-        sources = {
-          ...sources,
-          [pointsSourceId]: pointsSource as SourceSpecification
-        };
-        layers = [...layers, pointsLayer];
-      }
-
       updateStyle({
         generatorId,
         sources,
@@ -599,10 +568,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     },
     [mapInstance]
   );
-  useLayerInteraction({
-    layerId: `${id}-points`,
-    onClick: onPointsClick
-  });
 
   //
   // FitBounds when needed
@@ -613,5 +578,12 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   );
   useFitBbox(!!isPositionSet, bounds, layerBounds);
 
-  return null;
+  return (
+    <PointsLayer
+      id={id}
+      points={points}
+      zoomExtent={zoomExtent}
+      onPointsClick={onPointsClick}
+    />
+  );
 }
