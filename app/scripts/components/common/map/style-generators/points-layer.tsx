@@ -38,7 +38,6 @@ export default function PointsLayer(props: PointsLayerProps) {
   useEffect(() => {
     let layers: LayerSpecification[] = [];
     let sources: Record<string, SourceSpecification> = {};
-
     const pointsSourceId = `${id}-points`;
     if (points && minZoom > 0) {
       const pointsSource: GeoJSONSourceSpecification = {
