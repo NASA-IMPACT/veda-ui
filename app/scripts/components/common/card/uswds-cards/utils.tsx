@@ -5,7 +5,7 @@ import { Tags } from '$components/common/tags';
 export const createCardLabel = (type: LabelType): JSX.Element => {
   const item = mapper[type];
 
-  return <Tags icon={item.svg} items={[item.title]} />;
+  return <Tags icon={item.svg} items={[item.title]} cardLabel={true} />;
 };
 
 export const Label: Record<Capitalize<LabelType>, LabelType> = {
