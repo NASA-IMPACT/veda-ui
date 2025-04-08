@@ -4,7 +4,7 @@ import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
 import { BaseTimeseriesProps } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
-import { useRequestStatus } from './raster-timeseries';
+import { useRequestStatus } from './hooks';
 import { userTzDate2utcString } from '$utils/date';
 
 export function CMRTimeseries(props: BaseTimeseriesProps) {

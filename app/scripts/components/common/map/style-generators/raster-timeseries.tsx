@@ -1,11 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import qs from 'qs';
 import {
   LayerSpecification,
@@ -27,84 +21,11 @@ import useMaps from '../hooks/use-maps';
 import useGeneratorParams from '../hooks/use-generator-params';
 
 import PointsLayer from './points-layer';
-
-import {
-  ActionStatus,
-  S_FAILED,
-  S_IDLE,
-  S_LOADING,
-  S_SUCCEEDED
-} from '$utils/status';
+import { useRequestStatus, STATUS_KEY } from './hooks';
+import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
 const LOG = true;
-
-export enum STATUS_KEY {
-  Global,
-  Layer,
-  StacSearch
-}
-
-interface UseRequestStatusParams {
-  id: string;
-  onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
-  requestsToTrack: STATUS_KEY[];
-}
-
-// Some layers require multiple requests to load the layer
-// ex. raster-timeseries require stac (low zoom markers, metadata) & mosaic (for raster data tiling)
-export function useRequestStatus({
-  id,
-  onStatusChange,
-  requestsToTrack = []
-}: UseRequestStatusParams) {
-  const initialStatuses = {
-    // Global flag to track all the requests
-    global: (requestsToTrack.length ? S_IDLE : S_SUCCEEDED) as ActionStatus,
-    ...requestsToTrack.reduce(
-      (acc, context) => ({
-        ...acc,
-        [context]: S_IDLE
-      }),
-      {}
-    )
-  };
-
-  const statuses = useRef(initialStatuses);
-
-  const changeStatus = useCallback(
-    ({ status, context }: { status: ActionStatus; context: STATUS_KEY }) => {
-      statuses.current[context] = status;
-      const layersToCheck = requestsToTrack.map(
-        (context) => statuses.current[context]
-      );
-
-      let newStatus = statuses.current.global;
-      // All layers must succeed to be considered successful.
-      if (layersToCheck.every((s) => s === S_SUCCEEDED)) {
-        newStatus = S_SUCCEEDED;
-      } else if (layersToCheck.some((s) => s === S_FAILED)) {
-        newStatus = S_FAILED;
-      } else if (layersToCheck.some((s) => s === S_LOADING)) {
-        newStatus = S_LOADING;
-      } else if (layersToCheck.some((s) => s === S_IDLE)) {
-        newStatus = S_IDLE;
-      }
-
-      // Only emit when layers statuses change
-      if (newStatus !== statuses.current[STATUS_KEY.Global]) {
-        statuses.current[STATUS_KEY.Global] = newStatus;
-        onStatusChange?.({ status: newStatus, id });
-      }
-    },
-    [id, onStatusChange, requestsToTrack]
-  );
-
-  return {
-    changeStatus,
-    statuses: statuses.current
-  };
-}
 
 export function useStacResponse({
   id,
