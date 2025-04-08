@@ -6,12 +6,18 @@ interface TagsProps {
   items: string[];
   icon?: JSX.Element;
   classNames?: string;
+  cardLabel?: boolean;
 }
 export const Tags = ({
   items,
   icon,
-  classNames = 'default-veda-tag text-no-uppercase margin-bottom-1'
+  classNames,
+  cardLabel = false
 }: TagsProps) => {
+  const defaultClassNames = cardLabel
+    ? 'card-type-label text-no-uppercase margin-bottom-1 radius-sm'
+    : 'veda-tag-labels text-no-uppercase margin-bottom-1 radius-sm';
+
   return (
     <div
       style={{
@@ -20,11 +26,11 @@ export const Tags = ({
       }}
     >
       {items.map((t) => (
-        <USWDSTag key={t} className={classNames}>
+        <USWDSTag key={t} className={classNames ?? defaultClassNames}>
           {icon ? (
             <div
               style={{ display: 'flex', alignItems: 'center' }}
-              className='label-tag'
+              className='card-type-inner-content'
             >
               {icon}
               <p>{t}</p>
