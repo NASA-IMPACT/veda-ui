@@ -1,5 +1,3 @@
-// import { LayerLegendText } from '$types/veda';
-
 declare module 'veda' {
   import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
