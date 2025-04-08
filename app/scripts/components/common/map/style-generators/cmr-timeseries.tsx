@@ -4,7 +4,7 @@ import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
 import { BaseTimeseriesProps } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
-import { useLayerStatus } from './raster-timeseries';
+import { useRequestStatus } from './raster-timeseries';
 import { userTzDate2utcString } from '$utils/date';
 
 export function CMRTimeseries(props: BaseTimeseriesProps) {
@@ -16,7 +16,7 @@ export function CMRTimeseries(props: BaseTimeseriesProps) {
     ...sourceParams
   };
 
-  const { changeStatus } = useLayerStatus({
+  const { changeStatus } = useRequestStatus({
     id,
     onStatusChange,
     requestsToTrack: []

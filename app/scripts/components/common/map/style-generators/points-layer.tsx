@@ -24,7 +24,7 @@ export default function PointsLayer(props: PointsLayerProps) {
   const { id, points, zoomExtent, onPointsClick } = props;
 
   const generatorParams = useGeneratorParams({
-    generatorOrder: 1000000,
+    generatorOrder: 1000000, // on top of any  layers
     hidden: false,
     opacity: 1
   });
@@ -38,6 +38,7 @@ export default function PointsLayer(props: PointsLayerProps) {
   useEffect(() => {
     let layers: LayerSpecification[] = [];
     let sources: Record<string, SourceSpecification> = {};
+
     const pointsSourceId = `${id}-points`;
     if (points && minZoom > 0) {
       const pointsSource: GeoJSONSourceSpecification = {
@@ -77,11 +78,10 @@ export default function PointsLayer(props: PointsLayerProps) {
       layers,
       params: generatorParams
     });
-  }, [points, minZoom, generatorParams]);
-
-  //
-  // Listen to mouse events on the markers layer
-  //
+    // generator params is byproduct of id
+    // the other dependencies are unlikely to change
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, points, minZoom, generatorParams]);
 
   useLayerInteraction({
     layerId: `${id}-points`,
