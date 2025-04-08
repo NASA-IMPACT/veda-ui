@@ -502,11 +502,13 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   useFitBbox(!!isPositionSet, bounds, layerBounds);
 
   return (
-    <PointsLayer
-      id={id}
-      points={points}
-      zoomExtent={zoomExtent}
-      onPointsClick={onPointsClick}
-    />
+    points && (
+      <PointsLayer
+        id={id}
+        points={points}
+        zoomExtent={zoomExtent}
+        onPointsClick={onPointsClick}
+      />
+    )
   );
 }
