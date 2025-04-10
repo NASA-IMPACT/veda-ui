@@ -154,10 +154,10 @@ export function useCMR({
 }
 
 export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
+  const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
   const [wmsUrl, setWmsUrl] = useState('');
-  const [bounds, setBounds] = useState<[number, number, number, number]>([
-    -180, -90, 180, 90
-  ]);
+  const [bounds, setBounds] =
+    useState<[number, number, number, number]>(defaultBounds);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -179,6 +179,7 @@ export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
       } catch (error) {
         if (!controller.signal.aborted) {
           setWmsUrl('');
+          setBounds(defaultBounds);
           onStatusChange?.({ status: S_FAILED, id });
         }
         return;
