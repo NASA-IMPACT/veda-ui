@@ -301,7 +301,6 @@ export default function CatalogContent({
           setClearedTagItem={handleClearTag}
           allSelected={selectedFilters}
           exclusiveSourceSelected={exclusiveSourceSelected}
-          openByDefault={false}
           mobileFilterMenu={mobileFilterMenu}
           setMobileFilterMenu={setMobileFilterMenu}
         />
@@ -309,7 +308,7 @@ export default function CatalogContent({
       <div className='tablet:grid-col-9'>
         <Catalog>
           <div
-            id='veda__modile-catalog'
+            id='veda__mobile-catalog'
             className='padding-2 margin-y-2 padding-y-4 margin-x-neg-2 tablet:margin-0 tablet:padding-0 bg-base-lightest tablet:bg-white'
           >
             <div className='tablet:display-none display-flex margin-bottom-2 flex-justify flex-align-center'>
@@ -321,11 +320,11 @@ export default function CatalogContent({
               </p>
               <USWDSButton
                 size='small'
-                className='maxw-card padding-x-1 padding-y-1 font-sans-3xs'
+                className='maxw-card padding-x-105 padding-y-1 font-sans-3xs'
                 onClick={() => setMobileFilterMenu(!mobileFilterMenu)}
               >
                 Search and Filter
-                <Icon.Search />
+                <Icon.Search className='height-2 width-2' />
               </USWDSButton>
             </div>
             <CatalogTagsContainer

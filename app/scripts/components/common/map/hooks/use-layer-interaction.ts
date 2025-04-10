@@ -4,7 +4,7 @@ import useMaps from './use-maps';
 
 interface LayerInteractionHookOptions {
   layerId: string;
-  onClick: (features: Feature<any>[]) => void;
+  onClick?: (features: Feature<any>[]) => void;
 }
 export default function useLayerInteraction({
   layerId,
@@ -12,7 +12,7 @@ export default function useLayerInteraction({
 }: LayerInteractionHookOptions) {
   const { current: mapInstance } = useMaps();
   useEffect(() => {
-    if (!mapInstance) return;
+    if (!mapInstance || !onClick) return;
     const onPointsClick = (e) => {
       if (!e.features.length) return;
       onClick(e.features);

@@ -1,17 +1,13 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import qs from 'qs';
 import {
   LayerSpecification,
   SourceSpecification,
-  GeoJSONSourceSpecification,
   LngLatBoundsLike,
   RasterLayerSpecification,
-  RasterSourceSpecification,
-  SymbolLayerSpecification
+  RasterSourceSpecification
 } from 'mapbox-gl';
-import { useTheme } from 'styled-components';
-import { featureCollection, point } from '@turf/helpers';
 import { RasterTimeseriesProps, StacFeature } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import {
@@ -21,115 +17,26 @@ import {
   requestQuickCache
 } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
-import useLayerInteraction from '../hooks/use-layer-interaction';
-import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
 import useGeneratorParams from '../hooks/use-generator-params';
 
-import {
-  ActionStatus,
-  S_FAILED,
-  S_IDLE,
-  S_LOADING,
-  S_SUCCEEDED
-} from '$utils/status';
+import PointsLayer from './points-layer';
+import { useRequestStatus, STATUS_KEY } from './hooks';
+import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
 const LOG = true;
 
-enum STATUS_KEY {
-  Global,
-  Layer,
-  StacSearch
-}
-
-interface Statuses {
-  [STATUS_KEY.Global]: ActionStatus;
-  [STATUS_KEY.Layer]: ActionStatus;
-  [STATUS_KEY.StacSearch]: ActionStatus;
-}
-
-export function RasterTimeseries(props: RasterTimeseriesProps) {
-  const {
-    id,
-    stacCol,
-    date,
-    sourceParams,
-    zoomExtent,
-    bounds,
-    onStatusChange,
-    isPositionSet,
-    hidden,
-    opacity,
-    stacApiEndpoint,
-    tileApiEndpoint,
-    colorMap,
-    reScale,
-    envApiStacEndpoint,
-    envApiRasterEndpoint
-  } = props;
-
-  const { current: mapInstance } = useMaps();
-
-  const theme = useTheme();
-  const { updateStyle } = useMapStyle();
-
-  const minZoom = zoomExtent?.[0] ?? 0;
-  const generatorId = `raster-timeseries-${id}`;
-
-  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
-  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
-
-  // Status tracking.
-  // A raster timeseries layer has a base layer and may have markers.
-  // The status is succeeded only if all requests succeed.
-  const statuses = useRef<Statuses>({
-    [STATUS_KEY.Global]: S_IDLE,
-    [STATUS_KEY.Layer]: S_IDLE,
-    [STATUS_KEY.StacSearch]: S_IDLE
-  });
-
-  const changeStatus = useCallback(
-    ({
-      status,
-      context
-    }: {
-      status: ActionStatus;
-      context: STATUS_KEY.StacSearch | STATUS_KEY.Layer;
-    }) => {
-      // Set the new status
-      statuses.current[context] = status;
-
-      const layersToCheck = [
-        statuses.current[STATUS_KEY.StacSearch],
-        statuses.current[STATUS_KEY.Layer]
-      ];
-
-      let newStatus = statuses.current[STATUS_KEY.Global];
-      // All must succeed to be considered successful.
-      if (layersToCheck.every((s) => s === S_SUCCEEDED)) {
-        newStatus = S_SUCCEEDED;
-
-        // One failed status is enough for all.
-        // Failed takes priority over loading.
-      } else if (layersToCheck.some((s) => s === S_FAILED)) {
-        newStatus = S_FAILED;
-        // One loading status is enough for all.
-      } else if (layersToCheck.some((s) => s === S_LOADING)) {
-        newStatus = S_LOADING;
-      } else if (layersToCheck.some((s) => s === S_IDLE)) {
-        newStatus = S_IDLE;
-      }
-
-      // Only emit on status change.
-      if (newStatus !== statuses.current[STATUS_KEY.Global]) {
-        statuses.current[STATUS_KEY.Global] = newStatus;
-        onStatusChange?.({ status: newStatus, id });
-      }
-    },
-    [id, onStatusChange]
-  );
-
+export function useStacResponse({
+  id,
+  changeStatus,
+  stacCol,
+  date,
+  stacApiEndpointToUse
+}): [
+  StacFeature[],
+  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
+] {
   //
   // Load stac collection features
   //
@@ -152,33 +59,37 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           }
         };
 
-        /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
+          /* eslint-disable no-console */
           console.groupCollapsed(
             'RasterTimeseries %cLoading STAC features',
             'color: orange;',
             id
           );
-        LOG && console.log('Payload', payload);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
+          console.log('Payload', payload);
+          console.groupEnd();
+          /* eslint-enable no-console */
+        }
 
-        const responseData = await requestQuickCache<any>({
+        const responseData = await requestQuickCache<{
+          features: StacFeature[];
+        }>({
           url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
         });
 
-        /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
+          /* eslint-disable no-console */
           console.groupCollapsed(
             'RasterTimeseries %cAdding STAC features',
             'color: green;',
             id
           );
-        LOG && console.log('STAC response', responseData);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
+          console.log('STAC response', responseData);
+          console.groupEnd();
+          /* eslint-enable no-console */
+        }
 
         setStacCollection(responseData.features);
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
@@ -187,7 +98,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           setStacCollection([]);
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
-        LOG &&
+        if (LOG)
           /* eslint-disable-next-line no-console */
           console.log(
             'RasterTimeseries %cAborted STAC features',
@@ -208,7 +119,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   }, [id, changeStatus, stacCol, date, stacApiEndpointToUse]);
 
   //
-  // Markers
+  // Markers to show where the data is when zoom is low
   //
   const points = useMemo(() => {
     if (!stacCollection.length) return null;
@@ -226,6 +137,18 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     return points;
   }, [stacCollection]);
 
+  return [stacCollection, points];
+}
+
+function useMosaicUrl({
+  id,
+  stacCol,
+  date,
+  colorMap,
+  stacCollection,
+  changeStatus,
+  tileApiEndpointToUse
+}) {
   //
   // Tiles
   //
@@ -252,16 +175,17 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           filter: getFilterPayload(date, stacCol)
         };
 
-        /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
+          /* eslint-disable no-console */
           console.groupCollapsed(
             'RasterTimeseries %cLoading Mosaic',
             'color: orange;',
             id
           );
-        LOG && console.log('Payload', payload);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
+          console.log('Payload', payload);
+          console.groupEnd();
+          /* eslint-enable no-console */
+        }
 
         let responseData;
 
@@ -288,7 +212,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             const mosaicUrl = responseData.links[1].href;
             setMosaicUrl(mosaicUrl);
           } else {
-            LOG &&
+            if (LOG)
               /* eslint-disable-next-line no-console */
               console.log(
                 'Titiler /register %cEndpoint error',
@@ -300,16 +224,17 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         }
 
         /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
           console.groupCollapsed(
             'RasterTimeseries %cAdding Mosaic',
             'color: green;',
             id
           );
-        // links[0] : metadata , links[1]: tile
-        LOG && console.log('Url', responseData.links[1].href);
-        LOG && console.log('STAC response', responseData);
-        LOG && console.groupEnd();
+          // links[0] : metadata , links[1]: tile
+          console.log('Url', responseData.links[1].href);
+          console.log('STAC response', responseData);
+          console.groupEnd();
+        }
         /* eslint-enable no-console */
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
       } catch (error) {
@@ -346,6 +271,61 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     // resulted in a race condition when adding the source to the map leading to
     // an error.
   ]);
+  return [mosaicUrl];
+}
+
+export function RasterTimeseries(props: RasterTimeseriesProps) {
+  const {
+    id,
+    stacCol,
+    date,
+    sourceParams,
+    zoomExtent,
+    bounds,
+    onStatusChange,
+    isPositionSet,
+    hidden,
+    opacity,
+    stacApiEndpoint,
+    tileApiEndpoint,
+    colorMap,
+    reScale,
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  } = props;
+
+  const { updateStyle } = useMapStyle();
+
+  const { current: mapInstance } = useMaps();
+  const minZoom = zoomExtent?.[0] ?? 0;
+  const generatorId = `raster-timeseries-${id}`;
+
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
+  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
+
+  const { changeStatus } = useRequestStatus({
+    id,
+    onStatusChange,
+    requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
+  });
+
+  const [stacCollection, points] = useStacResponse({
+    id,
+    changeStatus,
+    stacCol,
+    date,
+    stacApiEndpointToUse
+  });
+
+  const [mosaicUrl] = useMosaicUrl({
+    id,
+    stacCol,
+    date,
+    colorMap,
+    stacCollection,
+    changeStatus,
+    tileApiEndpointToUse
+  });
 
   //
   // Generate Mapbox GL layers and sources for raster timeseries
@@ -437,7 +417,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             });
           }
 
-          LOG &&
+          if (LOG)
             /* eslint-disable-next-line no-console */
             console.log(
               'MapLayerRasterTimeseries %cAborted Mosaic',
@@ -446,40 +426,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             );
           // Continue to the style is updated to empty.
         }
-      }
-
-      if (points && minZoom > 0) {
-        const pointsSourceId = `${id}-points`;
-        const pointsSource: GeoJSONSourceSpecification = {
-          type: 'geojson',
-          data: featureCollection(
-            points.map((p) => point(p.center, { bounds: p.bounds }))
-          )
-        };
-
-        const pointsLayer: SymbolLayerSpecification = {
-          type: 'symbol',
-          id: pointsSourceId,
-          source: pointsSourceId,
-          layout: {
-            ...(MARKER_LAYOUT as any),
-            'icon-allow-overlap': true
-          },
-          paint: {
-            'icon-color': theme.color?.primary,
-            'icon-halo-color': theme.color?.base,
-            'icon-halo-width': 1
-          },
-          maxzoom: minZoom,
-          metadata: {
-            layerOrderPosition: 'markers'
-          }
-        };
-        sources = {
-          ...sources,
-          [pointsSourceId]: pointsSource as SourceSpecification
-        };
-        layers = [...layers, pointsLayer];
       }
 
       updateStyle({
@@ -545,19 +491,24 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     },
     [mapInstance]
   );
-  useLayerInteraction({
-    layerId: `${id}-points`,
-    onClick: onPointsClick
-  });
 
   //
   // FitBounds when needed
   //
   const layerBounds = useMemo(
-    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    () => (stacCollection?.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
   useFitBbox(!!isPositionSet, bounds, layerBounds);
 
-  return null;
+  return (
+    points && (
+      <PointsLayer
+        id={id}
+        points={points}
+        zoomExtent={zoomExtent}
+        onPointsClick={onPointsClick}
+      />
+    )
+  );
 }
