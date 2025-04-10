@@ -119,6 +119,17 @@
     {
       "files": "test/playwright/**",
       "extends": "plugin:playwright/recommended"
+    },
+    {
+      "files": "core/**",
+      "rules": {
+        "prettier/prettier": [
+          "error",
+          {
+            "parser": "typescript"
+          }
+        ]
+      }
     }
   ]
 }
