@@ -5,10 +5,8 @@ import { Icon } from '@trussworks/react-uswds';
 
 import TextHighlight from '../text-highlight';
 import { CollecticonDatasetLayers } from '../icons/dataset-layers';
-import { USWDSCardGroup } from '../uswds';
 import { Card, CardType } from '../card';
 import { Tags } from '../tags';
-import { USWDSButton, USWDSTag } from '../uswds';
 import { prepareDatasets } from './prepare-datasets';
 import FiltersControl from './filters-controls/filters-control';
 import { CatalogCard } from './catalog-card';
@@ -19,6 +17,7 @@ import {
   getDatasetDescription,
   getMediaProperty
 } from './utils';
+import { USWDSButton, USWDSTag, USWDSCardGroup } from '$uswds';
 import { DatasetData } from '$types/veda';
 import { CardList } from '$components/common/card/styles';
 import EmptyHub from '$components/common/empty-hub';

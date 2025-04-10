@@ -1,6 +1,6 @@
 import React from 'react';
 import { CollecticonTick, CollecticonXmark } from '@devseed-ui/collecticons';
-import { USWDSButton, USWDSButtonGroup } from '$components/common/uswds';
+import { USWDSButton, USWDSButtonGroup } from '$uswds';
 
 export const DrawTools = ({
   drawingActions,
