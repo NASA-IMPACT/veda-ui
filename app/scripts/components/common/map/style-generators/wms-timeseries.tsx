@@ -1,11 +1,8 @@
-import React, { useEffect, useMemo } from 'react';
-import qs from 'qs';
-import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
+import React from 'react';
 
 import useFitBbox from '../hooks/use-fit-bbox';
-import useGeneratorParams from '../hooks/use-generator-params';
-import useMapStyle from '../hooks/use-map-style';
 import { BaseGeneratorParams } from '../types';
+import { RasterPaintLayer } from './raster-paint-layer';
 
 import { useWMS } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
@@ -23,142 +20,9 @@ export interface MapLayerWMSProps extends BaseGeneratorParams {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
-interface ArcPaintLayerProps extends BaseGeneratorParams {
-  id: string;
-  sourceParams?: Record<string, any>;
-  date?: Date;
-  zoomExtent?: number[];
-  wmsUrl: string;
-  bounds: [number, number, number, number];
-}
-
-export function ArcPaintLayer(props: ArcPaintLayerProps) {
-  const {
-    id,
-    date,
-    sourceParams,
-    zoomExtent,
-    wmsUrl,
-    bounds,
-    generatorOrder,
-    hidden,
-    opacity
-  } = props;
-
-  const { updateStyle } = useMapStyle();
-
-  const [minZoom] = zoomExtent ?? [0, 20];
-
-  const generatorId = 'wms-' + id;
-
-  const generatorParams = useGeneratorParams({
-    generatorOrder,
-    hidden,
-    opacity
-  });
-
-  // Generate Mapbox GL layers and sources for raster layer
-  //
-  const haveSourceParamsChanged = useMemo(
-    () => JSON.stringify(sourceParams),
-    [sourceParams]
-  );
-
-  useEffect(
-    () => {
-      if (!wmsUrl) return;
-
-      const tileParams = qs.stringify({
-        // these are mostly gonna be same for wms layers, but users can override using sourceParams
-        format: 'image/png',
-        service: 'WMS',
-        request: 'GetMap',
-        transparent: 'true',
-        width: '256',
-        height: '256',
-        version: '1.3.0',
-        crs: 'EPSG:3857',
-        ...(date && { date: userTzDate2utcString(date) }),
-        ...sourceParams
-      });
-
-      const wmsSource: RasterSourceSpecification = {
-        type: 'raster',
-        tiles: [`${wmsUrl}?${tileParams}&bbox={bbox-epsg-3857}`],
-        tileSize: 256
-      };
-
-      const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
-
-      const wmsLayer: RasterLayerSpecification = {
-        id: id,
-        type: 'raster',
-        source: id,
-        layout: {
-          visibility: hidden ? 'none' : 'visible'
-        },
-        paint: {
-          'raster-opacity': hidden ? 0 : rasterOpacity,
-          'raster-opacity-transition': {
-            duration: 320
-          }
-        },
-        minzoom: minZoom,
-        metadata: {
-          id,
-          layerOrderPosition: 'raster',
-          wmsTileUrl: `${wmsUrl}?${tileParams}`
-        }
-      };
-
-      const sources = {
-        [id]: wmsSource
-      };
-      const layers = [wmsLayer];
-
-      updateStyle({
-        generatorId,
-        sources,
-        layers,
-        params: generatorParams
-      });
-    },
-    // sourceParams not included, but using a stringified version of it to detect changes (haveSourceParamsChanged)
-    [
-      updateStyle,
-      id,
-      date,
-      wmsUrl,
-      minZoom,
-      haveSourceParamsChanged,
-      hidden,
-      opacity,
-      generatorId,
-      generatorParams,
-      sourceParams
-    ]
-  );
-
-  //
-  // Cleanup layers on unmount.
-  //
-  useEffect(() => {
-    return () => {
-      updateStyle({
-        generatorId,
-        sources: {},
-        layers: []
-      });
-    };
-  }, [updateStyle, generatorId]);
-
-  useFitBbox(false, undefined, bounds);
-
-  return null;
-}
-
 export function WMSTimeseries(props: MapLayerWMSProps) {
-  const { id, stacCol, stacApiEndpoint, onStatusChange } = props;
+  const { id, stacCol, date, stacApiEndpoint, sourceParams, onStatusChange } =
+    props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const { wmsUrl, bounds } = useWMS({
@@ -168,5 +32,29 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     onStatusChange
   });
 
-  return <ArcPaintLayer {...props} wmsUrl={wmsUrl} bounds={bounds} />;
+  const tileParams = {
+    // these are mostly gonna be same for wms layers, but users can override using sourceParams
+    format: 'image/png',
+    service: 'WMS',
+    request: 'GetMap',
+    transparent: 'true',
+    width: '256',
+    height: '256',
+    version: '1.3.0',
+    crs: 'EPSG:3857',
+    bbox: '{bbox-epsg-3857}',
+    ...sourceParams,
+    ...(date && { date: userTzDate2utcString(date) })
+  };
+
+  useFitBbox(false, undefined, bounds);
+
+  return (
+    <RasterPaintLayer
+      {...props}
+      tileApiEndpoint={wmsUrl}
+      tileParams={tileParams}
+      generatorPrefix='wms'
+    />
+  );
 }
