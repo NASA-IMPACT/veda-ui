@@ -5,7 +5,7 @@ import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
 import { BaseGeneratorParams } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
-import { STATUS_KEY } from './raster-timeseries';
+import { STATUS_KEY } from './hooks';
 
 import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
