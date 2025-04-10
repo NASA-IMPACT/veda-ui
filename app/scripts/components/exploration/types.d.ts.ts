@@ -1,5 +1,5 @@
 import { DataMetric } from './components/datasets/analysis-metrics';
-import { DatasetLayer, ParentDatset } from '$types/veda';
+import { DatasetLayer } from '$types/veda';
 
 export enum TimeDensity {
   YEAR = 'year',
@@ -16,6 +16,7 @@ export enum DatasetStatus {
 
 export interface StacDatasetData {
   isPeriodic: boolean;
+  timeInterval: string;
   timeDensity: TimeDensity;
   domain: string[];
   renders?: Record<string, any> | undefined;
