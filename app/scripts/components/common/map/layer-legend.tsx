@@ -24,7 +24,7 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
-import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText} from '$types/veda';
 import { divergingColorMaps, sequentialColorMaps, restColorMaps } from '$components/exploration/components/datasets/colorMaps';
 import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
 
@@ -210,7 +210,7 @@ const LegendBody = styled(WidgetItemBodyInner)`
 `;
 
 export function LayerLegend(
-  props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical)
+  props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical | LayerLegendText)
 ) {
   const { id, type, title, description } = props;
 
