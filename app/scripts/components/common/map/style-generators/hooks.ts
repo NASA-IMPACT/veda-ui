@@ -107,7 +107,7 @@ export function useCMR({
         onStatusChange?.({ status: S_LOADING, id });
         if (!assetUrlReplacements)
           throw new Error(
-            'CMR  layer requires asset url remplacement attributes'
+            'CMR  layer requires asset url replacement attributes'
           );
 
         // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
