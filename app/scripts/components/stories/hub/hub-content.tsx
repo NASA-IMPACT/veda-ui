@@ -153,6 +153,7 @@ export default function HubContent(props: HubContentProps) {
           {displayStories.map((d) => {
             const pubDate = new Date(d.pubDate);
             const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+            const gases = getTaxonomy(d, 'Gas')?.values; // Retrieve the Gas taxonomy
             return (
               <li key={d.id}>
                 <Card
@@ -219,6 +220,37 @@ export default function HubContent(props: HubContentProps) {
                                   disabled={search.length < 3}
                                 >
                                   {t.name}
+                                </TextHighlight>
+                              </Pill>
+                            </dd>
+                          ))}
+                        </CardTopicsList>
+                      ) : null}
+                      {gases?.length ? ( // Render Gas pills
+                        <CardTopicsList>
+                          <dt>Gas</dt>
+                          {gases.map((g) => (
+                            <dd key={g.id}>
+                              <Pill
+                                as={Link}
+                                to={`${storiesCatalogPath}?${
+                                  FilterActions.TAXONOMY
+                                }=${encodeURIComponent(
+                                  JSON.stringify({ Gas: g.id })
+                                )}`}
+                                onClick={() => {
+                                  onAction(FilterActions.TAXONOMY, {
+                                    key: 'Gas',
+                                    value: g.id
+                                  });
+                                  browseControlsHeaderRef.current?.scrollIntoView();
+                                }}
+                              >
+                                <TextHighlight
+                                  value={search}
+                                  disabled={search.length < 3}
+                                >
+                                  {g.name}
                                 </TextHighlight>
                               </Pill>
                             </dd>
