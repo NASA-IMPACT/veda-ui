@@ -1,4 +1,4 @@
-name: Release Every Other Monday
+name: Release Every Monday
 on:
   workflow_dispatch:
   schedule:
@@ -48,12 +48,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ env.NODE }}
+          registry-url: https://registry.npmjs.org/
       - run: yarn
       - name: Release through Git
         id: git-release
         run: yarn release  --ci --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Publish package to NPM
+        run: |
+          yarn buildlib
+          npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
