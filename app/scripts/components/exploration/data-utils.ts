@@ -101,12 +101,6 @@ export function resolveLayerTemporalExtent(
   const start = utcString2userTzDate(domain[0]);
   const end = utcString2userTzDate(domain[domain.length - 1]);
 
-  if (!timeInterval) {
-    throw new Error(
-      `Missing time interval for periodic dataset [${datasetId}]`
-    );
-  }
-
   const intervalDuration = timeInterval.toUpperCase();
 
   if (intervalDuration.startsWith('P')) {
@@ -136,7 +130,11 @@ export function resolveLayerTemporalExtent(
  * console.log(dates); // [2023-01-01, 2023-01-02, ..., 2023-01-10]
  * ```
  */
-function generateDates(start: Date, end: Date, interval: string): Date[] {
+export function generateDates(
+  start: Date,
+  end: Date,
+  interval: string
+): Date[] {
   const match = interval.match(
     /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
   );
@@ -162,6 +160,90 @@ function generateDates(start: Date, end: Date, interval: string): Date[] {
     });
   }
   return validDates;
+}
+
+/**
+ * Determines the largest duration designator present in an ISO 8601 duration string.
+ *
+ * The function returns the largest time unit in the order of:
+ * - Date components: Years ('Y'), Months ('M'), Weeks ('W'), Days ('D')
+ * - Time components (after 'T'): Hours ('TH'), Minutes ('TM'), Seconds ('TS')
+ *
+ * For time-based designators, the return value is prefixed with 'T'
+ * to distinguish them from date-based designators (e.g., 'M' vs. 'TM').
+ *
+ * @param isoDuration - A valid ISO 8601 duration string (e.g., "P1Y2M", "PT5M", "P1DT2H").
+ * @returns The largest designator found in the string (e.g., "Y", "M", "TM", "TS").
+ * @throws Will throw an error if the string is not a valid ISO 8601 duration or contains no recognized designators.
+ */
+export function getBiggestDurationDesignator(isoDuration: string): string {
+  if (!isoDuration.startsWith('P')) throw new Error('Invalid ISO duration');
+
+  const timeIndex = isoDuration.indexOf('T');
+  const datePart =
+    timeIndex === -1 ? isoDuration : isoDuration.slice(0, timeIndex);
+  const timePart = timeIndex === -1 ? '' : isoDuration.slice(timeIndex);
+
+  const checks: [part: string, designator: string, prefix: string][] = [
+    [datePart, 'Y', ''],
+    [datePart, 'M', ''], // Month
+    [datePart, 'W', ''],
+    [datePart, 'D', ''],
+    [timePart, 'H', 'T'],
+    [timePart, 'M', 'T'], // Minute
+    [timePart, 'S', 'T']
+  ];
+
+  for (const [part, designator, prefix] of checks) {
+    if (part.includes(designator)) return `${prefix}${designator}`;
+  }
+
+  throw new Error('No valid designators found');
+}
+
+/**
+ * Determines the time density (granularity) based on a given ISO 8601 duration interval.
+ *
+ * The function maps the largest duration designator in the provided interval string
+ * to a corresponding `TimeDensity` value. If no interval is provided, it defaults to `TimeDensity.DAY`.
+ *
+ * @param interval - An ISO 8601 duration string (e.g., "P1Y", "P1M", "P1D"), or `null` if no interval is specified.
+ * @returns The corresponding `TimeDensity` value (`YEAR`, `MONTH`, or `DAY`).
+ *
+ * @example
+ * ```typescript
+ * const interval1 = "P1Y";
+ * const density1 = getTimeDensityFromInterval(interval1);
+ * console.log(density1); // TimeDensity.YEAR
+ *
+ * const interval2 = "P1M";
+ * const density2 = getTimeDensityFromInterval(interval2);
+ * console.log(density2); // TimeDensity.MONTH
+ *
+ * const interval3 = "P1D";
+ * const density3 = getTimeDensityFromInterval(interval3);
+ * console.log(density3); // TimeDensity.DAY
+ *
+ * const interval4 = null;
+ * const density4 = getTimeDensityFromInterval(interval4);
+ * console.log(density4); // TimeDensity.DAY
+ * ```
+ */
+export function getTimeDensityFromInterval(
+  interval: string | null
+): TimeDensity {
+  if (!interval) {
+    return TimeDensity.DAY;
+  }
+  const biggestDesignator = getBiggestDurationDesignator(interval);
+  switch (biggestDesignator) {
+    case 'Y':
+      return TimeDensity.YEAR;
+    case 'M':
+      return TimeDensity.MONTH;
+    default:
+      return TimeDensity.DAY;
+  }
 }
 
 /**

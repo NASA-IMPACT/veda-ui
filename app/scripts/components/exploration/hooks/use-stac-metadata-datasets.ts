@@ -6,12 +6,12 @@ import {
 import axios from 'axios';
 import {
   StacDatasetData,
-  TimeDensity,
   TimelineDataset,
   DatasetStatus,
   VizDataset
 } from '../types.d.ts';
 import {
+  getTimeDensityFromInterval,
   resolveLayerTemporalExtent,
   resolveRenderParams,
   isRenderParamsApplicable
@@ -95,7 +95,9 @@ async function fetchStacDatasetById(
   );
 
   const timeDensity =
-    data['dashboard:time_density'] || time_density || TimeDensity.DAY;
+    data['dashboard:time_density'] ||
+    time_density ||
+    getTimeDensityFromInterval(data['dashboard:time_interval']);
   const commonTimeseriesParams = {
     isPeriodic: !!data['dashboard:is_periodic'],
     timeDensity: timeDensity,
