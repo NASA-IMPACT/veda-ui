@@ -35,11 +35,7 @@ export function Layer(props: LayerProps) {
   const relevantDate = useMemo(
     () =>
       dataset.data.type === 'wms'
-        ? getRelevantDate(
-            selectedDay,
-            dataset.data.domain,
-            dataset.data.timeDensity
-          )
+        ? getRelevantDate(selectedDay, dataset.data.domain)
         : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
     [
       selectedDay,

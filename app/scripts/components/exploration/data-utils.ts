@@ -265,12 +265,7 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   return startOfDay(date);
 }
 
-export function getRelevantDate(
-  date: Date,
-  domain: Date[],
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  timeDensity: TimeDensity
-) {
+export function getRelevantDate(date: Date, domain: Date[]) {
   // Return the date that falls into the same year? Or closest one?
   // Returning the close one now, but then it is weird when timeDensity is set up as year and
   // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)
@@ -280,19 +275,6 @@ export function getRelevantDate(
     throw new Error('No closest date found');
   }
   return closestDate;
-  // switch (timeDensity) {
-  //   // @FLAG: time_density is flagged in unexpected way ex.esi - day
-  //   case TimeDensity.DAY:
-  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()) && (d.getDate() === date.getDate()));
-  //   case TimeDensity.MONTH:
-  //     return domain.find(d => (d.getFullYear() === date.getFullYear()) && (d.getMonth() === date.getMonth()));
-  //   case TimeDensity.YEAR:
-  //     return domain.find(d => d.getFullYear() === date.getFullYear());
-  //   default:
-  //     return closestTo(date, domain);
-  // }
-
-  // return closestTo(date, domain);
 }
 
 // Define an order for TimeDensity, where smaller numbers indicate finer granularity
