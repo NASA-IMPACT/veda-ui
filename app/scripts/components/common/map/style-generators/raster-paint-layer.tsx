@@ -7,6 +7,7 @@ import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
 import { STATUS_KEY } from './hooks';
 
+import { TileJSON } from '$types/veda';
 import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
@@ -17,6 +18,10 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   tileParams: Record<string, any>;
   generatorPrefix?: string;
   reScale?: { min: number; max: number };
+  metadataFormatter?: (
+    tileJsonData: TileJSON,
+    tileParamsAsString: string
+  ) => Record<string, string>;
   onStatusChange?: (params: {
     status: ActionStatus;
     context: STATUS_KEY;
@@ -55,6 +60,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     colorMap,
     reScale,
     generatorPrefix = 'raster',
+    metadataFormatter,
     onStatusChange
   } = props;
   const { updateStyle } = useMapStyle();
@@ -95,20 +101,18 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             controller
           });
 
-          const tileServerUrl = tilejsonData.tiles[0];
-          const wmtsBaseUrl = tileApiEndpoint?.replace(
-            'tilejson.json',
-            'WMTSCapabilities.xml'
-          );
+          const tileUrlMetadata =
+            metadataFormatter &&
+            metadataFormatter(tilejsonData, tileParamsAsString);
 
-          const zarrSource: RasterSourceSpecification = {
+          const rasterSource: RasterSourceSpecification = {
             type: 'raster',
             url: tileUrl
           };
 
           const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-          const zarrLayer: RasterLayerSpecification = {
+          const rasterLayer: RasterLayerSpecification = {
             id: id,
             type: 'raster',
             source: id,
@@ -122,15 +126,14 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             metadata: {
               id,
               layerOrderPosition: 'raster',
-              xyzTileUrl: tileServerUrl,
-              wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}` // Check if other layers support this
+              ...tileUrlMetadata
             }
           };
 
           const sources = {
-            [id]: zarrSource
+            [id]: rasterSource
           };
-          const layers = [zarrLayer];
+          const layers = [rasterLayer];
 
           updateStyle({
             generatorId,
@@ -141,8 +144,9 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
           if (onStatusChange)
             onStatusChange({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
         } catch (e) {
-          console.log('ohhh erorroror ');
-          console.log(e);
+          // eslint-disable-next-line no-console
+          console.error(e);
+          throw e;
         }
       }
       run();

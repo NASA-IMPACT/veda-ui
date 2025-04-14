@@ -356,6 +356,16 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         reScale={reScale}
         generatorPrefix='raster-timeseries'
         onStatusChange={changeStatus}
+        metadataFormatter={(tilejsonData, tileParamsAsString) => {
+          const wmtsBaseUrl = mosaicUrl?.replace(
+            'tilejson.json',
+            'WMTSCapabilities.xml'
+          );
+          return {
+            xyzTileUrl: tilejsonData.tiles[0],
+            wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
+          };
+        }}
       />
       )
     </>

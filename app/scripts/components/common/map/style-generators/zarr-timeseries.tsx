@@ -13,6 +13,7 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     date,
     onStatusChange,
     sourceParams,
+    tileApiEndpoint,
     envApiStacEndpoint
   } = props;
 
@@ -40,6 +41,12 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
       tileParams={tileParams}
       onStatusChange={changeStatus}
       generatorPrefix='zarr-timeseries'
+      metadataFormatter={(tilejsonData, tileParamsAsString) => {
+        return {
+          xyzTileUrl: tilejsonData.tiles[0],
+          wmtsTileUrl: `${tileApiEndpoint}WMTSCapabilities.xml?${tileParamsAsString}`
+        };
+      }}
     />
   );
 }
