@@ -3,7 +3,7 @@ import React from 'react';
 import { BaseTimeseriesProps } from '../types';
 import { useZarr } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
-import { useLayerStatus } from './raster-timeseries';
+import { useRequestStatus } from './hooks';
 
 export function ZarrTimeseries(props: BaseTimeseriesProps) {
   const {
@@ -29,7 +29,7 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     datetime: date,
     ...sourceParams
   };
-  const { changeStatus } = useLayerStatus({
+  const { changeStatus } = useRequestStatus({
     id,
     onStatusChange,
     requestsToTrack: []
