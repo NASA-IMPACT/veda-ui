@@ -344,49 +344,49 @@ describe('generateDates', () => {
 });
 
 describe('getBiggestDurationDesignator', () => {
-  test('returns Y for year-based duration', () => {
+  it('returns Y for year-based duration', () => {
     expect(getBiggestDurationDesignator('P1Y')).toBe('Y');
   });
 
-  test('returns M for month-based duration', () => {
+  it('returns M for month-based duration', () => {
     expect(getBiggestDurationDesignator('P2M')).toBe('M');
   });
 
-  test('returns W for week-based duration', () => {
+  it('returns W for week-based duration', () => {
     expect(getBiggestDurationDesignator('P3W')).toBe('W');
   });
 
-  test('returns D for day-based duration', () => {
+  it('returns D for day-based duration', () => {
     expect(getBiggestDurationDesignator('P10D')).toBe('D');
   });
 
-  test('returns TH for hour-based duration with T', () => {
+  it('returns TH for hour-based duration with T', () => {
     expect(getBiggestDurationDesignator('PT5H')).toBe('TH');
   });
 
-  test('returns TM for minute-based duration with T', () => {
+  it('returns TM for minute-based duration with T', () => {
     expect(getBiggestDurationDesignator('PT30M')).toBe('TM');
   });
 
-  test('returns TS for second-based duration with T', () => {
+  it('returns TS for second-based duration with T', () => {
     expect(getBiggestDurationDesignator('PT45S')).toBe('TS');
   });
 
-  test('returns Y from mixed duration', () => {
+  it('returns Y from mixed duration', () => {
     expect(getBiggestDurationDesignator('P1Y2M10DT5H30M')).toBe('Y');
   });
 
-  test('returns TH from time-only duration', () => {
+  it('returns TH from time-only duration', () => {
     expect(getBiggestDurationDesignator('PT5H30M')).toBe('TH');
   });
 
-  test('throws error on invalid input (no P)', () => {
+  it('throws error on invalid input (no P)', () => {
     expect(() => getBiggestDurationDesignator('T5H')).toThrow(
       'Invalid ISO duration'
     );
   });
 
-  test('throws error if no valid designators found', () => {
+  it('throws error if no valid designators found', () => {
     expect(() => getBiggestDurationDesignator('P')).toThrow(
       'No valid designators found'
     );
@@ -394,27 +394,27 @@ describe('getBiggestDurationDesignator', () => {
 });
 
 describe('getTimeDensityFromInterval', () => {
-  test('returns YEAR for "P1Y"', () => {
+  it('returns YEAR for "P1Y"', () => {
     expect(getTimeDensityFromInterval('P1Y')).toBe(TimeDensity.YEAR);
   });
 
-  test('returns MONTH for "P1M"', () => {
+  it('returns MONTH for "P1M"', () => {
     expect(getTimeDensityFromInterval('P1M')).toBe(TimeDensity.MONTH);
   });
 
-  test('returns DAY for "P1W"', () => {
+  it('returns DAY for "P1W"', () => {
     expect(getTimeDensityFromInterval('P1W')).toBe(TimeDensity.DAY);
   });
 
-  test('returns DAY for "PT5H30M"', () => {
+  it('returns DAY when the biggest interval is smaller than a day ("PT5H30M")', () => {
     expect(getTimeDensityFromInterval('PT5H30M')).toBe(TimeDensity.DAY);
   });
 
-  test('returns DAY for null interval', () => {
+  it('returns DAY for null interval', () => {
     expect(getTimeDensityFromInterval(null)).toBe(TimeDensity.DAY);
   });
 
-  test('returns correct density from mixed duration', () => {
+  it('returns correct density from mixed duration', () => {
     expect(getTimeDensityFromInterval('P1Y2M10DT5H')).toBe(TimeDensity.YEAR);
     expect(getTimeDensityFromInterval('P2M10DT5H')).toBe(TimeDensity.MONTH);
     expect(getTimeDensityFromInterval('P10DT5H')).toBe(TimeDensity.DAY);
