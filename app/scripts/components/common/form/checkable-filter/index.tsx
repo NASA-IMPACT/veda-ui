@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from 'react';
-import { USWDSAccordion, USWDSCheckbox } from '$components/common/uswds';
+import { USWDSAccordion, USWDSCheckbox } from '$uswds';
 import './checkable-filter.scss';
 
 interface CheckableFiltersProps {
