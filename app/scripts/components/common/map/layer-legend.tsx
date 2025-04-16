@@ -275,10 +275,9 @@ export function LayerLegend(
   props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical | LayerLegendText)
 ) {
   const { id, type, title, description } = props;
-  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(false); // Local state for expanded/collapsed
-
+  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(false);
   const chevToggleExpanded = () => {
-    setIsChevToggleExpanded((prev) => !prev); // Toggle the expanded state
+    setIsChevToggleExpanded((prev) => !prev);
   };
 
   return (
@@ -305,24 +304,30 @@ export function LayerLegend(
               </ToolbarIconButton>
               {type === 'categorical' && (
                 <span
-                  onClick={chevToggleExpanded} // Toggle icon click also triggers expansion
+                  onClick={chevToggleExpanded}
                   style={{ cursor: 'pointer' }}
                 >
                   {isChevToggleExpanded ? (
                     <CollecticonChevronUp
-                    title='Expand Legend Swatch'
+                    title='Expand Legend'
                     meaningful
                     />
                   ) : (
                     <CollecticonChevronDown
-                    title='Collapse Legend Swatch'
+                    title='Collapse Legend'
                     meaningful
                     />
                   )}
                 </span>
               )}
             </Toolbar>
+
           </WidgetItemHGroup>
+          {type === 'categorical' && (
+            <div style={{ cursor: 'pointer' }}>
+              {renderSwatchLine(props as LayerLegendCategorical)}
+            </div>
+          )}
           {type === 'categorical' && !isChevToggleExpanded && (
             <LayerCategoricalGraphic type='categorical' stops={props.stops} />
           )}
@@ -356,23 +361,65 @@ export function LayerLegendContainer(props: LayerLegendContainerProps) {
   );
 }
 
-
 export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
 
+  const renderLegendItems = () =>
+    stops.map((stop) => (
+      <Fragment key={`legend-item-${stop.color}`}>
+        <dt>
+          <LegendSwatch
+            type='categorical'
+            stops={stop.color}
+          />
+          <span>
+            {stop.label}
+          </span>
+        </dt>
+      </Fragment>
+    )
+  );
+
   return (
-  <LegendList type='categorical'>
-  {stops.map((stop) => (
-    <Fragment key={stop.color}>
-      <dt>
-        <LegendSwatch type='categorical' stops={stop.color} hasHelp />
-        <span>{stop.label}</span>
-      </dt>
-    </Fragment>
-  ))}
-  </LegendList>
+    <LegendList type='categorical'>
+      {renderLegendItems()}
+    </LegendList>
   );
 }
+
+interface SwatchSegmentProps {
+  color: string;
+}
+
+const SwatchContainer = styled.div`
+  display: flex;
+  border-radius: ${themeVal('shape.rounded')};
+  overflow: hidden;
+  height: 0.5rem;
+  width: 100%;
+`;
+
+const SwatchSegment = styled.div<SwatchSegmentProps>`
+  background: ${({ color }) => color};
+  flex: 1;
+`;
+
+export const renderSwatchLine = (props: LayerLegendCategorical) => {
+  const { stops } = props;
+
+  return (
+    <SwatchContainer>
+      {stops.map((stop) => (
+        <Tip
+          key={`${stop.color}-${stop.label}`}
+          content={stop.label}
+        >
+          <SwatchSegment color={stop.color} />
+        </Tip>
+      ))}
+    </SwatchContainer>
+  );
+};
 
 export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const { stops, min, max, unit } = props;
