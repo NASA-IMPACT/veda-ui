@@ -11,6 +11,7 @@ import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
 import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
+import DefaultCard from './uswds-cards/default-card';
 import FlagCard from './uswds-cards/flag-card';
 import { LabelType } from './uswds-cards/types';
 import { LinkProperties } from '$types/veda';
@@ -31,7 +32,8 @@ export enum CardType {
   COVER = 'cover',
   FEATURED = 'featured',
   HORIZONTALINFO = 'horizontal-info',
-  FLAG = 'flag'
+  FLAG = 'flag',
+  DEFAULT = 'default'
 }
 
 export interface CardItemProps {
@@ -212,7 +214,26 @@ export default function CardComponent(
           heading={data.title as string}
           description={data.description as string}
           footer={data.footerContent}
-          cardLabel='data_collection'
+          cardLabel={data.cardLabel}
+        />
+      );
+    } else if (
+      cardType === CardType.DEFAULT &&
+      data.imgSrc &&
+      data.imgAlt &&
+      data.description &&
+      data.footerContent &&
+      data.title
+    ) {
+      baseProps['uswds'] = true;
+      baseProps['children'] = (
+        <DefaultCard
+          imgSrc={data.imgSrc}
+          imgAlt={data.imgAlt}
+          heading={data.title as string}
+          description={data.description as string}
+          footer={data.footerContent}
+          cardLabel={data.cardLabel}
         />
       );
     }

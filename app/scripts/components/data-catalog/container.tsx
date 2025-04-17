@@ -20,9 +20,7 @@ import { checkEnvFlag } from '$utils/utils';
 export default function DataCatalogContainer() {
   const allDatasets = getAllDatasetsProps(veda_faux_module_datasets);
   const controlVars = useFiltersWithQS();
-  const isUSWDSDataCatalogEnabled = checkEnvFlag(
-    process.env.ENABLE_USWDS_DATA_CATALOG
-  );
+  const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS);
   return (
     <PageMainContent>
       <LayoutProps
@@ -37,7 +35,7 @@ export default function DataCatalogContainer() {
       <CatalogView
         datasets={allDatasets}
         onFilterChanges={() => controlVars}
-        enableUSWDSDataCatalog={isUSWDSDataCatalogEnabled}
+        enableUSWDSDataCatalog={isUSWDSEnabled}
       />
     </PageMainContent>
   );
