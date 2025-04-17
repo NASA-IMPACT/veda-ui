@@ -1,5 +1,5 @@
 import React, { ReactNode, Fragment, useState, useCallback } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { AccordionFold, AccordionManager } from '@devseed-ui/accordion';
 import {
   glsp,
@@ -7,7 +7,11 @@ import {
   truncated,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
-import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
+import {
+  CollecticonCircleInformation,
+  CollecticonChevronDown,
+  CollecticonChevronUp
+} from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { followCursor } from 'tippy.js';
 import { scaleLinear } from 'd3';
@@ -25,7 +29,10 @@ import {
   WidgetItemHGroup
 } from '$styles/panel';
 import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText} from '$types/veda';
-import { divergingColorMaps, sequentialColorMaps, restColorMaps } from '$components/exploration/components/datasets/colorMaps';
+import {
+  divergingColorMaps,
+  sequentialColorMaps,
+  restColorMaps } from '$components/exploration/components/datasets/colorMaps';
 import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
 
 interface LayerLegendCommonProps {
@@ -35,12 +42,17 @@ interface LayerLegendCommonProps {
 }
 
 interface LegendSwatchProps {
+  type: 'categorical' | 'gradient';
   hasHelp?: boolean;
   stops: string | string[];
 }
 
 interface LayerLegendContainerProps {
   children: ReactNode | ReactNode[];
+}
+
+interface LegendListProps {
+  type: 'categorical' | 'gradient'
 }
 
 const makeGradient = (stops: string[]) => {
@@ -128,67 +140,117 @@ const LayerLegendSelf = styled.div`
   }
 `;
 
-const LegendList = styled.dl`
-  display: grid;
-  grid-gap: 0 ${glsp(0.125)};
-  grid-auto-columns: minmax(1rem, 1fr);
-  grid-auto-flow: column;
 
-  dt {
-    grid-row: 1;
-  }
 
-  dd {
-    font-size: 0.75rem;
-    line-height: 1rem;
-    grid-row: 2;
-    display: flex;
-    justify-content: space-between;
+const LegendList = styled.dl<LegendListProps>`
+  ${({ type }) => {
+    if (type === 'gradient') {
+      return css`
+      display: grid;
+      grid-gap: 0 ${glsp(0.125)};
+      grid-auto-columns: minmax(1rem, 1fr);
+      grid-auto-flow: column;
 
-    /* stylelint-disable-next-line no-descending-specificity */
-    > * {
-      width: 8rem;
-
-      /* stylelint-disable-next-line no-descending-specificity */
-      > * {
-        ${truncated()}
-        display: block;
+      dt {
+        grid-row: 1;
       }
 
-      &:last-child:not(:first-child) {
-        text-align: right;
+      dd {
+        font-size: 0.75rem;
+        line-height: 1rem;
+        grid-row: 2;
+        display: flex;
+        justify-content: space-between;
+
+        /* stylelint-disable-next-line no-descending-specificity */
+        > * {
+          width: 8rem;
+
+          /* stylelint-disable-next-line no-descending-specificity */
+          > * {
+            ${truncated()}
+            display: block;
+          }
+
+          &:last-child:not(:first-child) {
+            text-align: right;
+          }
+        }
+
+        &:not(:first-of-type):not(:last-of-type) {
+          ${visuallyHidden()}
+        }
       }
-    }
 
-    &:not(:first-of-type):not(:last-of-type) {
-      ${visuallyHidden()}
+      .unit {
+        grid-row: 3;
+        width: 100%;
+        text-align: center;
+        font-size: 0.75rem;
+        line-height: 1rem;
+        justify-content: center;
+      }
+    `;
+    }
+    else if (type === 'categorical') {
+      return css`
+        display: flex;
+        flex-direction: column;
+        gap: ${glsp(0.25)};
+
+        dt, dd {
+          margin: 0;
+          padding: 0;
+        }
+
+        dt {
+          display: flex;
+          align-items: flex-start;
+          gap: ${glsp(0.25)};
+        }
+      
+        dt > span {
+          display: block;
+          max-width: calc(100% - 1rem);
+        } 
+
+        dt > *:first-child {
+          margin-top: 0.5rem;
+        }
+
+        dd {
+          font-size: 0.75rem;
+          line-height: 1rem;
+          margin: 0 0 0 calc(1rem + ${glsp(0.25)});
+        } 
+        
+        overflow-y: scroll;
+        overscroll-behavior: none;
+        max-height: 300px;  
+        scrollbar-color: transparent transparent;
+      `;
     }
   }
-
-  .unit {
-    grid-row: 3;
-    width: 100%;
-    text-align: center;
-    font-size: 0.75rem;
-    line-height: 1rem;
-    justify-content: center;
-  }
-`;
+}`;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
   /* position is needed to ensure that the layerX on the event is relative to
     this element */
   position: relative;
-  display: block;
+  display: ${({ type }) => (type === 'gradient' ? 'block' : 'inline-block')};
   font-size: 0;
   height: 0.5rem;
+  width: ${({ type }) => (type === 'gradient' ? 'auto' : '1rem')};
   border-radius: ${themeVal('shape.rounded')};
   background: ${({ stops }) =>
     typeof stops === 'string' ? stops : makeGradient(stops)};
   margin: 0 0 ${glsp(1 / 8)} 0;
+  margin-right: ${({ type }) => (type === 'gradient' ? '0' : '0.5rem')};
   box-shadow: inset 0 0 0 1px ${themeVal('color.base-100a')};
   cursor: ${({ hasHelp }) => (hasHelp ? 'help' : 'auto')};
+  flex-shrink: 0; 
 `;
+
 
 const LayerLegendTitle = styled.h3`
   font-size: ${variableBaseType('0.75rem')};
@@ -213,6 +275,10 @@ export function LayerLegend(
   props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical | LayerLegendText)
 ) {
   const { id, type, title, description } = props;
+  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(false);
+  const chevToggleExpanded = () => {
+    setIsChevToggleExpanded((prev) => !prev);
+  };
 
   return (
     <AccordionFold
@@ -231,14 +297,40 @@ export function LayerLegend(
                 active={isExpanded}
                 onClick={toggleExpanded}
               >
-                <CollecticonCircleInformation
-                  title='Information about layer'
-                  meaningful
-                />
+              <CollecticonCircleInformation
+              title='Information about layer'
+              meaningful
+              />
               </ToolbarIconButton>
+              {
+                type === 'categorical' && (
+                  <ToolbarIconButton
+                    variation='base-text'
+                    active={isChevToggleExpanded}
+                    onClick={chevToggleExpanded}
+                  >
+                    {isChevToggleExpanded ? (
+                    <CollecticonChevronUp
+                    title='Expand Legend'
+                    meaningful
+                    />
+                  ) : (
+                    <CollecticonChevronDown
+                    title='Collapse Legend'
+                    meaningful
+                    />
+                  )}
+                  </ToolbarIconButton>
+                )
+              }
             </Toolbar>
           </WidgetItemHGroup>
           {type === 'categorical' && (
+            <div style={{ cursor: 'pointer' }}>
+              {renderSwatchLine(props as LayerLegendCategorical)}
+            </div>
+          )}
+          {type === 'categorical' && !isChevToggleExpanded && (
             <LayerCategoricalGraphic type='categorical' stops={props.stops} />
           )}
           {type === 'gradient' && (
@@ -273,33 +365,63 @@ export function LayerLegendContainer(props: LayerLegendContainerProps) {
 
 export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
   const { stops } = props;
+
+  const renderLegendItems = () =>
+    stops.map((stop) => (
+      <Fragment key={`legend-item-${stop.color}`}>
+        <dt>
+          <LegendSwatch
+            type='categorical'
+            stops={stop.color}
+          />
+          <span>
+            {stop.label}
+          </span>
+        </dt>
+      </Fragment>
+    )
+  );
+
   return (
-    <LegendList>
-      {stops.map((stop) => (
-        <Fragment key={stop.color}>
-          <dt>
-            <Tip content={stop.label}>
-              <LegendSwatch stops={stop.color} hasHelp>
-                {stop.color}
-              </LegendSwatch>
-            </Tip>
-          </dt>
-          <dd>
-            {/*
-                The 2 spans are needed so that the text can be correctly
-                truncated. The dd element is part of a grid and has an
-                implicit width. The first span overflows the dd, setting
-                the final width and the second span truncates the text.
-              */}
-            <span>
-              <span>{stop.label}</span>
-            </span>
-          </dd>
-        </Fragment>
-      ))}
+    <LegendList type='categorical'>
+      {renderLegendItems()}
     </LegendList>
   );
 }
+
+interface SwatchSegmentProps {
+  color: string;
+}
+
+const SwatchContainer = styled.div`
+  display: flex;
+  border-radius: ${themeVal('shape.rounded')};
+  overflow: hidden;
+  height: 0.5rem;
+  width: 100%;
+`;
+
+const SwatchSegment = styled.div<SwatchSegmentProps>`
+  background: ${({ color }) => color};
+  flex: 1;
+`;
+
+export const renderSwatchLine = (props: LayerLegendCategorical) => {
+  const { stops } = props;
+
+  return (
+    <SwatchContainer>
+      {stops.map((stop) => (
+        <Tip
+          key={`${stop.color}-${stop.label}`}
+          content={stop.label}
+        >
+          <SwatchSegment color={stop.color} />
+        </Tip>
+      ))}
+    </SwatchContainer>
+  );
+};
 
 export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const { stops, min, max, unit } = props;
@@ -325,7 +447,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   const tipText = formatTooltipValue(hoverVal, unit);
 
   return (
-    <LegendList>
+    <LegendList type='gradient'>
       <dt>
         <Tip
           disabled={!hasNumericLegend}
@@ -333,7 +455,7 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
           followCursor='horizontal'
           plugins={[followCursor]}
         >
-          <LegendSwatch stops={stops} onMouseMove={moveListener}>
+          <LegendSwatch type='gradient' stops={stops} onMouseMove={moveListener}>
             {stops[0]} to {stops[stops.length - 1]}
           </LegendSwatch>
         </Tip>

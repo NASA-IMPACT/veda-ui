@@ -166,17 +166,52 @@ layers:
           return `${dateFns.format(datetime, 'yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
         }
     legend:
-      unit: 
-        label: molecules/cm3
-      type: gradient
-      min: "-3934857984753"
-      max: "3348573489573"
+      type: categorical
+      min: "0"
+      max: "255"
       stops:
-        - "#3A88BD"
-        - "#C9E0ED"
-        - "#E4EEF3"
-        - "#FDDCC9"
-        - "#DD7059"
+        - color: "#486DA2"
+          label: "Open Water"
+        - color: "#E7EFFC"
+          label: "Perennial Ice/Snow"
+        - color: "#E1CDCE"
+          label: "Developed, Open Space"
+        - color: "#DC9881"
+          label: "Developed, Low Intensity"
+        - color: "#F10100"
+          label: "Developed, Medium Intensity"
+        - color: "#AB0101"
+          label: "Developed High Intensity"
+        - color: "#B3AFA4"
+          label: "Barren Land (Rock/Sand/Clay)"
+        - color: "#6BA966"
+        # label: "Vegetation"
+          label: "Deciduous Forest"
+        - color: "#1D6533"
+          label: "Evergreen Forest"
+        - color: "#BDCC93"
+          label: "Mixed Forest"
+        - color: "#B29C46"
+          label: "Dwarf Scrub"
+        - color: "#D1BB82"
+          label: "Shrub/Scrub"
+        - color: "#EDECCD"
+          label : "Grassland/Herbaceous"
+        - color: "#D0D181"
+          label: "Sedge/Herbaceous"
+        - color: "#A4CC51"
+          label: "Lichens"
+        - color: "#82BA9D"
+          label: "Moss"
+        - color: "#DDD83E"
+          label: "Pasture/Hay"
+        - color: "#AE7229"
+          label: "Cultivated Crops"
+        # label: "Agriculture"
+        - color: "#BBD7ED"
+          label: "Woody Wetlands"
+        - color: "#71A4C1"
+          label: "Emergent Herbaceous Wetlands"
 ---
 
 <Block type='full'>
