@@ -43,6 +43,7 @@ module.exports = {
     pushArgs: ['--follow-tags'],
     requireCleanWorkingDir: debug ? false : true,
     requireUpstream: debug ? false : true,
+    requireCommits: true,
     changelog: 'git log --pretty=format:%s ${latestTag}...HEAD' // The output will be passed to releaseNotes context.changelog
   },
   npm: {
