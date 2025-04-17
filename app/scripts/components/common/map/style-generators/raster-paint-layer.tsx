@@ -1,12 +1,13 @@
 import { useEffect, useMemo } from 'react';
 import qs from 'qs';
 import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
-
+import { requestQuickCache } from '../utils';
 import { BaseGeneratorParams } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
 import { STATUS_KEY } from './hooks';
 
+import { TileJSON } from '$types/veda';
 import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
@@ -17,10 +18,35 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   tileParams: Record<string, any>;
   generatorPrefix?: string;
   reScale?: { min: number; max: number };
+  metadataFormatter?: (
+    tileJsonData: TileJSON,
+    tileParamsAsString: string
+  ) => Record<string, string>;
   onStatusChange?: (params: {
     status: ActionStatus;
     context: STATUS_KEY;
   }) => void;
+}
+
+export function formatTitilerParameter(params) {
+  // bands and assets need to be sent as repeat query params
+  const { bands, assets, ...regularParams } = params;
+
+  const repeatParams: Record<string, string[] | undefined> = {};
+  if (Array.isArray(bands)) repeatParams.bands = bands;
+  if (Array.isArray(assets)) repeatParams.assets = assets;
+
+  const regularParamsString = qs.stringify(regularParams, {
+    arrayFormat: 'comma'
+  });
+
+  const repeatParamsString = qs.stringify(repeatParams, {
+    arrayFormat: 'repeat'
+  });
+
+  return [regularParamsString, repeatParamsString]
+    .filter(Boolean) // Remove empty strings
+    .join('&');
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -34,6 +60,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     colorMap,
     reScale,
     generatorPrefix = 'raster',
+    metadataFormatter,
     onStatusChange
   } = props;
   const { updateStyle } = useMapStyle();
@@ -60,70 +87,69 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      // Create a modified version of the parameters
-      const processedParams = { ...updatedTileParams } as {
-        reScale?: number[];
-        colormap_name?: string;
-        bands?: string[];
-        assets?: string[];
-        [key: string]: any;
-      };
+      if (!tileApiEndpoint) return;
+      const controller = new AbortController();
+      async function run() {
+        // Create a modified version of the parameters
+        const tileParamsAsString = formatTitilerParameter(updatedTileParams);
+        const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
+        try {
+          const tilejsonData = await requestQuickCache<any>({
+            url: tileUrl,
+            method: 'GET',
+            payload: null,
+            controller
+          });
 
-      // bands and assets need to be sent as repeat query params
-      const { bands, assets, ...regularParams } = processedParams;
+          const tileUrlMetadata =
+            metadataFormatter &&
+            metadataFormatter(tilejsonData, tileParamsAsString);
 
-      const repeatParams: Record<string, string[] | undefined> = {};
-      if (Array.isArray(bands)) repeatParams.bands = bands;
-      if (Array.isArray(assets)) repeatParams.assets = assets;
+          const rasterSource: RasterSourceSpecification = {
+            type: 'raster',
+            url: tileUrl
+          };
 
-      const regularParamsString = qs.stringify(regularParams, {
-        arrayFormat: 'comma'
-      });
+          const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
-      const repeatParamsString = qs.stringify(repeatParams, {
-        arrayFormat: 'repeat'
-      });
+          const rasterLayer: RasterLayerSpecification = {
+            id: id,
+            type: 'raster',
+            source: id,
+            paint: {
+              'raster-opacity': hidden ? 0 : rasterOpacity,
+              'raster-opacity-transition': {
+                duration: 320
+              }
+            },
+            minzoom: minZoom,
+            metadata: {
+              id,
+              layerOrderPosition: 'raster',
+              ...tileUrlMetadata
+            }
+          };
 
-      const tileParamsAsString = [regularParamsString, repeatParamsString]
-        .filter(Boolean) // Remove empty strings
-        .join('&');
+          const sources = {
+            [id]: rasterSource
+          };
+          const layers = [rasterLayer];
 
-      const zarrSource: RasterSourceSpecification = {
-        type: 'raster',
-        url: `${tileApiEndpoint}?${tileParamsAsString}`
-      };
-
-      const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
-
-      const zarrLayer: RasterLayerSpecification = {
-        id: id,
-        type: 'raster',
-        source: id,
-        paint: {
-          'raster-opacity': hidden ? 0 : rasterOpacity,
-          'raster-opacity-transition': {
-            duration: 320
-          }
-        },
-        minzoom: minZoom,
-        metadata: {
-          layerOrderPosition: 'raster'
+          updateStyle({
+            generatorId,
+            sources,
+            layers,
+            params: generatorParams
+          });
+          if (onStatusChange)
+            onStatusChange({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.error(e);
+          throw e;
         }
-      };
-
-      const sources = {
-        [id]: zarrSource
-      };
-      const layers = [zarrLayer];
-
-      updateStyle({
-        generatorId,
-        sources,
-        layers,
-        params: generatorParams
-      });
-      if (onStatusChange)
-        onStatusChange({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
+      }
+      run();
     },
     // sourceParams not included, but using a stringified version of it to
     // detect changes (haveSourceParamsChanged)

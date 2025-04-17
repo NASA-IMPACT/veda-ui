@@ -28,6 +28,11 @@ export function CMRTimeseries(props: BaseTimeseriesProps) {
       tileParams={tileParams}
       generatorPrefix='cmr-timeseries'
       onStatusChange={changeStatus}
+      metadataFormatter={(tilejsonData) => {
+        return {
+          xyzTileUrl: tilejsonData.tiles[0]
+        };
+      }}
     />
   );
 }
