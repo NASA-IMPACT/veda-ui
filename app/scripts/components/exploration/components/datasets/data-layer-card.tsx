@@ -166,7 +166,7 @@ export default function DataLayerCard(props: CardProps) {
   const showNonConfigurableCmap =
     !showConfigurableColorMap && datasetLegend?.type === 'gradient';
 
-  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(false);
+  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
   const chevToggleExpanded = () => {
     setIsChevToggleExpanded((prev) => !prev);
   };
@@ -224,12 +224,12 @@ export default function DataLayerCard(props: CardProps) {
                   onClick={chevToggleExpanded}
                 >
                 {isChevToggleExpanded ? (
-                  <CollecticonChevronUp
+                  <CollecticonChevronDown
                   title='Expand Legend'
                   meaningful
                   />
                 ) : (
-                  <CollecticonChevronDown
+                  <CollecticonChevronUp
                   title='Collapse Legend'
                   meaningful
                   />

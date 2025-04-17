@@ -302,12 +302,14 @@ export function LayerLegend(
               meaningful
               />
               </ToolbarIconButton>
-              {type === 'categorical' && (
-                <span
-                  onClick={chevToggleExpanded}
-                  style={{ cursor: 'pointer' }}
-                >
-                  {isChevToggleExpanded ? (
+              {
+                type === 'categorical' && (
+                  <ToolbarIconButton
+                    variation='base-text'
+                    active={isChevToggleExpanded}
+                    onClick={chevToggleExpanded}
+                  >
+                    {isChevToggleExpanded ? (
                     <CollecticonChevronUp
                     title='Expand Legend'
                     meaningful
@@ -318,10 +320,10 @@ export function LayerLegend(
                     meaningful
                     />
                   )}
-                </span>
-              )}
+                  </ToolbarIconButton>
+                )
+              }
             </Toolbar>
-
           </WidgetItemHGroup>
           {type === 'categorical' && (
             <div style={{ cursor: 'pointer' }}>
