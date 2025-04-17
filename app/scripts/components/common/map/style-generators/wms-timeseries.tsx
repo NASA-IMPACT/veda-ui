@@ -44,7 +44,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     crs: 'EPSG:3857',
     bbox: '{bbox-epsg-3857}',
     ...sourceParams,
-    ...(date && { date: userTzDate2utcString(date) })
+    ...(date && { time: userTzDate2utcString(date) })
   };
 
   useFitBbox(false, undefined, bounds);
