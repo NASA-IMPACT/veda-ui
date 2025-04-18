@@ -17,7 +17,7 @@ import sub from 'date-fns/sub';
  *
  * Basically it parses the date ignoring the timezone and treats it as if the
  * date is already in the user's Tz.
- * Times I had timezone related bugs and this fn saved me: 7
+ * Times I had timezone related bugs and this fn saved me: 8
  *
  * Reverse function of userTzDate2utcString()
  *
@@ -57,6 +57,9 @@ export function utcString2userTzDate(str?: string | null) {
     if (isNaN(date.getTime())) return date;
     const offset = date.getTimezoneOffset();
     date.setTime(date.getTime() + offset * 60 * 1000);
+    // @TODO: needed?
+    date.setMinutes(date.getMinutes());
+    date.setSeconds(date.getSeconds());
     return date;
   } else {
     // For the full date view Date does a good job, except with the ordinal
