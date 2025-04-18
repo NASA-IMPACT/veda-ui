@@ -4,7 +4,10 @@ import useFitBbox from '../hooks/use-fit-bbox';
 import { BaseGeneratorParams } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
 
-import { useWMS } from '$components/common/map/style-generators/hooks';
+import {
+  useRequestStatus,
+  useWMS
+} from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
 
 import { userTzDate2utcString } from '$utils/date';
@@ -32,6 +35,12 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     onStatusChange
   });
 
+  const { changeStatus } = useRequestStatus({
+    id,
+    onStatusChange,
+    requestsToTrack: []
+  });
+
   const tileParams = {
     // these are mostly gonna be same for wms layers, but users can override using sourceParams
     format: 'image/png',
@@ -54,7 +63,8 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
       {...props}
       tileApiEndpoint={wmsUrl}
       tileParams={tileParams}
-      generatorPrefix='wms'
+      generatorPrefix='wms-timeseries'
+      onStatusChange={changeStatus}
     />
   );
 }

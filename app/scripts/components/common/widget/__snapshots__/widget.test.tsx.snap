@@ -9,9 +9,9 @@ exports[`FullscreenWidget matches snapshot 1`] = `
     class="padding-2 display-flex flex-justify space-between flex-align-center"
     data-testid="widget-header"
   >
-    <h6>
+    <h4>
       Test Fullscreen Widget
-    </h6>
+    </h4>
     <button
       class="usa-button usa-button--outline margin-0 margin-left-3"
       data-testid="widget-toggle"

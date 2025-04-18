@@ -22,7 +22,7 @@ import { computeDrawStyles } from './style';
 import { DrawTools } from './draw-tools';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import { Tip } from '$components/common/tip';
-import { USWDSButton } from '$components/common/uswds';
+import { USWDSButton } from '$uswds';
 
 const AnalysisToolbar = styled(Toolbar)<{ visuallyDisabled: boolean }>`
   background-color: ${themeVal('color.surface')};

@@ -1,7 +1,7 @@
 {
   "name": "@teamimpact/veda-ui",
   "description": "Dashboard",
-  "version": "6.1.1",
+  "version": "6.4.0",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -32,7 +32,8 @@
     "test": "jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
     "test:e2e": "yarn playwright test",
-    "release": "release-it --"
+    "release": "release-it --",
+    "watch:buildlib": "chokidar \"app/scripts/**/*\" -c \"yarn buildlib\" --initial"
   },
   "targets": {
     "veda-app": {
@@ -83,6 +84,7 @@
     "babel-jest": "^29.7.0",
     "babel-plugin-styled-components": "^1.13.3",
     "buffer": "^6.0.3",
+    "chokidar-cli": "^3.0.0",
     "conventional-changelog-conventionalcommits": "^8.0.0",
     "conventional-recommended-bump": "^10.0.0",
     "dedent": "^0.7.0",
@@ -260,7 +262,8 @@
     "$types": "~/app/scripts/types",
     "$context": "~/app/scripts/context",
     "$data-layer": "~/app/scripts/data-layer",
-    "$uswds": "~/app/scripts/components/common/uswds",
+    "$uswds": "~/app/scripts/uswds",
+    "$libs": "~/app/scripts/libs",
     "$test": "~/test",
     "$static": "~/static"
   },

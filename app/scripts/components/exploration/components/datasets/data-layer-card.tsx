@@ -14,7 +14,7 @@ import Tippy from '@tippyjs/react';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
-import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText } from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
@@ -42,7 +42,7 @@ interface CardProps {
   colorMapScale: colorMapScale | undefined;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
   onClickLayerInfo: () => void;
-  datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
+  datasetLegend: LayerLegendCategorical | LayerLegendGradient | LayerLegendText | undefined;
 }
 
 const Header = styled.header`
@@ -161,8 +161,7 @@ export default function DataLayerCard(props: CardProps) {
     datasetLegend?.type === 'gradient' &&
     colorMap;
   const showNonConfigurableCmap =
-    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
-
+    !showConfigurableCmap && datasetLegend?.type === 'gradient';
   return (
     <>
       <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>

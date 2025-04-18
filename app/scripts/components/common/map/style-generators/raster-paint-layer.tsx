@@ -5,6 +5,9 @@ import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
 import { BaseGeneratorParams } from '../types';
 import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
+import { STATUS_KEY } from './hooks';
+
+import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
@@ -14,6 +17,10 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   tileParams: Record<string, any>;
   generatorPrefix?: string;
   reScale?: { min: number; max: number };
+  onStatusChange?: (params: {
+    status: ActionStatus;
+    context: STATUS_KEY;
+  }) => void;
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
@@ -26,7 +33,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     opacity,
     colorMap,
     reScale,
-    generatorPrefix = 'raster'
+    generatorPrefix = 'raster',
+    onStatusChange
   } = props;
   const { updateStyle } = useMapStyle();
   const [minZoom] = zoomExtent ?? [0, 20];
@@ -132,6 +140,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         layers,
         params: generatorParams
       });
+      if (onStatusChange)
+        onStatusChange({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
     },
     // sourceParams not included, but using a stringified version of it to
     // detect changes (haveSourceParamsChanged)

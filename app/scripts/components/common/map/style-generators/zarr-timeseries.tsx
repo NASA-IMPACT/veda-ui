@@ -3,6 +3,7 @@ import React from 'react';
 import { BaseTimeseriesProps } from '../types';
 import { useZarr } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
+import { useRequestStatus } from './hooks';
 
 export function ZarrTimeseries(props: BaseTimeseriesProps) {
   const {
@@ -28,10 +29,16 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     datetime: date,
     ...sourceParams
   };
+  const { changeStatus } = useRequestStatus({
+    id,
+    onStatusChange,
+    requestsToTrack: []
+  });
   return (
     <RasterPaintLayer
       {...props}
       tileParams={tileParams}
+      onStatusChange={changeStatus}
       generatorPrefix='zarr-timeseries'
     />
   );
