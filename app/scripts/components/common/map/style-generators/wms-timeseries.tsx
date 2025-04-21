@@ -63,8 +63,17 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
       {...props}
       tileApiEndpoint={wmsUrl}
       tileParams={tileParams}
-      generatorPrefix='wms-timeseries'
+      generatorPrefix='wms'
       onStatusChange={changeStatus}
+      metadataFormatter={(_tileJsonData, tileParamsAsString) => {
+        return { wmsTileUrl: `${wmsUrl}?${tileParamsAsString}` };
+      }}
+      sourceParamFormatter={(tileUrl) => {
+        return {
+          tiles: [tileUrl],
+          tileSize: 256
+        };
+      }}
     />
   );
 }

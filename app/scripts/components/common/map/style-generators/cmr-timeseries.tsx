@@ -30,7 +30,7 @@ export function CMRTimeseries(props: BaseTimeseriesProps) {
       onStatusChange={changeStatus}
       metadataFormatter={(tilejsonData) => {
         return {
-          xyzTileUrl: tilejsonData.tiles[0]
+          xyzTileUrl: tilejsonData?.tiles[0]
         };
       }}
     />

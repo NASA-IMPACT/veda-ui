@@ -19,16 +19,17 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
   generatorPrefix?: string;
   reScale?: { min: number; max: number };
   metadataFormatter?: (
-    tileJsonData: TileJSON,
+    tileJsonData: TileJSON | null,
     tileParamsAsString: string
-  ) => Record<string, string>;
+  ) => Record<string, any>;
+  sourceParamFormatter?: (tileUrl: string) => Record<string, any>;
   onStatusChange?: (params: {
     status: ActionStatus;
     context: STATUS_KEY;
   }) => void;
 }
 
-export function formatTitilerParameter(params) {
+export function formatTitilerParameter(params): string {
   // bands and assets need to be sent as repeat query params
   const { bands, assets, bbox, ...regularParams } = params;
 
@@ -44,12 +45,7 @@ export function formatTitilerParameter(params) {
     arrayFormat: 'repeat'
   });
 
-  const bboxString = qs.stringify(
-    { bbox },
-    {
-      encode: false
-    }
-  );
+  const bboxString = bbox ? `bbox=${bbox}` : '';
 
   return [regularParamsString, repeatParamsString, bboxString]
     .filter(Boolean) // Remove empty strings
@@ -68,6 +64,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     reScale,
     generatorPrefix = 'raster',
     metadataFormatter,
+    sourceParamFormatter = (tileUrl) => ({ url: tileUrl }),
     onStatusChange
   } = props;
   const { updateStyle } = useMapStyle();
@@ -101,22 +98,31 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
         const tileParamsAsString = formatTitilerParameter(updatedTileParams);
 
         const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
-        try {
-          const tilejsonData = await requestQuickCache<any>({
-            url: tileUrl,
-            method: 'GET',
-            payload: null,
-            controller
-          });
 
-          const tileUrlMetadata =
-            metadataFormatter &&
-            metadataFormatter(tilejsonData, tileParamsAsString);
-          // bands and assets need to be sent as repeat query params
+        try {
+          let tileUrlMetadata;
+          if (!generatorPrefix.includes('wms')) {
+            // wms data doesn't have an endpoint for tlejson
+            const tileJsonData = await requestQuickCache<any>({
+              url: tileUrl,
+              method: 'GET',
+              payload: null,
+              controller
+            });
+
+            tileUrlMetadata =
+              metadataFormatter &&
+              metadataFormatter(tileJsonData, tileParamsAsString);
+          } else {
+            tileUrlMetadata =
+              metadataFormatter && metadataFormatter(null, tileParamsAsString);
+          }
+
+          const mapSourceParams = sourceParamFormatter(tileUrl);
 
           const rasterSource: RasterSourceSpecification = {
             type: 'raster',
-            url: tileUrl
+            ...mapSourceParams
           };
 
           const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
@@ -151,7 +157,10 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             params: generatorParams
           });
           if (onStatusChange)
-            onStatusChange({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
+            onStatusChange({
+              status: S_SUCCEEDED,
+              context: STATUS_KEY.Layer
+            });
         } catch (e) {
           // eslint-disable-next-line no-console
           console.error(e);

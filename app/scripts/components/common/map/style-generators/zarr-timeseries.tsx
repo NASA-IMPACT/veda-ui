@@ -43,7 +43,7 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
       generatorPrefix='zarr-timeseries'
       metadataFormatter={(tilejsonData, tileParamsAsString) => {
         return {
-          xyzTileUrl: tilejsonData.tiles[0],
+          xyzTileUrl: tilejsonData?.tiles[0],
           wmtsTileUrl: `${tileApiEndpoint}WMTSCapabilities.xml?${tileParamsAsString}`
         };
       }}

@@ -362,7 +362,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
             'WMTSCapabilities.xml'
           );
           return {
-            xyzTileUrl: tilejsonData.tiles[0],
+            xyzTileUrl: tilejsonData?.tiles[0],
             wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
           };
         }}
