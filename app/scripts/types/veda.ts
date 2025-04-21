@@ -5,7 +5,7 @@ import { ComponentType } from 'react';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
-export type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr';
+export type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms';
 
 //
 // Dataset Layers
@@ -40,7 +40,7 @@ export interface DatasetLayerCompareSTAC extends DatasetLayerCommonProps {
   type: DatasetLayerType;
   name: string;
   description: string;
-  legend?: LayerLegendCategorical | LayerLegendGradient;
+  legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
 }
 
 export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
@@ -74,7 +74,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
   type: DatasetLayerType;
   compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-  legend?: LayerLegendCategorical | LayerLegendGradient;
+  legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
   analysis?: {
     metrics: string[];
     exclude: boolean;
@@ -105,7 +105,7 @@ export interface DatasetLayerCompareNormalized extends DatasetLayerCommonProps {
   time_density?: 'day' | 'month' | 'year';
   stacCol: string;
   type: DatasetLayerType;
-  legend?: LayerLegendCategorical | LayerLegendGradient;
+  legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
 }
 
 // export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
@@ -157,6 +157,10 @@ export interface LayerLegendCategorical {
   type: 'categorical';
   unit?: LayerLegendUnit;
   stops: CategoricalStop[];
+}
+
+export interface LayerLegendText {
+  type: 'text';
 }
 
 /**

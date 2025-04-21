@@ -6,7 +6,8 @@ import {
   BannerFlag,
   BannerHeader,
   BannerIcon,
-  BannerGuidance, MediaBlockBody
+  BannerGuidance,
+  MediaBlockBody
 } from '@trussworks/react-uswds';
 
 export function USWDSBanner(props) {

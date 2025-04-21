@@ -1,6 +1,7 @@
-import eachMonthOfInterval from 'date-fns/eachMonthOfInterval';
-import eachDayOfInterval from 'date-fns/eachDayOfInterval';
-import eachYearOfInterval from 'date-fns/eachYearOfInterval';
+import add from 'date-fns/add';
+import closestTo from 'date-fns/closestTo';
+import isBefore from 'date-fns/isBefore';
+import isEqual from 'date-fns/isEqual';
 import startOfDay from 'date-fns/startOfDay';
 import startOfMonth from 'date-fns/startOfMonth';
 import startOfYear from 'date-fns/startOfYear';
@@ -90,7 +91,7 @@ export function resolveLayerTemporalExtent(
   datasetId: string,
   datasetData: StacDatasetData
 ): Date[] {
-  const { domain, isPeriodic, timeDensity } = datasetData;
+  const { domain, isPeriodic, timeInterval } = datasetData;
 
   if (!domain || domain.length === 0) {
     throw new Error(`Invalid domain on dataset [${datasetId}]`);
@@ -98,26 +99,151 @@ export function resolveLayerTemporalExtent(
 
   if (!isPeriodic) return domain.map((d) => utcString2userTzDate(d));
 
-  switch (timeDensity) {
-    case TimeDensity.YEAR:
-      return eachYearOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.MONTH:
-      return eachMonthOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
-    case TimeDensity.DAY:
-      return eachDayOfInterval({
-        start: utcString2userTzDate(domain[0]),
-        end: utcString2userTzDate(domain[domain.length - 1])
-      });
+  const start = utcString2userTzDate(domain[0]);
+  const end = utcString2userTzDate(domain[domain.length - 1]);
+
+  const intervalDuration = timeInterval.toUpperCase();
+
+  if (intervalDuration.startsWith('P')) {
+    return generateDates(start, end, intervalDuration);
+  } else {
+    throw new Error(
+      `Unsupported time interval [${timeInterval}] on dataset [${datasetId}]`
+    );
+  }
+}
+
+/**
+ * Generates an array of dates between a start and end date based on a specified ISO 8601 duration interval.
+ *
+ * @param start - The starting date of the range.
+ * @param end - The ending date of the range.
+ * @param interval - An ISO 8601 duration string (e.g., "P1Y2M10D" for 1 year, 2 months, and 10 days).
+ * @returns An array of `Date` objects representing the generated dates.
+ * @throws Will throw an error if the provided interval is not a valid ISO 8601 duration string.
+ *
+ * @example
+ * ```typescript
+ * const start = new Date('2023-01-01');
+ * const end = new Date('2023-01-10');
+ * const interval = 'P1D'; // 1 day interval
+ * const dates = generateDates(start, end, interval);
+ * console.log(dates); // [2023-01-01, 2023-01-02, ..., 2023-01-10]
+ * ```
+ */
+export function generateDates(
+  start: Date,
+  end: Date,
+  interval: string
+): Date[] {
+  const match = interval.match(
+    /P(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)W)?(?:(\d+)D)?(?:T(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?)?/
+  );
+  if (!match) throw new Error('Invalid ISO duration');
+
+  const [, years, months, weeks, days, hours, minutes, seconds] = match.map(
+    (v) => (v ? parseInt(v) : 0)
+  );
+
+  let currentDate = start;
+  let validDates: Date[] = [];
+
+  while (isBefore(currentDate, end) || isEqual(currentDate, end)) {
+    validDates = [...validDates, currentDate];
+    currentDate = add(currentDate, {
+      years,
+      months,
+      weeks,
+      days,
+      hours,
+      minutes,
+      seconds
+    });
+  }
+  return validDates;
+}
+
+/**
+ * Determines the largest duration designator present in an ISO 8601 duration string.
+ *
+ * The function returns the largest time unit in the order of:
+ * - Date components: Years ('Y'), Months ('M'), Weeks ('W'), Days ('D')
+ * - Time components (after 'T'): Hours ('TH'), Minutes ('TM'), Seconds ('TS')
+ *
+ * For time-based designators, the return value is prefixed with 'T'
+ * to distinguish them from date-based designators (e.g., 'M' vs. 'TM').
+ *
+ * @param isoDuration - A valid ISO 8601 duration string (e.g., "P1Y2M", "PT5M", "P1DT2H").
+ * @returns The largest designator found in the string (e.g., "Y", "M", "TM", "TS").
+ * @throws Will throw an error if the string is not a valid ISO 8601 duration or contains no recognized designators.
+ */
+export function getBiggestDurationDesignator(isoDuration: string): string {
+  if (!isoDuration.startsWith('P')) throw new Error('Invalid ISO duration');
+
+  const timeIndex = isoDuration.indexOf('T');
+  const datePart =
+    timeIndex === -1 ? isoDuration : isoDuration.slice(0, timeIndex);
+  const timePart = timeIndex === -1 ? '' : isoDuration.slice(timeIndex);
+
+  const checks: [part: string, designator: string, prefix: string][] = [
+    [datePart, 'Y', ''],
+    [datePart, 'M', ''], // Month
+    [datePart, 'W', ''],
+    [datePart, 'D', ''],
+    [timePart, 'H', 'T'],
+    [timePart, 'M', 'T'], // Minute
+    [timePart, 'S', 'T']
+  ];
+
+  for (const [part, designator, prefix] of checks) {
+    if (part.includes(designator)) return `${prefix}${designator}`;
+  }
+
+  throw new Error('No valid designators found');
+}
+
+/**
+ * Determines the time density (granularity) based on a given ISO 8601 duration interval.
+ *
+ * The function maps the largest duration designator in the provided interval string
+ * to a corresponding `TimeDensity` value. If no interval is provided, it defaults to `TimeDensity.DAY`.
+ *
+ * @param interval - An ISO 8601 duration string (e.g., "P1Y", "P1M", "P1D"), or `null` if no interval is specified.
+ * @returns The corresponding `TimeDensity` value (`YEAR`, `MONTH`, or `DAY`).
+ *
+ * @example
+ * ```typescript
+ * const interval1 = "P1Y";
+ * const density1 = getTimeDensityFromInterval(interval1);
+ * console.log(density1); // TimeDensity.YEAR
+ *
+ * const interval2 = "P1M";
+ * const density2 = getTimeDensityFromInterval(interval2);
+ * console.log(density2); // TimeDensity.MONTH
+ *
+ * const interval3 = "P1D";
+ * const density3 = getTimeDensityFromInterval(interval3);
+ * console.log(density3); // TimeDensity.DAY
+ *
+ * const interval4 = null;
+ * const density4 = getTimeDensityFromInterval(interval4);
+ * console.log(density4); // TimeDensity.DAY
+ * ```
+ */
+export function getTimeDensityFromInterval(
+  interval: string | null
+): TimeDensity {
+  if (!interval) {
+    return TimeDensity.DAY;
+  }
+  const biggestDesignator = getBiggestDurationDesignator(interval);
+  switch (biggestDesignator) {
+    case 'Y':
+      return TimeDensity.YEAR;
+    case 'M':
+      return TimeDensity.MONTH;
     default:
-      throw new Error(
-        `Invalid time density [${timeDensity}] on dataset [${datasetId}]`
-      );
+      return TimeDensity.DAY;
   }
 }
 
@@ -130,7 +256,8 @@ export function resolveLayerTemporalExtent(
 export const isRenderParamsApplicable = (
   datasetType: DatasetLayerType
 ): boolean => {
-  const nonApplicableTypes = ['vector'];
+  // @TODO revisit later for `wms`
+  const nonApplicableTypes = ['vector', 'wms'];
 
   return !nonApplicableTypes.includes(datasetType);
 };
@@ -218,6 +345,18 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
   }
 
   return startOfDay(date);
+}
+
+export function getRelevantDate(date: Date, domain: Date[]) {
+  // Return the date that falls into the same year? Or closest one?
+  // Returning the close one now, but then it is weird when timeDensity is set up as year and
+  // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)
+  // but user will see that the timeline head is in the middle of 2020
+  const closestDate = closestTo(date, domain);
+  if (!closestDate) {
+    throw new Error('No closest date found');
+  }
+  return closestDate;
 }
 
 // Define an order for TimeDensity, where smaller numbers indicate finer granularity

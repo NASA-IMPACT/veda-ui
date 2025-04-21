@@ -14,7 +14,7 @@ import Tippy from '@tippyjs/react';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
-import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText } from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
@@ -42,7 +42,7 @@ interface CardProps {
   colorMapScale: colorMapScale | undefined;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
   onClickLayerInfo: () => void;
-  datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
+  datasetLegend: LayerLegendCategorical | LayerLegendGradient | LayerLegendText | undefined;
 }
 
 const Header = styled.header`
@@ -128,7 +128,12 @@ export default function DataLayerCard(props: CardProps) {
     onClickLayerInfo
   } = props;
   const layerInfo = dataset.data.info;
-  const [min, max] = dataset.data.sourceParams?.rescale || [0, 1];
+  const [min, max] =
+    datasetLegend?.type === 'gradient' &&
+    datasetLegend.min != null &&
+    datasetLegend.max != null
+      ? [datasetLegend.min, datasetLegend.max]
+      : dataset.data.sourceParams?.rescale || [0, 1];
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
 
@@ -153,10 +158,10 @@ export default function DataLayerCard(props: CardProps) {
   const showConfigurableCmap =
     showConfigurableColorMap &&
     dataset.status === 'success' &&
-    datasetLegend?.type === 'gradient';
+    datasetLegend?.type === 'gradient' &&
+    colorMap;
   const showNonConfigurableCmap =
-    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
-
+    !showConfigurableCmap && datasetLegend?.type === 'gradient';
   return (
     <>
       <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
@@ -233,6 +238,7 @@ export default function DataLayerCard(props: CardProps) {
             ref={triggerRef}
           >
             <LayerGradientColormapGraphic
+              stops={datasetLegend.stops}
               min={min}
               max={max}
               colorMap={colorMap}
@@ -241,8 +247,8 @@ export default function DataLayerCard(props: CardProps) {
               className='colormap-options'
               content={
                 <ColormapOptions
-                  min={min}
-                  max={max}
+                  min={Number(min)}
+                  max={Number(max)}
                   colorMap={colorMap}
                   setColorMap={setColorMap}
                   setColorMapScale={setColorMapScale}
@@ -266,6 +272,7 @@ export default function DataLayerCard(props: CardProps) {
         )}
         {showNonConfigurableCmap && (
           <LayerGradientColormapGraphic
+            stops={datasetLegend.stops}
             min={min}
             max={max}
             colorMap={colorMap}

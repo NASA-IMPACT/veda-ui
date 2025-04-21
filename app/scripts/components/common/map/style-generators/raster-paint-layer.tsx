@@ -30,7 +30,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
 
 export function formatTitilerParameter(params) {
   // bands and assets need to be sent as repeat query params
-  const { bands, assets, ...regularParams } = params;
+  const { bands, assets, bbox, ...regularParams } = params;
 
   const repeatParams: Record<string, string[] | undefined> = {};
   if (Array.isArray(bands)) repeatParams.bands = bands;
@@ -44,7 +44,14 @@ export function formatTitilerParameter(params) {
     arrayFormat: 'repeat'
   });
 
-  return [regularParamsString, repeatParamsString]
+  const bboxString = qs.stringify(
+    { bbox },
+    {
+      encode: false
+    }
+  );
+
+  return [regularParamsString, repeatParamsString, bboxString]
     .filter(Boolean) // Remove empty strings
     .join('&');
 }
@@ -92,6 +99,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       async function run() {
         // Create a modified version of the parameters
         const tileParamsAsString = formatTitilerParameter(updatedTileParams);
+
         const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
         try {
           const tilejsonData = await requestQuickCache<any>({
@@ -104,6 +112,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
           const tileUrlMetadata =
             metadataFormatter &&
             metadataFormatter(tilejsonData, tileParamsAsString);
+          // bands and assets need to be sent as repeat query params
 
           const rasterSource: RasterSourceSpecification = {
             type: 'raster',

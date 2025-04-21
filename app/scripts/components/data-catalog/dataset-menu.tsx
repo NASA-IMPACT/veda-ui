@@ -20,7 +20,7 @@ import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
 import { NotebookConnectModal } from '$components/common/notebook-connect';
 import DropMenuItemButton from '$styles/drop-menu-item-button';
 import { Tip } from '$components/common/tip';
-import { USWDSButton } from '$components/common/uswds';
+import { USWDSButton } from '$uswds';
 
 const DropMenuItemButtonDisable = styled(DropMenuItemButton)<{
   visuallyDisabled: boolean;

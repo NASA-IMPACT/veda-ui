@@ -29,6 +29,23 @@ interface CMRResponseData {
     };
   }[];
 }
+interface Link {
+  href: string;
+  rel: string;
+  type: string;
+  title: string;
+  'wms:layers': string[];
+  'wms:styles': string[];
+}
+
+interface WMSResponseData {
+  links: Link[];
+  extent: {
+    spatial: {
+      bbox: [number, number, number, number][];
+    };
+  };
+}
 
 export function useZarr({
   id,
@@ -97,7 +114,7 @@ export function useCMR({
         onStatusChange?.({ status: S_LOADING, id });
         if (!assetUrlReplacements)
           throw new Error(
-            'CMR  layer requires asset url remplacement attributes'
+            'CMR  layer requires asset url replacement attributes'
           );
 
         // Zarr collections in _VEDA_ should have a single entrypoint (zarr or virtual zarr / reference)
@@ -141,6 +158,52 @@ export function useCMR({
   ]);
 
   return assetUrl;
+}
+
+export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
+  const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
+  const [wmsUrl, setWmsUrl] = useState('');
+  const [bounds, setBounds] =
+    useState<[number, number, number, number]>(defaultBounds);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
+        const data: WMSResponseData = await requestQuickCache({
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
+        const bounds = data.extent.spatial.bbox[0];
+        setBounds(bounds);
+        const wms = data.links.find((l) => l.rel === 'wms');
+        if (wms) setWmsUrl(wms.href);
+        else throw new Error('no wms link');
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setWmsUrl('');
+          setBounds(defaultBounds);
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
+    }
+
+    load();
+
+    return () => {
+      controller.abort();
+    };
+  }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
+
+  return {
+    wmsUrl,
+    bounds
+  };
 }
 
 interface UseRequestStatusParams {

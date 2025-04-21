@@ -1,7 +1,7 @@
 {
   "name": "@teamimpact/veda-ui",
   "description": "Dashboard",
-  "version": "6.3.0",
+  "version": "6.4.0",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -262,7 +262,7 @@
     "$types": "~/app/scripts/types",
     "$context": "~/app/scripts/context",
     "$data-layer": "~/app/scripts/data-layer",
-    "$uswds": "~/app/scripts/components/common/uswds",
+    "$uswds": "~/app/scripts/uswds",
     "$libs": "~/app/scripts/libs",
     "$test": "~/test",
     "$static": "~/static"

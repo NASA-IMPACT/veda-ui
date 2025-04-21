@@ -6,12 +6,12 @@ import {
 import axios from 'axios';
 import {
   StacDatasetData,
-  TimeDensity,
   TimelineDataset,
   DatasetStatus,
   VizDataset
 } from '../types.d.ts';
 import {
+  getTimeDensityFromInterval,
   resolveLayerTemporalExtent,
   resolveRenderParams,
   isRenderParamsApplicable
@@ -94,9 +94,16 @@ async function fetchStacDatasetById(
     `${stacApiEndpointToUse}/collections/${stacCol}`
   );
 
+  const timeDensity =
+    data['dashboard:time_density'] ||
+    time_density ||
+    getTimeDensityFromInterval(data['dashboard:time_interval']);
   const commonTimeseriesParams = {
     isPeriodic: !!data['dashboard:is_periodic'],
-    timeDensity: data['dashboard:time_density'] || TimeDensity.DAY
+    isTimeless: !!data['dashboard:is_timeless'],
+    timeDensity: timeDensity,
+    timeInterval:
+      data['dashboard:time_interval'] || `P1${timeDensity[0].toUpperCase()}`
   };
 
   if (type === 'vector') {
@@ -109,6 +116,22 @@ async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: featuresApiData.extent.temporal.interval[0]
     };
+  } else if (type === 'wms') {
+    let domain = data.summaries?.datetime?.[0]
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+
+    // @TODO: what to do with timeless data? Setting up as today as a temporary solution
+    if (data['dashboard:is_timeless']) {
+      const date = new Date();
+      const tempStart = new Date(date.setDate(date.getDate() - 10));
+      domain = [tempStart.toISOString(), new Date().toISOString()];
+    }
+
+    return {
+      ...commonTimeseriesParams,
+      domain
+    };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
@@ -119,8 +142,8 @@ async function fetchStacDatasetById(
     const lastDatetime = domain[domain.length - 1] || new Date().toISOString();
     // CMR STAC misses the dashboard specific attributes, shim these values
     return {
+      ...commonTimeseriesParams,
       isPeriodic: true,
-      timeDensity: time_density ?? TimeDensity.DAY,
       domain: [domainStart, lastDatetime]
     };
   } else {

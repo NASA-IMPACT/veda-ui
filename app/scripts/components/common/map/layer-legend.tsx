@@ -24,7 +24,7 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
-import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText} from '$types/veda';
 import { divergingColorMaps, sequentialColorMaps, restColorMaps } from '$components/exploration/components/datasets/colorMaps';
 import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
 
@@ -210,7 +210,7 @@ const LegendBody = styled(WidgetItemBodyInner)`
 `;
 
 export function LayerLegend(
-  props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical)
+  props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical | LayerLegendText)
 ) {
   const { id, type, title, description } = props;
 
@@ -347,22 +347,21 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   );
 };
 
-export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'stops' | 'type'>) => {
-  const { colorMap = DEFAULT_COLORMAP, ...otherProps } = props;
-  const colormapResult = findColormapByName(colorMap);
+export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'type'>) => {
+  const { colorMap, stops: defaultStops, ...otherProps } = props;
 
-  const { foundColorMap, isReversed } = colormapResult;
-  const stops = Object.values(foundColorMap)
-  .filter(value => Array.isArray(value) && value.length === 4)
-  .map((value) => {
-    return `rgba(${(value as number[]).join(',')})`;
-  });
+  const processedStops = React.useMemo(() => {
+    if (!colorMap) return defaultStops;
 
-  const processedStops = isReversed
-  ? stops.reduceRight((acc, stop) => [...acc, stop], [])
-  : stops;
+    const { foundColorMap, isReversed } = findColormapByName(colorMap);
+    const stops = Object.values(foundColorMap)
+      .filter(value => Array.isArray(value) && value.length === 4)
+      .map(value => `rgba(${(value as number[]).join(',')})`);
 
-  return <LayerGradientGraphic type='gradient' stops={processedStops} {...otherProps} />;
+    return isReversed ? [...stops].reverse() : stops;
+  }, [colorMap, defaultStops]);
+
+  return <LayerGradientGraphic type='gradient' {...otherProps} stops={processedStops} />;
 };
 
 export const findColormapByName = (name: string) => {
