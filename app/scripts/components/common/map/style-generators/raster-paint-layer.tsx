@@ -31,11 +31,13 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
 
 export function formatTitilerParameter(params): string {
   // bands and assets need to be sent as repeat query params
-  const { bands, assets, bbox, ...regularParams } = params;
+  const { bands, bidx, assets, bbox, ...regularParams } = params;
 
-  const repeatParams: Record<string, string[] | undefined> = {};
-  if (Array.isArray(bands)) repeatParams.bands = bands;
-  if (Array.isArray(assets)) repeatParams.assets = assets;
+  const repeatParams: Record<string, string[] | undefined> = {
+    bands,
+    assets,
+    bidx
+  };
 
   const regularParamsString = qs.stringify(regularParams, {
     arrayFormat: 'comma'
@@ -96,7 +98,6 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       async function run() {
         // Create a modified version of the parameters
         const tileParamsAsString = formatTitilerParameter(updatedTileParams);
-
         const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
 
         try {

@@ -348,7 +348,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       <RasterPaintLayer
         id={id}
         tileApiEndpoint={mosaicUrl}
-        tileParams={{ ...sourceParams, assets: ['cog_default'] }}
+        tileParams={{ assets: ['cog_default'], ...sourceParams }}
         zoomExtent={zoomExtent}
         hidden={hidden}
         opacity={opacity}
