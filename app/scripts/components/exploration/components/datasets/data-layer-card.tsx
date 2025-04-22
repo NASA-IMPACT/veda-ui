@@ -6,7 +6,9 @@ import {
   CollecticonCircleInformation,
   CollecticonEyeDisabled,
   CollecticonEye,
-  CollecticonChevronDownSmall
+  CollecticonChevronDownSmall,
+  CollecticonChevronDown,
+  CollecticonChevronUp
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
@@ -18,7 +20,8 @@ import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText } from '$t
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
-  LayerGradientColormapGraphic
+  LayerGradientColormapGraphic,
+  renderSwatchLine
 } from '$components/common/map/layer-legend';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import {
@@ -161,7 +164,13 @@ export default function DataLayerCard(props: CardProps) {
     datasetLegend?.type === 'gradient' &&
     colorMap;
   const showNonConfigurableCmap =
-    !showConfigurableCmap && datasetLegend?.type === 'gradient';
+    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
+
+  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
+  const chevToggleExpanded = () => {
+    setIsChevToggleExpanded((prev) => !prev);
+  };
+
   return (
     <>
       <DatasetInfo className={isVisible ? 'layerShown' : 'layerHidden'}>
@@ -207,6 +216,26 @@ export default function DataLayerCard(props: CardProps) {
                   />
                 )}
               </TipButton>
+              {datasetLegend?.type === 'categorical' && (
+                <TipButton
+                  tipContent={isChevToggleExpanded ? 'Expand Legend' : 'Collapse Legend'}
+                  size='small'
+                  fitting='skinny'
+                  onClick={chevToggleExpanded}
+                >
+                {isChevToggleExpanded ? (
+                  <CollecticonChevronDown
+                  title='Expand Legend'
+                  meaningful
+                  />
+                ) : (
+                  <CollecticonChevronUp
+                  title='Collapse Legend'
+                  meaningful
+                  />
+                )}
+                </TipButton>
+              )}
               <LayerMenuOptions datasetAtom={datasetAtom} />
             </DatasetToolbar>
           </DatasetHeadline>
@@ -216,6 +245,11 @@ export default function DataLayerCard(props: CardProps) {
           </DatasetMetricInfo>
         </DatasetCardInfo>
         {datasetLegend?.type === 'categorical' && (
+          <div style={{ cursor: 'pointer' }}>
+            {renderSwatchLine(datasetLegend)}
+          </div>
+        )}
+        {datasetLegend?.type === 'categorical' && !isChevToggleExpanded && (
           <LayerCategoricalGraphic
             type='categorical'
             stops={datasetLegend.stops}
