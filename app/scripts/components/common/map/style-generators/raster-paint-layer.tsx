@@ -1,5 +1,4 @@
 import { useEffect, useMemo } from 'react';
-import qs from 'qs';
 import { RasterSourceSpecification, RasterLayerSpecification } from 'mapbox-gl';
 import { requestQuickCache } from '../utils';
 import { BaseGeneratorParams } from '../types';
@@ -7,6 +6,7 @@ import useMapStyle from '../hooks/use-map-style';
 import useGeneratorParams from '../hooks/use-generator-params';
 import { STATUS_KEY } from './hooks';
 
+import { formatTitilerParameter } from './utils';
 import { TileJSON } from '$types/veda';
 import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
@@ -27,33 +27,6 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
     status: ActionStatus;
     context: STATUS_KEY;
   }) => void;
-}
-
-export function formatTitilerParameter(params): string {
-  // array<any> parameter except the one comma delimiated (Ex.rescale)
-  // https://openveda.cloud/api/raster/docs#/STAC%20Search/tilejson_searches__search_id___tileMatrixSetId__tilejson_json_get
-  const { bands, bidx, asset_bidx, assets, bbox, ...regularParams } = params;
-
-  const repeatParams: Record<string, string[] | undefined> = {
-    bands,
-    assets,
-    bidx,
-    asset_bidx
-  };
-
-  const regularParamsString = qs.stringify(regularParams, {
-    arrayFormat: 'comma'
-  });
-
-  const repeatParamsString = qs.stringify(repeatParams, {
-    arrayFormat: 'repeat'
-  });
-
-  const bboxString = bbox ? `bbox=${bbox}` : '';
-
-  return [regularParamsString, repeatParamsString, bboxString]
-    .filter(Boolean) // Remove empty strings
-    .join('&');
 }
 
 export function RasterPaintLayer(props: RasterPaintLayerProps) {
