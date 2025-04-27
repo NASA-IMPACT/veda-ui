@@ -278,6 +278,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     isPositionSet,
     hidden,
     opacity,
+    generatorOrder,
     stacApiEndpoint,
     tileApiEndpoint,
     colorMap,
@@ -353,6 +354,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
         hidden={hidden}
         opacity={opacity}
         colorMap={colorMap}
+        generatorOrder={generatorOrder}
         reScale={reScale}
         generatorPrefix='raster-timeseries'
         onStatusChange={changeStatus}
