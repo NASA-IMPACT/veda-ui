@@ -136,7 +136,6 @@ function useMosaicUrl({
   id,
   stacCol,
   date,
-  colorMap,
   stacCollection,
   changeStatus,
   tileApiEndpointToUse
@@ -247,7 +246,6 @@ function useMosaicUrl({
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
     };
   }, [
-    colorMap,
     stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
@@ -310,7 +308,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     id,
     stacCol,
     date,
-    colorMap,
     stacCollection,
     changeStatus,
     tileApiEndpointToUse
