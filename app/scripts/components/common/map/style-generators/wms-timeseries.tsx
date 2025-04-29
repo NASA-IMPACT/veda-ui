@@ -24,8 +24,17 @@ export interface MapLayerWMSProps extends BaseGeneratorParams {
 }
 
 export function WMSTimeseries(props: MapLayerWMSProps) {
-  const { id, stacCol, date, stacApiEndpoint, sourceParams, onStatusChange } =
-    props;
+  const {
+    id,
+    stacCol,
+    date,
+    stacApiEndpoint,
+    sourceParams,
+    onStatusChange,
+    hidden,
+    opacity,
+    generatorOrder
+  } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const { wmsUrl, bounds } = useWMS({
@@ -65,6 +74,9 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
       tileParams={tileParams}
       generatorPrefix='wms'
       onStatusChange={changeStatus}
+      hidden={hidden}
+      opacity={opacity}
+      generatorOrder={generatorOrder}
       metadataFormatter={(_tileJsonData, tileParamsAsString) => {
         return { wmsTileUrl: `${wmsUrl}?${tileParamsAsString}` };
       }}
