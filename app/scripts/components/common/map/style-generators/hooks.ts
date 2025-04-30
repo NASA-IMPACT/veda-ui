@@ -47,6 +47,25 @@ interface WMSResponseData {
   };
 }
 
+interface WMTSLink {
+  href: string;
+  rel: string;
+  type: string;
+  title: string;
+  'wmts:layers': string[];
+  'wmts:dimensions': string[];
+  'wmts:servers': string[];
+}
+
+interface WMTSResponseData {
+  links: WMTSLink[];
+  extent: {
+    spatial: {
+      bbox: [number, number, number, number][];
+    };
+  };
+}
+
 export function useZarr({
   id,
   stacCol,
@@ -202,6 +221,52 @@ export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
 
   return {
     wmsUrl,
+    bounds
+  };
+}
+
+export function useWMTS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
+  const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
+  const [wmtsUrl, setWmtsUrl] = useState('');
+  const [bounds, setBounds] =
+    useState<[number, number, number, number]>(defaultBounds);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    async function load() {
+      try {
+        onStatusChange?.({ status: S_LOADING, id });
+        const data: WMTSResponseData = await requestQuickCache({
+          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
+          method: 'GET',
+          controller
+        });
+        const bounds = data.extent.spatial.bbox[0];
+        setBounds(bounds);
+        const wmts = data.links.find((l) => l.rel === 'wmts');
+        if (wmts) setWmtsUrl(wmts.href);
+        else throw new Error('no wmts link');
+        onStatusChange?.({ status: S_SUCCEEDED, id });
+      } catch (error) {
+        if (!controller.signal.aborted) {
+          setWmtsUrl('');
+          setBounds(defaultBounds);
+          onStatusChange?.({ status: S_FAILED, id });
+        }
+        return;
+      }
+    }
+
+    load();
+
+    return () => {
+      controller.abort();
+    };
+  }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
+
+  return {
+    wmtsUrl,
     bounds
   };
 }
