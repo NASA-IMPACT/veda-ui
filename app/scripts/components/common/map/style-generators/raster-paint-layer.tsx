@@ -77,8 +77,11 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
         try {
           let tileUrlMetadata;
-          if (!generatorPrefix.includes('wms')) {
-            // wms data doesn't have an endpoint for tlejson
+          if (
+            !generatorPrefix.includes('wms') &&
+            !generatorPrefix.includes('wmts')
+          ) {
+            // wms data doesn't have an endpoint for tilejson
             const tileJsonData = await requestQuickCache<any>({
               url: tileUrl,
               method: 'GET',
