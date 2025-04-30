@@ -13,7 +13,11 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     date,
     onStatusChange,
     sourceParams,
-    envApiStacEndpoint
+    tileApiEndpoint,
+    envApiStacEndpoint,
+    hidden,
+    opacity,
+    generatorOrder
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint;
@@ -40,6 +44,15 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
       tileParams={tileParams}
       onStatusChange={changeStatus}
       generatorPrefix='zarr-timeseries'
+      hidden={hidden}
+      opacity={opacity}
+      generatorOrder={generatorOrder}
+      metadataFormatter={(tilejsonData, tileParamsAsString) => {
+        return {
+          xyzTileUrl: tilejsonData?.tiles[0],
+          wmtsTileUrl: `${tileApiEndpoint}WMTSCapabilities.xml?${tileParamsAsString}`
+        };
+      }}
     />
   );
 }
