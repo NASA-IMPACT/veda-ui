@@ -26,6 +26,7 @@ jobs:
           repositories: |
             veda-ui
             veda-config
+            next-veda-ui
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
