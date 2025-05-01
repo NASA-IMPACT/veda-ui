@@ -61,13 +61,13 @@ jobs:
           npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{steps.generate-token.outputs.token}}
-          repository: nasa-impact/veda-config
-          event-type: update-version
-          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
+      # - name: Repository Dispatch
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     token: ${{steps.generate-token.outputs.token}}
+      #     repository: nasa-impact/veda-config
+      #     event-type: update-version
+      #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
       - name: Trigger version update in Template Instance
         uses: peter-evans/repository-dispatch@v3
         with:
