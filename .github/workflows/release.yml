@@ -68,45 +68,52 @@ jobs:
           repository: nasa-impact/veda-config
           event-type: update-version
           client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
-  notify:
-    # If any of job fails
-    if: failure() 
-    runs-on: ubuntu-latest
-    needs:
-      - release
-    steps:
-      - name: Notify failure through Slack
-        uses: slackapi/slack-github-action@v2.0.0
+      - name: Trigger version update in Template Instance
+        uses: peter-evans/repository-dispatch@v3
         with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: "*VEDA UI Release failed*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-  trigger:
-    runs-on: ubuntu-latest
-    needs:
-      - release
-    steps:
-      - name: Trigger veda-ui version update in next-veda-ui
-        run: |
-          # Set the required variables
-          repo_owner="nasa-impact"
-          repo_name="next-veda-ui"
-          event_type="trigger-workflow" 
-          service=${{ github.event.inputs.target_service }}"
-          version="${{ github.event.inputs.target_version }}"
+          token: ${{steps.generate-token.outputs.token}}
+          repository: nasa-impact/next-veda-ui
+          event-type: update-version
+          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
+  # notify:
+  #   # If any of job fails
+  #   if: failure() 
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - release
+  #   steps:
+  #     - name: Notify failure through Slack
+  #       uses: slackapi/slack-github-action@v2.0.0
+  #       with:
+  #         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #         webhook-type: incoming-webhook
+  #         payload: |
+  #           text: "*VEDA UI Release failed*: "
+  #           blocks:
+  #             - type: "section"
+  #               text:
+  #                 type: "mrkdwn"
+  #                 text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  # trigger:
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - release
+  #   steps:
+  #     - name: Trigger veda-ui version update in next-veda-ui
+  #       run: |
+  #         # Set the required variables
+  #         repo_owner=${{ github.repository_owner }}
+  #         repo_name=${{ github.repository }}
+  #         event_type="trigger-workflow" 
+  #         service="next-veda-ui"
+  #         version="${{ steps.git-release.outputs.VERSION_NUMBER }}"
   
-          curl -L \
-            -X POST \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer ${{ secrets.PAT }}" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
-            -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"service\": \"$service\", \"version\": \"$version\", \"unit\": false, \"integration\": true}}"
+  #         curl -L \
+  #           -X POST \
+  #           -H "Accept: application/vnd.github+json" \
+  #           -H "Authorization: Bearer ${{ secrets.PAT }}" \
+  #           -H "X-GitHub-Api-Version: 2022-11-28" \
+  #           https://api.github.com/repos/$repo_owner/$repo_name/dispatches \
+  #           -d "{\"event_type\": \"$event_type\", \"client_payload\": {\"service\": \"$service\", \"version\": \"$version\", \"unit\": false, \"integration\": true}}"
 
 # https://medium.com/hostspaceng/triggering-workflows-in-another-repository-with-github-actions-4f581f8e0ceb#:~:text=In%20the%20source%20repository%2C%20go,e.g.%2C%20owner%2Frepo%20).
