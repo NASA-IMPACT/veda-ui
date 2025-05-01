@@ -50,11 +50,11 @@ jobs:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
       - run: yarn
-      - name: Release through Git
-        id: git-release
-        run: yarn release  --ci --verbose
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Release through Git
+      #   id: git-release
+      #   run: yarn release  --ci --verbose
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish package to NPM
         run: |
           yarn buildlib
