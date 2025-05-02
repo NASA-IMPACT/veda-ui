@@ -44,7 +44,7 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
     Version: '1.0.0',
     layer: stacCol,
     style: 'default',
-    tilematrixset: '2km',
+    tilematrixset: 'GoogleMapsCompatible_Level6',
     ...(date && { TIME: userTzDate2utcString(date) })
   };
 
@@ -58,13 +58,16 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
       generatorPrefix='wmts'
       onStatusChange={changeStatus}
       metadataFormatter={(_tileJsonData, tileParamsAsString) => {
-        // console.log({ _tileJsonData, tileParamsAsString });
-        return { wmsTileUrl: `${wmtsUrl}?${tileParamsAsString}` };
+        return {
+          wmtsTileUrl: `${wmtsUrl}?${tileParamsAsString}`
+        };
       }}
       sourceParamFormatter={(url) => {
-        const tileUrl = `${url}&TileCol={x}&TileRow={y}&TileMatrix={z}`;
+        const tileUrl = (url as string[]).map(
+          (item) => `${item}&TileCol={x}&TileRow={y}&TileMatrix={z}`
+        );
         return {
-          tiles: [tileUrl],
+          tiles: tileUrl,
           tileSize: 256
         };
       }}

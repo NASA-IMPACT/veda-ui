@@ -227,7 +227,7 @@ export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
 
 export function useWMTS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
   const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
-  const [wmtsUrl, setWmtsUrl] = useState('');
+  const [wmtsUrl, setWmtsUrl] = useState<string[]>();
   const [bounds, setBounds] =
     useState<[number, number, number, number]>(defaultBounds);
 
@@ -244,13 +244,20 @@ export function useWMTS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
         });
         const bounds = data.extent.spatial.bbox[0];
         setBounds(bounds);
-        const wmts = data.links.find((l) => l.rel === 'wmts');
-        if (wmts) setWmtsUrl(wmts.href);
-        else throw new Error('no wmts link');
+        const wmtsLink = data.links.find((l) => l.rel === 'wmts');
+
+        if (!wmtsLink || !wmtsLink.href) {
+          throw new Error('WMTS link is missing or malformed');
+        }
+        const primaryHref = wmtsLink.href;
+        const alternateServers: string[] = wmtsLink['href:servers'] ?? [];
+        // Ensure all values are strings and non-empty
+        const tileUrls = [primaryHref, ...alternateServers].filter(Boolean);
+        setWmtsUrl(tileUrls.length ? tileUrls : []);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setWmtsUrl('');
+          setWmtsUrl([]);
           setBounds(defaultBounds);
           onStatusChange?.({ status: S_FAILED, id });
         }

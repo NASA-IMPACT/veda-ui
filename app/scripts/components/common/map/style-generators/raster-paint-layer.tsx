@@ -12,7 +12,7 @@ import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
-  tileApiEndpoint?: string;
+  tileApiEndpoint?: string | string[];
   zoomExtent?: number[];
   colorMap?: string | undefined;
   tileParams: Record<string, any>;
@@ -22,7 +22,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
     tileJsonData: TileJSON | null,
     tileParamsAsString: string
   ) => Record<string, any>;
-  sourceParamFormatter?: (tileUrl: string) => Record<string, any>;
+  sourceParamFormatter?: (tileUrl: string | string[]) => Record<string, any>;
   onStatusChange?: (params: {
     status: ActionStatus;
     context: STATUS_KEY;
@@ -41,7 +41,11 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     reScale,
     generatorPrefix = 'raster',
     metadataFormatter,
-    sourceParamFormatter = (tileUrl) => ({ url: tileUrl }),
+    sourceParamFormatter = (tileUrl) => {
+      return Array.isArray(tileUrl)
+        ? { tiles: tileUrl } // multiple direct tile URLs
+        : { url: tileUrl }; // tileJSON endpoint
+    },
     onStatusChange
   } = props;
   const { updateStyle } = useMapStyle();
@@ -73,7 +77,9 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       async function run() {
         // Create a modified version of the parameters
         const tileParamsAsString = formatTitilerParameter(updatedTileParams);
-        const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
+        const tileUrl = Array.isArray(tileApiEndpoint)
+          ? tileApiEndpoint.map((url) => `${url}?${tileParamsAsString}`)
+          : [`${tileApiEndpoint}?${tileParamsAsString}`];
 
         try {
           let tileUrlMetadata;
@@ -82,8 +88,11 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             !generatorPrefix.includes('wmts')
           ) {
             // wms data doesn't have an endpoint for tilejson
+            const primaryTileUrl = Array.isArray(tileUrl)
+              ? tileUrl[0]
+              : tileUrl;
             const tileJsonData = await requestQuickCache<any>({
-              url: tileUrl,
+              url: primaryTileUrl,
               method: 'GET',
               payload: null,
               controller
