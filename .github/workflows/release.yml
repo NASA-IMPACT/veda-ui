@@ -26,6 +26,7 @@ jobs:
           repositories: |
             veda-ui
             veda-config
+            next-veda-ui
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -55,6 +56,9 @@ jobs:
         run: yarn release  --ci --verbose
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set Version Variable
+        id: set-version
+        run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
       - name: Publish package to NPM
         run: |
           yarn buildlib
@@ -68,6 +72,13 @@ jobs:
           repository: nasa-impact/veda-config
           event-type: update-version
           client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
+      - name: Trigger version update in Template Instance
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{steps.generate-token.outputs.token}}
+          repository: nasa-impact/next-veda-ui
+          event-type: update-version
+          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
   notify:
     # If any of job fails
     if: failure() 
