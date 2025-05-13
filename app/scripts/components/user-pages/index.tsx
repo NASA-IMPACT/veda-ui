@@ -19,10 +19,12 @@ function UserPages(props: { id: any }) {
   return (
     <PageMainContent>
       <LayoutProps title={page.data.title} />
-      <PageHero
-        title={page.data.title || 'Page title is missing'}
-        description={page.data.description}
-      />
+      {!page.data.hidePageHero && (
+        <PageHero
+          title={page.data.title || 'Page title is missing'}
+          description={page.data.description}
+        />
+      )}
       <ContentOverride with={props.id} {...params}>
         <FoldProse>
           <p>Content for this page comes from the relevant mdx file.</p>
