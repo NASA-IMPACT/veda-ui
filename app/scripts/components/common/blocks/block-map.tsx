@@ -126,9 +126,6 @@ function getLayerWithOverrides(
 
   const { rescale, name, legend } = overrides;
 
-  console.log('layer', layer);
-  console.log('overrides', overrides);
-
   return {
     ...layer,
     data: {
@@ -236,8 +233,6 @@ function MapBlock(props: MapBlockProps) {
         compareMapStaticData,
         props.compareOverrides
       );
-
-      console.log('compareLayer', compareLayer);
 
       totalLayers = [...totalLayers, compareLayer];
     }

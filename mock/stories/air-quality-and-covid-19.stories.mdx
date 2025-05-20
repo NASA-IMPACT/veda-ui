@@ -206,6 +206,16 @@ taxonomy:
       dateTime='2019-04-01'
       compareDateTime='2020-04-01'
       basemapId='dark'
+      layerOverrides={{
+        rescale: [-8e15, 8e15],
+        name: 'Custom No2 PT',
+        legend: {
+          unit: { label: 'Custom Molecules cm3' },
+        }
+      }}
+      compareOverrides={{
+        name: 'Nightlights Monthly Updated',
+      }}
     />
     <Caption 
       attrAuthor='NASA' 
