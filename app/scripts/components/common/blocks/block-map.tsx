@@ -28,6 +28,7 @@ import { Layer } from '$components/exploration/components/map/layer';
 import {
   VizDataset,
   VizDatasetSuccess,
+  TimelineDataset,
   DatasetStatus
 } from '$components/exploration/types.d.ts';
 
@@ -110,6 +111,44 @@ function validateBlockProps(props: MapBlockProps) {
   ].filter(Boolean) as string[];
 }
 
+
+function getLayerWithOverrides(
+  layer: TimelineDataset,
+  overrides?: {
+    rescale?: number[];
+    name?: string;
+    legend?: VizDatasetSuccess['data']['legend'];
+  }
+): TimelineDataset {
+  if (!overrides || !layer.data) {
+    return layer;
+  }
+
+  const { rescale, name, legend } = overrides;
+
+  console.log('layer', layer);
+  console.log('overrides', overrides);
+
+  return {
+    ...layer,
+    data: {
+      ...layer.data,
+      ...(name && { name }),
+      ...(legend && {
+        legend: {
+          ...layer.data.legend,
+          ...legend,
+        },
+      }),
+      sourceParams: {
+        ...layer.data.sourceParams,
+        ...(rescale ? { rescale } : {}),
+      },
+    },
+  };
+}
+
+
 interface MapBlockProps {
   datasets: VedaData<DatasetData>;
   dateTime?: string;
@@ -124,6 +163,16 @@ interface MapBlockProps {
   basemapId?: BasemapId;
   datasetId?: string;
   layerId: string;
+  layerOverrides?: Partial<{
+    name: string;
+    legend: object;
+    rescale: object;
+  }>;
+  compareOverrides?: {
+    name?: string;
+    legend?: object;
+    rescale?: number[];
+  };
 }
 
 const getDataLayer = (
@@ -169,7 +218,11 @@ function MapBlock(props: MapBlockProps) {
   const datasetLayers = getDatasetLayers(datasets);
   const layersToFetch = useMemo(() => {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
-    let totalLayers = [baseMapStaticData];
+    let baseLayer = getLayerWithOverrides(
+      baseMapStaticData,
+      props.layerOverrides
+    );
+    let totalLayers = [baseLayer];
     const baseMapStaticCompareData = baseMapStaticData.data.compare;
     if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
       const compareLayerId = baseMapStaticCompareData.layerId;
@@ -178,7 +231,15 @@ function MapBlock(props: MapBlockProps) {
         datasetLayers,
         []
       );
-      totalLayers = [...totalLayers, compareMapStaticData];
+      
+      const compareLayer = getLayerWithOverrides(
+        compareMapStaticData,
+        props.compareOverrides
+      );
+
+      console.log('compareLayer', compareLayer);
+
+      totalLayers = [...totalLayers, compareLayer];
     }
     return totalLayers;
   }, [layerId]);
