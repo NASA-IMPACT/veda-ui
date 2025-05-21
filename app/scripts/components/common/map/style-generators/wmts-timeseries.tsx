@@ -1,15 +1,12 @@
 import React from 'react';
-
 import useFitBbox from '../hooks/use-fit-bbox';
 import { BaseGeneratorParams } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
-
 import {
   useRequestStatus,
   useWMTS
 } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
-
 import { userTzDate2utcString } from '$utils/date';
 
 export interface MapLayerWMTSProps extends BaseGeneratorParams {
@@ -24,6 +21,7 @@ export interface MapLayerWMTSProps extends BaseGeneratorParams {
 
 export function WMTSTimeseries(props: MapLayerWMTSProps) {
   const { id, stacCol, date, stacApiEndpoint, onStatusChange } = props;
+
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const { wmtsUrl, bounds } = useWMTS({
     id,
@@ -47,27 +45,27 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
     tilematrixset: 'GoogleMapsCompatible_Level6',
     ...(date && { TIME: userTzDate2utcString(date) })
   };
+  const primaryUrl = (wmtsUrl?.[0] ?? '') as string;
 
   useFitBbox(false, undefined, bounds);
 
   return (
     <RasterPaintLayer
       {...props}
-      tileApiEndpoint={wmtsUrl}
+      id={id}
+      tileApiEndpoint={primaryUrl}
       tileParams={tileParams}
       generatorPrefix='wmts'
       onStatusChange={changeStatus}
-      metadataFormatter={(_tileJsonData, tileParamsAsString) => {
-        return {
-          wmtsTileUrl: `${wmtsUrl}?${tileParamsAsString}`
-        };
-      }}
+      metadataFormatter={(_, tileParamsAsString) => ({
+        wmtsTileUrl: `${wmtsUrl}?${tileParamsAsString}`
+      })}
       sourceParamFormatter={(url) => {
-        const tileUrl = (url as string[]).map(
-          (item) => `${item}&TileCol={x}&TileRow={y}&TileMatrix={z}`
-        );
+        const wmtsParams = (url as string).split('wmts.cgi?')[1];
         return {
-          tiles: tileUrl,
+          tiles: (wmtsUrl as string[]).map(
+            (u) => `${u}?${wmtsParams}&TileCol={x}&TileRow={y}&TileMatrix={z}`
+          ),
           tileSize: 256
         };
       }}

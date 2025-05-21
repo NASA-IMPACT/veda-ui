@@ -66,26 +66,24 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
   };
 
   useFitBbox(false, undefined, bounds);
-
   return (
     <RasterPaintLayer
       {...props}
+      id={id}
+      hidden={hidden}
+      opacity={opacity}
+      generatorOrder={generatorOrder}
       tileApiEndpoint={wmsUrl}
       tileParams={tileParams}
       generatorPrefix='wms'
       onStatusChange={changeStatus}
-      hidden={hidden}
-      opacity={opacity}
-      generatorOrder={generatorOrder}
-      metadataFormatter={(_tileJsonData, tileParamsAsString) => {
-        return { wmsTileUrl: `${wmsUrl}?${tileParamsAsString}` };
-      }}
-      sourceParamFormatter={(tileUrl) => {
-        return {
-          tiles: [tileUrl],
-          tileSize: 256
-        };
-      }}
+      metadataFormatter={(_, tileParamsAsString) => ({
+        wmsTileUrl: `${wmsUrl}?${tileParamsAsString}`
+      })}
+      sourceParamFormatter={(url) => ({
+        tiles: [url],
+        tileSize: 256
+      })}
     />
   );
 }
