@@ -1,9 +1,6 @@
 import React from 'react';
-
-import useFitBbox from '../hooks/use-fit-bbox';
 import { BaseGeneratorParams } from '../types';
-import { RasterPaintLayer } from './raster-paint-layer';
-
+import { WebMapTimeseries } from './webmap-timeseries';
 import {
   useRequestStatus,
   useWMS
@@ -44,12 +41,6 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     onStatusChange
   });
 
-  const { changeStatus } = useRequestStatus({
-    id,
-    onStatusChange,
-    requestsToTrack: []
-  });
-
   const tileParams = {
     // these are mostly gonna be same for wms layers, but users can override using sourceParams
     format: 'image/png',
@@ -65,27 +56,27 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     ...(date && { time: userTzDate2utcString(date) })
   };
 
-  useFitBbox(false, undefined, bounds);
-
   return (
-    <RasterPaintLayer
+    <WebMapTimeseries
       {...props}
-      tileApiEndpoint={wmsUrl}
-      tileParams={tileParams}
-      generatorPrefix='wms'
-      onStatusChange={changeStatus}
+      id={id}
+      date={date}
+      stacCol={stacCol}
+      bounds={bounds}
       hidden={hidden}
       opacity={opacity}
       generatorOrder={generatorOrder}
-      metadataFormatter={(_tileJsonData, tileParamsAsString) => {
-        return { wmsTileUrl: `${wmsUrl}?${tileParamsAsString}` };
-      }}
-      sourceParamFormatter={(tileUrl) => {
-        return {
-          tiles: [tileUrl],
-          tileSize: 256
-        };
-      }}
+      tileApiEndpoint={wmsUrl}
+      tileParams={tileParams}
+      generatorPrefix='wms'
+      onStatusChange={onStatusChange}
+      metadataFormatter={(_, tileParamsAsString) => ({
+        wmsTileUrl: `${wmsUrl}?${tileParamsAsString}`
+      })}
+      sourceParamFormatter={(url) => ({
+        tiles: [url],
+        tileSize: 256
+      })}
     />
   );
 }

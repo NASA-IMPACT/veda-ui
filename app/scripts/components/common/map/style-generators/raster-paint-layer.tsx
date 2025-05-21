@@ -22,7 +22,7 @@ interface RasterPaintLayerProps extends BaseGeneratorParams {
     tileJsonData: TileJSON | null,
     tileParamsAsString: string
   ) => Record<string, any>;
-  sourceParamFormatter?: (tileUrl: string | string[]) => Record<string, any>;
+  sourceParamFormatter?: (tileUrl: string) => Record<string, any>;
   onStatusChange?: (params: {
     status: ActionStatus;
     context: STATUS_KEY;
@@ -41,11 +41,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     reScale,
     generatorPrefix = 'raster',
     metadataFormatter,
-    sourceParamFormatter = (tileUrl) => {
-      return Array.isArray(tileUrl)
-        ? { tiles: tileUrl } // multiple direct tile URLs
-        : { url: tileUrl }; // tileJSON endpoint
-    },
+    sourceParamFormatter = (tileUrl) => ({ url: tileUrl }),
     onStatusChange
   } = props;
   const { updateStyle } = useMapStyle();
@@ -77,9 +73,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       async function run() {
         // Create a modified version of the parameters
         const tileParamsAsString = formatTitilerParameter(updatedTileParams);
-        const tileUrl = Array.isArray(tileApiEndpoint)
-          ? tileApiEndpoint.map((url) => `${url}?${tileParamsAsString}`)
-          : [`${tileApiEndpoint}?${tileParamsAsString}`];
+        const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
 
         try {
           let tileUrlMetadata;
@@ -88,11 +82,8 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             !generatorPrefix.includes('wmts')
           ) {
             // wms data doesn't have an endpoint for tilejson
-            const primaryTileUrl = Array.isArray(tileUrl)
-              ? tileUrl[0]
-              : tileUrl;
             const tileJsonData = await requestQuickCache<any>({
-              url: primaryTileUrl,
+              url: tileUrl,
               method: 'GET',
               payload: null,
               controller
@@ -105,14 +96,12 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             tileUrlMetadata =
               metadataFormatter && metadataFormatter(null, tileParamsAsString);
           }
-
           const mapSourceParams = sourceParamFormatter(tileUrl);
 
           const rasterSource: RasterSourceSpecification = {
             type: 'raster',
             ...mapSourceParams
           };
-
           const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
           const rasterLayer: RasterLayerSpecification = {
@@ -151,7 +140,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             });
         } catch (e) {
           // eslint-disable-next-line no-console
-          console.error(e);
+          console.error('hello', e);
           throw e;
         }
       }
