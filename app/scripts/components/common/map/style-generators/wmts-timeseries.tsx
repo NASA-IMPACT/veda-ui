@@ -42,7 +42,7 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
     Version: '1.0.0',
     layer: stacCol,
     style: 'default',
-    tilematrixset: 'GoogleMapsCompatible_Level6',
+    tilematrixset: 'GoogleMapsCompatible_Level8',
     ...(date && { TIME: userTzDate2utcString(date) })
   };
   const primaryUrl = (wmtsUrl?.[0] ?? '') as string;
