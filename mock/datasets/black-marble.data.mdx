@@ -1,0 +1,50 @@
+---
+id: VIIRS_SNPP_DayNightBand_At_Sensor_Radiance
+name: Black Marble Dataset (from Worldview/GIBS)
+featured: true
+description: WorldViewer
+media:
+  src: https://blink.ucsd.edu/_images/technology-tab/software/esri-logo.png
+infoDescription: |
+  ::markdown
+    World Viewer
+layers:
+  - id: VIIRS_SNPP_DayNightBand_At_Sensor_Radiance
+    stacApiEndpoint: https://dev.ghg.center/api/stac/
+    stacCol: VIIRS_SNPP_DayNightBand_At_Sensor_Radiance
+    name: Black Marble (from Worldview/GIBS)
+    type: wmts 
+    description: The Black Marble Nighttime At Sensor Radiance (Day/Night Band) layer is created from NASA’s Black Marble daily at-sensor top-of-atmosphere nighttime radiance product (VNP46A1). It is displayed as a grayscale image. The layer is expressed in radiance units (nW/(cm2 sr)) with log10 conversion. It is stretched up to 38 nW/(cm2 sr) resulting in improvements in capturing city lights in greater spatial detail than traditional Nighttime Imagery resampled at 0-255 (e.g., Day/Night Band, Enhanced Near Constant Contrast).The ultra-sensitivity of the VIIRS Day/Night Band enables scientists to capture the Earth’s surface and atmosphere in low light conditions, allowing for better monitoring of nighttime phenomena. These images are also useful for assessing anthropogenic sources of light emissions under varying illumination conditions. For instance, during partial to full moon conditions, the layer can identify the location and features of clouds and other natural terrestrial features such as sea ice and snow cover, while enabling temporal observations in urban regions, regardless of moonlit conditions. As such, the layer is particularly useful for detecting city lights, lightning, auroras, fires, gas flares, and fishing fleets.The Black Marble Nighttime At Sensor Radiance (Day/Night Band) layer is available in near real-time from the Visible Infrared Imaging Radiometer Suite (VIIRS) aboard the joint NASA/NOAA Suomi National Polar orbiting Partnership (Suomi NPP) satellite. The sensor resolution is 750 m at nadir, imagery resolution is 500 m, and the temporal resolution is daily
+    sourceParams:
+      layers: 1
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 5
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: 0.0e+16
+      max: '>2.0e+16'
+      stops:
+        - rgb(255,255,224)  # Light yellow (low concentration)
+        - rgb(255,230,140)
+        - rgb(255,204,77)
+        - rgb(255,153,51)
+        - rgb(255,102,34)
+        - rgb(255,51,17)
+        - rgb(204,0,0)      # Dark red (high concentration)
+
+
+ 
+---
+<Block>
+<Prose>
+
+Black Marble Dataset
+
+</Prose>
+</Block>
