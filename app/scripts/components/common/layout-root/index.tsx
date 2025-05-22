@@ -10,7 +10,6 @@ import { useDeepCompareEffect } from 'use-deep-compare';
 import styled from 'styled-components';
 import { Outlet } from 'react-router';
 import { reveal } from '@devseed-ui/animation';
-import { NavLink } from 'react-router-dom';
 import {
   getBannerFromVedaConfig,
   getCookieConsentFromVedaConfig,
@@ -81,7 +80,7 @@ function LayoutRoot(props: { children?: ReactNode }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const { title, thumbnail, description, hideFooter } =
+  const { title, thumbnail, description, hideFooter, hideNav } =
     useContext(LayoutRootContext);
 
   const truncatedTitle =
@@ -99,15 +98,18 @@ function LayoutRoot(props: { children?: ReactNode }) {
       {siteAlertContent && (
         <SiteAlert appTitle={siteAlertContent.title} {...siteAlertContent} />
       )}
-      <NavWrapper
-        mainNavItems={mainNavItems}
-        subNavItems={subNavItems}
-        logo={
-          <Logo
-            linkProperties={{ LinkElement: Link, pathAttributeKeyName: 'to' }}
-          />
-        }
-      />
+      {!hideNav && (
+        <NavWrapper
+          mainNavItems={mainNavItems}
+          subNavItems={subNavItems}
+          logo={
+            <Logo
+              linkProperties={{ LinkElement: Link, pathAttributeKeyName: 'to' }}
+            />
+          }
+        />
+      )}
+
       <PageBody id={PAGE_BODY_ID} tabIndex={-1}>
         <Outlet />
         {children}
