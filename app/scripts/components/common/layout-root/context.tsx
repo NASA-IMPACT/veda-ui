@@ -3,7 +3,7 @@ import React, {
   useState,
   Dispatch,
   SetStateAction,
-  ReactNode,
+  ReactNode
 } from 'react';
 import { useLocation } from 'react-router';
 import { useSlidingStickyHeader } from '$utils/use-sliding-sticky-header';
@@ -31,8 +31,9 @@ export function LayoutRootContextProvider({
   // Put the header size and visibility status in the context so that children
   // elements can access them for positioning purposes.
   const location = useLocation().pathname;
+  const hideNav = layoutProps.hideNav;
   const { isHeaderHidden, headerHeight, wrapperHeight } =
-    useSlidingStickyHeader(location);
+    useSlidingStickyHeader(location, hideNav);
 
   const ctx = {
     ...layoutProps,
