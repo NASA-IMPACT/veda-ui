@@ -107,36 +107,46 @@ export default function Banner({
   } as GuidanceContent;
 
   return (
-    <USWDSBanner
-      aria-label={ariaLabel ?? DEFAULT_HEADER_TEXT}
-      className={`${className} ${!uswdsHeaderActive && 'banner--left-aligned'}`}
-    >
-      <USWDSBannerHeader
-        isOpen={isOpen}
-        flagImg={
-          <USWDSBannerFlag
-            src={flagImgSrc ?? DEFAULT_FLAG_SRC}
-            alt={flagImgAlt ?? DEFAULT_FLAG_ALT}
-          />
-        }
-        headerText={headerText ?? DEFAULT_HEADER_TEXT}
-        headerActionText={headerActionText ?? DEFAULT_HEADER_ACTION_TEXT}
+    <div className='veda-banner'>
+      <USWDSBanner
+        aria-label={ariaLabel ?? DEFAULT_HEADER_TEXT}
+        className={`${className} ${
+          !uswdsHeaderActive && 'banner--left-aligned'
+        }`}
       >
-        <USWDSBannerButton
+        <USWDSBannerHeader
           isOpen={isOpen}
-          onClick={() => setIsOpen((prev) => !prev)}
-          aria-controls={contentId}
+          flagImg={
+            <USWDSBannerFlag
+              src={flagImgSrc ?? DEFAULT_FLAG_SRC}
+              alt={flagImgAlt ?? DEFAULT_FLAG_ALT}
+            />
+          }
+          headerText={headerText ?? DEFAULT_HEADER_TEXT}
+          headerActionText={headerActionText ?? DEFAULT_HEADER_ACTION_TEXT}
         >
-          {headerActionText ?? DEFAULT_HEADER_ACTION_TEXT}
-        </USWDSBannerButton>
-      </USWDSBannerHeader>
+          <USWDSBannerButton
+            isOpen={isOpen}
+            onClick={() => setIsOpen((prev) => !prev)}
+            aria-controls={contentId}
+          >
+            {headerActionText ?? DEFAULT_HEADER_ACTION_TEXT}
+          </USWDSBannerButton>
+        </USWDSBannerHeader>
 
-      <USWDSBannerContent id={contentId} isOpen={isOpen}>
-        <div className='grid-row grid-gap-6'>
-          <GuidanceBlock content={leftContent} className='tablet:grid-col-6' />
-          <GuidanceBlock content={rightContent} className='tablet:grid-col-6' />
-        </div>
-      </USWDSBannerContent>
-    </USWDSBanner>
+        <USWDSBannerContent id={contentId} isOpen={isOpen}>
+          <div className='grid-row grid-gap-6'>
+            <GuidanceBlock
+              content={leftContent}
+              className='tablet:grid-col-6'
+            />
+            <GuidanceBlock
+              content={rightContent}
+              className='tablet:grid-col-6'
+            />
+          </div>
+        </USWDSBannerContent>
+      </USWDSBanner>
+    </div>
   );
 }
