@@ -1,10 +1,6 @@
 @use '$styles/veda-ui-theme-vars.scss' as themeVars;
 
 .veda-banner {
-  .usa-banner__button:after {
-    top: 3px;
-  }
-
   .banner--left-aligned {
     & .usa-banner__inner,
     & .usa-banner__content {
