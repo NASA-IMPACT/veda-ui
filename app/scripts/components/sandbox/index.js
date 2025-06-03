@@ -20,6 +20,7 @@ import SandboxOverride from './override';
 import { USWDSColors } from './colors';
 import Pagination from './pagination';
 import Widgets from './widgets';
+import LightMap from './lightmap';
 import SandboxUswdsCards from './cards';
 import {
   FullscreenWidget,
@@ -116,6 +117,11 @@ const pages = [
     id: 'widgets',
     name: 'USWDS Widgets',
     component: Widgets
+  },
+  {
+    id: 'lightmap',
+    name: 'Block Map without Data collection',
+    component: LightMap
   },
   {
     id: 'uswds-cards',
@@ -233,6 +239,13 @@ function Sandbox() {
                       linkLabel='View more'
                       title='USWDS Widgets'
                       to='widgets'
+                    />
+                  </Grid>
+                  <Grid col={4} className='margin-bottom-3'>
+                    <Card
+                      linkLabel='View more'
+                      title='No Data Collection Map'
+                      to='lightmap'
                     />
                   </Grid>
                 </Grid>
