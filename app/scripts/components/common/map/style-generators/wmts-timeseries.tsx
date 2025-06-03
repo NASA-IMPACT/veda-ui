@@ -1,19 +1,15 @@
 import React from 'react';
-
 import useFitBbox from '../hooks/use-fit-bbox';
 import { BaseGeneratorParams } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
-
 import {
   useRequestStatus,
-  useWMS
+  useWMTS
 } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
-
 import { userTzDate2utcString } from '$utils/date';
 
-// @NOTE: Some WMS Layers don't have a timestamp
-export interface MapLayerWMSProps extends BaseGeneratorParams {
+export interface MapLayerWMTSProps extends BaseGeneratorParams {
   id: string;
   date?: Date;
   stacCol: string;
@@ -23,21 +19,11 @@ export interface MapLayerWMSProps extends BaseGeneratorParams {
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
 }
 
-export function WMSTimeseries(props: MapLayerWMSProps) {
-  const {
-    id,
-    stacCol,
-    date,
-    stacApiEndpoint,
-    sourceParams,
-    onStatusChange,
-    hidden,
-    opacity,
-    generatorOrder
-  } = props;
+export function WMTSTimeseries(props: MapLayerWMTSProps) {
+  const { id, stacCol, date, stacApiEndpoint, onStatusChange } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-  const { wmsUrl, bounds } = useWMS({
+  const { wmtsUrl, bounds } = useWMTS({
     id,
     stacCol,
     stacApiEndpointToUse,
@@ -49,41 +35,40 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     onStatusChange,
     requestsToTrack: []
   });
-
   const tileParams = {
-    // these are mostly gonna be same for wms layers, but users can override using sourceParams
     format: 'image/png',
-    service: 'WMS',
-    request: 'GetMap',
-    transparent: 'true',
-    width: '256',
-    height: '256',
-    version: '1.3.0',
-    crs: 'EPSG:3857',
-    bbox: '{bbox-epsg-3857}',
-    ...sourceParams,
-    ...(date && { time: userTzDate2utcString(date) })
+    Service: 'WMTS',
+    Request: 'GetTile',
+    Version: '1.0.0',
+    layer: stacCol,
+    style: 'default',
+    tilematrixset: 'GoogleMapsCompatible_Level8',
+    ...(date && { TIME: userTzDate2utcString(date) })
   };
+  const primaryUrl = (wmtsUrl?.[0] ?? '') as string;
 
   useFitBbox(false, undefined, bounds);
+
   return (
     <RasterPaintLayer
       {...props}
       id={id}
-      hidden={hidden}
-      opacity={opacity}
-      generatorOrder={generatorOrder}
-      tileApiEndpoint={wmsUrl}
+      tileApiEndpoint={primaryUrl}
       tileParams={tileParams}
-      generatorPrefix='wms'
+      generatorPrefix='wmts'
       onStatusChange={changeStatus}
       metadataFormatter={(_, tileParamsAsString) => ({
-        wmsTileUrl: `${wmsUrl}?${tileParamsAsString}`
+        wmtsTileUrl: `${wmtsUrl}?${tileParamsAsString}`
       })}
-      sourceParamFormatter={(url) => ({
-        tiles: [url],
-        tileSize: 256
-      })}
+      sourceParamFormatter={(url) => {
+        const wmtsParams = (url as string).split('wmts.cgi?')[1];
+        return {
+          tiles: (wmtsUrl as string[]).map(
+            (u) => `${u}?${wmtsParams}&TileCol={x}&TileRow={y}&TileMatrix={z}`
+          ),
+          tileSize: 256
+        };
+      }}
     />
   );
 }

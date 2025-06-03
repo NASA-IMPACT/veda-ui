@@ -14,6 +14,7 @@ import { VectorTimeseries } from '$components/common/map/style-generators/vector
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 import { WMSTimeseries } from '$components/common/map/style-generators/wms-timeseries';
+import { WMTSTimeseries } from '$components/common/map/style-generators/wmts-timeseries';
 import { ActionStatus } from '$utils/status';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -115,6 +116,21 @@ export function Layer(props: LayerProps) {
     case 'wms':
       return (
         <WMSTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          date={relevantDate}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
+        />
+      );
+    case 'wmts':
+      return (
+        <WMTSTimeseries
           id={layerId}
           stacCol={dataset.data.stacCol}
           stacApiEndpoint={dataset.data.stacApiEndpoint}
