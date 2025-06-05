@@ -61,7 +61,7 @@ const layers = [
       name: 'Nightlights Monthly',
       type: 'raster',
       description:
-        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc sodales semper risus, suscipit varius diam facilisis non.',
+        'Lorem ipsum dolor sit amet, condctetur adipiscing elit. Nunc sodales semper risus, suscipit varius diam facilisis non.',
       zoomExtent: [4, 16],
       sourceParams: {
         bidx: 1,
@@ -89,9 +89,11 @@ export default function LightMapDemo() {
           <div style={{ width: '800px' }}>
             <LightMap
               layerProps={layers}
+              stacIDs= {['no2-monthly', 'nightlights-hd-monthly']}
               center={[-84.39, 33.75]}
               zoom={9.5}
               dateTime='2019-06-01'
+              compareDateTime='2021-02-01'
             />
           </div>
         </Grid>

@@ -1,11 +1,12 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useCallback, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
 import * as dateFns from 'date-fns';
+import { useQueries } from '@tanstack/react-query';
+import axios from 'axios';
 import {
   convertProjectionToMapbox,
-  projectionDefault,
-  validateProjectionBlockProps
+  projectionDefault
 } from '../map/controls/map-options/projections';
 import { Basemap } from '../map/style-generators/basemap';
 import { LayerLegend, LayerLegendContainer } from '../map/layer-legend';
@@ -16,6 +17,7 @@ import {
   BasemapId,
   DEFAULT_MAP_STYLE_URL
 } from '../map/controls/map-options/basemap';
+import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { utcString2userTzDate } from '$utils/date';
 import Map, { Compare, MapControls } from '$components/common/map';
 import { validateRangeNum } from '$utils/utils';
@@ -30,9 +32,7 @@ import {
   VizDatasetSuccess,
   DatasetStatus
 } from '$components/exploration/types.d.ts';
-import { reconcileDatasets } from '$components/exploration/data-utils';
-import { getDatasetLayers } from '$utils/data-utils';
-import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+
 import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -77,11 +77,42 @@ const getDataLayer = (
   };
 };
 
+async function fetchStacDatasetById(
+  stacID: string,
+  stacApiEndpointToUse: string
+): Promise<StacDatasetData> {
+  const { data } = await axios.get(
+    `${stacApiEndpointToUse}/collections/${stacID}`
+  );
+  console.log(data);
+  return data;
+}
+
+// Create a query object for react query.
+function makeQueryObject(stacCol, envApiStacEndpoint: string) {
+  return {
+    queryKey: ['stac-collection', stacCol],
+    queryFn: () => fetchStacDatasetById(stacCol, envApiStacEndpoint),
+    // This data will not be updated in the context of a browser session, so it is
+    // safe to set the staleTime to Infinity. As specified by react-query's
+    // "Important Defaults", cached data is considered stale which means that
+    // there would be a constant refetching.
+    staleTime: Infinity,
+    // Errors are always considered stale. If any layer errors, any refocus would
+    // cause a refetch. This is normally a good thing but since we have a refetch
+    // button, this is not needed.
+    refetchOnMount: false,
+    refetchOnReconnect: false,
+    refetchOnWindowFocus: false
+  };
+}
+
 export default function MapBlock(props: MapBlockProps) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
     layerProps,
+    stacIDs = ['no2-monthly', 'nightlights-hd-monthly'],
     dateTime,
     compareDateTime,
     compareLabel,
@@ -90,53 +121,30 @@ export default function MapBlock(props: MapBlockProps) {
     projectionId,
     projectionCenter,
     projectionParallels,
+    children,
     basemapId
   } = props;
 
-  const [layers, setLayers] = useState<VizDataset[]>(layerProps);
+  // const [layers, setLayers] = useState<VizDataset[]>(layerProps);
 
-  const { envApiStacEndpoint } = useVedaUI();
+  const { envApiStacEndpoint, envApiRasterEndpoint } = useVedaUI();
 
-  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
+  // useReconcileWithStacMetadata(stacIDs, setLayers, envApiStacEndpoint);
+  // Get data directly from queries - no state updates, no re-renders
+  const fetchedData = useQueries({
+    queries: stacIDs.map((id) => makeQueryObject(id, envApiStacEndpoint))
+  });
+  const layers = fetchedData.map((d) => d.data);
 
+  const baseLayer = layers ? layers[0] : null;
+  const compareLayer = layers.length > 1 ? layers[1] : null;
   const selectedDatetime: Date | undefined = dateTime
     ? utcString2userTzDate(dateTime)
     : undefined;
+
   const selectedCompareDatetime: Date | undefined = compareDateTime
     ? utcString2userTzDate(compareDateTime)
     : undefined;
-
-  const projectionStart = useMemo(() => {
-    if (projectionId) {
-      // Ensure that the default center and parallels are used if none are
-      // provided.
-      const projection = convertProjectionToMapbox({
-        id: projectionId,
-        center: projectionCenter,
-        parallels: projectionParallels
-      });
-      return {
-        ...(projection as object),
-        id: projectionId
-      };
-    } else {
-      return projectionDefault;
-    }
-  }, [projectionId, projectionCenter, projectionParallels]);
-
-  const [, setProjection] = useState(projectionStart);
-
-  const baseDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(0, layers),
-    [layers]
-  );
-  const compareDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(1, layers),
-    [layers]
-  );
-
-  const baseTimeDensity = baseDataLayer?.data.timeDensity;
-  const compareTimeDensity = compareDataLayer?.data.timeDensity;
 
   const mapOptions: Partial<MapboxOptions> = {
     style: DEFAULT_MAP_STYLE_URL,
@@ -160,63 +168,11 @@ export default function MapBlock(props: MapBlockProps) {
     return opts;
   };
 
-  useEffect(() => {
-    setProjection(projectionStart);
-  }, [projectionStart]);
-
-  const [mapBasemapId, setMapBasemapId] = useState(basemapId);
-
-  useEffect(() => {
-    if (!basemapId) return;
-
-    setMapBasemapId(basemapId);
-  }, [basemapId]);
-
-  const compareToDate = useMemo(() => {
-    const theDate = selectedCompareDatetime ?? selectedDatetime;
-    return theDate instanceof Date && !isNaN(theDate.getTime())
-      ? theDate
-      : null;
-  }, [selectedCompareDatetime, selectedDatetime]);
-
-  const computedCompareLabel = useMemo(() => {
-    // Use a provided label if it exist.
-    if (compareLabel) return compareLabel as string;
-    // Use label function from originalData.Compare
-    else if (baseDataLayer?.data.compare?.mapLabel) {
-      if (typeof baseDataLayer.data.compare.mapLabel === 'string')
-        return baseDataLayer.data.compare.mapLabel;
-      const labelFn = baseDataLayer.data.compare.mapLabel as (
-        unknown
-      ) => string;
-      return labelFn({
-        dateFns,
-        datetime: selectedDatetime,
-        compareDatetime: compareToDate
-      });
-    }
-
-    // Default to date comparison.
-    return selectedDatetime && compareToDate
-      ? formatCompareDate(
-          selectedDatetime,
-          compareToDate,
-          baseTimeDensity,
-          compareTimeDensity
-        )
-      : null;
-  }, [
-    compareLabel,
-    baseDataLayer,
-    selectedDatetime,
-    compareToDate,
-    baseTimeDensity,
-    compareTimeDensity
-  ]);
   const initialPosition = useMemo(
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]
   );
+
   return (
     <Carto>
       <Map
@@ -226,70 +182,40 @@ export default function MapBlock(props: MapBlockProps) {
           ...getMapPositionOptions(initialPosition)
         }}
       >
-        <Basemap basemapStyleId={mapBasemapId} />
-        {selectedDatetime && baseDataLayer && (
-          <Layer
-            key={baseDataLayer.data.id}
-            id={`base-${baseDataLayer.data.id}`}
-            dataset={baseDataLayer}
-            selectedDay={selectedDatetime}
+        <Basemap basemapStyleId={basemapId} />
+        {selectedDatetime && baseLayer && (
+          <RasterTimeseries
+            id='hard-coded-id'
+            stacCol={stacIDs[0]}
+            stacApiEndpoint={envApiStacEndpoint}
+            tileApiEndpoint={envApiRasterEndpoint}
+            date={selectedDatetime}
+            zoomExtent={[0, 12]}
+            sourceParams={baseLayer.renders.dashboard}
+            envApiStacEndpoint={envApiStacEndpoint}
+            envApiRasterEndpoint={envApiRasterEndpoint}
           />
         )}
-        {baseDataLayer?.data.legend && (
-          // Map overlay element
-          // Layer legend for the active layer.
-          <LayerLegendContainer>
-            <LayerLegend
-              id={`base-${baseDataLayer.data.id}`}
-              title={baseDataLayer.data.name}
-              description={baseDataLayer.data.description}
-              {...baseDataLayer.data.legend}
-            />
-            {compareDataLayer?.data.legend &&
-              !!selectedCompareDatetime &&
-              baseDataLayer.data.id !== compareDataLayer.data.id && (
-                <LayerLegend
-                  id={`compare-${compareDataLayer.data.id}`}
-                  title={compareDataLayer.data.name}
-                  description={compareDataLayer.data.description}
-                  {...compareDataLayer.data.legend}
-                />
-              )}
-          </LayerLegendContainer>
-        )}
+        {children}
         <MapControls>
-          {selectedDatetime && selectedCompareDatetime ? (
-            <MapMessage
-              id='compare-message'
-              active={!!(compareDataLayer && selectedCompareDatetime)}
-            >
-              {computedCompareLabel}
-            </MapMessage>
-          ) : (
-            <MapMessage
-              id='single-map-message'
-              active={!!(selectedDatetime && baseDataLayer)}
-            >
-              {selectedDatetime &&
-                formatSingleDate(
-                  selectedDatetime,
-                  baseDataLayer?.data.timeDensity
-                )}
-            </MapMessage>
-          )}
           <ScaleControl />
           <NavigationControl position='top-left' />
           <MapCoordsControl />
         </MapControls>
-        {selectedCompareDatetime && (
+        {selectedCompareDatetime && compareLayer && (
           <Compare>
-            <Basemap basemapStyleId={mapBasemapId} />
-            {compareDataLayer && (
-              <Layer
-                key={compareDataLayer.data.id}
-                id={`compare-${compareDataLayer.data.id}`}
-                dataset={compareDataLayer}
-                selectedDay={selectedCompareDatetime}
+            <Basemap basemapStyleId={basemapId} />
+            {compareLayer && (
+              <RasterTimeseries
+                id='hard-coded-compare'
+                stacCol={stacIDs[1]}
+                stacApiEndpoint={envApiStacEndpoint}
+                tileApiEndpoint={envApiRasterEndpoint}
+                date={selectedCompareDatetime}
+                zoomExtent={[0, 12]}
+                sourceParams={compareLayer.renders.dashboard}
+                envApiStacEndpoint={envApiStacEndpoint}
+                envApiRasterEndpoint={envApiRasterEndpoint}
               />
             )}
           </Compare>
