@@ -1,0 +1,50 @@
+---
+id: GEDI_ISS_L4B_Aboveground_Biomass_Density_Mean_201904-202303
+name: Aboveground Biomass (L4B, v2.1, 2019 APR - 2023 MAR)
+featured: true
+description: The Aboveground Biomass Density Mean (L4B, v2.1, 2019 APR to 2023 MAR) layer is the estimated mean aboveground biomass density, including forest and non-forest, within the 1 km x 1 km grid cell. 
+media:
+  src: https://earthdata.nasa.gov/s3fs-public/styles/hds_hero_half/public/2024-08/gedi-agbd-us-cloudfree--2-07-2023.jpg?VersionId=E_Zx.ti84WTiK8GB2XWD5VqrwZi7QNDl&itok=cjabduMn
+infoDescription: |
+    - Temporal Extent: April 2019 - March 2023
+    - Temporal Resolution: Daily
+layers:
+  - id: GEDI_ISS_L4B_Aboveground_Biomass_Density_Mean_201904-202303
+    stacApiEndpoint: https://dev.ghg.center/api/stac/
+    stacCol: GEDI_ISS_L4B_Aboveground_Biomass_Density_Mean_201904-202303
+    name: Black Marble (from Worldview/GIBS)
+    type: wmts 
+    description: The Black Marble Nighttime At Sensor Radiance (Day/Night Band) layer is created from NASA’s Black Marble daily at-sensor top-of-atmosphere nighttime radiance product (VNP46A1). It is displayed as a grayscale image. The layer is expressed in radiance units (nW/(cm2 sr)) with log10 conversion. It is stretched up to 38 nW/(cm2 sr) resulting in improvements in capturing city lights in greater spatial detail than traditional Nighttime Imagery resampled at 0-255 (e.g., Day/Night Band, Enhanced Near Constant Contrast).The ultra-sensitivity of the VIIRS Day/Night Band enables scientists to capture the Earth’s surface and atmosphere in low light conditions, allowing for better monitoring of nighttime phenomena. These images are also useful for assessing anthropogenic sources of light emissions under varying illumination conditions. For instance, during partial to full moon conditions, the layer can identify the location and features of clouds and other natural terrestrial features such as sea ice and snow cover, while enabling temporal observations in urban regions, regardless of moonlit conditions. As such, the layer is particularly useful for detecting city lights, lightning, auroras, fires, gas flares, and fishing fleets.The Black Marble Nighttime At Sensor Radiance (Day/Night Band) layer is available in near real-time from the Visible Infrared Imaging Radiometer Suite (VIIRS) aboard the joint NASA/NOAA Suomi National Polar orbiting Partnership (Suomi NPP) satellite. The sensor resolution is 750 m at nadir, imagery resolution is 500 m, and the temporal resolution is daily
+    sourceParams:
+      layers: 1
+      version: 1.3.0
+      crs: EPSG:3857
+      colormap_name: viridis
+      styles:
+    zoomExtent:
+      - 0
+      - 5
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: 0
+      max: 250
+      stops:
+      - rgb(68,1,84)      # Dark purple (low concentration)
+      - rgb(72,40,120)
+      - rgb(54,129,168)
+      - rgb(67,180,139)
+      - rgb(123,204,96)
+      - rgb(201,228,49)
+      - rgb(253,231,37)   # Bright yellow-green (high concentration)
+
+---
+<Block>
+<Prose>
+
+## About GEDI L4B Aboveground Biomass Density
+The Global Ecosystem Dynamics Investigation (GEDI) Level 4B (L4B) dataset provides estimates of aboveground biomass density (AGBD) and associated uncertainty per 1 km x 1 km EASE-Grid 2.0 grid cells globally within -52 and 52 degrees latitude. GEDI L4B uses a hybrid model-based inference, accounting for uncertainty due to GEDI's sampling of the 1km grid area and Level 4A footprint-level biomass modeling. Accurate estimation of AGBD helps assess the carbon sequestration potential of forests and the impacts of land-use changes on atmospheric carbon dioxide concentrations.
+
+</Prose>
+</Block>
