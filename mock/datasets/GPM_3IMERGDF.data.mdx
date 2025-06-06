@@ -1,35 +1,42 @@
 ---
 id: GPM_3IMERGDF.v07
-name: 'GPM IMERG Daily Precipitation'
-description: 'GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree'
+name: "GPM IMERG Daily Precipitation"
+description: "GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree"
 media:
   src: ::file ./gpmimergdaily.png
-  alt: CMIP6 Near-Surface Air Temperature Screenshot
+  alt: GPM IMERG Final Precipitation
   author:
     name: NASA
     url:
 taxonomy:
   - name: Topics
     values:
-      - Climate
+      - Water Resources
+  - name: Subtopics
+    values:
+      - Precipitation
+      - Snow
+      - Floods
+      - Drought
 layers:
   - id: GPM_3IMERGDF.v07
     type: cmr
     stacCol: GPM_3IMERGDF
-    tileApiEndpoint: 'https://dev-titiler-cmr.delta-backend.com/WebMercatorQuad/tilejson.json'
+    tileApiEndpoint: "https://staging.openveda.cloud/api/titiler-cmr/WebMercatorQuad/tilejson.json"
     name: GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree
-    description: 'GPM Level 3 IMERG Final Daily 10 x 10 km (GPM_3IMERGDF) accumulated precipitation'
+    description: "GPM Level 3 IMERG Final Daily 10 x 10 km (GPM_3IMERGDF) accumulated precipitation"
     time_density: day
     zoomExtent:
       - 0
       - 20
     sourceParams:
+      tile_scale: 3
       resampling: bilinear
       variable: precipitation
       colormap_name: gnbu
       rescale:
-       - 0
-       - 46
+        - 0
+        - 46
       maxzoom: 12
       concept_id: C2723754864-GES_DISC
       backend: xarray
@@ -37,38 +44,122 @@ layers:
       unit:
         label:
       type: gradient
-      min: '0 mm/hr'
-      max: '46 mm/hr'
+      min: "0 mm/hr"
+      max: "46 mm/hr"
       stops:
         [
-          '#f7fcf0',
-          '#e6f5e1',
-          '#d7efd1',
-          '#c5e8c2',
-          '#abdeb6',
-          '#8bd2bf',
-          '#6bc3c9',
-          '#4bafd1',
-          '#3193c2',
-          '#1878b4',
-          '#085da0',
-          '#084081'
+          "#f7fcf0",
+          "#e6f5e1",
+          "#d7efd1",
+          "#c5e8c2",
+          "#abdeb6",
+          "#8bd2bf",
+          "#6bc3c9",
+          "#4bafd1",
+          "#3193c2",
+          "#1878b4",
+          "#085da0",
+          "#084081",
         ]
 ---
 
 <Block>
-<Prose>
-# GPM IMERG Final Precipitation L3 1 day 0.1 degree x 0.1 degree V06 (GPM_3IMERGDF)
+  <Prose>
+  ## Dataset Details
+  - **Temporal Extent:** 2000-2024
+  - **Temporal Resolution:** Daily
+  - **Spatial Extent:** Global
+  - **Spatial Resolution:** 0.1 x 0.1 degree
+  - **Data Units:** mm/hr
+  - **Data Type:** Research
+  </Prose>
+<Figure>
+  <Map
+    datasetId='GPM_3IMERGDF.v07'
+    layerId='GPM_3IMERGDF.v07'
+    dateTime='2017-08-29'
+    zoom={6}
+    center={[-95.37,29.76]}
+  />
+  <Caption
+    attrAuthor='NASA'
+    attrUrl='https://nasa.gov/'
+  >
+  GPM IMERG peak rainfall rate over southeast Texas during Hurricane Harvey on August 29, 2017.
+  </Caption>
+</Figure>
+</Block>
 
-## Dataset Description
+<Block>
+  <Prose>
 
-This dataset is the GPM Level 3 IMERG _Final_ Daily 10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH. The derived result represents the Final estimate of the daily mean precipitation rate in mm/day. The dataset is produced by first computing the mean precipitation rate in (mm/hour) in every grid cell, and then multiplying the result by 24.
+  ### About
 
-Source: [https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary)
+  This dataset is the GPM Level 3 IMERG _Final_ Daily 10 x 10 km (GPM_3IMERGDF) derived from the half-hourly GPM_3IMERGHH. The derived result represents the Final estimate of the daily mean precipitation rate in mm/day. The dataset is produced by first computing the mean precipitation rate in (mm/hour) in every grid cell, and then multiplying the result by 24.
+  
+  As the "Final" product, it undergoes rigorous post-processing, including gauge calibration and quality checks, making it ideal for scientific research and operational applications. The dataset integrates observations from the GPM Core Observatory and partner satellites, leveraging advanced algorithms to provide reliable and consistent data. 
 
-## Data Source
+  Applications of this dataset include flood and drought monitoring, climate studies, water resource management, and environmental analysis. Its high spatial resolution, global coverage, and inclusion of retrospective corrections make it a critical resource for understanding precipitation patterns and dynamics.
+  </Prose>
+</Block>
 
-The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket and discovered from the CMR STAC entries for this collection: https://cmr.earthdata.nasa.gov/cloudstac/GES_DISC/collections/GPM_3IMERGDF.v07. The daily product is not yet available in CMR's CLOUD STAC.
+<Block>
+  <Prose>
+  
+  ### Access the Data
 
-</Prose>
+  Visit the [NASA GSFC](https://disc.gsfc.nasa.gov/datasets/GPM_3IMERGDF_07/summary) page to explore all of the options that GPM IMERG offers.
+  
+  The files represented are NetCDF files in GES DISC's Earthdata Cloud bucket and discovered and tiled via a dynamic tiling service using CMR.
+
+  </Prose>
+</Block>
+
+<Block>
+  <Prose>
+  ### Citing This Dataset
+  G. Huffman, D. Bolvin, D. Braithwaite, K. Hsu, R. Joyce, P. Xie, 2014: Integrated Multi-satellitE Retrievals for GPM (IMERG), version 4.4. NASA's Precipitation Processing Center.
+
+  </Prose>
+</Block>
+
+<Block>
+  <Prose>
+  
+  ### Disclaimer
+
+  All data provided in VEDA has been transformed from the original format (TIFF) into Cloud Optimized GeoTIFFs ([COG](https://www.cogeo.org)). Careful quality checks are used to ensure data transformation has been performed correctly.  
+  
+  </Prose>
+</Block>
+
+<Block>
+  <Prose>
+
+  ### Key Publications
+  
+  Huffman, G., Bolvin, D., Braithwaite, D., Hsu, K., Joyce, R., Kidd, C., Nelkin, E., Sorooshian, S., Tan, J., and P. Xie (2020). NASA Global Precipitation Measurement (GPM) Integrated Multi-SatellitE Retrievals for GPM (IMERG). Algorithm Theoretical Basis Document (ATBD) Version 06. https://gpm.nasa.gov/sites/default/files/2020-05/IMERG_ATBD_V06.3.pdf
+  
+  [GPM & TRMM Data Products DOIs](https://pps.gsfc.nasa.gov/Documents/Master_List_of_PPS_Data_Products.html)
+  </Prose>
+</Block>
+
+
+<Block>
+  <Prose>
+    ## Limitations of use
+
+    NASA data and products are freely available to federal, state, public, non-profit and commercial users. This information can be experimental- or research-grade data products and may not be appropriate for operational use. These NASA data products and services are intended to aid decision makers and enhance situational awareness, but these data are not guaranteed to be consistently available or routinely updated. Please cite the information according to the direction provided in the metadata.
+  </Prose>
+</Block>
+
+
+<Block>
+  <Prose>
+  
+  ## License
+  
+  [Creative Commons Attribution 1.0 International](https://creativecommons.org/publicdomain/zero/1.0/legalcode) (CC BY 1.0)
+
+  </Prose>
 </Block>
