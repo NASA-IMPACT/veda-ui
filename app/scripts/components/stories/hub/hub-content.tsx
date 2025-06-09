@@ -13,6 +13,7 @@ import {
   getDescription,
   getMediaProperty
 } from '$components/common/catalog/utils';
+import { USWDSCardGroup } from '$uswds';
 import {
   Fold,
   FoldHeader,
@@ -44,6 +45,7 @@ import { StoryData } from '$types/veda';
 import { UseFiltersWithQueryResult } from '$components/common/catalog/controls/hooks/use-filters-with-query';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
+import { Tags } from '$components/common/tags';
 
 const StoryCount = styled(Subtitle)`
   grid-column: 1 / -1;
@@ -67,9 +69,15 @@ const FoldWithTopMargin = styled(Fold)`
   }
 `;
 
+const CardList = styled(FoldHeader)`
+  display: flex;
+  gap: '10px';
+`;
+
 interface StoryDataWithPath extends StoryData {
   path: string;
 }
+
 interface HubContentProps {
   allStories: StoryDataWithPath[];
   storiesString: { one: string; other: string };
@@ -99,6 +107,34 @@ export default function HubContent(props: HubContentProps) {
         sortDir: 'desc'
       }) as StoryDataWithPath[],
     [search, taxonomies, allStories]
+  );
+
+  const generateCardsWithRoute = useMemo(
+    () => (
+      <USWDSCardGroup style={{ gap: '40px' }}>
+        {displayStories.map((d) => {
+          const pubDate = new Date(d.pubDate);
+          const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+
+          return (
+            <Card
+              cardType={CardType.DEFAULT}
+              key={d.id}
+              imgSrc={getMediaProperty(undefined, d, 'src')}
+              imgAlt={getMediaProperty(undefined, d, 'alt')}
+              title={`Published ${pubDate}`}
+              description={d.name}
+              footerContent={
+                topics ? <Tags items={topics?.map((t) => t.name)} /> : <></>
+              }
+              to={`${storiesCatalogPath}/${d.id}`}
+              cardLabel='story'
+            />
+          );
+        })}
+      </USWDSCardGroup>
+    ),
+    [displayStories, storiesCatalogPath]
   );
 
   const isFiltering = !!(
@@ -149,90 +185,91 @@ export default function HubContent(props: HubContentProps) {
       </StoryCount>
 
       {displayStories.length ? (
-        <CardListGrid>
-          {displayStories.map((d) => {
-            const pubDate = new Date(d.pubDate);
-            const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
-            return (
-              <li key={d.id}>
-                <Card
-                  cardType={CardType.CLASSIC}
-                  overline={
-                    <CardMeta>
-                      <CardSourcesList
-                        sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
-                        rootPath={storiesCatalogPath}
-                        onSourceClick={(id) => {
-                          onAction(FilterActions.TAXONOMY, {
-                            key: TAXONOMY_SOURCE,
-                            value: id
-                          });
-                          browseControlsHeaderRef.current?.scrollIntoView();
-                        }}
-                      />
-                      <VerticalDivider variation='dark' />
-
-                      {!isNaN(pubDate.getTime()) && (
-                        <PublishedDate date={pubDate} />
-                      )}
-                    </CardMeta>
-                  }
-                  linkLabel='View more'
-                  to={`${d.asLink?.url ?? d.path}`}
-                  title={
-                    <TextHighlight value={search} disabled={search.length < 3}>
-                      {d.name}
-                    </TextHighlight>
-                  }
-                  description={
-                    <TextHighlight value={search} disabled={search.length < 3}>
-                      {getDescription(d)}
-                    </TextHighlight>
-                  }
-                  hideExternalLinkBadge={d.hideExternalLinkBadge}
-                  imgSrc={getMediaProperty(undefined, d, 'src')}
-                  imgAlt={getMediaProperty(undefined, d, 'alt')}
-                  footerContent={
-                    <>
-                      {topics?.length ? (
-                        <CardTopicsList>
-                          <dt>Topics</dt>
-                          {topics.map((t) => (
-                            <dd key={t.id}>
-                              <Pill
-                                as={Link}
-                                to={`${storiesCatalogPath}?${
-                                  FilterActions.TAXONOMY
-                                }=${encodeURIComponent(
-                                  JSON.stringify({ Topics: t.id })
-                                )}`}
-                                onClick={() => {
-                                  onAction(FilterActions.TAXONOMY, {
-                                    key: TAXONOMY_TOPICS,
-                                    value: t.id
-                                  });
-                                  browseControlsHeaderRef.current?.scrollIntoView();
-                                }}
-                              >
-                                <TextHighlight
-                                  value={search}
-                                  disabled={search.length < 3}
-                                >
-                                  {t.name}
-                                </TextHighlight>
-                              </Pill>
-                            </dd>
-                          ))}
-                        </CardTopicsList>
-                      ) : null}
-                    </>
-                  }
-                />
-              </li>
-            );
-          })}
-        </CardListGrid>
+        <CardList>{generateCardsWithRoute}</CardList>
       ) : (
+        // <CardListGrid>
+        //   {displayStories.map((d) => {
+        //     const pubDate = new Date(d.pubDate);
+        //     const topics = getTaxonomy(d, TAXONOMY_TOPICS)?.values;
+        //     return (
+        //       <li key={d.id}>
+        //         <Card
+        //           cardType={CardType.CLASSIC}
+        //           overline={
+        //             <CardMeta>
+        //               <CardSourcesList
+        //                 sources={getTaxonomy(d, TAXONOMY_SOURCE)?.values}
+        //                 rootPath={storiesCatalogPath}
+        //                 onSourceClick={(id) => {
+        //                   onAction(FilterActions.TAXONOMY, {
+        //                     key: TAXONOMY_SOURCE,
+        //                     value: id
+        //                   });
+        //                   browseControlsHeaderRef.current?.scrollIntoView();
+        //                 }}
+        //               />
+        //               <VerticalDivider variation='dark' />
+
+        //               {!isNaN(pubDate.getTime()) && (
+        //                 <PublishedDate date={pubDate} />
+        //               )}
+        //             </CardMeta>
+        //           }
+        //           linkLabel='View more'
+        //           to={`${d.asLink?.url ?? d.path}`}
+        //           title={
+        //             <TextHighlight value={search} disabled={search.length < 3}>
+        //               {d.name}
+        //             </TextHighlight>
+        //           }
+        //           description={
+        //             <TextHighlight value={search} disabled={search.length < 3}>
+        //               {getDescription(d)}
+        //             </TextHighlight>
+        //           }
+        //           hideExternalLinkBadge={d.hideExternalLinkBadge}
+        //           imgSrc={getMediaProperty(undefined, d, 'src')}
+        //           imgAlt={getMediaProperty(undefined, d, 'alt')}
+        //           footerContent={
+        //             <>
+        //               {topics?.length ? (
+        //                 <CardTopicsList>
+        //                   <dt>Topics</dt>
+        //                   {topics.map((t) => (
+        //                     <dd key={t.id}>
+        //                       <Pill
+        //                         as={Link}
+        //                         to={`${storiesCatalogPath}?${
+        //                           FilterActions.TAXONOMY
+        //                         }=${encodeURIComponent(
+        //                           JSON.stringify({ Topics: t.id })
+        //                         )}`}
+        //                         onClick={() => {
+        //                           onAction(FilterActions.TAXONOMY, {
+        //                             key: TAXONOMY_TOPICS,
+        //                             value: t.id
+        //                           });
+        //                           browseControlsHeaderRef.current?.scrollIntoView();
+        //                         }}
+        //                       >
+        //                         <TextHighlight
+        //                           value={search}
+        //                           disabled={search.length < 3}
+        //                         >
+        //                           {t.name}
+        //                         </TextHighlight>
+        //                       </Pill>
+        //                     </dd>
+        //                   ))}
+        //                 </CardTopicsList>
+        //               ) : null}
+        //             </>
+        //           }
+        //         />
+        //       </li>
+        //     );
+        //   })}
+        // </CardListGrid>
         <EmptyHub>
           There are no {storiesString.other.toLocaleLowerCase()} to show with
           the selected filters.
