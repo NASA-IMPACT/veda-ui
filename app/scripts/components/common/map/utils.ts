@@ -252,7 +252,11 @@ const dateFormats = {
 };
 
 export function formatSingleDate(date: Date, timeDensity?: TimeDensity) {
-  return format(date, dateFormats[timeDensity || 'day']);
+  const dFormat =
+    timeDensity && dateFormats[timeDensity]
+      ? dateFormats[timeDensity]
+      : dateFormats['day'];
+  return format(date, dFormat);
 }
 
 export function formatCompareDate(
