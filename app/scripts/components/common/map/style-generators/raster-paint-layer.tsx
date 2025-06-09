@@ -140,7 +140,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             });
         } catch (e) {
           // eslint-disable-next-line no-console
-          console.error('hello', e);
+          console.error(e);
           throw e;
         }
       }

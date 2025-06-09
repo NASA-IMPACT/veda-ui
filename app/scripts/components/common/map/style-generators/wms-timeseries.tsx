@@ -6,7 +6,7 @@ import { RasterPaintLayer } from './raster-paint-layer';
 
 import {
   useRequestStatus,
-  useWMS
+  useWebMapService
 } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
 
@@ -37,7 +37,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-  const { wmsUrl, bounds } = useWMS({
+  const { url, bounds } = useWebMapService({
     id,
     stacCol,
     stacApiEndpointToUse,
@@ -64,6 +64,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     ...sourceParams,
     ...(date && { time: userTzDate2utcString(date) })
   };
+  const wmsUrl = url && url[0];
 
   useFitBbox(false, undefined, bounds);
   return (
@@ -73,7 +74,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
       hidden={hidden}
       opacity={opacity}
       generatorOrder={generatorOrder}
-      tileApiEndpoint={wmsUrl}
+      tileApiEndpoint={wmsUrl as string}
       tileParams={tileParams}
       generatorPrefix='wms'
       onStatusChange={changeStatus}

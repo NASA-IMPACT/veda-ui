@@ -4,7 +4,7 @@ import { BaseGeneratorParams } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
 import {
   useRequestStatus,
-  useWMTS
+  useWebMapService
 } from '$components/common/map/style-generators/hooks';
 import { ActionStatus } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
@@ -23,13 +23,16 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
   const { id, stacCol, date, stacApiEndpoint, onStatusChange } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-  const { wmtsUrl, bounds } = useWMTS({
+  const {
+    url: wmtsUrl,
+    bounds,
+    tilematrixSet
+  } = useWebMapService({
     id,
     stacCol,
     stacApiEndpointToUse,
     onStatusChange
   });
-
   const { changeStatus } = useRequestStatus({
     id,
     onStatusChange,
@@ -42,7 +45,7 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
     Version: '1.0.0',
     layer: stacCol,
     style: 'default',
-    tilematrixset: 'GoogleMapsCompatible_Level8',
+    tilematrixset: tilematrixSet,
     ...(date && { TIME: userTzDate2utcString(date) })
   };
   const primaryUrl = (wmtsUrl?.[0] ?? '') as string;

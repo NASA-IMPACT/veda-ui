@@ -35,11 +35,14 @@ interface Link {
   type: string;
   title: string;
   'wms:layers': string[];
-  'wms:styles': string[];
+  'wms:styles'?: string[];
+  'wmts:dimensions'?: string[];
+  'wmts:servers'?: string[];
 }
 
-interface WMSResponseData {
+interface WebMapResponseData {
   links: Link[];
+  tilematrixset?: string;
   extent: {
     spatial: {
       bbox: [number, number, number, number][];
@@ -47,24 +50,6 @@ interface WMSResponseData {
   };
 }
 
-interface WMTSLink {
-  href: string;
-  rel: string;
-  type: string;
-  title: string;
-  'wmts:layers': string[];
-  'wmts:dimensions': string[];
-  'wmts:servers': string[];
-}
-
-interface WMTSResponseData {
-  links: WMTSLink[];
-  extent: {
-    spatial: {
-      bbox: [number, number, number, number][];
-    };
-  };
-}
 
 export function useZarr({
   id,
@@ -178,10 +163,15 @@ export function useCMR({
 
   return assetUrl;
 }
-
-export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
+export function useWebMapService({
+  id,
+  stacCol,
+  stacApiEndpointToUse,
+  onStatusChange
+}) {
   const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
-  const [wmsUrl, setWmsUrl] = useState('');
+  const [url, setUrl] = useState<string[]>();
+  const [tilematrixSet, setTilematrixSet] = useState<string>('');
   const [bounds, setBounds] =
     useState<[number, number, number, number]>(defaultBounds);
 
@@ -191,73 +181,31 @@ export function useWMS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
     async function load() {
       try {
         onStatusChange?.({ status: S_LOADING, id });
-        const data: WMSResponseData = await requestQuickCache({
+        const data: WebMapResponseData = await requestQuickCache({
           url: `${stacApiEndpointToUse}/collections/${stacCol}`,
           method: 'GET',
           controller
         });
         const bounds = data.extent.spatial.bbox[0];
         setBounds(bounds);
-        const wms = data.links.find((l) => l.rel === 'wms');
-        if (wms) setWmsUrl(wms.href);
-        else throw new Error('no wms link');
-        onStatusChange?.({ status: S_SUCCEEDED, id });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setWmsUrl('');
-          setBounds(defaultBounds);
-          onStatusChange?.({ status: S_FAILED, id });
-        }
-        return;
-      }
-    }
+        const link = data.links.find(
+          (l) => l.rel === 'wmts' || l.rel === 'wms'
+        );
+        const matrixSet = data?.tilematrixset ? data.tilematrixset : '';
+        setTilematrixSet(matrixSet);
 
-    load();
-
-    return () => {
-      controller.abort();
-    };
-  }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
-
-  return {
-    wmsUrl,
-    bounds
-  };
-}
-
-export function useWMTS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
-  const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
-  const [wmtsUrl, setWmtsUrl] = useState<string[]>();
-  const [bounds, setBounds] =
-    useState<[number, number, number, number]>(defaultBounds);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function load() {
-      try {
-        onStatusChange?.({ status: S_LOADING, id });
-        const data: WMTSResponseData = await requestQuickCache({
-          url: `${stacApiEndpointToUse}/collections/${stacCol}`,
-          method: 'GET',
-          controller
-        });
-        const bounds = data.extent.spatial.bbox[0];
-        setBounds(bounds);
-        const wmtsLink = data.links.find((l) => l.rel === 'wmts');
-
-        if (!wmtsLink || !wmtsLink.href) {
+        if (!link || !link.href) {
           throw new Error('WMTS link is missing or malformed');
         }
-        const primaryHref = wmtsLink.href;
-        const alternateServers: string[] = wmtsLink['href:servers'] ?? [];
+        const primaryHref = link.href;
+        const alternateServers: string[] = link['href:servers'] ?? [];
         // Ensure all values are strings and non-empty
         const tileUrls = [primaryHref, ...alternateServers].filter(Boolean);
-        setWmtsUrl(tileUrls.length ? tileUrls : []);
+        setUrl(tileUrls.length ? tileUrls : []);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setWmtsUrl([]);
+          setUrl([]);
           setBounds(defaultBounds);
           onStatusChange?.({ status: S_FAILED, id });
         }
@@ -271,10 +219,10 @@ export function useWMTS({ id, stacCol, stacApiEndpointToUse, onStatusChange }) {
       controller.abort();
     };
   }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
-
   return {
-    wmtsUrl,
-    bounds
+    url,
+    bounds,
+    tilematrixSet
   };
 }
 
