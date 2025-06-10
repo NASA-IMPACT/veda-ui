@@ -2,8 +2,6 @@ import React from 'react';
 
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
-// import startOfMonth from 'date-fns/startOfMonth';
-// import endOfMonth from 'date-fns/endOfMonth';
 import { BaseTimeseriesProps } from '../types';
 import { RasterPaintLayer } from './raster-paint-layer';
 import { useRequestStatus } from './hooks';
