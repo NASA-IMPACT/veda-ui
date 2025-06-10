@@ -170,7 +170,7 @@ export function useWebMapService({
   onStatusChange
 }) {
   const defaultBounds: [number, number, number, number] = [-180, -90, 180, 90];
-  const [url, setUrl] = useState<string[]>();
+  const [urls, setUrls] = useState<string[]>();
   const [tilematrixSet, setTilematrixSet] = useState<string>('');
   const [bounds, setBounds] =
     useState<[number, number, number, number]>(defaultBounds);
@@ -201,11 +201,11 @@ export function useWebMapService({
         const alternateServers: string[] = link['href:servers'] ?? [];
         // Ensure all values are strings and non-empty
         const tileUrls = [primaryHref, ...alternateServers].filter(Boolean);
-        setUrl(tileUrls.length ? tileUrls : []);
+        setUrls(tileUrls.length ? tileUrls : []);
         onStatusChange?.({ status: S_SUCCEEDED, id });
       } catch (error) {
         if (!controller.signal.aborted) {
-          setUrl([]);
+          setUrls([]);
           setBounds(defaultBounds);
           onStatusChange?.({ status: S_FAILED, id });
         }
@@ -220,7 +220,7 @@ export function useWebMapService({
     };
   }, [id, stacCol, stacApiEndpointToUse, onStatusChange]);
   return {
-    url,
+    urls,
     bounds,
     tilematrixSet
   };

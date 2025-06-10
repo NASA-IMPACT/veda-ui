@@ -37,7 +37,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
-  const { url, bounds } = useWebMapService({
+  const { urls: wmsUrls, bounds } = useWebMapService({
     id,
     stacCol,
     stacApiEndpointToUse,
@@ -64,7 +64,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
     ...sourceParams,
     ...(date && { time: userTzDate2utcString(date) })
   };
-  const wmsUrl = url && url[0];
+  const wmsUrl = wmsUrls && wmsUrls[0];
 
   useFitBbox(false, undefined, bounds);
   return (
@@ -74,7 +74,7 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
       hidden={hidden}
       opacity={opacity}
       generatorOrder={generatorOrder}
-      tileApiEndpoint={wmsUrl as string}
+      tileApiEndpoint={wmsUrl}
       tileParams={tileParams}
       generatorPrefix='wms'
       onStatusChange={changeStatus}

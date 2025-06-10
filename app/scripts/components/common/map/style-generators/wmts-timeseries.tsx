@@ -24,7 +24,7 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
 
   const stacApiEndpointToUse = stacApiEndpoint ?? process.env.API_STAC_ENDPOINT;
   const {
-    url: wmtsUrl,
+    urls: wmtsUrl,
     bounds,
     tilematrixSet
   } = useWebMapService({
@@ -48,7 +48,8 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
     tilematrixset: tilematrixSet,
     ...(date && { TIME: userTzDate2utcString(date) })
   };
-  const primaryUrl = (wmtsUrl?.[0] ?? '') as string;
+
+  const primaryUrl = ((wmtsUrl && wmtsUrl[0]) ?? '') as string;
 
   useFitBbox(false, undefined, bounds);
 
@@ -61,7 +62,8 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
       generatorPrefix='wmts'
       onStatusChange={changeStatus}
       metadataFormatter={(_, tileParamsAsString) => ({
-        wmtsTileUrl: `${wmtsUrl}?${tileParamsAsString}`
+        wmtsTileUrl: `${primaryUrl}?${tileParamsAsString}`,
+        xyzTileUrl: `${primaryUrl}?${tileParamsAsString}&TileCol={x}&TileRow={y}&TileMatrix={z}`
       })}
       sourceParamFormatter={(url) => {
         const wmtsParams = (url as string).split('wmts.cgi?')[1];
