@@ -81,8 +81,8 @@ export function WMSTimeseries(props: MapLayerWMSProps) {
       metadataFormatter={(_, tileParamsAsString) => ({
         wmsTileUrl: `${wmsUrl}?${tileParamsAsString}`
       })}
-      sourceParamFormatter={(url) => ({
-        tiles: [url],
+      sourceParamFormatter={(tileUrl) => ({
+        tiles: [tileUrl],
         tileSize: 256
       })}
     />
