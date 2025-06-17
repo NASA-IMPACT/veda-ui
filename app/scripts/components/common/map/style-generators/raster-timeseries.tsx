@@ -335,38 +335,39 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
   return (
     <>
-      points && (
-      <PointsLayer
-        id={id}
-        points={points}
-        zoomExtent={zoomExtent}
-        onPointsClick={onPointsClick}
-      />
-      ) mosaicUrl && (
-      <RasterPaintLayer
-        id={id}
-        tileApiEndpoint={mosaicUrl}
-        tileParams={{ assets: ['cog_default'], ...sourceParams }}
-        zoomExtent={zoomExtent}
-        hidden={hidden}
-        opacity={opacity}
-        colorMap={colorMap}
-        generatorOrder={generatorOrder}
-        reScale={reScale}
-        generatorPrefix='raster-timeseries'
-        onStatusChange={changeStatus}
-        metadataFormatter={(tilejsonData, tileParamsAsString) => {
-          const wmtsBaseUrl = mosaicUrl?.replace(
-            'tilejson.json',
-            'WMTSCapabilities.xml'
-          );
-          return {
-            xyzTileUrl: tilejsonData?.tiles[0],
-            wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
-          };
-        }}
-      />
-      )
+      {points && (
+        <PointsLayer
+          id={id}
+          points={points}
+          zoomExtent={zoomExtent}
+          onPointsClick={onPointsClick}
+        />
+      )}
+      {mosaicUrl && (
+        <RasterPaintLayer
+          id={id}
+          tileApiEndpoint={mosaicUrl}
+          tileParams={{ assets: ['cog_default'], ...sourceParams }}
+          zoomExtent={zoomExtent}
+          hidden={hidden}
+          opacity={opacity}
+          colorMap={colorMap}
+          generatorOrder={generatorOrder}
+          reScale={reScale}
+          generatorPrefix='raster-timeseries'
+          onStatusChange={changeStatus}
+          metadataFormatter={(tilejsonData, tileParamsAsString) => {
+            const wmtsBaseUrl = mosaicUrl.replace(
+              'tilejson.json',
+              'WMTSCapabilities.xml'
+            );
+            return {
+              xyzTileUrl: tilejsonData?.tiles[0],
+              wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
+            };
+          }}
+        />
+      )}
     </>
   );
 }
