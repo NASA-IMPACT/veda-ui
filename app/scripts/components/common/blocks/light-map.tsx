@@ -1,39 +1,24 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react';
+import React, { useMemo } from 'react';
+import type { ReactNode } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
-import * as dateFns from 'date-fns';
 import { useQueries } from '@tanstack/react-query';
 import axios from 'axios';
-import {
-  convertProjectionToMapbox,
-  projectionDefault
-} from '../map/controls/map-options/projections';
 import { Basemap } from '../map/style-generators/basemap';
-import { LayerLegend, LayerLegendContainer } from '../map/layer-legend';
 import MapCoordsControl from '../map/controls/coords';
-import MapMessage from '../map/map-message';
-import { formatCompareDate, formatSingleDate } from '../map/utils';
 import {
   BasemapId,
   DEFAULT_MAP_STYLE_URL
 } from '../map/controls/map-options/basemap';
+import type { StacDatasetData } from '$components/exploration/types.d.ts';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { utcString2userTzDate } from '$utils/date';
 import Map, { Compare, MapControls } from '$components/common/map';
-import { validateRangeNum } from '$utils/utils';
-import { HintedError } from '$utils/hinted-error';
 import {
   NavigationControl,
   ScaleControl
 } from '$components/common/map/controls';
-import { Layer } from '$components/exploration/components/map/layer';
-import {
-  VizDataset,
-  VizDatasetSuccess,
-  DatasetStatus
-} from '$components/exploration/types.d.ts';
 
-import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
 export const mapHeight = '32rem';
@@ -47,35 +32,16 @@ const Carto = styled.div`
 let mapInstanceId = 0;
 
 interface MapBlockProps {
+  stacIDs: string[];
+  children: string | ReactNode | ReactNode[];
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
   zoom?: number;
-  compareLabel?: string;
-  projectionId?: ProjectionOptions['id'];
-  projectionCenter?: ProjectionOptions['center'];
-  projectionParallels?: ProjectionOptions['parallels'];
-  allowProjectionChange?: boolean;
   basemapId?: BasemapId;
-  layerProps: VizDataset[];
+  stacEndpoint?: string;
+  tilerEndpoint?: string;
 }
-
-const getDataLayer = (
-  layerIndex: number,
-  layers: VizDataset[] | undefined
-): VizDatasetSuccess | null => {
-  if (!layers || layers.length <= layerIndex) return null;
-  const layer = layers[layerIndex];
-  // @NOTE: What to do when data returns ERROR
-  if (layer.status !== DatasetStatus.SUCCESS) return null;
-  return {
-    ...layer,
-    settings: {
-      isVisible: true,
-      opacity: 100
-    }
-  };
-};
 
 async function fetchStacDatasetById(
   stacID: string,
@@ -84,7 +50,6 @@ async function fetchStacDatasetById(
   const { data } = await axios.get(
     `${stacApiEndpointToUse}/collections/${stacID}`
   );
-  console.log(data);
   return data;
 }
 
@@ -111,16 +76,13 @@ export default function MapBlock(props: MapBlockProps) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
-    layerProps,
     stacIDs = ['no2-monthly', 'nightlights-hd-monthly'],
     dateTime,
     compareDateTime,
-    compareLabel,
     center,
+    stacEndpoint,
+    tilerEndpoint,
     zoom,
-    projectionId,
-    projectionCenter,
-    projectionParallels,
     children,
     basemapId
   } = props;
@@ -128,11 +90,12 @@ export default function MapBlock(props: MapBlockProps) {
   // const [layers, setLayers] = useState<VizDataset[]>(layerProps);
 
   const { envApiStacEndpoint, envApiRasterEndpoint } = useVedaUI();
-
+  const stacEndPointToUse = stacEndpoint ?? envApiStacEndpoint;
+  const tilerEndPointToUse = tilerEndpoint ?? envApiStacEndpoint;
   // useReconcileWithStacMetadata(stacIDs, setLayers, envApiStacEndpoint);
   // Get data directly from queries - no state updates, no re-renders
   const fetchedData = useQueries({
-    queries: stacIDs.map((id) => makeQueryObject(id, envApiStacEndpoint))
+    queries: stacIDs.map((id) => makeQueryObject(id, stacEndPointToUse))
   });
   const layers = fetchedData.map((d) => d.data);
 
@@ -187,11 +150,11 @@ export default function MapBlock(props: MapBlockProps) {
           <RasterTimeseries
             id='hard-coded-id'
             stacCol={stacIDs[0]}
-            stacApiEndpoint={envApiStacEndpoint}
-            tileApiEndpoint={envApiRasterEndpoint}
+            stacApiEndpoint={stacEndPointToUse}
+            tileApiEndpoint={tilerEndPointToUse}
             date={selectedDatetime}
             zoomExtent={[0, 12]}
-            sourceParams={baseLayer.renders.dashboard}
+            sourceParams={baseLayer.renders?.dashboard}
             envApiStacEndpoint={envApiStacEndpoint}
             envApiRasterEndpoint={envApiRasterEndpoint}
           />
@@ -209,11 +172,11 @@ export default function MapBlock(props: MapBlockProps) {
               <RasterTimeseries
                 id='hard-coded-compare'
                 stacCol={stacIDs[1]}
-                stacApiEndpoint={envApiStacEndpoint}
-                tileApiEndpoint={envApiRasterEndpoint}
+                stacApiEndpoint={stacEndPointToUse}
+                tileApiEndpoint={tilerEndPointToUse}
                 date={selectedCompareDatetime}
                 zoomExtent={[0, 12]}
-                sourceParams={compareLayer.renders.dashboard}
+                sourceParams={compareLayer.renders?.dashboard}
                 envApiStacEndpoint={envApiStacEndpoint}
                 envApiRasterEndpoint={envApiRasterEndpoint}
               />
