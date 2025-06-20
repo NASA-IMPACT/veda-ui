@@ -95,9 +95,10 @@ async function fetchStacDatasetById(
   );
 
   const timeDensity =
-    data['dashboard:time_density'] ||
     time_density ||
+    data['dashboard:time_density'] ||
     getTimeDensityFromInterval(data['dashboard:time_interval']);
+
   const commonTimeseriesParams = {
     isPeriodic: !!data['dashboard:is_periodic'],
     isTimeless: !!data['dashboard:is_timeless'],
