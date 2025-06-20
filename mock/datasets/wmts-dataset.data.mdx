@@ -1,0 +1,50 @@
+---
+id: wmtstest
+name: OMI_Nitrogen_Dioxide_Tropo_Column (from Worldview/GIBS)
+featured: true
+description: WorldView
+media:
+  src: https://blink.ucsd.edu/_images/technology-tab/software/esri-logo.png
+infoDescription: |
+  ::markdown
+    World Viewer
+layers:
+  - id: OMI_Nitrogen_Dioxide_Tropo_Column
+    stacApiEndpoint: https://dev.ghg.center/api/stac/
+    stacCol: OMI_Nitrogen_Dioxide_Tropo_Column
+    name: OMI_Nitrogen_Dioxide_Tropo_Column (from Worldview/GIBS)
+    type: wmts 
+    description: The new global dataset, called the Evaporative Stress Index (ESI), available online and produced weekly at 5-kilometer resolution for the entire globe, reveals regions of drought where vegetation is stressed due to lack of water, enabling agriculture ministries to provide farmers with actionable advice about irrigation.
+    sourceParams:
+      layers: 1
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:
+    zoomExtent:
+      - 0
+      - 5
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: 0.0e+16
+      max: '>2.0e+16'
+      stops:
+        - rgb(255,255,224)  # Light yellow (low concentration)
+        - rgb(255,230,140)
+        - rgb(255,204,77)
+        - rgb(255,153,51)
+        - rgb(255,102,34)
+        - rgb(255,51,17)
+        - rgb(204,0,0)      # Dark red (high concentration)
+
+
+ 
+---
+<Block>
+<Prose>
+
+Test Test WMTS
+
+</Prose>
+</Block>

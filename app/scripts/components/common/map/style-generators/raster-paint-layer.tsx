@@ -12,7 +12,7 @@ import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 
 interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
-  tileApiEndpoint?: string;
+  tileApiEndpoint?: string | string[];
   zoomExtent?: number[];
   colorMap?: string | undefined;
   tileParams: Record<string, any>;
@@ -77,8 +77,11 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
         try {
           let tileUrlMetadata;
-          if (!generatorPrefix.includes('wms')) {
-            // wms data doesn't have an endpoint for tlejson
+          if (
+            !generatorPrefix.includes('wms') &&
+            !generatorPrefix.includes('wmts')
+          ) {
+            // wms data doesn't have an endpoint for tilejson
             const tileJsonData = await requestQuickCache<any>({
               url: tileUrl,
               method: 'GET',
@@ -93,14 +96,12 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
             tileUrlMetadata =
               metadataFormatter && metadataFormatter(null, tileParamsAsString);
           }
-
           const mapSourceParams = sourceParamFormatter(tileUrl);
 
           const rasterSource: RasterSourceSpecification = {
             type: 'raster',
             ...mapSourceParams
           };
-
           const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
           const rasterLayer: RasterLayerSpecification = {
