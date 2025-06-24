@@ -87,8 +87,8 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
     timelineDatasets.map((dataset) => dataset.data.id)
   );
 
-  const isUSWDSDataCatalogEnabled = checkEnvFlag(
-    process.env.ENABLE_USWDS_DATA_CATALOG
+  const isUSWDSEnabled = checkEnvFlag(
+    process.env.ENABLE_USWDS
   );
 
   // Use Jotai controlled atoms for query parameter manipulation on new E&A page
@@ -129,7 +129,7 @@ export function DatasetSelectorModal(props: DatasetSelectorModalProps) {
       onCloseClick={close}
       renderHeadline={() => <RenderModalHeader />}
       content={
-        isUSWDSDataCatalogEnabled ? (
+        isUSWDSEnabled ? (
           <CatalogContent
             datasets={datasets}
             search={searchTerm}
