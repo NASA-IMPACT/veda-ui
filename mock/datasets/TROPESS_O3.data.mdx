@@ -1,0 +1,243 @@
+---
+id: TROPESS_reanalysis_mon_O3_pressure
+name: 'TROPESS Monthly Ozone'
+description: "TROPESS Chemical Reanalysis Ozone Monthly 3-dimensional Product V1"
+media:
+  src: ::file ./TROPESS_O3.jpg
+  alt: TROPESS Ozone data visualized in a map
+  author:
+    name: NASA
+taxonomy:
+  - name: Topics
+    values:
+      - Air Quality
+  - name: Subtopics
+    values:
+      - Ozone Layer
+  - name: Source
+    values:
+      - NASA
+  - name: Gas
+    values:
+      - O3
+  - name: Product Type
+    values:
+      - Model Output
+infoDescription: |
+  ::markdown
+  - Temporal Extent: January 2005 - December 2021
+  - Temporal Resolution: Monthly
+  - Spatial Extent: Global
+  - Spatial Resolution: 1.125° x 1.125°
+  - Data Units: ppb (parts per billion)
+  - Data Type: Research
+  - Data Latency: Updated annually
+layers:
+  - id: TROPESS_reanalysis_mon_O3_pressure_levels
+    stacCol: TROPESS_reanalysis_mon_O3_pressure_levels
+    type: cmr
+    stacApiEndpoint: "https://staging.openveda.cloud/api/stac/"
+    tileApiEndpoint: "https://staging.openveda.cloud/api/titiler-cmr/WebMercatorQuad/tilejson.json"
+    name: 'Ozone Concentration (O3)'
+    description: 'Monthly Global Ozone Concentrations'
+    initialDatetime: newest
+    time_density: month
+    zoomExtent:
+      - 0
+      - 11
+    sourceParams:
+      concept_id: C2837626477-GES_DISC
+      variable: o3
+      backend: xarray
+      colormap_name: reds
+      rescale:
+        - 20
+        - 70
+      maxzoom: 12
+      tile_scale: 3
+      sel:
+        - lev=500
+        - time={start_datetime}
+      sel_method: nearest
+    compare:
+      datasetId: TROPESS_reanalysis_mon_O3_pressure
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    analysis:
+      metrics:
+        - mean
+      sourceParams:
+        dst_crs: "+proj=cea"
+    legend:
+      type: gradient
+      label: ppb (parts per billion)
+      min: "0"
+      max: "5000"
+      stops:
+      - "#313695"
+      - "#74add1"
+      - "#e0f3f8"
+      - "#fee090"
+      - "#f46d43"
+      - "#a50026"
+    info:
+      source: NASA
+      spatialExtent: Global
+      temporalResolution: Monthly
+      unit: ppb (parts per billion)
+    dimensions:
+      - id: lat
+        type: spatial
+        extent: [-90, 90]
+        steps: 4326
+      - id: lon
+        type: spatial
+        extent: [-180, 180]
+        steps: 4326
+      - id: lev
+        type: vertical
+        extent: [1000, 995, 980, 950, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 175, 150, 125, 100, 90, 80, 70, 60]
+        units: hPa
+        steps: 27
+      - id: time
+        type: temporal
+        extent: ['2005-01-01T00:00:00Z', '2021-12-01T00:00:00Z']
+        step: P1M
+---
+
+<Block>
+  <Prose
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      gap: '32px',
+      width: '100%'
+    }}
+  >
+    {/* Main Centered Text */}
+    <Prose
+      style={{
+        backgroundColor: '#f0f0f0',
+        padding: '18px',
+        borderRadius: '8px',
+        flex: 1,
+        maxWidth: '800px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        textAlign: 'justify',
+        border: '1px solid #ccc'
+      }}
+    >
+      <p>
+        <strong>Source:</strong> Tropospheric Ozone and Precursors from Earth System Sounding (TROPESS) Project<br />
+        <strong>Temporal Extent:</strong> January 2005 to December 2021<br />
+        <strong>Temporal Resolution:</strong> Monthly measurements<br />
+        <strong>Spatial Extent:</strong> Global<br />
+        <strong>Spatial Resolution:</strong> 1.125 x 1.125 degree <br />
+        <strong>Data Units:</strong> Ozone concentration in ppb (parts per billion) <br />
+        <strong>File Format:</strong> NetCDF <br />
+       <strong>Applications:</strong> Air quality monitoring, ozone layer studies, atmospheric chemistry research, and climate modeling
+      </p>
+    </Prose>
+  </Prose>
+</Block>
+
+<Block style={{ justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+  <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+    <p>
+      ## Introduction
+      <p style={{ marginBottom: '0.4em' }}>
+      Ozone (O₃) is a key trace gas in the Earth's atmosphere, particularly in the stratosphere, where it protects life by absorbing harmful ultraviolet radiation. However, at ground level, ozone is a significant air pollutant associated with respiratory problems and environmental degradation. Monitoring ozone concentrations is essential for understanding air quality, climate change, and atmospheric chemistry.
+      </p>
+      <p style={{ marginBottom: '0.4em' }}>
+      The TROPESS Chemical Reanalysis Ozone Monthly 3D Product provides global, monthly gridded estimates of ozone concentration (in ppb) from 2005 to 2021 at multiple pressure levels between 1000 and 60 hPa. Developed using advanced data assimilation techniques, this dataset integrates satellite observations and chemical transport models to produce reliable ozone concentration estimates.
+      </p>
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+      <p>
+    ## Data Preparation
+        The dataset was developed through rigorous data assimilation using satellite measurements such as ozone column retrievals from the Ozone Monitoring Instrument (OMI) and the Tropospheric Monitoring Instrument (TROPOMI). The integration of these observations with chemical models ensures the highest possible accuracy in ozone concentration estimates.
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+   <p>
+    ## Applications and Use Cases
+      - Monitoring ozone layer health and its impact on UV radiation exposure
+      - Assessing air quality and public health related to ground-level ozone
+      - Climate modeling and understanding ozone-climate feedback
+      - Supporting atmospheric chemistry studies and policy development
+  </p>
+  </Prose>
+</Block>
+
+<Block style={{ justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+  <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+  <p>
+    ## Frequently Asked Questions (FAQs)
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>What is ozone?</strong><br />
+      Ozone (O₃) is a gas composed of three oxygen atoms. It plays a critical role in protecting life by absorbing ultraviolet radiation in the stratosphere, but at ground level, it contributes to air pollution and health issues.
+    </p>
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>How is the data reported?</strong><br />
+      The dataset provides ozone concentrations in ppb (parts per billion), which represents the amount of ozone in the air.
+    </p>
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>How can I use this dataset?</strong><br />
+      The data can be used for environmental monitoring, air quality studies, climate research, and regulatory assessments concerning ozone pollution.
+    </p>
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>What tools are available for data analysis?</strong><br />
+      The dataset can be analyzed using tools like Jupyter Notebooks (TBD), the <a href="#">VEDA visualization platform</a>, and <a href="https://search.earthdata.nasa.gov/">Earthdata Search</a>.
+    </p>
+  </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+     <p> 
+    ## Scientific Resources
+      - [User guide for dataset navigation](https://cmr.earthdata.nasa.gov/search/concepts/C2837626477-GES_DISC.html)
+      - Algorithm theoretical basis documents [ATBD](https://tropess.gesdisc.eosdis.nasa.gov/data/TROPESS_O3/TROPESS_O3_REANALYSIS_README.pdf)
+      - Key publication: Tropospheric Ozone and Precursors from Earth
+      - User Jupyter Notebook: TBD
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+      <p>  
+    ## Disclaimer 
+      The users are encouraged to verify its suitability and accuracy for their intended purposes. Careful quality checks are used to ensure data transformation has been performed correctly.
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+    <p>  
+    ## License
+    This data is published for research academic and related non-commercial purposes. [Creative Commons Zero v1.0 Universal (CC0 1.0).](https://creativecommons.org/publicdomain/zero/1.0/deed.en)
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+   <p>
+    ## Acknowledgements
+       NASA JPL's Multi-mOdel Multi-cOnstituent Chemical (MOMO-Chem) science team.
+  </p>
+  </Prose>
+</Block>
