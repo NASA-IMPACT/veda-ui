@@ -130,6 +130,7 @@ export async function requestCMRTimeseriesData({
     bands: ['B04', 'B03', 'B02']
   });
 
+  // Using hardcoded response until backend resolves
   const cmrResponse = {};
   Object.keys(response.properties.statistics).forEach((oneTimestamp) => {
     const currentTimestampData = response.properties.statistics[oneTimestamp];
@@ -330,7 +331,6 @@ export async function requestDatasetTimeseriesData({
                 );
                 return {
                   date,
-
                   ...data.properties.statistics.b1
                 };
               },

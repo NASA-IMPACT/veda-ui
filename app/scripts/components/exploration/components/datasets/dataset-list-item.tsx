@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -23,7 +23,6 @@ import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
 import {
   DatasetStatus,
-  TimelineDataset,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
@@ -109,8 +108,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
-  const [modalLayerInfo, setModalLayerInfo] =
-    React.useState<LayerInfoModalData>();
+  const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const setSelectedVariable = useAnalysisVariable(datasetAtom);
 
@@ -149,7 +147,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
   } = useDatasetHover();
 
   const selectedVariable = dataset.settings.analysisVariable;
-  const timeSeriesData = selectedVariable? dataset.analysis.data?.timeseries[selectedVariable]: [];
+  const timeSeriesData = selectedVariable
+    ? dataset.analysis.data?.timeseries[selectedVariable]
+    : [];
 
   const dataPoint = getInteractionDataPoint({
     isHovering,
