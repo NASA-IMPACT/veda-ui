@@ -70,7 +70,7 @@ export interface TimelineDatasetAnalysisError {
 export interface TimelineDatasetAnalysisSuccess {
   status: DatasetStatus.SUCCESS;
   data: {
-    timeseries: AnalysisTimeseriesEntry[];
+    timeseries: Record<string, AnalysisTimeseriesEntry[]>;
   };
   error: null;
   meta: AnalysisMeta;
@@ -103,8 +103,10 @@ export interface DatasetSettings {
   // Active colormap of the layer.
   colorMap?: string;
   // Active colormap scale.
-
   scale?: colorMapScale;
+  // selected variables for multi variables(bands) timeseries analysis
+  analysisVariable?: string;
+  analysisVariableOptions?: string[];
 }
 
 // Any sort of meta information the dataset like:

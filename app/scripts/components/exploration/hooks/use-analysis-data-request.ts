@@ -6,7 +6,11 @@ import { PrimitiveAtom, useAtom, useAtomValue } from 'jotai';
 import { requestDatasetTimeseriesData } from '../analysis-data';
 import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
-import { useTimelineDatasetAnalysis } from '../atoms/hooks';
+import {
+  useTimelineDatasetAnalysis,
+  useAnalysisVariable,
+  useAnalysisOptions
+} from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
 import {
   TimelineDataset,
@@ -84,6 +88,8 @@ export function useAnalysisDataRequest({
   const datasetStatus = dataset.status;
 
   const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
+  const setSelectedVariable = useAnalysisVariable(datasetAtom);
+  const setVariableOptions = useAnalysisOptions(datasetAtom);
 
   const analysisRunId = getRunId(dataset.data.id);
 
@@ -150,6 +156,13 @@ export function useAnalysisDataRequest({
     // @TECH-DEBT
     // The `setAnalysis` function is designed to update the Jotai Atom's state to reflect the progress of an analysis operation, ideally moving through 'idle', 'loading', and finally 'success' states. However, the function fails to accurately transition between these states. Specifically, it bypasses the expected incremental 'loading' updates and may incorrectly remain in a 'loading' state even after the analysis has successfully completed. This behavior leads to a discrepancy between the actual analysis status and the state represented in the UI, potentially confusing users and undermining the UI's reliability.
     // The function currently attempts to rectify this by overwriting the Atom's value with the final result, ensuring the state accurately reflects the analysis outcome. This workaround does not address the root cause of the flawed state transitions. A revision of the state management logic is needed to ensure the Atom's state progresses correctly and reflects the actual status of the analysis process.
+
     setAnalysis(analysisResult);
-  }, [setAnalysis, analysisResult]);
+
+    // Set variables for multibands data
+    if (analysisResult.data?.timeseries) {
+      setVariableOptions(Object.keys(analysisResult.data?.timeseries));
+      setSelectedVariable(Object.keys(analysisResult.data?.timeseries)[0]);
+    }
+  }, [setAnalysis, analysisResult, setVariableOptions, setSelectedVariable]);
 }

@@ -7,12 +7,17 @@ import {
   TimelineDatasetAnalysis,
   DatasetStatus
 } from './types.d.ts';
+import { response } from './response';
 import { ExtendedError } from '$components/exploration/data-utils';
 import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
   getFilterPayloadWithAOI
 } from '$components/common/map/utils';
+import { formatTitilerParameter } from '$components/common/map/style-generators/utils';
+import { userTzDate2utcString } from '$utils/date';
+
+// Until backend fix comes
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -82,10 +87,93 @@ interface TimeseriesRequesterParams {
   envApiStacEndpoint: string;
 }
 
+export async function requestCMRTimeseriesData({
+  maxItems,
+  start,
+  end,
+  aoi,
+  dataset,
+  queryClient,
+  concurrencyManager,
+  envApiRasterEndpoint,
+  envApiStacEndpoint,
+  onProgress
+}): Promise<TimelineDatasetAnalysis> {
+  const datasetData = dataset.data;
+  const id = datasetData.id;
+  const { sourceParams } = datasetData;
+
+  const testGeoJson = {
+    type: 'Feature',
+    geometry: {
+      type: 'Polygon',
+      coordinates: [
+        [
+          [-91.816, 47.491],
+          [-91.359, 47.491],
+          [-91.359, 47.716],
+          [-91.816, 47.716],
+          [-91.816, 47.491]
+        ]
+      ]
+    },
+    properties: {}
+  };
+
+  const formattedParams = formatTitilerParameter({
+    concept_id: 'C2021957657-LPCLOUD',
+    datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
+    step: 'P5D',
+    temporal_mode: 'interval',
+    backend: 'rasterio',
+    bands_regex: 'B[0-9][0-9]',
+    bands: ['B04', 'B03', 'B02']
+  });
+
+  const cmrResponse = {};
+  Object.keys(response.properties.statistics).forEach((oneTimestamp) => {
+    const currentTimestampData = response.properties.statistics[oneTimestamp];
+    Object.keys(currentTimestampData).forEach((eachBand) => {
+      const currentBandData = {
+        ...currentTimestampData[eachBand],
+        date: utcString2userTzDate(oneTimestamp.split('/')[0])
+      };
+      if (!cmrResponse[eachBand]) {
+        cmrResponse[eachBand] = [];
+      }
+      cmrResponse[eachBand] = [...cmrResponse[eachBand], currentBandData];
+    });
+  });
+
+  onProgress({
+    status: DatasetStatus.SUCCESS,
+    meta: {
+      total: 1,
+      loaded: 1
+    },
+    error: null,
+    data: {
+      timeseries: cmrResponse
+    }
+  });
+  return {
+    status: DatasetStatus.SUCCESS,
+    meta: {
+      total: 1,
+      loaded: 1
+    },
+    error: null,
+    data: {
+      timeseries: cmrResponse
+    }
+  };
+}
+
 /**
  * Gets the statistics for the given dataset within the given time range and
  * area of interest.
  */
+
 export async function requestDatasetTimeseriesData({
   maxItems,
   start,
@@ -100,18 +188,6 @@ export async function requestDatasetTimeseriesData({
 }: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
-
-  if (datasetData.type !== 'raster') {
-    return {
-      status: DatasetStatus.ERROR,
-      meta: {},
-      error: new ExtendedError(
-        'Analysis is only supported for raster datasets',
-        'ANALYSIS_NOT_SUPPORTED'
-      ),
-      data: null
-    };
-  }
 
   if (datasetData.analysis?.exclude) {
     return {
@@ -133,6 +209,34 @@ export async function requestDatasetTimeseriesData({
     data: null,
     meta: {}
   });
+
+  if (datasetData.type === 'cmr') {
+    const cmrTimeseriesData = await requestCMRTimeseriesData({
+      maxItems,
+      start,
+      end,
+      aoi,
+      dataset,
+      queryClient,
+      concurrencyManager,
+      envApiRasterEndpoint,
+      envApiStacEndpoint,
+      onProgress
+    });
+
+    return cmrTimeseriesData;
+  }
+  if (datasetData.type !== 'raster') {
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {},
+      error: new ExtendedError(
+        'Analysis is only supported for raster datasets',
+        'ANALYSIS_NOT_SUPPORTED'
+      ),
+      data: null
+    };
+  }
 
   const stacApiEndpointToUse =
     datasetData.stacApiEndpoint ?? envApiStacEndpoint ?? '';
@@ -271,7 +375,9 @@ export async function requestDatasetTimeseriesData({
       },
       error: null,
       data: {
-        timeseries: layerStatistics
+        timeseries: {
+          key: layerStatistics
+        }
       }
     });
     return {
@@ -282,7 +388,9 @@ export async function requestDatasetTimeseriesData({
       },
       error: null,
       data: {
-        timeseries: layerStatistics
+        timeseries: {
+          key: layerStatistics
+        }
       }
     };
   } catch (error) {
