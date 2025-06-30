@@ -182,3 +182,27 @@ export function useTimelineDatasetColormapScale(
 
   return useAtom(colorMapScaleAtom);
 }
+
+export function useAnalysisVariable(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const variableAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('analysisVariable')
+    );
+  }, [datasetAtom]);
+
+  return useSetAtom(variableAtom);
+}
+
+export function useAnalysisOptions(
+  datasetAtom: PrimitiveAtom<TimelineDataset>
+) {
+  const variableAtom = useMemo(() => {
+    return focusAtom(datasetAtom, (optic) =>
+      optic.prop('settings').prop('analysisVariableOptions')
+    );
+  }, [datasetAtom]);
+
+  return useSetAtom(variableAtom);
+}

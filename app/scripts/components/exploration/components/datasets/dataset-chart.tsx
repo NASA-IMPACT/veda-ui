@@ -16,6 +16,7 @@ import {
   TimelineDatasetAnalysisSuccess,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
+import { useAnalysisVariable } from '$components/exploration/atoms/hooks';
 
 const CHART_MARGIN = 8;
 
@@ -26,52 +27,77 @@ interface DatasetChartProps {
   dataset: TimelineDatasetSuccess;
   activeMetrics: DataMetric[];
   highlightDate?: Date;
+  setSelectedVariable?: (variable:string) => void;
   onUpdateSettings: (type: string, m: DataMetric[]) => void;
 }
 
-const ChartAnalysisMenu = styled.div<{axisWidth: number}>`
+const ChartAnalysisMenu = styled.div<{ axisWidth: number }>`
   width: inherit;
   position: absolute;
   display: flex;
   justify-content: end;
-  right: calc(${props=> props.axisWidth}px + 0.5rem);
+  right: calc(${(props) => props.axisWidth}px + 0.5rem);
   z-index: ${themeVal('zIndices.overlay' as any)};
 `;
-const AxisBackground = styled.div<{axisWidth: number}>`
+const AxisBackground = styled.div<{ axisWidth: number }>`
   position: absolute;
   right: 0;
   top: 0;
-  width: ${props=> props.axisWidth}px;
+  width: ${(props) => props.axisWidth}px;
   height: 100%;
   background-color: ${AXIS_BG_COLOR};
   z-index: -1;
 `;
 
 export function DatasetChart(props: DatasetChartProps) {
-  const { xScaled, width, isVisible, dataset, activeMetrics, highlightDate, onUpdateSettings } = props;
+  const {
+    xScaled,
+    width,
+    isVisible,
+    dataset,
+    activeMetrics,
+    highlightDate,
+    setSelectedVariable,
+    onUpdateSettings
+  } = props;
   const analysisData = dataset.analysis as TimelineDatasetAnalysisSuccess;
-  const timeseries = analysisData.data.timeseries;
+  const variablesList = dataset.settings.analysisVariableOptions;
+
+  const selectedVariable = dataset.settings.analysisVariable;
+  const timeseries = selectedVariable? analysisData.data.timeseries[selectedVariable]: [];
+
   const theme = useTheme();
   const areaDataKey = 'stdArea';
   const height = 180;
 
   // Simplifying the enhancedTimeseries mapping
-  const enhancedTimeseries = timeseries.map(e => ({
+  const enhancedTimeseries = timeseries.map((e) => ({
     ...e,
-    [areaDataKey]: [e.mean - e.std, e.mean + e.std],
+    [areaDataKey]: [e.mean - e.std, e.mean + e.std]
   }));
 
   // Filter line and area metrics once, avoiding separate filter calls
-  const { lineMetrics, areaMetrics } = activeMetrics.reduce<{lineMetrics: DataMetric[], areaMetrics: DataMetric[]}>((acc, metric:DataMetric) => {
-    metric.id === 'std' ? acc.areaMetrics.push(metric) : acc.lineMetrics.push(metric);
-    return acc;
-  }, { lineMetrics: [], areaMetrics: [] });
-
+  const { lineMetrics, areaMetrics } = activeMetrics.reduce<{
+    lineMetrics: DataMetric[];
+    areaMetrics: DataMetric[];
+  }>(
+    (acc, metric: DataMetric) => {
+      metric.id === 'std'
+        ? acc.areaMetrics.push(metric)
+        : acc.lineMetrics.push(metric);
+      return acc;
+    },
+    { lineMetrics: [], areaMetrics: [] }
+  );
 
   const yExtent = useMemo(() => {
     const extents = [
-      ...enhancedTimeseries.flatMap(d => extent(lineMetrics.map(m => d[m.id]))),
-      ...(areaMetrics.length ? enhancedTimeseries.flatMap(d => extent([d[areaDataKey]].flat())) : [])
+      ...enhancedTimeseries.flatMap((d) =>
+        extent(lineMetrics.map((m) => d[m.id]))
+      ),
+      ...(areaMetrics.length
+        ? enhancedTimeseries.flatMap((d) => extent([d[areaDataKey]].flat()))
+        : [])
     ].filter(Boolean); // Filter out falsey values
     return extent(extents.flat()) as [undefined, undefined] | [number, number];
   }, [enhancedTimeseries, lineMetrics, areaMetrics]);
@@ -93,7 +119,13 @@ export function DatasetChart(props: DatasetChartProps) {
         </DatasetTrackMessage>
       )}
       <ChartAnalysisMenu axisWidth={RIGHT_AXIS_SPACE}>
-        <LayerChartAnalysisMenu activeMetrics={activeMetrics} onChange={onUpdateSettings} triggerIcon={chartAnalysisIconTrigger} />
+        <LayerChartAnalysisMenu
+          activeMetrics={activeMetrics}
+          variablesList={variablesList}
+          onChange={onUpdateSettings}
+          setSelectedVariable={setSelectedVariable}
+          triggerIcon={chartAnalysisIconTrigger}
+        />
       </ChartAnalysisMenu>
       <AxisBackground axisWidth={RIGHT_AXIS_SPACE} />
 

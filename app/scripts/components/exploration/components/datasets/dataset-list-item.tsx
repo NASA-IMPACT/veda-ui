@@ -36,7 +36,8 @@ import {
   useTimelineDatasetColormap,
   useTimelineDatasetSettings,
   useTimelineDatasetVisibility,
-  useTimelineDatasetColormapScale
+  useTimelineDatasetColormapScale,
+  useAnalysisVariable
 } from '$components/exploration/atoms/hooks';
 import {
   useAnalysisController,
@@ -111,6 +112,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const [modalLayerInfo, setModalLayerInfo] =
     React.useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
+  const setSelectedVariable = useAnalysisVariable(datasetAtom);
 
   const queryClient = useQueryClient();
 
@@ -146,7 +148,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
     midY
   } = useDatasetHover();
 
-  const timeSeriesData = dataset.analysis.data?.timeseries;
+  const selectedVariable = dataset.settings.analysisVariable;
+  const timeSeriesData = selectedVariable? dataset.analysis.data?.timeseries[selectedVariable]: [];
 
   const dataPoint = getInteractionDataPoint({
     isHovering,
@@ -275,6 +278,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   activeMetrics={analysisMetrics}
                   highlightDate={dataPoint?.date}
                   onUpdateSettings={setSetting}
+                  setSelectedVariable={setSelectedVariable}
                 />
               )}
             </>
