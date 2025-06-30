@@ -79,6 +79,7 @@ export function useAnalysisDataRequest({
   const { envApiRasterEndpoint, envApiStacEndpoint } = useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
+
   const { features } = useAois();
   const selectedFeatures = features.filter((f) => f.selected);
 

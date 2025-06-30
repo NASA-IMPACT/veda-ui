@@ -3,11 +3,13 @@ import { useTheme } from 'styled-components';
 import { extent, scaleLinear, ScaleTime, line, area, ScaleLinear } from 'd3';
 import { SVGMotionProps, AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import {
-  CollecticonChartLine,
-} from '@devseed-ui/collecticons';
+import { CollecticonChartLine } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { RIGHT_AXIS_SPACE, AXIS_BG_COLOR, HIGHLIGHT_LINE_COLOR } from '../../constants';
+import {
+  RIGHT_AXIS_SPACE,
+  AXIS_BG_COLOR,
+  HIGHLIGHT_LINE_COLOR
+} from '../../constants';
 import { DatasetTrackMessage } from './dataset-track-message';
 import { DataMetric } from './analysis-metrics';
 import LayerChartAnalysisMenu from './layer-chart-analysis-menu';
@@ -16,7 +18,6 @@ import {
   TimelineDatasetAnalysisSuccess,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
-import { useAnalysisVariable } from '$components/exploration/atoms/hooks';
 
 const CHART_MARGIN = 8;
 
@@ -27,7 +28,7 @@ interface DatasetChartProps {
   dataset: TimelineDatasetSuccess;
   activeMetrics: DataMetric[];
   highlightDate?: Date;
-  setSelectedVariable?: (variable:string) => void;
+  setSelectedVariable?: (variable: string) => void;
   onUpdateSettings: (type: string, m: DataMetric[]) => void;
 }
 
@@ -64,7 +65,9 @@ export function DatasetChart(props: DatasetChartProps) {
   const variablesList = dataset.settings.analysisVariableOptions;
 
   const selectedVariable = dataset.settings.analysisVariable;
-  const timeseries = selectedVariable? analysisData.data.timeseries[selectedVariable]: [];
+  const timeseries = selectedVariable
+    ? analysisData.data.timeseries[selectedVariable]
+    : [];
 
   const theme = useTheme();
   const areaDataKey = 'stdArea';
@@ -105,12 +108,13 @@ export function DatasetChart(props: DatasetChartProps) {
   const y = useMemo(() => {
     const [min = 0, max = 0] = yExtent;
     return scaleLinear()
-      .domain([(min * 0.95 > 0) ? 0 : min * 0.95, max * 1.05])
+      .domain([min * 0.95 > 0 ? 0 : min * 0.95, max * 1.05])
       .range([height - CHART_MARGIN * 2, 0]);
   }, [yExtent, height]);
 
-
-  const chartAnalysisIconTrigger: JSX.Element = <CollecticonChartLine meaningful title='View layer options' />;
+  const chartAnalysisIconTrigger: JSX.Element = (
+    <CollecticonChartLine meaningful title='View layer options' />
+  );
   return (
     <div>
       {!activeMetrics.length && (
@@ -135,18 +139,22 @@ export function DatasetChart(props: DatasetChartProps) {
         </clipPath>
         <g transform='translate(0, 0)'>
           {activeMetrics.length && highlightDate && (
-              <line
-                x1={xScaled(highlightDate)}
-                x2={xScaled(highlightDate)}
-                y1={0}
-                y2='100%'
-                stroke={HIGHLIGHT_LINE_COLOR}
-              />
-            )}
+            <line
+              x1={xScaled(highlightDate)}
+              x2={xScaled(highlightDate)}
+              y1={0}
+              y2='100%'
+              stroke={HIGHLIGHT_LINE_COLOR}
+            />
+          )}
         </g>
         <g transform={`translate(0, ${CHART_MARGIN})`}>
           <AxisGrid
-            yLabel={dataset.data.legend?.type !== 'text' ? dataset.data.legend?.unit?.label : undefined}
+            yLabel={
+              dataset.data.legend?.type !== 'text'
+                ? dataset.data.legend?.unit?.label
+                : undefined
+            }
             y={y}
             width={width}
             height={height}
@@ -155,9 +163,9 @@ export function DatasetChart(props: DatasetChartProps) {
         </g>
         <g clipPath='url(#data-clip)'>
           <g transform={`translate(0, ${CHART_MARGIN})`}>
-          {areaMetrics.map(
+            {areaMetrics.map(
               (metric) =>
-              enhancedTimeseries.some((d) => !isNaN(d[metric.id])) && (
+                enhancedTimeseries.some((d) => !isNaN(d[metric.id])) && (
                   <DataArea
                     key={metric.id}
                     x={xScaled}
@@ -172,7 +180,7 @@ export function DatasetChart(props: DatasetChartProps) {
             )}
             {lineMetrics.map(
               (metric) =>
-              enhancedTimeseries.some((d) => !isNaN(d[metric.id])) && (
+                enhancedTimeseries.some((d) => !isNaN(d[metric.id])) && (
                   <DataLine
                     key={metric.id}
                     x={xScaled}
@@ -192,7 +200,6 @@ export function DatasetChart(props: DatasetChartProps) {
     </div>
   );
 }
-
 
 interface DataAreaProps {
   x: ScaleTime<number, number>;
@@ -218,13 +225,13 @@ function DataArea(props: DataAreaProps) {
 
   const path = useMemo(() => {
     const areaGenerator = area<AreaDataItem>()
-    .defined((d) => !!d[prop])
-    .x((d) => x(d.date))
-    .y0((d) => y(d[prop][0]))
-    .y1((d) => y(d[prop][1]));
+      .defined((d) => !!d[prop])
+      .x((d) => x(d.date))
+      .y0((d) => y(d[prop][0]))
+      .y1((d) => y(d[prop][1]));
 
     return areaGenerator(data);
-  }, [x, y, data, prop]);  // Ensure all variables used are listed in the dependencies
+  }, [x, y, data, prop]); // Ensure all variables used are listed in the dependencies
 
   const maxOpacity = isVisible ? 1 : 0.25;
 
@@ -242,12 +249,13 @@ function DataArea(props: DataAreaProps) {
         stroke={color}
       />
       {data.map((d) => {
-        if (typeof d[prop][0] !== 'number' || typeof d[prop][1] !== 'number' ) return false;
+        if (typeof d[prop][0] !== 'number' || typeof d[prop][1] !== 'number')
+          return false;
 
         const highlight =
           isVisible && highlightDate?.getTime() === d.date.getTime();
 
-        return highlight? (
+        return highlight ? (
           <>
             <motion.circle
               initial={{ opacity: 0 }}
@@ -272,15 +280,16 @@ function DataArea(props: DataAreaProps) {
               stroke='#fff'
             />
           </>
-        ): false;
+        ) : (
+          false
+        );
       })}
     </g>
   );
 }
 
 function DataLine(props: DateLineProps) {
-  const { x, y, prop, data, color, style, isVisible, highlightDate } =
-    props;
+  const { x, y, prop, data, color, style, isVisible, highlightDate } = props;
 
   const path = useMemo(
     () =>
@@ -313,7 +322,7 @@ function DataLine(props: DateLineProps) {
         const highlight =
           isVisible && highlightDate?.getTime() === d.date.getTime();
 
-        return highlight? (
+        return highlight ? (
           <motion.circle
             initial={{ opacity: 0 }}
             animate={{ opacity: maxOpacity }}
@@ -325,7 +334,9 @@ function DataLine(props: DateLineProps) {
             fill={color}
             stroke='#fff'
           />
-        ): false;
+        ) : (
+          false
+        );
       })}
     </g>
   );
@@ -347,47 +358,47 @@ function AxisGrid(props: AxisGridProps) {
   return (
     <AnimatePresence>
       <motion.g
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.16 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.16 }}
       >
-          {yLabel && (
+        {yLabel && (
+          <text
+            y={width + RIGHT_AXIS_SPACE - 20}
+            x={-height / 2}
+            transform='rotate(-90)'
+            textAnchor='middle'
+            fontSize='0.75rem'
+            fill={theme.color?.base}
+            margin-right='2rem'
+          >
+            {yLabel}
+          </text>
+        )}
+        {ticks.map((tick) => (
+          <React.Fragment key={tick}>
+            <line
+              key={tick}
+              x1={0}
+              x2={width + 6}
+              y1={y(tick)}
+              y2={y(tick)}
+              stroke={theme.color?.['base-100']}
+              strokeOpacity={isVisible ? 1 : 0.5}
+            />
             <text
-              y={width + RIGHT_AXIS_SPACE - 20}
-              x={-height / 2}
-              transform='rotate(-90)'
-              textAnchor='middle'
+              x={width + 8}
+              y={y(tick)}
               fontSize='0.75rem'
+              dy='0.25em'
               fill={theme.color?.base}
-              margin-right='2rem'
+              fillOpacity={isVisible ? 1 : 0.5}
             >
-              {yLabel}
+              {getNumForChart(tick)}
             </text>
-          )}
-          {ticks.map((tick) => (
-            <React.Fragment key={tick}>
-              <line
-                key={tick}
-                x1={0}
-                x2={width + 6}
-                y1={y(tick)}
-                y2={y(tick)}
-                stroke={theme.color?.['base-100']}
-                strokeOpacity={isVisible ? 1 : 0.5}
-              />
-              <text
-                x={width + 8}
-                y={y(tick)}
-                fontSize='0.75rem'
-                dy='0.25em'
-                fill={theme.color?.base}
-                fillOpacity={isVisible ? 1 : 0.5}
-              >
-                {getNumForChart(tick)}
-              </text>
-            </React.Fragment>
-          ))}
+          </React.Fragment>
+        ))}
       </motion.g>
     </AnimatePresence>
   );
