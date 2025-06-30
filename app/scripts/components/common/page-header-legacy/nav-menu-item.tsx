@@ -219,7 +219,7 @@ export default function NavMenuItem({
           {item.children.map((child) => {
             return (
               <LinkDropMenuNavItem
-                key={`${title}-dropdown-menu`}
+                key={`${child.id}-dropdown-menu`}
                 child={child}
                 onClick={onClick}
                 linkProperties={linkProperties}
