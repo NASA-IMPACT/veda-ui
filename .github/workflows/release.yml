@@ -55,10 +55,9 @@ jobs:
         id: git-release
         run: |
           output="$(yarn release  --ci --verbose)"
-          delimiter=EOF
-          echo "ouput<<$delimiter" >> $GITHUB_OUTPUT
+          echo "ouput<<EOF" >> $GITHUB_OUTPUT
           echo "$output" >> $GITHUB_OUTPUT
-          echo "$delimiter" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Set Version Variable
