@@ -55,8 +55,10 @@ jobs:
         id: git-release
         run: |
           output="$(yarn release  --ci --verbose)"
-          echo "Output: $output"
-          echo "output=$output" >> $GITHUB_OUTPUT
+          delimiter=EOF
+          echo "ouput<<$delimiter" >> $GITHUB_OUTPUT
+          echo "$output" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       # - name: Set Version Variable
@@ -82,31 +84,31 @@ jobs:
       #     repository: nasa-impact/next-veda-ui
       #     event-type: update-version
       #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
-  notify:
-    # If any of job fails
-    if: failure()
-    runs-on: ubuntu-latest
-    needs:
-      - release
-    steps:
-      - name: Notify failure through Slack
-        uses: slackapi/slack-github-action@v2.0.0
-        env:
-          failure-message: |
-            text: "*VEDA UI Release failed*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          empty-release-message: |
-            text: "*VEDA UI Release skipped*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*VEDA UI Release skipped*: No commits detected. To see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: ${{ contains(needs.release.steps.git-release.outputs.GITRELEASE_OUTPUT, 'There are no commits since the latest tag' ) && env.empty-release-message || env.failure-message }}
+  # notify:
+  #   # If any of job fails
+  #   if: failure()
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - release
+  #   steps:
+  #     - name: Notify failure through Slack
+  #       uses: slackapi/slack-github-action@v2.0.0
+  #       env:
+  #         failure-message: |
+  #           text: "*VEDA UI Release failed*: "
+  #           blocks:
+  #             - type: "section"
+  #               text:
+  #                 type: "mrkdwn"
+  #                 text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  #         empty-release-message: |
+  #           text: "*VEDA UI Release skipped*: "
+  #           blocks:
+  #             - type: "section"
+  #               text:
+  #                 type: "mrkdwn"
+  #                 text: "*VEDA UI Release skipped*: No commits detected. To see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+  #       with:
+  #         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+  #         webhook-type: incoming-webhook
+  #         payload: ${{ contains(needs.release.steps.git-release.outputs.GITRELEASE_OUTPUT, 'There are no commits since the latest tag' ) && env.empty-release-message || env.failure-message }}
