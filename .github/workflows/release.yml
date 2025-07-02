@@ -91,6 +91,7 @@ jobs:
     needs:
       - release
     steps:
+      - run: echo "${needs.release.steps.git-release.outputs.GITRELEASE_OUTPUT}"
       - name: Notify failure through Slack
         uses: slackapi/slack-github-action@v2.0.0
         env:
