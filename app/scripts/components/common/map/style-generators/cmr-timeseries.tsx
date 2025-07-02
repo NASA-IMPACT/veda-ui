@@ -21,31 +21,23 @@ export function CMRTimeseries(props: BaseTimeseriesProps) {
   const start_datetime = userTzDate2utcString(startOfDay(date));
   const end_datetime = userTzDate2utcString(endOfDay(date));
 
-  // Function to replace variables in curly braces with their values
-  const interpolateVariables = (
-    str: string,
-    variables: Record<string, string>
-  ) => {
-    return str.replace(/\{(\w+)\}/g, (match, variableName) => {
-      return variables[variableName] || match;
-    });
-  };
+  const processSourceParams = () => {
+    const parseSelAttribute = () =>
+      sourceParams?.sel.map((sel) => {
+        if (sel.includes('{start_datetime}')) {
+          return sel.replace('{start_datetime}', start_datetime);
+        } else return sel;
+      }); // "start_datetime" is currently the only variable to be interpolated
 
-  // Replace any variables in curly braces in sel parameter
-  const processedSourceParams = {
-    ...sourceParams,
-    sel: sourceParams?.sel
-      ? Array.isArray(sourceParams.sel)
-        ? sourceParams.sel.map((sel) =>
-            interpolateVariables(sel, { start_datetime })
-          )
-        : interpolateVariables(sourceParams.sel, { start_datetime })
-      : undefined
+    return {
+      ...sourceParams,
+      ...(sourceParams?.sel ? { sel: parseSelAttribute() } : {})
+    };
   };
 
   const tileParams = {
     datetime: `${start_datetime}/${end_datetime}`,
-    ...processedSourceParams
+    ...processSourceParams()
   };
 
   const { changeStatus } = useRequestStatus({
