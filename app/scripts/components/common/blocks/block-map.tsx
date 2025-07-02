@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import type { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
 import * as dateFns from 'date-fns';
@@ -142,7 +143,7 @@ const getDataLayer = (
   };
 };
 
-export default function MapBlock(props: MapBlockProps) {
+export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
@@ -324,6 +325,10 @@ export default function MapBlock(props: MapBlockProps) {
             selectedDay={selectedDatetime}
           />
         )}
+
+        {/* Allow custom layers from users */}
+        {props.children}
+
         {baseDataLayer?.data.legend && (
           // Map overlay element
           // Layer legend for the active layer.
