@@ -1,3 +1,4 @@
+import { format } from 'path';
 import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
@@ -5,16 +6,16 @@ import { ConcurrencyManagerInstance } from './concurrency';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
+  EADatasetDataLayer,
   DatasetStatus
 } from './types.d.ts';
-import { response } from './response';
+// import { response } from './response';
 import { ExtendedError } from '$components/exploration/data-utils';
 import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
   getFilterPayloadWithAOI
 } from '$components/common/map/utils';
-import { formatTitilerParameter } from '$components/common/map/style-generators/utils';
 import { userTzDate2utcString } from '$utils/date';
 
 // Until backend fix comes
@@ -88,52 +89,42 @@ interface TimeseriesRequesterParams {
 }
 
 export async function requestCMRTimeseriesData({
-  maxItems,
   start,
   end,
   aoi,
   dataset,
   queryClient,
-  concurrencyManager,
   envApiRasterEndpoint,
-  envApiStacEndpoint,
   onProgress
-}): Promise<TimelineDatasetAnalysis> {
-  const datasetData = dataset.data;
-  const id = datasetData.id;
-  const { sourceParams } = datasetData;
+}: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
+  const datasetData = dataset.data as EADatasetDataLayer;
 
-  const testGeoJson = {
-    type: 'Feature',
-    geometry: {
-      type: 'Polygon',
-      coordinates: [
-        [
-          [-91.816, 47.491],
-          [-91.359, 47.491],
-          [-91.359, 47.716],
-          [-91.816, 47.716],
-          [-91.816, 47.491]
-        ]
-      ]
-    },
-    properties: {}
+  const paramsRaw = {
+    datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
+    step: datasetData.timeInterval,
+    ...datasetData.sourceParams
   };
 
-  const formattedParams = formatTitilerParameter({
-    concept_id: 'C2021957657-LPCLOUD',
-    datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
-    step: 'P5D',
-    temporal_mode: 'interval',
-    backend: 'rasterio',
-    bands_regex: 'B[0-9][0-9]',
-    bands: ['B04', 'B03', 'B02']
-  });
+  const statResponse = await queryClient.fetchQuery(
+    ['analysis', datasetData.id, 'cmr', aoi],
+    async ({ signal }) => {
+      const { data } = await axios.post(
+        `https://staging.openveda.cloud/api/titiler-cmr/timeseries/statistics`,
+        fixAoiFcForStacSearch(aoi),
+        { params: paramsRaw, signal }
+      );
+      return {
+        ...data.properties.statistics
+      };
+    },
+    {
+      staleTime: Infinity
+    }
+  );
 
-  // Using hardcoded response until backend resolves
   const cmrResponse = {};
-  Object.keys(response.properties.statistics).forEach((oneTimestamp) => {
-    const currentTimestampData = response.properties.statistics[oneTimestamp];
+  Object.keys(statResponse).forEach((oneTimestamp) => {
+    const currentTimestampData = statResponse[oneTimestamp];
     Object.keys(currentTimestampData).forEach((eachBand) => {
       const currentBandData = {
         ...currentTimestampData[eachBand],

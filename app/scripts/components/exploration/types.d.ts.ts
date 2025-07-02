@@ -23,6 +23,13 @@ export interface StacDatasetData {
   renders?: Record<string, any> | undefined;
 }
 
+export interface EADatasetDataLayer extends DatasetLayer {
+  isPeriodic: boolean;
+  timeDensity: TimeDensity;
+  timeInterval: string;
+  domain: Date[];
+}
+
 export interface AnalysisTimeseriesEntry {
   date: Date;
   min: number;
@@ -84,11 +91,6 @@ export type TimelineDatasetAnalysis =
 
 // END TimelineDatasetAnalysis type discriminants
 
-export interface EADatasetDataLayer extends DatasetLayer {
-  isPeriodic: boolean;
-  timeDensity: TimeDensity;
-  domain: Date[];
-}
 export interface colorMapScale {
   min: number;
   max: number;
