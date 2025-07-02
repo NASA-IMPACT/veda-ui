@@ -109,7 +109,7 @@ export async function requestCMRTimeseriesData({
     ['analysis', datasetData.id, 'cmr', aoi],
     async ({ signal }) => {
       const { data } = await axios.post(
-        `https://staging.openveda.cloud/api/titiler-cmr/timeseries/statistics`,
+        `https://v4jec6i5c0.execute-api.us-west-2.amazonaws.com/timeseries/statistics`,
         fixAoiFcForStacSearch(aoi),
         { params: paramsRaw, signal }
       );
@@ -136,6 +136,8 @@ export async function requestCMRTimeseriesData({
       cmrResponse[eachBand] = [...cmrResponse[eachBand], currentBandData];
     });
   });
+  console.log(statResponse);
+  console.log(cmrResponse);
 
   onProgress({
     status: DatasetStatus.SUCCESS,
