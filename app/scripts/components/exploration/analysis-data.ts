@@ -1,4 +1,3 @@
-import { format } from 'path';
 import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
@@ -88,6 +87,42 @@ interface TimeseriesRequesterParams {
   envApiStacEndpoint: string;
 }
 
+function formatCMRResponse(statResponse, flag) {
+  const cmrResponse = {};
+
+  if (flag !== 'xarray') {
+    Object.keys(statResponse).forEach((oneTimestamp) => {
+      const currentTimestampData = statResponse[oneTimestamp];
+      Object.keys(currentTimestampData).forEach((eachBand) => {
+        const currentBandData = {
+          ...currentTimestampData[eachBand],
+          date: utcString2userTzDate(oneTimestamp.split('/')[0])
+        };
+        if (!cmrResponse[eachBand]) {
+          cmrResponse[eachBand] = [];
+        }
+        cmrResponse[eachBand] = [...cmrResponse[eachBand], currentBandData];
+      });
+    });
+  } else {
+    const keyName = 'key';
+    Object.keys(statResponse).forEach((oneTimestamp) => {
+      const currentTimestampData = statResponse[oneTimestamp];
+      Object.keys(currentTimestampData).forEach((eachBand) => {
+        const currentBandData = {
+          ...currentTimestampData[eachBand],
+          date: utcString2userTzDate(oneTimestamp.split('/')[0])
+        };
+        if (!cmrResponse[keyName]) {
+          cmrResponse[keyName] = [];
+        }
+        cmrResponse[keyName] = [...cmrResponse[keyName], currentBandData];
+      });
+    });
+  }
+  return cmrResponse;
+}
+
 export async function requestCMRTimeseriesData({
   start,
   end,
@@ -122,20 +157,10 @@ export async function requestCMRTimeseriesData({
     }
   );
 
-  const cmrResponse = {};
-  Object.keys(statResponse).forEach((oneTimestamp) => {
-    const currentTimestampData = statResponse[oneTimestamp];
-    Object.keys(currentTimestampData).forEach((eachBand) => {
-      const currentBandData = {
-        ...currentTimestampData[eachBand],
-        date: utcString2userTzDate(oneTimestamp.split('/')[0])
-      };
-      if (!cmrResponse[eachBand]) {
-        cmrResponse[eachBand] = [];
-      }
-      cmrResponse[eachBand] = [...cmrResponse[eachBand], currentBandData];
-    });
-  });
+  const finalResponse = formatCMRResponse(
+    statResponse,
+    datasetData.sourceParams?.backend
+  );
 
   onProgress({
     status: DatasetStatus.SUCCESS,
@@ -145,7 +170,7 @@ export async function requestCMRTimeseriesData({
     },
     error: null,
     data: {
-      timeseries: cmrResponse
+      timeseries: finalResponse
     }
   });
   return {
@@ -156,7 +181,7 @@ export async function requestCMRTimeseriesData({
     },
     error: null,
     data: {
-      timeseries: cmrResponse
+      timeseries: finalResponse
     }
   };
 }
