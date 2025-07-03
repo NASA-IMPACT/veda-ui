@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
 
 import { useEffect } from 'react';
@@ -8,14 +8,15 @@ import {
   GeoJSONSourceSpecification
 } from 'mapbox-gl';
 
+import { CollecticonShrinkToLeft } from '@devseed-ui/collecticons';
 import BlockMap from '$components/common/blocks/block-map';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 import useMapStyle from '$components/common/map/hooks/use-map-style';
 import useGeneratorParams from '$components/common/map/hooks/use-generator-params';
-
+import useLayerInteraction from '$components/common/map/hooks/use-layer-interaction';
 export function GeoJSONLayer(props) {
-  const { id, geojsonURL, styleOverrides } = props;
+  const { id, geojsonURL, onClick } = props;
 
   const { updateStyle } = useMapStyle();
 
@@ -32,11 +33,40 @@ export function GeoJSONLayer(props) {
     };
 
     const layers: LayerSpecification[] = [
-      // Line background layer
+      {
+        id: `${id}-fill`,
+        source: id,
+        type: 'fill',
+        paint: {
+          'fill-color': '#eee',
+          'fill-opacity': 0.3
+        },
+        metadata: {
+          layerOrderPosition: 'markers'
+        }
+      },
       {
         id: `${id}-line-bg`,
         source: id,
-        ...styleOverrides,
+        type: 'line',
+        paint: {
+          'line-color': '#666',
+          'line-opacity': 0.3,
+          'line-width': 3
+        },
+        metadata: {
+          layerOrderPosition: 'markers'
+        }
+      },
+      {
+        id: `${id}-line-dash`,
+        source: id,
+        type: 'line',
+        paint: {
+          'line-color': '#eee',
+          'line-dasharray': [3, 1],
+          'line-width': 3
+        },
         metadata: {
           layerOrderPosition: 'markers'
         }
@@ -82,10 +112,20 @@ export function GeoJSONLayer(props) {
     };
   }, [updateStyle, generatorId]);
 
+  const onPointsClick = (features) => {
+    if (features && features.length)
+      onClick(JSON.stringify(features[0].properties));
+  };
+  useLayerInteraction({
+    layerId: `${id}-fill`,
+    onClick: onPointsClick
+  });
+
   return null;
 }
 
 export default function CustomLayerDemo() {
+  const [info, setInfo] = useState('');
   return (
     <GridContainer>
       <Grid row gap={3}>
@@ -95,23 +135,19 @@ export default function CustomLayerDemo() {
               datasetId='no2'
               layerId='no2-monthly'
               datasets={veda_faux_module_datasets}
-              center={[-84.39, 33.75]}
-              zoom={5.5}
+              center={[111.383, 42.465]}
+              zoom={4}
               dateTime='2019-06-01'
             >
               <GeoJSONLayer
                 id='geojson-id'
-                geojsonURL='/public/geo-data/states/Georgia.geojson'
-                styleOverrides={{
-                  type: 'line',
-                  paint: {
-                    'line-color': '#eee',
-                    'line-dasharray': [3, 1],
-                    'line-width': 3
-                  }
+                geojsonURL='/public/geo-data/sample.geojson'
+                onClick={(feature) => {
+                  setInfo(feature);
                 }}
               />
             </BlockMap>
+            {info && <div className='margin-top-1 '>Clicked Info: {info}</div>}
           </div>
         </Grid>
       </Grid>
