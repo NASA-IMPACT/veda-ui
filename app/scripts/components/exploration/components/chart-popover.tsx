@@ -18,8 +18,16 @@ import { bisector, ScaleTime, sort } from 'd3';
 import format from 'date-fns/format';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import { AnalysisTimeseriesEntry, TimeDensity, TimelineDatasetSuccess } from '../types.d.ts';
-import { FADED_TEXT_COLOR, TEXT_TITLE_BG_COLOR, HEADER_COLUMN_WIDTH } from '../constants';
+import {
+  AnalysisTimeseriesEntry,
+  TimeDensity,
+  TimelineDatasetSuccess
+} from '../types.d.ts';
+import {
+  FADED_TEXT_COLOR,
+  TEXT_TITLE_BG_COLOR,
+  HEADER_COLUMN_WIDTH
+} from '../constants';
 import { DataMetric } from './datasets/analysis-metrics';
 
 import { getNumForChart } from '$components/common/chart/utils';
@@ -120,12 +128,11 @@ function DatasetPopoverComponent(
   );
 
   if (!hasData) return null;
-
   return createPortal(
-    <div ref={ref} style={{...style, padding: 0, gap: 0}} {...rest}>
+    <div ref={ref} style={{ ...style, padding: 0, gap: 0 }} {...rest}>
       <TitleBox>{dataset.data.name}</TitleBox>
       <ContentBox>
-        <MetaBox style={{display: 'flex'}}>
+        <MetaBox style={{ display: 'flex' }}>
           <strong>{timeDensityFormat(data.date, timeDensity)}</strong>
           <UnitBox>{dataset.data.info?.unit}</UnitBox>
         </MetaBox>
@@ -172,10 +179,11 @@ function getClosestDataPoint(
   data?: AnalysisTimeseriesEntry[],
   positionDate?: Date
 ) {
-
   if (!positionDate || !data) return;
 
-  const dataSorted = sort(data, (a, b) => a.date.getTime() - b.date.getTime());
+  const dataSorted = sort(data, (a, b) => {
+    return a.date.getTime() - b.date.getTime();
+  });
 
   const bisect = bisector<AnalysisTimeseriesEntry, Date>((d) => d.date).left;
 
@@ -231,8 +239,7 @@ export function getInteractionDataPoint(options: InteractionDataPointOptions) {
     : Infinity;
 
   const inView =
-    closestDataPointPosition >= 0 &&
-    closestDataPointPosition <= containerWidth;
+    closestDataPointPosition >= 0 && closestDataPointPosition <= containerWidth;
 
   return inView ? closestDataPoint : undefined;
 }
@@ -269,24 +276,25 @@ export function usePopover(options: PopoverHookOptions) {
   // even if the cursor is off from the data timeline.
   const datasetMinX = useMemo(() => {
     if (!xScaled || !dataset) return;
-    return (xScaled(dataset[dataset.length-1]?.date) + HEADER_COLUMN_WIDTH);
+    return xScaled(dataset[dataset.length - 1]?.date) + HEADER_COLUMN_WIDTH;
   }, [xScaled, dataset]);
 
   const datasetMaxX = useMemo(() => {
     if (!xScaled || !dataset) return;
-    return (xScaled(dataset[0]?.date) + HEADER_COLUMN_WIDTH);
+    return xScaled(dataset[0]?.date) + HEADER_COLUMN_WIDTH;
   }, [xScaled, dataset]);
 
   const finalClientX = useMemo(() => {
     if (!datasetMinX || !datasetMaxX || !x) return;
-    return x < datasetMinX ? datasetMinX : x > datasetMaxX? datasetMaxX: x;
-  },[datasetMaxX, datasetMinX, x]);
+    return x < datasetMinX ? datasetMinX : x > datasetMaxX ? datasetMaxX : x;
+  }, [datasetMaxX, datasetMinX, x]);
 
   // Determine which direction that popover needs to be displayed
   const midpointX = useMemo(() => {
     if (!xScaled || !dataset) return;
     const start = xScaled(dataset[0]?.date) + HEADER_COLUMN_WIDTH;
-    const end = xScaled(dataset[dataset.length - 1]?.date) + HEADER_COLUMN_WIDTH;
+    const end =
+      xScaled(dataset[dataset.length - 1]?.date) + HEADER_COLUMN_WIDTH;
     return (start + end) / 2;
   }, [xScaled, dataset]);
 
