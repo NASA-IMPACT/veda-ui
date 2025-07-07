@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
 
 import { useEffect } from 'react';
@@ -8,16 +8,18 @@ import {
   GeoJSONSourceSpecification
 } from 'mapbox-gl';
 
-import { CollecticonShrinkToLeft } from '@devseed-ui/collecticons';
 import BlockMap from '$components/common/blocks/block-map';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
 
 import useMapStyle from '$components/common/map/hooks/use-map-style';
+import useMaps from '$components/common/map/hooks/use-maps';
 import useGeneratorParams from '$components/common/map/hooks/use-generator-params';
 import useLayerInteraction from '$components/common/map/hooks/use-layer-interaction';
+
 export function GeoJSONLayer(props) {
   const { id, geojsonURL, onClick } = props;
-
+  const [customData, setCustomData] = useState(null);
+  const { current: mapInstance } = useMaps();
   const { updateStyle } = useMapStyle();
 
   const generatorId = `geojson-layer-${id}`;
@@ -25,26 +27,25 @@ export function GeoJSONLayer(props) {
   const generatorParams = useGeneratorParams(props);
 
   useEffect(() => {
+    async function loadData() {
+      const response = await fetch(geojsonURL);
+      const geojsonData = await response.json();
+      setCustomData(geojsonData);
+    }
+    loadData();
+  }, [geojsonURL]);
+
+  useEffect(() => {
+    if (!customData || !mapInstance) return;
+
     const sources: Record<string, SourceSpecification> = {
       [id]: {
         type: 'geojson',
-        data: geojsonURL
+        data: customData
       } as GeoJSONSourceSpecification
     };
 
     const layers: LayerSpecification[] = [
-      {
-        id: `${id}-fill`,
-        source: id,
-        type: 'fill',
-        paint: {
-          'fill-color': '#eee',
-          'fill-opacity': 0.3
-        },
-        metadata: {
-          layerOrderPosition: 'markers'
-        }
-      },
       {
         id: `${id}-line-bg`,
         source: id,
@@ -88,6 +89,18 @@ export function GeoJSONLayer(props) {
         metadata: {
           layerOrderPosition: 'markers'
         }
+      },
+      {
+        id: `${id}-fill`,
+        source: id,
+        type: 'fill',
+        paint: {
+          'fill-color': '#eee',
+          'fill-opacity': 0.3
+        },
+        metadata: {
+          layerOrderPosition: 'markers'
+        }
       }
     ];
 
@@ -97,8 +110,20 @@ export function GeoJSONLayer(props) {
       layers,
       params: generatorParams
     });
-  }, [geojsonURL, id, generatorId, generatorParams, updateStyle]);
+  }, [customData, mapInstance, id, generatorId, generatorParams, updateStyle]);
 
+  const onPointsClick = useCallback(
+    (features) => {
+      if (features && features.length)
+        onClick(JSON.stringify(features[0].properties));
+    },
+    [onClick]
+  );
+  useLayerInteraction({
+    layerId: `${id}-fill`,
+    onClick: onPointsClick,
+    enabled: mapInstance && customData
+  });
   //
   // Cleanup layers on unmount
   //
@@ -111,15 +136,6 @@ export function GeoJSONLayer(props) {
       });
     };
   }, [updateStyle, generatorId]);
-
-  const onPointsClick = (features) => {
-    if (features && features.length)
-      onClick(JSON.stringify(features[0].properties));
-  };
-  useLayerInteraction({
-    layerId: `${id}-fill`,
-    onClick: onPointsClick
-  });
 
   return null;
 }
