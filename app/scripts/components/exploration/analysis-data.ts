@@ -9,7 +9,11 @@ import {
   DatasetStatus
 } from './types.d.ts';
 // import { response } from './response';
-import { ExtendedError } from '$components/exploration/data-utils';
+import { MAX_QUERY_NUM } from './constants';
+import {
+  ExtendedError,
+  generateDates
+} from '$components/exploration/data-utils';
 import { utcString2userTzDate } from '$utils/date';
 import {
   fixAoiFcForStacSearch,
@@ -134,6 +138,53 @@ export async function requestCMRTimeseriesData({
 }: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data as EADatasetDataLayer;
 
+  // Check if the selected timespan requires too many assets to analyze
+  const requestedIntervals = generateDates(
+    start,
+    end,
+    datasetData.timeInterval
+  );
+
+  if (requestedIntervals.length > MAX_QUERY_NUM) {
+    const e = new ExtendedError(
+      'Too many assets to analyze',
+      'ANALYSIS_TOO_MANY_ASSETS'
+    );
+    e.details = {
+      assetCount: requestedIntervals.length
+    };
+
+    onProgress({
+      status: DatasetStatus.ERROR,
+      meta: {
+        total: requestedIntervals.length,
+        loaded: 0
+      },
+      error: e,
+      data: null
+    });
+
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {
+        total: requestedIntervals.length,
+        loaded: 0
+      },
+      error: e,
+      data: null
+    };
+  }
+
+  onProgress({
+    status: DatasetStatus.LOADING,
+    error: null,
+    data: null,
+    meta: {
+      total: requestedIntervals.length,
+      loaded: 0
+    }
+  });
+
   const paramsRaw = {
     datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
     step: datasetData.timeInterval,
@@ -165,19 +216,20 @@ export async function requestCMRTimeseriesData({
   onProgress({
     status: DatasetStatus.SUCCESS,
     meta: {
-      total: 1,
-      loaded: 1
+      total: requestedIntervals.length,
+      loaded: requestedIntervals.length
     },
     error: null,
     data: {
       timeseries: finalResponse
     }
   });
+
   return {
     status: DatasetStatus.SUCCESS,
     meta: {
-      total: 1,
-      loaded: 1
+      total: requestedIntervals.length,
+      loaded: requestedIntervals.length
     },
     error: null,
     data: {
