@@ -32,6 +32,7 @@
     "test": "jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
     "test:e2e": "yarn playwright test",
+    "test:e2e:ui": "yarn playwright test --ui",
     "release": "release-it --",
     "watch:buildlib": "chokidar \"app/scripts/**/*\" -c \"yarn buildlib\" --initial"
   },
