@@ -23,6 +23,13 @@ export interface StacDatasetData {
   renders?: Record<string, any> | undefined;
 }
 
+export interface EADatasetDataLayer extends DatasetLayer {
+  isPeriodic: boolean;
+  timeDensity: TimeDensity;
+  timeInterval: string;
+  domain: Date[];
+}
+
 export interface AnalysisTimeseriesEntry {
   date: Date;
   min: number;
@@ -70,7 +77,7 @@ export interface TimelineDatasetAnalysisError {
 export interface TimelineDatasetAnalysisSuccess {
   status: DatasetStatus.SUCCESS;
   data: {
-    timeseries: AnalysisTimeseriesEntry[];
+    timeseries: Record<string, AnalysisTimeseriesEntry[]>;
   };
   error: null;
   meta: AnalysisMeta;
@@ -84,11 +91,6 @@ export type TimelineDatasetAnalysis =
 
 // END TimelineDatasetAnalysis type discriminants
 
-export interface EADatasetDataLayer extends DatasetLayer {
-  isPeriodic: boolean;
-  timeDensity: TimeDensity;
-  domain: Date[];
-}
 export interface colorMapScale {
   min: number;
   max: number;
@@ -103,8 +105,10 @@ export interface DatasetSettings {
   // Active colormap of the layer.
   colorMap?: string;
   // Active colormap scale.
-
   scale?: colorMapScale;
+  // selected variables for multi variables(bands) timeseries analysis
+  analysisVariable?: string;
+  analysisVariableOptions?: string[];
 }
 
 // Any sort of meta information the dataset like:
