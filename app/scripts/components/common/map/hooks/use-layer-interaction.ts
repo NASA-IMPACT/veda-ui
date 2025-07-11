@@ -5,14 +5,16 @@ import useMaps from './use-maps';
 interface LayerInteractionHookOptions {
   layerId: string;
   onClick?: (features: Feature<any>[]) => void;
+  enabled?: boolean;
 }
 export default function useLayerInteraction({
   layerId,
-  onClick
+  onClick,
+  enabled = true
 }: LayerInteractionHookOptions) {
   const { current: mapInstance } = useMaps();
   useEffect(() => {
-    if (!mapInstance || !onClick) return;
+    if (!mapInstance || !onClick || !enabled) return;
     const onPointsClick = (e) => {
       if (!e.features.length) return;
       onClick(e.features);
@@ -36,5 +38,5 @@ export default function useLayerInteraction({
       mapInstance.off('mouseleave', layerId, onPointsLeave);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [layerId]); // do not include mapInstance to avoid unintended re-renders
+  }, [layerId, enabled]); // do not include mapInstance to avoid unintended re-renders
 }
