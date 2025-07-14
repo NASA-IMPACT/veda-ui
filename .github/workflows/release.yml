@@ -87,7 +87,7 @@ jobs:
       #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
   notify:
     # If any of job fails
-    if: failure()
+    # if: failure()
     runs-on: ubuntu-latest
     needs:
       - release
