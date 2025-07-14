@@ -99,7 +99,7 @@ jobs:
     needs:
       - release
     steps:
-      - run: echo "output here => ${{ needs.release.steps.git-release.outputs.GITHUB_OUTPUT }}"
+      - run: echo "output here => ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
