@@ -15,6 +15,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    outputs:
+      release_output: ${{ steps.git-release.outputs.RELEASE_OUTPUT }}
     steps:
       - name: Generate a token
         id: generate-token
@@ -51,50 +53,74 @@ jobs:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
       - run: yarn
+      # - name: Release through Git
+      #   id: git-release
+      #   run: |
+      #     RELEASE_OUTPUT=$(yarn release  --ci --verbose)
+      #     echo "OUTPUT<<EOF" >> $GITHUB_OUTPUT
+      #     echo "$RELEASE_OUTPUT" >> $GITHUB_OUTPUT
+      #     echo "EOF" >> $GITHUB_OUTPUT
       - name: Release through Git
         id: git-release
-        run: yarn release  --ci --verbose
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Set Version Variable
-        id: set-version
-        run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
-      - name: Publish package to NPM
         run: |
-          yarn buildlib
-          npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{steps.generate-token.outputs.token}}
-          repository: nasa-impact/veda-config
-          event-type: update-version
-          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
-      - name: Trigger version update in Template Instance
-        uses: peter-evans/repository-dispatch@v3
-        with:
-          token: ${{steps.generate-token.outputs.token}}
-          repository: nasa-impact/next-veda-ui
-          event-type: update-version
-          client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose 2>&1)"$'\n'EOF >> "$GITHUB_OUTPUT"
+          yarn release  --ci --verbose
+        shell: bash
+      - name: Print release output
+        if: ${{ failure() }}
+        run: |
+          echo "Yarn error occurred: ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
+        shell: bash
+      # - name: Set Version Variable
+      #   id: set-version
+      #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
+      # - name: Publish package to NPM
+      #   run: |
+      #     yarn buildlib
+      #     npm publish
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      # - name: Repository Dispatch
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     token: ${{steps.generate-token.outputs.token}}
+      #     repository: nasa-impact/veda-config
+      #     event-type: update-version
+      #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
+      # - name: Trigger version update in Template Instance
+      #   uses: peter-evans/repository-dispatch@v3
+      #   with:
+      #     token: ${{steps.generate-token.outputs.token}}
+      #     repository: nasa-impact/next-veda-ui
+      #     event-type: update-version
+      #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
   notify:
     # If any of job fails
-    if: failure() 
     runs-on: ubuntu-latest
-    needs:
-      - release
+    needs: release
+    if: failure()
     steps:
       - name: Notify failure through Slack
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: "*VEDA UI Release failed*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+        run: |
+          echo "Yarn error occurred: ${{ needs.release.outputs.release_output }}"
+      # - name: Notify failure through Slack
+      #   uses: slackapi/slack-github-action@v2.0.0
+      #   env:
+      #     failure-message: |
+      #       text: "*VEDA UI Release failed*: "
+      #       blocks:
+      #         - type: "section"
+      #           text:
+      #             type: "mrkdwn"
+      #             text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      #     empty-release-message: |
+      #       text: "*VEDA UI Release skipped*: "
+      #       blocks:
+      #         - type: "section"
+      #           text:
+      #             type: "mrkdwn"
+      #             text: "*VEDA UI Release skipped*: No commits detected. To see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      #   with:
+      #     webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     webhook-type: incoming-webhook
+      #     payload: ${{ contains(needs.release.outputs.release_output, 'There are no commits since the latest tag' ) && env.empty-release-message || env.failure-message }}
