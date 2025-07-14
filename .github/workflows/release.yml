@@ -61,12 +61,19 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
+          {
+            echo 'release_output<<EOF'
+            yarn release  --ci --verbose
+            echo EOF
+          } >> "$GITHUB_ENV"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - name: Print output - test step
-        id: test-step-print-output
-        run: echo "output here => ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
+      - name: Generate release outcome
+        if: failure()
+        id: generate-release-outcome
+        run: |
+          echo "$release_output"
+          echo "Errors=$(echo "$test_output" | grep 'ERROR')" >> $GITHUB_OUTPUT
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
@@ -97,7 +104,7 @@ jobs:
     needs:
       - release
     steps:
-      - run: echo "output here => ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
+      - run: echo "output here => ${{ needs.release.steps.generate-release-outcome.outputs.Errors }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
