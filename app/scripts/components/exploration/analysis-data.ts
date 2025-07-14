@@ -8,7 +8,7 @@ import {
   EADatasetDataLayer,
   DatasetStatus
 } from './types.d.ts';
-// import { response } from './response';
+
 import { MAX_QUERY_NUM } from './constants';
 import {
   ExtendedError,
@@ -20,8 +20,6 @@ import {
   getFilterPayloadWithAOI
 } from '$components/common/map/utils';
 import { userTzDate2utcString } from '$utils/date';
-
-// Until backend fix comes
 
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -192,7 +190,8 @@ export async function requestCMRTimeseriesData({
 
   const cmrTitilerEndpoint = datasetData.tileApiEndpoint
     ? datasetData.tileApiEndpoint.replace('WebMercatorQuad/tilejson.json', '')
-    : 'https://staging.openveda.cloud/api/titiler-cmr';
+    : // @TODO: should this be env var?
+      'https://staging.openveda.cloud/api/titiler-cmr';
 
   const statResponse = await queryClient.fetchQuery(
     ['analysis', datasetData.id, 'cmr', aoi],
@@ -211,7 +210,7 @@ export async function requestCMRTimeseriesData({
     }
   );
 
-  const finalResponse = formatCMRResponse(
+  const formattedResponse = formatCMRResponse(
     statResponse,
     datasetData.sourceParams?.backend
   );
@@ -224,7 +223,7 @@ export async function requestCMRTimeseriesData({
     },
     error: null,
     data: {
-      timeseries: finalResponse
+      timeseries: formattedResponse
     }
   });
 
@@ -236,7 +235,7 @@ export async function requestCMRTimeseriesData({
     },
     error: null,
     data: {
-      timeseries: finalResponse
+      timeseries: formattedResponse
     }
   };
 }
