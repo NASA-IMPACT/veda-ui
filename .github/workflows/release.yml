@@ -58,6 +58,7 @@ jobs:
           echo "ouput<<EOF" >> $GITHUB_OUTPUT
           echo "$output" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
+          echo "output here => ${{ needs.release.steps.git-release.outputs.GITHUB_OUTPUT }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print output - test step
