@@ -60,6 +60,9 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Print output - test step
+        id: test-step-print-output
+        run: echo "output here => ${{ needs.release.steps.git-release.outputs.GITHUB_OUTPUT }}"
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
