@@ -61,8 +61,7 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          set +e # Allow the script to continue even if commands fail
-          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci)"$'\n'EOF >> "$GITHUB_OUTPUT"
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(set +e | yarn release  --ci)"$'\n'EOF >> "$GITHUB_OUTPUT"
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
