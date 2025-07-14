@@ -62,11 +62,13 @@ jobs:
         id: git-release
         run: |
           yarn release  --ci --verbose 2>&1 | tee error_output.log
+        shell: bash
       - name: Print release output
         if: ${{ failure() }}
         run: |
           cat error_output.log
           # Add commands to parse or process the error log file
+        shell: bash
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
@@ -97,7 +99,9 @@ jobs:
     needs:
       - release
     steps:
-      - run: cat error_output.log
+      - name: Notify failure through Slack
+        run: cat error_output.log
+        shell: bash
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
