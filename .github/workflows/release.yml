@@ -101,7 +101,7 @@ jobs:
     steps:
       - name: Notify failure through Slack
         run: |
-          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.error_log }}"
+          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
