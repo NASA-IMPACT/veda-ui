@@ -61,7 +61,13 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci 2>&1 || true)"$'\n'EOF >> "$GITHUB_OUTPUT"
+          if [ $? -ne 0 ]; then
+            echo "Yarn command failed. Error details:"
+            echo "$RELEASE_OUTPUT"
+          else
+            echo "Yarn command succeeded."
+            echo "$YARN_OUTPUT"
       - name: Print release output
         run: echo "output here => ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Set Version Variable
@@ -95,7 +101,8 @@ jobs:
       - release
     steps:
       - run: |
-          echo "output here => ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
+          echo "output here => ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
+          echo "output here 2 => ${{ needs.release.steps.git-release.outputs }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
