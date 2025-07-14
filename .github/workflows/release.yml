@@ -73,7 +73,7 @@ jobs:
         id: generate-release-outcome
         run: |
           echo "$release_output"
-          echo "Errors=$(echo "$test_output" | grep 'ERROR')" >> $GITHUB_OUTPUT
+          echo "Errors=$(echo "$release_output" | grep 'ERROR')" >> $GITHUB_OUTPUT
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
