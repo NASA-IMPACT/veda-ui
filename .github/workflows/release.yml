@@ -61,15 +61,12 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          yarn release  --ci 2> error.txt || true 
-          error_output="$(cat error.txt)"
-          echo "::set-output name=error_log::$error_output"
-          yarn release  --ci
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Print release output
         if: ${{ failure() }}
         run: |
-          echo "Yarn error occurred: ${{ steps.git-release.outputs.error_log }}"
+          echo "Yarn error occurred: ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
         shell: bash
       # - name: Set Version Variable
       #   id: set-version
