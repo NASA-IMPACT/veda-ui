@@ -133,7 +133,6 @@ export async function requestCMRTimeseriesData({
   aoi,
   dataset,
   queryClient,
-  envApiRasterEndpoint,
   onProgress
 }: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data as EADatasetDataLayer;
@@ -191,11 +190,15 @@ export async function requestCMRTimeseriesData({
     ...datasetData.sourceParams
   };
 
+  const cmrTitilerEndpoint = datasetData.tileApiEndpoint
+    ? datasetData.tileApiEndpoint.replace('WebMercatorQuad/tilejson.json', '')
+    : 'https://staging.openveda.cloud/api/titiler-cmr';
+
   const statResponse = await queryClient.fetchQuery(
     ['analysis', datasetData.id, 'cmr', aoi],
     async ({ signal }) => {
       const { data } = await axios.post(
-        `https://staging.openveda.cloud/api/titiler-cmr/timeseries/statistics`,
+        `${cmrTitilerEndpoint}/timeseries/statistics`,
         fixAoiFcForStacSearch(aoi),
         { params: paramsRaw, signal }
       );
