@@ -17,11 +17,27 @@ export function CMRTimeseries(props: BaseTimeseriesProps) {
     opacity,
     generatorOrder
   } = props;
+  // shouldn't this depend on the time_density?
   const start_datetime = userTzDate2utcString(startOfDay(date));
   const end_datetime = userTzDate2utcString(endOfDay(date));
+
+  const processSourceParams = () => {
+    const parseSelAttribute = () =>
+      sourceParams?.sel.map((sel) => {
+        if (sel.includes('{start_datetime}')) {
+          return sel.replace('{start_datetime}', start_datetime);
+        } else return sel;
+      }); // "start_datetime" is currently the only variable to be interpolated
+
+    return {
+      ...sourceParams,
+      ...(sourceParams?.sel ? { sel: parseSelAttribute() } : {})
+    };
+  };
+
   const tileParams = {
     datetime: `${start_datetime}/${end_datetime}`,
-    ...sourceParams
+    ...processSourceParams()
   };
 
   const { changeStatus } = useRequestStatus({

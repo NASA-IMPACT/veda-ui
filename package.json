@@ -1,7 +1,7 @@
 {
   "name": "@teamimpact/veda-ui",
   "description": "Dashboard",
-  "version": "6.7.5",
+  "version": "6.9.0",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"
@@ -29,9 +29,10 @@
     "lint:scripts": "eslint app/scripts/",
     "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.(js|ts|tsx|jsx)'",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
-    "test": "jest",
+    "test": "TZ=UTC jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
     "test:e2e": "yarn playwright test",
+    "test:e2e:ui": "yarn playwright test --ui",
     "release": "release-it --",
     "watch:buildlib": "chokidar \"app/scripts/**/*\" -c \"yarn buildlib\" --initial"
   },

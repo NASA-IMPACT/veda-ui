@@ -18,6 +18,7 @@ import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
+import CustomLayer from './customlayer';
 import Pagination from './pagination';
 import Widgets from './widgets';
 import SandboxUswdsCards from './cards';
@@ -121,6 +122,11 @@ const pages = [
     id: 'uswds-cards',
     name: 'USWDS Cards',
     component: SandboxUswdsCards
+  },
+  {
+    id: 'custom-layer',
+    name: 'Custom Layer',
+    component: CustomLayer
   }
 ];
 
