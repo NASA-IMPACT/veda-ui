@@ -63,7 +63,7 @@ jobs:
         run: |
           {
             echo 'release_output<<EOF'
-            yarn release  --ci --verbose
+            $(yarn release  --ci --verbose)
             echo EOF
           } >> "$GITHUB_ENV"
         env:
