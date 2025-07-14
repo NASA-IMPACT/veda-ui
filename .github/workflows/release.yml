@@ -61,9 +61,10 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          yarn release  --ci 2> error.txt
+          yarn release  --ci 2> error.txt || true 
           error_output="$(cat error.txt)"
           echo "::set-output name=error_log::$error_output"
+          yarn release  --ci
         shell: bash
       - name: Print release output
         if: ${{ failure() }}
