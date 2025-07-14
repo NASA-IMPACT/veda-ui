@@ -16,7 +16,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      my_output: ${{ steps.set_output_step.outputs.result }}
+      release_output: ${{ steps.git-release.outputs.RELEASE_OUTPUT }}
     steps:
       - name: Generate a token
         id: generate-token
@@ -102,7 +102,7 @@ jobs:
     steps:
       - name: Notify failure through Slack
         run: |
-          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
+          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.release_output }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
