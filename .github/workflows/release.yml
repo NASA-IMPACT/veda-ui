@@ -63,8 +63,7 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose 2>&1)"$'\n'EOF >> "$GITHUB_OUTPUT"
-          yarn release  --ci --verbose
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
         shell: bash
       - name: Print release output
         if: ${{ failure() }}
