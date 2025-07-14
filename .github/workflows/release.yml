@@ -103,24 +103,24 @@ jobs:
       - name: Notify failure through Slack
         run: |
           echo "Yarn error occurred: ${{ needs.release.outputs.release_output }}"
-      - name: Notify failure through Slack
-        uses: slackapi/slack-github-action@v2.0.0
-        env:
-          failure-message: |
-            text: "*VEDA UI Release failed*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          empty-release-message: |
-            text: "*VEDA UI Release skipped*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "*VEDA UI Release skipped*: No commits detected. To see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: ${{ contains(needs.release.outputs.release_output, 'There are no commits since the latest tag' ) && env.empty-release-message || env.failure-message }}
+      # - name: Notify failure through Slack
+      #   uses: slackapi/slack-github-action@v2.0.0
+      #   env:
+      #     failure-message: |
+      #       text: "*VEDA UI Release failed*: "
+      #       blocks:
+      #         - type: "section"
+      #           text:
+      #             type: "mrkdwn"
+      #             text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      #     empty-release-message: |
+      #       text: "*VEDA UI Release skipped*: "
+      #       blocks:
+      #         - type: "section"
+      #           text:
+      #             type: "mrkdwn"
+      #             text: "*VEDA UI Release skipped*: No commits detected. To see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      #   with:
+      #     webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+      #     webhook-type: incoming-webhook
+      #     payload: ${{ contains(needs.release.outputs.release_output, 'There are no commits since the latest tag' ) && env.empty-release-message || env.failure-message }}
