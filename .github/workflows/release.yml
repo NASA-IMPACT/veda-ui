@@ -61,9 +61,9 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          set +e
-          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose | tee -a $GITHUB_OUTPUT)"$'\n'EOF >> "$GITHUB_OUTPUT"
-          echo "exitcode=$?" >> $GITHUB_OUTPUT
+          set +e # Allow the script to continue even if commands fail
+          yarn release  --ci | tee -a $GITHUB_OUTPUT # Capture stderr and stdout to output
+          echo "exitcode=$?" >> $GITHUB_OUTPUT # Capture the exit code
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
