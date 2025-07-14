@@ -61,7 +61,7 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          yarn release  --ci 2> error.txt || true 
+          yarn release  --ci 2> error.txt
           error_output="$(cat error.txt)"
           echo "::set-output name=error_log::$error_output"
         shell: bash
