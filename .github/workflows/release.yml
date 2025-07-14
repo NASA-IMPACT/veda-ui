@@ -62,13 +62,11 @@ jobs:
         id: git-release
         run: |
           yarn release  --ci --verbose 2>&1 | tee error_output.log
-        shell: bash
       - name: Print release output
         if: ${{ failure() }}
         run: |
           cat error_output.log
           # Add commands to parse or process the error log file
-        shell: bash
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
@@ -94,14 +92,12 @@ jobs:
       #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
   notify:
     # If any of job fails
-    # if: failure()
+    if: failure()
     runs-on: ubuntu-latest
     needs:
       - release
     steps:
-      - run: |
-          echo "output here => ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
-          echo "output here 2 => ${{ needs.release.steps.git-release.outputs }}"
+      - run: cat error_output.log
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
