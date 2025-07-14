@@ -62,6 +62,8 @@ jobs:
         id: git-release
         run: |
           echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
+      - name: Print release output
+        run: echo "output here => ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
