@@ -63,13 +63,13 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          echo "result<<EOF"$'\n'"$(yarn release  --ci --verbose 2>&1)"$'\n'EOF >> "$GITHUB_OUTPUT"
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose 2>&1)"$'\n'EOF >> "$GITHUB_OUTPUT"
           yarn release  --ci --verbose
         shell: bash
       - name: Print release output
         if: ${{ failure() }}
         run: |
-          echo "Yarn error occurred: ${{ steps.git-release.outputs.my_output }}"
+          echo "Yarn error occurred: ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
         shell: bash
       # - name: Set Version Variable
       #   id: set-version
@@ -102,7 +102,7 @@ jobs:
     steps:
       - name: Notify failure through Slack
         run: |
-          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.my_output }}"
+          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
