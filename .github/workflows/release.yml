@@ -51,19 +51,24 @@ jobs:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
       - run: yarn
+      # - name: Release through Git
+      #   id: git-release
+      #   run: |
+      #     RELEASE_OUTPUT=$(yarn release  --ci --verbose)
+      #     echo "OUTPUT<<EOF" >> $GITHUB_OUTPUT
+      #     echo "$RELEASE_OUTPUT" >> $GITHUB_OUTPUT
+      #     echo "EOF" >> $GITHUB_OUTPUT
       - name: Release through Git
         id: git-release
         run: |
-          output="$(yarn release  --ci --verbose)"
-          echo "output<<EOF" >> $GITHUB_OUTPUT
-          echo "$output" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
-          echo "output here => ${{ needs.release.steps.git-release.outputs.GITHUB_OUTPUT }}"
+          echo 'RELEASE_OUTPUT<<EOF' >> $GITHUB_OUTPUT
+          yarn release  --ci --verbose >> $GITHUB_OUTPUT
+          echo 'EOF' >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print output - test step
         id: test-step-print-output
-        run: echo "output here => ${{ needs.release.steps.git-release.outputs.GITHUB_OUTPUT }}"
+        run: echo "output here => ${{ steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
