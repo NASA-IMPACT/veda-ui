@@ -61,13 +61,14 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          yarn release  --ci --verbose 2>&1 | tee error_output.log
+          yarn release  --ci 2> error.txt || true 
+          error_output="$(cat error.txt)"
+          echo "::set-output name=error_log::$error_output"
         shell: bash
       - name: Print release output
         if: ${{ failure() }}
         run: |
-          cat error_output.log
-          # Add commands to parse or process the error log file
+          echo "Yarn error occurred: ${{ steps.git-release.outputs.error_log }}"
         shell: bash
       # - name: Set Version Variable
       #   id: set-version
@@ -100,8 +101,8 @@ jobs:
       - release
     steps:
       - name: Notify failure through Slack
-        run: cat error_output.log
-        shell: bash
+        run: |
+          echo "Yarn error occurred: ${{ needs.release.steps.git-release.outputs.error_log }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
