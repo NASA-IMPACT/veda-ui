@@ -61,8 +61,7 @@ jobs:
       - name: Release through Git
         id: git-release
         run: |
-          release_output=$(yarn release  --ci --verbose)
-          echo "RELEASE_OUTPUT<<EOF"$'\n'"$release_output"$'\n'EOF >> "$GITHUB_OUTPUT"
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Print output - test step
