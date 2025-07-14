@@ -60,11 +60,11 @@ jobs:
       #     echo "EOF" >> $GITHUB_OUTPUT
       - name: Release through Git
         id: git-release
-        run:  |
+        run: |
           {
             echo 'RELEASE_OUTPUT<<EOF'
             yarn release  --ci --verbose
-            echo EOF
+            echo 'EOF'
           } >> "$GITHUB_OUTPUT"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
