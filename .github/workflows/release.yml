@@ -62,8 +62,7 @@ jobs:
         id: git-release
         run: |
           set +e # Allow the script to continue even if commands fail
-          yarn release  --ci | tee -a $GITHUB_OUTPUT # Capture stderr and stdout to output
-          echo "exitcode=$?" >> $GITHUB_OUTPUT # Capture the exit code
+          echo "RELEASE_OUTPUT<<EOF"$'\n'"$(yarn release  --ci --verbose)"$'\n'EOF >> "$GITHUB_OUTPUT"
       # - name: Set Version Variable
       #   id: set-version
       #   run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
@@ -95,8 +94,7 @@ jobs:
       - release
     steps:
       - run: |
-          echo "output here => ${{ needs.release.steps.git-release.outputs.exitcode }}"
-          echo "exitcode => ${{ needs.release.steps.git-release.outputs.stdout }}"
+          echo "output here => ${{ needs.release.steps.git-release.outputs.RELEASE_OUTPUT }}"
       # - name: Notify failure through Slack
       #   uses: slackapi/slack-github-action@v2.0.0
       #   env:
