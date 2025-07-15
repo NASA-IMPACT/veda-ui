@@ -103,7 +103,6 @@ export function formatCMRResponse(
   flag: string
 ): TimeseriesData {
   const cmrResponse = {};
-
   // Multi Bands
   //   statistics: {
   //   startTime1/endTime1: {
@@ -162,7 +161,6 @@ export function formatCMRResponse(
       'No backend type specified',
       'WRONG MDX CONFIGURATION FOR CMR DATA'
     );
-
   return cmrResponse;
 }
 
@@ -250,6 +248,34 @@ export async function requestCMRTimeseriesData({
       staleTime: Infinity
     }
   );
+
+  // When backend returns the empty stats
+  if (requestedIntervals.length && Object.keys(statResponse).length < 1) {
+    const e = new ExtendedError(
+      'The selected time and area of interest contains no valid data.',
+      'ANALYSIS_NO_VALID_DATA'
+    );
+
+    onProgress({
+      status: DatasetStatus.ERROR,
+      meta: {
+        total: requestedIntervals.length,
+        loaded: 0
+      },
+      error: e,
+      data: null
+    });
+
+    return {
+      status: DatasetStatus.ERROR,
+      meta: {
+        total: requestedIntervals.length,
+        loaded: 0
+      },
+      error: e,
+      data: null
+    };
+  }
 
   const formattedResponse = formatCMRResponse(
     statResponse,
