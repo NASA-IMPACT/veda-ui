@@ -128,7 +128,8 @@ export function formatCMRResponse(
         if (!cmrResponse[eachBand]) {
           cmrResponse[eachBand] = [];
         }
-        cmrResponse[eachBand] = [...cmrResponse[eachBand], currentBandData];
+        // The most recent date should come first
+        cmrResponse[eachBand] = [currentBandData, ...cmrResponse[eachBand]];
       });
     });
     // Single Band
@@ -150,9 +151,10 @@ export function formatCMRResponse(
         if (!cmrResponse[SINGLE_BAND_KEY_NAME]) {
           cmrResponse[SINGLE_BAND_KEY_NAME] = [];
         }
+        // The most recent date should come first
         cmrResponse[SINGLE_BAND_KEY_NAME] = [
-          ...cmrResponse[SINGLE_BAND_KEY_NAME],
-          currentBandData
+          currentBandData,
+          ...cmrResponse[SINGLE_BAND_KEY_NAME]
         ];
       });
     });
