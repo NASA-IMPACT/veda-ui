@@ -57,12 +57,12 @@ describe('formatCMRResponse', () => {
 
       expect(result).toEqual({
         Band1: [
-          { ...timeseriesData, max: 100, min: 0, mean: 50, date: mockDate },
-          { ...timeseriesData, max: 120, min: 5, mean: 60, date: mockDate }
+          { ...timeseriesData, max: 120, min: 5, mean: 60, date: mockDate },
+          { ...timeseriesData, max: 100, min: 0, mean: 50, date: mockDate }
         ],
         Band2: [
-          { ...timeseriesData, max: 200, min: 10, mean: 105, date: mockDate },
-          { ...timeseriesData, max: 180, min: 15, mean: 95, date: mockDate }
+          { ...timeseriesData, max: 180, min: 15, mean: 95, date: mockDate },
+          { ...timeseriesData, max: 200, min: 10, mean: 105, date: mockDate }
         ]
       });
     });
@@ -118,16 +118,16 @@ describe('formatCMRResponse', () => {
         [SINGLE_BAND_KEY_NAME]: [
           {
             ...timeseriesData,
-            max: 100,
-            min: 0,
-            mean: 50,
+            max: 120,
+            min: 5,
+            mean: 60,
             date: mockDate
           },
           {
             ...timeseriesData,
-            max: 120,
-            min: 5,
-            mean: 60,
+            max: 100,
+            min: 0,
+            mean: 50,
             date: mockDate
           }
         ]
