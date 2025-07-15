@@ -6,7 +6,9 @@ import {
   TimelineDataset,
   TimelineDatasetAnalysis,
   EADatasetDataLayer,
-  DatasetStatus
+  DatasetStatus,
+  AnalysisTimeseriesEntry,
+  TimeseriesData
 } from './types.d.ts';
 
 import { MAX_QUERY_NUM } from './constants';
@@ -21,6 +23,7 @@ import {
 } from '$components/common/map/utils';
 import { userTzDate2utcString } from '$utils/date';
 
+export const SINGLE_BAND_KEY_NAME = 'b1';
 interface DatasetAssetsRequestParams {
   stacCol: string;
   assets: string;
@@ -30,6 +33,12 @@ interface DatasetAssetsRequestParams {
   aoi: FeatureCollection<Polygon>;
 }
 
+type CMRStatResponse = Omit<AnalysisTimeseriesEntry, 'date'>;
+type CMRStatistics = {
+  [key1: string]: {
+    [timestamp: string]: CMRStatResponse;
+  };
+};
 /**
  * Gets the asset urls for all datasets in the results of a STAC search given by
  * the input parameters.
@@ -89,10 +98,27 @@ interface TimeseriesRequesterParams {
   envApiStacEndpoint: string;
 }
 
-function formatCMRResponse(statResponse, flag) {
+export function formatCMRResponse(
+  statResponse: CMRStatistics,
+  flag: string
+): TimeseriesData {
   const cmrResponse = {};
 
-  if (flag !== 'xarray') {
+  // Multi Bands
+  //   statistics: {
+  //   startTime1/endTime1: {
+  //      'Band1': {max:..., min: ..., ....},
+  //      'Band2': {max:..., min: ..., ....},
+  //      'Band3': {max:..., min: ..., ....},
+  //   },
+  //   startTime2/endTime2: {
+  //      'Band1': {max:..., min: ..., ....},
+  //      'Band2': {max:..., min: ..., ....},
+  //      'Band3': {max:..., min: ..., ....},
+  //   },
+  //   ...
+  // }
+  if (flag === 'rasterio') {
     Object.keys(statResponse).forEach((oneTimestamp) => {
       const currentTimestampData = statResponse[oneTimestamp];
       Object.keys(currentTimestampData).forEach((eachBand) => {
@@ -106,8 +132,15 @@ function formatCMRResponse(statResponse, flag) {
         cmrResponse[eachBand] = [...cmrResponse[eachBand], currentBandData];
       });
     });
-  } else {
-    const keyName = 'key';
+    // Single Band
+    // statistics: {
+    // startTime1/endTime1: {
+    //    startTime1: {max: ..., min:..., ....}
+    // },
+    // startTime2/endTime2: {
+    //    startTime2: {max: ..., min:..., ....}
+    // },
+  } else if (flag === 'xarray') {
     Object.keys(statResponse).forEach((oneTimestamp) => {
       const currentTimestampData = statResponse[oneTimestamp];
       Object.keys(currentTimestampData).forEach((eachBand) => {
@@ -115,13 +148,21 @@ function formatCMRResponse(statResponse, flag) {
           ...currentTimestampData[eachBand],
           date: utcString2userTzDate(oneTimestamp.split('/')[0])
         };
-        if (!cmrResponse[keyName]) {
-          cmrResponse[keyName] = [];
+        if (!cmrResponse[SINGLE_BAND_KEY_NAME]) {
+          cmrResponse[SINGLE_BAND_KEY_NAME] = [];
         }
-        cmrResponse[keyName] = [...cmrResponse[keyName], currentBandData];
+        cmrResponse[SINGLE_BAND_KEY_NAME] = [
+          ...cmrResponse[SINGLE_BAND_KEY_NAME],
+          currentBandData
+        ];
       });
     });
-  }
+  } else
+    throw new ExtendedError(
+      'No backend type specified',
+      'WRONG MDX CONFIGURATION FOR CMR DATA'
+    );
+
   return cmrResponse;
 }
 
@@ -446,7 +487,7 @@ export async function requestDatasetTimeseriesData({
       error: null,
       data: {
         timeseries: {
-          key: layerStatistics
+          [SINGLE_BAND_KEY_NAME]: layerStatistics
         }
       }
     });
@@ -459,7 +500,7 @@ export async function requestDatasetTimeseriesData({
       error: null,
       data: {
         timeseries: {
-          key: layerStatistics
+          [SINGLE_BAND_KEY_NAME]: layerStatistics
         }
       }
     };

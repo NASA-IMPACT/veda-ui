@@ -74,10 +74,11 @@ export interface TimelineDatasetAnalysisError {
   error: any;
   meta: Partial<AnalysisMeta>;
 }
+export type TimeseriesData = Record<string, AnalysisTimeseriesEntry[]>;
 export interface TimelineDatasetAnalysisSuccess {
   status: DatasetStatus.SUCCESS;
   data: {
-    timeseries: Record<string, AnalysisTimeseriesEntry[]>;
+    timeseries: TimeseriesData;
   };
   error: null;
   meta: AnalysisMeta;
