@@ -22,7 +22,7 @@ import {
   getFilterPayloadWithAOI
 } from '$components/common/map/utils';
 import { userTzDate2utcString } from '$utils/date';
-
+import { formatTitilerParameter } from '$components/common/map/style-generators/utils';
 export const SINGLE_BAND_KEY_NAME = 'b1';
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -220,91 +220,113 @@ export async function requestCMRTimeseriesData({
       loaded: 0
     }
   });
+  try {
+    const paramsRaw = {
+      datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
+      step: datasetData.timeInterval,
+      // temporal_mode: 'interval',
+      ...datasetData.sourceParams
+    };
+    const formattedParamString = formatTitilerParameter(paramsRaw);
 
-  const paramsRaw = {
-    datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
-    step: datasetData.timeInterval,
-    ...datasetData.sourceParams
-  };
+    const cmrTitilerEndpoint = datasetData.tileApiEndpoint
+      ? datasetData.tileApiEndpoint.replace('WebMercatorQuad/tilejson.json', '')
+      : // @TODO: should this be env var?
+        'https://staging.openveda.cloud/api/titiler-cmr';
 
-  const cmrTitilerEndpoint = datasetData.tileApiEndpoint
-    ? datasetData.tileApiEndpoint.replace('WebMercatorQuad/tilejson.json', '')
-    : // @TODO: should this be env var?
-      'https://staging.openveda.cloud/api/titiler-cmr';
+    const statResponse = await queryClient.fetchQuery(
+      ['analysis', datasetData.id, 'cmr', aoi],
+      async ({ signal }) => {
+        const { data } = await axios.post(
+          `${cmrTitilerEndpoint}/timeseries/statistics/?${formattedParamString}`,
+          fixAoiFcForStacSearch(aoi),
+          { signal }
+        );
+        return {
+          ...data.properties.statistics
+        };
+      },
+      {
+        staleTime: Infinity
+      }
+    );
 
-  const statResponse = await queryClient.fetchQuery(
-    ['analysis', datasetData.id, 'cmr', aoi],
-    async ({ signal }) => {
-      const { data } = await axios.post(
-        `${cmrTitilerEndpoint}/timeseries/statistics`,
-        fixAoiFcForStacSearch(aoi),
-        { params: paramsRaw, signal }
+    // When backend returns the empty stats
+    if (requestedIntervals.length && Object.keys(statResponse).length < 1) {
+      const e = new ExtendedError(
+        'The selected time and area of interest contains no valid data.',
+        'ANALYSIS_NO_VALID_DATA'
       );
-      return {
-        ...data.properties.statistics
-      };
-    },
-    {
-      staleTime: Infinity
-    }
-  );
 
-  // When backend returns the empty stats
-  if (requestedIntervals.length && Object.keys(statResponse).length < 1) {
-    const e = new ExtendedError(
-      'The selected time and area of interest contains no valid data.',
-      'ANALYSIS_NO_VALID_DATA'
+      onProgress({
+        status: DatasetStatus.ERROR,
+        meta: {
+          total: requestedIntervals.length,
+          loaded: 0
+        },
+        error: e,
+        data: null
+      });
+
+      return {
+        status: DatasetStatus.ERROR,
+        meta: {
+          total: requestedIntervals.length,
+          loaded: 0
+        },
+        error: e,
+        data: null
+      };
+    }
+
+    const formattedResponse = formatCMRResponse(
+      statResponse,
+      datasetData.sourceParams?.backend
     );
 
     onProgress({
-      status: DatasetStatus.ERROR,
+      status: DatasetStatus.SUCCESS,
       meta: {
         total: requestedIntervals.length,
-        loaded: 0
+        loaded: requestedIntervals.length
       },
-      error: e,
-      data: null
+      error: null,
+      data: {
+        timeseries: formattedResponse
+      }
     });
 
     return {
-      status: DatasetStatus.ERROR,
+      status: DatasetStatus.SUCCESS,
       meta: {
         total: requestedIntervals.length,
-        loaded: 0
+        loaded: requestedIntervals.length
       },
-      error: e,
-      data: null
+      error: null,
+      data: {
+        timeseries: formattedResponse
+      }
+    };
+  } catch (error) {
+    // Discard abort related errors.
+    if (error.revert) {
+      return {
+        status: DatasetStatus.LOADING,
+        error: null,
+        data: null,
+        meta: {}
+      };
+    }
+
+    // Cancel any inflight queries.
+    queryClient.cancelQueries({ queryKey: ['analysis', datasetData.id] });
+    return {
+      status: DatasetStatus.ERROR,
+      error,
+      data: null,
+      meta: {}
     };
   }
-
-  const formattedResponse = formatCMRResponse(
-    statResponse,
-    datasetData.sourceParams?.backend
-  );
-
-  onProgress({
-    status: DatasetStatus.SUCCESS,
-    meta: {
-      total: requestedIntervals.length,
-      loaded: requestedIntervals.length
-    },
-    error: null,
-    data: {
-      timeseries: formattedResponse
-    }
-  });
-
-  return {
-    status: DatasetStatus.SUCCESS,
-    meta: {
-      total: requestedIntervals.length,
-      loaded: requestedIntervals.length
-    },
-    error: null,
-    data: {
-      timeseries: formattedResponse
-    }
-  };
 }
 
 /**
@@ -445,7 +467,7 @@ export async function requestDatasetTimeseriesData({
       };
     }
 
-    let loaded = 0; //new Array(assets.length).fill(0);
+    let loaded = 0;
 
     const tileEndpointToUse =
       datasetData.tileApiEndpoint ?? envApiRasterEndpoint ?? '';
