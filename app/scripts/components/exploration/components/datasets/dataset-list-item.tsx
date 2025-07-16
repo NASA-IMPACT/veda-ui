@@ -252,7 +252,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
                   message={
-                    dataset.analysis.meta.total === undefined
+                    dataset.analysis.meta.total === undefined || dataset.analysis.meta.loaded === undefined
                       ? 'Fetching item information'
                       : `${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`
                   }

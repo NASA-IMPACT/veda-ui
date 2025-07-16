@@ -23,6 +23,7 @@ import {
 } from '$components/common/map/utils';
 import { userTzDate2utcString } from '$utils/date';
 import { formatTitilerParameter } from '$components/common/map/style-generators/utils';
+
 export const SINGLE_BAND_KEY_NAME = 'b1';
 interface DatasetAssetsRequestParams {
   stacCol: string;
@@ -141,7 +142,10 @@ export function formatCMRResponse(statResponse: CMRStatistics): TimeseriesData {
         cmrResponse[SINGLE_BAND_KEY_NAME] = [];
       }
       // The most recent date should come first
-      cmrResponse[SINGLE_BAND_KEY_NAME] = [currentBandData, ...cmrResponse[SINGLE_BAND_KEY_NAME]];
+      cmrResponse[SINGLE_BAND_KEY_NAME] = [
+        currentBandData,
+        ...cmrResponse[SINGLE_BAND_KEY_NAME]
+      ];
     } else {
       bands.forEach((eachBand) => {
         const currentBandData = {

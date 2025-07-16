@@ -99,8 +99,8 @@ describe('formatCMRResponse', () => {
 
       expect(result).toEqual({
         [SINGLE_BAND_KEY_NAME]: [
-          { ...timeseriesData, max: 120, min: 0 },
-          { ...timeseriesData, max: 100, min: 0 }
+          { ...timeseriesData, max: 120, min: 0, date: mockDate },
+          { ...timeseriesData, max: 100, min: 0, date: mockDate }
         ]
       });
     });
