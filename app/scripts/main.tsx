@@ -76,6 +76,7 @@ const composingComponents = [
         envMapboxToken: process.env.MAPBOX_TOKEN ?? '',
         envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
         envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? '',
+        envApiCMREndpoint: process.env.API_CMR_ENDPOINT ?? '',
         navigation: {
           LinkComponent: Link,
           linkProps: {

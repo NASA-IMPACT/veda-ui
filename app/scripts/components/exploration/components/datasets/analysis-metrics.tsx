@@ -15,7 +15,7 @@ export interface DataMetric {
     | 'infographicD'
     | 'infographicE'
     | 'infographicF';
-  style?: Record<string, string>
+  style?: Record<string, string>;
 }
 
 export const DATA_METRICS: DataMetric[] = [
@@ -24,7 +24,7 @@ export const DATA_METRICS: DataMetric[] = [
     label: 'Min',
     chartLabel: 'Min',
     themeColor: 'infographicA',
-    style: { "strokeDasharray": "2 2"}
+    style: { strokeDasharray: '2 2' }
   },
   {
     id: 'mean',
@@ -37,7 +37,7 @@ export const DATA_METRICS: DataMetric[] = [
     label: 'Max',
     chartLabel: 'Max',
     themeColor: 'infographicC',
-    style: { "strokeDasharray": "2 2"}
+    style: { strokeDasharray: '2 2' }
   },
   {
     id: 'std',
@@ -59,7 +59,9 @@ export const DATA_METRICS: DataMetric[] = [
   }
 ];
 
-export const DEFAULT_DATA_METRICS: DataMetric[] = DATA_METRICS.filter(metric => metric.id ==='mean' || metric.id==='std');
+export const DEFAULT_DATA_METRICS: DataMetric[] = DATA_METRICS.filter(
+  (metric) => metric.id === 'mean' || metric.id === 'std'
+);
 
 const MetricList = styled(DropMenu)`
   display: flex;
@@ -110,27 +112,27 @@ export default function AnalysisMetrics(props: AnalysisMetricsProps) {
 
   return (
     <>
-    <DropTitle>Analysis metrics</DropTitle>
-    <MetricList>
-      {DATA_METRICS.map((metric) => {
-        const checked = !!activeMetrics.find((m) => m.id === metric.id);
-        return (
-          <li key={metric.id}>
-            <MetricSwitch
-              metricThemeColor={metric.themeColor}
-              name={`switch-metric-${metric.id}`}
-              id={`switch-metric-${metric.id}`}
-              value={`switch-metric-${metric.id}`}
-              title='Toggle metric on/off'
-              checked={checked}
-              onChange={() => handleMetricChange(metric, !checked)}
-            >
-              {metric.label}
-            </MetricSwitch>
-          </li>
-        );
-      })}
-    </MetricList>
+      <DropTitle>Analysis metrics</DropTitle>
+      <MetricList>
+        {DATA_METRICS.map((metric) => {
+          const checked = !!activeMetrics.find((m) => m.id === metric.id);
+          return (
+            <li key={metric.id}>
+              <MetricSwitch
+                metricThemeColor={metric.themeColor}
+                name={`switch-metric-${metric.id}`}
+                id={`switch-metric-${metric.id}`}
+                value={`switch-metric-${metric.id}`}
+                title='Toggle metric on/off'
+                checked={checked}
+                onChange={() => handleMetricChange(metric, !checked)}
+              >
+                {metric.label}
+              </MetricSwitch>
+            </li>
+          );
+        })}
+      </MetricList>
     </>
   );
 }
