@@ -120,11 +120,6 @@ const LegendColorMapTrigger = styled.div`
   cursor: pointer;
 `;
 
-// Hiding configurable map for now until Instances are ready to adapt it
-const showConfigurableColorMap = checkEnvFlag(
-  process.env.SHOW_CONFIGURABLE_COLOR_MAP
-);
-
 export default function DataLayerCard(props: CardProps) {
   const {
     dataset,
@@ -163,18 +158,16 @@ export default function DataLayerCard(props: CardProps) {
   });
 
   const showLoadingConfigurableCmapSkeleton =
-    showConfigurableColorMap &&
-    dataset.status === 'loading' &&
-    datasetLegend?.type === 'gradient';
+    dataset.status === 'loading' && datasetLegend?.type === 'gradient';
   const showConfigurableCmap =
-    showConfigurableColorMap &&
     dataset.status === 'success' &&
     dataset.data.type !== 'wmts' &&
     dataset.data.type !== 'wms' &&
     datasetLegend?.type === 'gradient' &&
     colorMap;
+
   const showNonConfigurableCmap =
-    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
+    !showConfigurableCmap && datasetLegend?.type === 'gradient';
 
   const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
   const chevToggleExpanded = () => {
