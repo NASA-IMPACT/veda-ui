@@ -76,7 +76,7 @@ export function useAnalysisDataRequest({
 }) {
   const queryClient = useQueryClient();
 
-  const { envApiRasterEndpoint, envApiStacEndpoint } = useVedaUI();
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } = useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
 
@@ -140,6 +140,7 @@ export function useAnalysisDataRequest({
         concurrencyManager: analysisConcurrencyManager,
         envApiRasterEndpoint,
         envApiStacEndpoint,
+        envApiCMREndpoint,
         onProgress: (data) => {
           setAnalysis(data);
         }

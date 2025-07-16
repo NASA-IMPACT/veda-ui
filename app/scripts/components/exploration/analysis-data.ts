@@ -97,7 +97,10 @@ interface TimeseriesRequesterParams {
   onProgress: (data: TimelineDatasetAnalysis) => void;
   envApiRasterEndpoint: string;
   envApiStacEndpoint: string;
+  envApiCMREndpoint?: string;
 }
+
+type TimeseriesCMRRequesterParams = Omit<TimeseriesRequesterParams, 'envApiRasterEndpoint'| 'concurrencyManager'| 'envApiStacEndpoint'>
 
 export function formatCMRResponse(statResponse: CMRStatistics): TimeseriesData {
   const cmrResponse = {};
@@ -170,10 +173,10 @@ export async function requestCMRTimeseriesData({
   aoi,
   dataset,
   queryClient,
+  envApiCMREndpoint,
   onProgress
-}: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
+}: TimeseriesCMRRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data as EADatasetDataLayer;
-
   // Check if the selected timespan requires too many assets to analyze
   const requestedIntervals = generateDates(
     start,
@@ -231,9 +234,7 @@ export async function requestCMRTimeseriesData({
 
     const cmrTitilerEndpoint = datasetData.tileApiEndpoint
       ? datasetData.tileApiEndpoint.replace('WebMercatorQuad/tilejson.json', '')
-      : // @TODO: should this be env var?
-        'https://staging.openveda.cloud/api/titiler-cmr';
-
+      : envApiCMREndpoint;
     const statResponse = await queryClient.fetchQuery(
       ['analysis', datasetData.id, 'cmr', aoi],
       async ({ signal }) => {
@@ -262,7 +263,7 @@ export async function requestCMRTimeseriesData({
         status: DatasetStatus.ERROR,
         meta: {
           total: requestedIntervals.length,
-          loaded: 0
+          loaded: undefined
         },
         error: e,
         data: null
@@ -272,7 +273,7 @@ export async function requestCMRTimeseriesData({
         status: DatasetStatus.ERROR,
         meta: {
           total: requestedIntervals.length,
-          loaded: 0
+          loaded: undefined
         },
         error: e,
         data: null
@@ -311,7 +312,10 @@ export async function requestCMRTimeseriesData({
         status: DatasetStatus.LOADING,
         error: null,
         data: null,
-        meta: {}
+        meta: {
+          total: requestedIntervals.length,
+          loaded: undefined
+        }
       };
     }
 
@@ -341,6 +345,7 @@ export async function requestDatasetTimeseriesData({
   concurrencyManager,
   envApiRasterEndpoint,
   envApiStacEndpoint,
+  envApiCMREndpoint,
   onProgress
 }: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
   const datasetData = dataset.data;
@@ -375,9 +380,7 @@ export async function requestDatasetTimeseriesData({
       aoi,
       dataset,
       queryClient,
-      concurrencyManager,
-      envApiRasterEndpoint,
-      envApiStacEndpoint,
+      envApiCMREndpoint,
       onProgress
     });
 
