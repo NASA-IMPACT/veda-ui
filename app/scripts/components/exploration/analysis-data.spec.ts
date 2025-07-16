@@ -40,7 +40,7 @@ describe('formatCMRResponse', () => {
     (utcString2userTzDate as jest.Mock).mockReturnValue(mockDate);
   });
 
-  describe('rasterio flag', () => {
+  describe('rasterio type data', () => {
     it('should format multi-band response correctly', () => {
       const mockStatResponse = {
         '2023-01-01T00:00:00Z/2023-01-01T23:59:59Z': {
@@ -53,7 +53,7 @@ describe('formatCMRResponse', () => {
         }
       };
 
-      const result = formatCMRResponse(mockStatResponse, 'rasterio');
+      const result = formatCMRResponse(mockStatResponse);
 
       expect(result).toEqual({
         Band1: [
@@ -76,7 +76,7 @@ describe('formatCMRResponse', () => {
         }
       };
 
-      const result = formatCMRResponse(mockStatResponse, 'rasterio');
+      const result = formatCMRResponse(mockStatResponse);
 
       expect(result).toEqual({
         Band1: [{ ...timeseriesData, max: 100, min: 0, date: mockDate }],
@@ -85,14 +85,34 @@ describe('formatCMRResponse', () => {
       });
     });
 
+    it('should handle multiple timestamp with single band', () => {
+      const mockStatResponse = {
+        '2023-01-01T00:00:00Z/2023-01-01T23:59:59Z': {
+          Band1: { ...timeseriesData, max: 100, min: 0 }
+        },
+        '2023-01-02T00:00:00Z/2023-01-02T23:59:59Z': {
+          Band1: { ...timeseriesData, max: 120, min: 0 }
+        }
+      };
+
+      const result = formatCMRResponse(mockStatResponse);
+
+      expect(result).toEqual({
+        [SINGLE_BAND_KEY_NAME]: [
+          { ...timeseriesData, max: 120, min: 0 },
+          { ...timeseriesData, max: 100, min: 0 }
+        ]
+      });
+    });
+
     it('should handle empty statistics object', () => {
       const mockStatResponse = {};
-      const result = formatCMRResponse(mockStatResponse, 'rasterio');
+      const result = formatCMRResponse(mockStatResponse);
       expect(result).toEqual({});
     });
   });
 
-  describe('xarray flag', () => {
+  describe('xarray type single band', () => {
     it('should format single-band response correctly', () => {
       const mockStatResponse = {
         '2023-01-01T00:00:00Z/2023-01-01T23:59:59Z': {
@@ -113,7 +133,7 @@ describe('formatCMRResponse', () => {
         }
       };
 
-      const result = formatCMRResponse(mockStatResponse, 'xarray');
+      const result = formatCMRResponse(mockStatResponse);
       expect(result).toEqual({
         [SINGLE_BAND_KEY_NAME]: [
           {
@@ -132,26 +152,6 @@ describe('formatCMRResponse', () => {
           }
         ]
       });
-    });
-
-    it('should handle empty statistics object', () => {
-      const mockStatResponse = {};
-      const result = formatCMRResponse(mockStatResponse, 'xarray');
-      expect(result).toEqual({});
-    });
-  });
-
-  describe('error handling', () => {
-    it('should throw ExtendedError for invalid flag', () => {
-      const mockStatResponse = {
-        '2023-01-01T00:00:00Z/2023-01-01T23:59:59Z': {
-          Band1: { ...timeseriesData, max: 100, min: 0 }
-        }
-      };
-
-      expect(() => {
-        formatCMRResponse(mockStatResponse, 'invalid_flag');
-      }).toThrow();
     });
   });
 });

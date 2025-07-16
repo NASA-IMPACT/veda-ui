@@ -98,12 +98,10 @@ interface TimeseriesRequesterParams {
   envApiStacEndpoint: string;
 }
 
-export function formatCMRResponse(
-  statResponse: CMRStatistics,
-  flag: string
-): TimeseriesData {
+export function formatCMRResponse(statResponse: CMRStatistics): TimeseriesData {
   const cmrResponse = {};
-  // Multi Bands
+
+  // Multi Bands data with band names as keys: (Backend: rasterio)
   //   statistics: {
   //   startTime1/endTime1: {
   //      'Band1': {max:..., min: ..., ....},
@@ -117,10 +115,35 @@ export function formatCMRResponse(
   //   },
   //   ...
   // }
-  if (flag === 'rasterio') {
-    Object.keys(statResponse).forEach((oneTimestamp) => {
-      const currentTimestampData = statResponse[oneTimestamp];
-      Object.keys(currentTimestampData).forEach((eachBand) => {
+
+  // Single Band data with startTime as a key name: (Backend: xarray)
+  // statistics: {
+  // startTime1/endTime1: {
+  //    startTime1: {max: ..., min:..., ....}
+  // },
+  // startTime2/endTime2: {
+  //    startTime2: {max: ..., min:..., ....}
+  // },
+
+  Object.keys(statResponse).forEach((oneTimestamp) => {
+    const currentTimestampData = statResponse[oneTimestamp];
+    const bands = Object.keys(currentTimestampData);
+    // When the data has only one band
+    // in the backend: rasterio case, the keyname doesn't matter.
+    // in the backend: xarray case, keyname needs to be consolidated.
+    if (bands.length === 1) {
+      const currentBand = bands[0];
+      const currentBandData = {
+        ...currentTimestampData[currentBand],
+        date: utcString2userTzDate(oneTimestamp.split('/')[0])
+      };
+      if (!cmrResponse[SINGLE_BAND_KEY_NAME]) {
+        cmrResponse[SINGLE_BAND_KEY_NAME] = [];
+      }
+      // The most recent date should come first
+      cmrResponse[SINGLE_BAND_KEY_NAME] = [currentBandData, ...cmrResponse[SINGLE_BAND_KEY_NAME]];
+    } else {
+      bands.forEach((eachBand) => {
         const currentBandData = {
           ...currentTimestampData[eachBand],
           date: utcString2userTzDate(oneTimestamp.split('/')[0])
@@ -131,38 +154,9 @@ export function formatCMRResponse(
         // The most recent date should come first
         cmrResponse[eachBand] = [currentBandData, ...cmrResponse[eachBand]];
       });
-    });
-    // Single Band
-    // statistics: {
-    // startTime1/endTime1: {
-    //    startTime1: {max: ..., min:..., ....}
-    // },
-    // startTime2/endTime2: {
-    //    startTime2: {max: ..., min:..., ....}
-    // },
-  } else if (flag === 'xarray') {
-    Object.keys(statResponse).forEach((oneTimestamp) => {
-      const currentTimestampData = statResponse[oneTimestamp];
-      Object.keys(currentTimestampData).forEach((eachBand) => {
-        const currentBandData = {
-          ...currentTimestampData[eachBand],
-          date: utcString2userTzDate(oneTimestamp.split('/')[0])
-        };
-        if (!cmrResponse[SINGLE_BAND_KEY_NAME]) {
-          cmrResponse[SINGLE_BAND_KEY_NAME] = [];
-        }
-        // The most recent date should come first
-        cmrResponse[SINGLE_BAND_KEY_NAME] = [
-          currentBandData,
-          ...cmrResponse[SINGLE_BAND_KEY_NAME]
-        ];
-      });
-    });
-  } else
-    throw new ExtendedError(
-      'No backend type specified',
-      'WRONG MDX CONFIGURATION FOR CMR DATA'
-    );
+    }
+  });
+
   return cmrResponse;
 }
 
@@ -219,7 +213,7 @@ export async function requestCMRTimeseriesData({
     data: null,
     meta: {
       total: requestedIntervals.length,
-      loaded: 0
+      loaded: undefined
     }
   });
   try {
@@ -281,10 +275,7 @@ export async function requestCMRTimeseriesData({
       };
     }
 
-    const formattedResponse = formatCMRResponse(
-      statResponse,
-      datasetData.sourceParams?.backend
-    );
+    const formattedResponse = formatCMRResponse(statResponse);
 
     onProgress({
       status: DatasetStatus.SUCCESS,
