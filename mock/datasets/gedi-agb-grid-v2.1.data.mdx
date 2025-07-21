@@ -1,0 +1,125 @@
+---
+id: gedi-agb-grid-v2.1
+name: GEDI L4B Gridded Aboveground Biomass Density, v2.1
+featured: true
+description: Biomass Density Mean (L4B, v2.1, 2019 APR to 2023 MAR) layer is the estimated mean aboveground biomass density, including forest and non-forest, within the 1 km x 1 km grid cell.
+
+usage:
+  - url: 'https://us-ghg-center.github.io/ghgc-docs/cog_transformation/gedi-agb-grid-v2.1.html'
+    label: Notebook showing data transformation to COG for ingest to the US GHG Center
+    title: 'Data Transformation Notebook'
+  - url: 'https://us-ghg-center.github.io/ghgc-docs/datausage.html'
+    label: Notebooks to read, visualize, and explore data statistics
+    title: 'Data Usage Notebooks'
+  - url: 'https://hub.ghg.center/hub/user-redirect/git-pull?repo=https%3A%2F%2Fgithub.com%2FUS-GHG-Center%2Fghgc-docs&urlpath=lab%2Ftree%2Fghgc-docs%2Fuser_data_notebooks%2Fgedi-agb-grid-v2.1_User_Notebook.ipynb&branch=main'
+    label: Run example notebook
+    title: Interactive Session in the US GHG Center JupyterHub (requires account)
+  - url: https://search.earthdata.nasa.gov/search/granules?p=C2792577683-ORNL_CLOUD 
+    label: Browse and download the data
+    title: Data Browser
+
+media:
+  src: https://gedi.umd.edu/wp-content/uploads/2018/03/venezuela.jpg
+  alt: GEDI UMD
+  author:
+    name: GEDI UMD
+    url: https://gedi.umd.edu/wp-content/uploads/2018/03/venezuela.jpg
+taxonomy:
+  - name: Topics
+    values:
+      - Land   
+  - name: Source
+    values:
+      - NASA
+  - name: Gas
+    values:
+      - CH₄
+      - CO₂
+  - name: Product Type
+    values:
+      - Satellite Observations
+infoDescription: |
+  ::markdown 
+    - Temporal Extent: April 18, 2019 - March 16, 2023
+    - Temporal Resolution: Variable
+    - Spatial Extent: Global between 51.6°N and 51.6°S    
+    - Spatial Resolution: 1km x 1km   
+    - Data Units: Megagrams per hectare (Mg/ha)       
+    - Data Type: Research
+    - Data Latency: NA 
+layers:
+  - id: GEDI_ISS_L4B_Aboveground_Biomass_Density_Mean_201904-202303
+    stacApiEndpoint: https://dev.ghg.center/api/stac/
+    stacCol: GEDI_ISS_L4B_Aboveground_Biomass_Density_Mean_201904-202303
+    name: GEDI L4B Gridded Aboveground Biomass Density, v2.1
+    type: wmts 
+    description: Biomass Density Mean (L4B, v2.1, 2019 APR to 2023 MAR) layer is the estimated mean aboveground biomass density, including forest and non-forest, within the 1 km x 1 km grid cell.
+    sourceParams:
+      layers: 1
+      version: 1.3.0
+      crs: EPSG:3857
+      styles:   
+    zoomExtent:
+      - 0
+      - 5
+    analysis:
+      exclude: true
+    legend:
+      type: gradient
+      min: 0
+      max: 250
+      stops:
+      - rgb(68,1,84)     
+      - rgb(72,40,120)
+      - rgb(54,129,168)
+      - rgb(67,180,139)
+      - rgb(123,204,96)
+      - rgb(201,228,49)
+      - rgb(253,231,37) 
+
+---
+<Block>
+  <Prose>   
+    **Temporal Extent:** April 18, 2019 - March 16, 2023<br />
+    **Temporal Resolution:** Daily<br />
+    **Spatial Extent:** Global between 51.6°N and 51.6°S     
+    **Spatial Resolution:** 1km x 1km   
+    **Data Units:** Megagrams per hectare (Mg/ha)       
+    **Data Type:** Research<br />
+    **Data Latency:** NA
+
+   The Global Ecosystem Dynamics Investigation (GEDI) mission aims to improve the understanding of Earth’s carbon cycle and biodiversity by providing a 3D structure of Earth’s surface; specifically, GEDI focuses on forest biomass across temperate, subtropical, and tropical forests. To do this, the GEDI instrument, which is housed on the International Space Station (ISS), uses a full waveform Light Detection and Ranging (LiDAR) system. GEDI has several products ranging from Level 1A to Level 4B, with GEDI’s Level 4B (L4B) product consisting of gridded mean aboveground biomass density (AGBD). Data were gathered from April 18, 2019 - March 16, 2023, and following the end of the mission, estimated AGBD values were inferred using the footprint-level AGBD estimates from the GEDI Level 4A (L4A) dataset. Data are provided globally between 51.6°N and 51.6°S at a 1 km x 1 km spatial resolution. 
+
+  </Prose>
+</Block>
+<Block>
+  <Prose>
+    ## Source Data Product Citation
+    Dubayah, R.O., Armston, J., Healey, S.P., Yang, Z., Patterson, P.L., Saarela, S., Stahl, G., Duncanson, L., Kellner, J.R., Bruening, J., & Pascual, A. 2023. GEDI L4B Gridded Aboveground Biomass Density, Version 2.1. ORNL DAAC, Oak Ridge, Tennessee, USA. https://doi.org/10.3334/ORNLDAAC/2299
+    ## Version History
+
+    ## Dataset Accuracy
+
+    ## Disclaimer
+
+    ## Scientific Details
+    GEDI currently provides the highest resolution and densest sampling of any Light Detection and Ranging (LiDAR) instrument in orbit. GEDI’s sampling pattern resembles a lattice, with parallel ascending and descending overpasses and approximately 500-meter-cross-track spacing. To determine the mean AGBD provided in the L4B product, estimates are statistically inferred using AGBD values provided at the footprint-level in the GEDI Level 4A (L4A) product. 1 km x 1km cells that have sufficient clusters (i.e., more than one GEDI overpass) are averaged by using hybrid estimation. If cells do not have sufficient clusters by the end of the mission, mean biomass estimates are determined with Generalized Hierarchical Model-Based (GHMB) inference. Both of these methods minimize the uncertainty that is introduced from using modeled sample observations. For more information, see the GEDI L4B Algorithm Theoretical Basis Document (ATBD).
+    
+    ## Key Publications
+
+    ## Other Relevant Publications
+
+    ## Learn More
+
+    ## Acknowledgment
+    The work for GEDI L4B was funded with a NASA Earth Ventures Instrument (EVI) mission (contract NNL15AA03C) and an inter-agency agreement (contract RPO201523) with the U.S. Forest Service Rocky Mountain Research Station. GEDI is led by the University of Maryland in collaboration with NASA Goddard Space Flight Center.
+    ## License
+    [Creative Commons Zero v1.0 Universal](https://creativecommons.org/publicdomain/zero/1.0/legalcode) (CC0 1.0)
+
+    ## Data Stewardship
+    - [Data Workflow](https://us-ghg-center.github.io/ghgc-docs/data_workflow/gedi-agb-grid-v2.1_Data_Flow.html)
+    - [Data Transformation Code](https://us-ghg-center.github.io/ghgc-docs/cog_transformation/gedi-agb-grid-v2.1.html)
+    - [US GHG Center Data Intake Processing and Verification Report](https://us-ghg-center.github.io/ghgc-docs/processing_and_verification_reports/gedi-agb-grid-v2.1_Processing%20and%20Verification%20Report.html)
+
+  </Prose>
+</Block>
