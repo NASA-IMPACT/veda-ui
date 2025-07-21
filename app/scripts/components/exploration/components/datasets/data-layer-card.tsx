@@ -167,7 +167,9 @@ export default function DataLayerCard(props: CardProps) {
     colorMap;
 
   const showNonConfigurableCmap =
-    !showConfigurableCmap && datasetLegend?.type === 'gradient';
+    !showConfigurableCmap &&
+    !showLoadingConfigurableCmapSkeleton &&
+    datasetLegend?.type === 'gradient';
 
   const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
   const chevToggleExpanded = () => {
