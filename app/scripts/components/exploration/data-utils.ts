@@ -318,18 +318,16 @@ export function resolveRenderParams(
   queryDataRenders: Record<string, any> | undefined
 ): SourceParameters {
   const { layerId, ...rest } = datasetSourceParams;
+
   // 1. Check if render extension has a layer specific namespace from render extension
   if (queryDataRenders && queryDataRenders[layerId])
     return formatRenderExtensionData(queryDataRenders[layerId]);
+
   // 2. (TO DEPRECATE Once all the assets specific source parameters are namespaced with render extension)
   // Return user defined source parameters if there is one
   if (datasetSourceParams?.assets) return rest;
   // 3. Return dashboard namespace render extension data
-  if (
-    queryDataRenders &&
-    queryDataRenders[RENDER_KEY] &&
-    !Array.isArray(queryDataRenders[RENDER_KEY].bidx)
-  ) {
+  if (queryDataRenders && queryDataRenders[RENDER_KEY]) {
     return formatRenderExtensionData(queryDataRenders[RENDER_KEY]);
   }
   // 4. return user defined source params (which can be an empty object)
