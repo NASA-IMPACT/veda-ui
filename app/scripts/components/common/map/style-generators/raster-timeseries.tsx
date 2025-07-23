@@ -178,41 +178,15 @@ function useMosaicUrl({
           /* eslint-enable no-console */
         }
 
-        let responseData;
-
-        try {
-          responseData = await requestQuickCache<any>({
-            url: `${tileApiEndpointToUse}/searches/register`,
-            payload,
-            controller
-          });
-          const mosaicUrl = responseData.links[1].href;
-          setMosaicUrl(
-            mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
-          );
-        } catch (error) {
-          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
-          if (error.request) {
-            // The request was made but no response was received
-            responseData = await requestQuickCache<any>({
-              url: `${tileApiEndpointToUse}/mosaic/register`, // @NOTE: This will fail anyways with "staging-raster.delta-backend.com" because its already deprecated...
-              payload,
-              controller
-            });
-
-            const mosaicUrl = responseData.links[1].href;
-            setMosaicUrl(mosaicUrl);
-          } else {
-            if (LOG)
-              /* eslint-disable-next-line no-console */
-              console.log(
-                'Titiler /register %cEndpoint error',
-                'color: red;',
-                error
-              );
-            throw error;
-          }
-        }
+        const responseData = await requestQuickCache<any>({
+          url: `${tileApiEndpointToUse}/searches/register`,
+          payload,
+          controller
+        });
+        const mosaicUrl = responseData.links[1].href;
+        setMosaicUrl(
+          mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
+        );
 
         /* eslint-disable no-console */
         if (LOG) {
@@ -228,6 +202,7 @@ function useMosaicUrl({
         }
         /* eslint-enable no-console */
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         if (!controller.signal.aborted) {
           changeStatus({ status: S_FAILED, context: STATUS_KEY.Layer });
