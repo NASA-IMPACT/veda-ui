@@ -44,6 +44,7 @@ module.exports = {
     requireCleanWorkingDir: debug ? false : true,
     requireUpstream: debug ? false : true,
     requireCommits: true,
+    requireCommitsFail: true,
     changelog: 'git log --pretty=format:%s ${latestTag}...HEAD' // The output will be passed to releaseNotes context.changelog
   },
   npm: {
