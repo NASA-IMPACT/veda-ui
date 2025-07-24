@@ -87,6 +87,7 @@ jobs:
       - release
     steps:
       - name: Notify failure through Slack
+        if: needs.release.outputs.NO_COMMIT != 'true'
         uses: slackapi/slack-github-action@v2.0.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -98,3 +99,16 @@ jobs:
                 text:
                   type: "mrkdwn"
                   text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+      - name: Notify no commit through Slack
+        if: needs.release.outputs.NO_COMMIT == 'true'
+        uses: slackapi/slack-github-action@v2.0.0
+        with:
+          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          webhook-type: incoming-webhook
+          payload: |
+            text: "*VEDA UI Release skipped*: "
+            blocks:
+              - type: "section"
+                text:
+                  type: "mrkdwn"
+                  text: "VEDA UI release was skipped as there was no commit after the last release: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
