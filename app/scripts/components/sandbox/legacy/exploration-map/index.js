@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import LineGraph from '../../line-graph';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
 import AOIControl from '$components/common/map/controls/aoi/aoi-control';
 
 import { MapWithDefaultControls } from '$components/exploration/components/map';
 import AoiLayer from '$components/exploration/components/map/aoi-layer';
-
+import { useAnalysisDataRequestWithParams } from '$components/exploration/hooks/use-analysis-data-request';
 // const DemoExplorationMap = styled(ExplorationMap)`
 //   height: 40rem;
 // `;
@@ -110,6 +111,15 @@ const mockSetDatasets = () => {};
 
 function SandboxExplorationMap() {
   const [aoi, setAoi] = useState(null);
+  const { analysisResult, isLoading, isError } =
+    useAnalysisDataRequestWithParams({
+      start: new Date('2017-06-01T00:00:00.000Z'),
+      end: new Date('2017-12-04T00:00:00.000Z'),
+      aoi,
+      datasetId: 'casa-gfed-co2-flux-hr',
+      dataset: mockDatasets[0]
+    });
+
   return (
     <PageMainContent>
       <Constrainer>
@@ -128,6 +138,25 @@ function SandboxExplorationMap() {
             />
             {aoi && <AoiLayer aoi={aoi} />}
           </MapWithDefaultControls>
+          <div
+            style={{
+              height: '150px',
+              width: '300px',
+              position: 'absolute',
+              bottom: '150px',
+              left: 0,
+              background: 'white'
+            }}
+          >
+            {analysisResult.data?.timeseries && (
+              <LineGraph
+                data={analysisResult.data.timeseries.b1}
+                attribute='mean'
+                width={300}
+                height={150}
+              />
+            )}
+          </div>
         </Wrapper>
       </Constrainer>
     </PageMainContent>

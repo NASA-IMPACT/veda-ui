@@ -184,3 +184,82 @@ export function useAnalysisDataRequest({
 
   return [analysisResult, setAnalysisResult];
 }
+
+export function useAnalysisDataRequestWithParams({
+  start,
+  end,
+  aoi,
+  dataset
+}: {
+  start: Date;
+  end: Date;
+  aoi: FeatureCollection<Polygon>;
+  datasetId: string;
+  dataset: any;
+}) {
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } =
+    useVedaUI();
+
+  const queryClient = useQueryClient();
+  // const datasetAtom = useTimelineDatasetAtom(datasetId);
+  // const dataset = useAtomValue(datasetAtom);
+
+  // const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
+  // const setSelectedVariable = useAnalysisVariable(datasetAtom);
+  // const setVariableOptions = useAnalysisOptions(datasetAtom);
+
+  // useEffect(() => {
+  //   if (!aoi || !start || !end) return; // do not run if there is no aoi
+  // }, [aoi, start, end]);
+
+  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>(
+    {
+      status: DatasetStatus.IDLE,
+      error: null,
+      data: null,
+      meta: {}
+    }
+  );
+
+  useEffect(() => {
+    if (!aoi || !start || !end) return;
+    if (analysisResult.data) return;
+    (async () => {
+      try {
+        const stat = await requestDatasetTimeseriesData({
+          maxItems: MAX_QUERY_NUM,
+          start,
+          end,
+          aoi,
+          dataset,
+          queryClient,
+          concurrencyManager: analysisConcurrencyManager,
+          envApiRasterEndpoint,
+          envApiStacEndpoint,
+          envApiCMREndpoint,
+          onProgress: () => {}
+          // onProgress: (data) => {
+          //   setAnalysis(data);
+          // }
+        });
+        setAnalysisResult(stat);
+      } catch (error) {
+        setAnalysisResult({
+          status: DatasetStatus.FAILED,
+          error: error instanceof Error ? error.message : 'Analysis failed',
+          data: null,
+          meta: {}
+        });
+      }
+    })();
+  }, [start, end, aoi, dataset]);
+
+  return {
+    analysisResult,
+    // requestAnalysis,
+    isLoading: analysisResult.status === DatasetStatus.LOADING,
+    isSuccess: analysisResult.status === DatasetStatus.SUCCESS,
+    isError: analysisResult.status === DatasetStatus.FAILED,
+    error: analysisResult.error
+  };
+}
