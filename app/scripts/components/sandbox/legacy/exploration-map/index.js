@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Constrainer from '$styles/constrainer';
 import { PageMainContent } from '$styles/page';
-import { ExplorationMap } from '$components/exploration/components/map';
+import AOIControl from '$components/common/map/controls/aoi/aoi-control';
 
-const DemoExplorationMap = styled(ExplorationMap)`
-  height: 40rem;
-`;
+import { MapWithDefaultControls } from '$components/exploration/components/map';
+import AoiLayer from '$components/exploration/components/map/aoi-layer';
+
+// const DemoExplorationMap = styled(ExplorationMap)`
+//   height: 40rem;
+// `;
 
 const Wrapper = styled.div`
   position: relative;
@@ -106,16 +109,25 @@ const mockSelectedCompareDay = null;
 const mockSetDatasets = () => {};
 
 function SandboxExplorationMap() {
+  const [aoi, setAoi] = useState(null);
   return (
     <PageMainContent>
       <Constrainer>
         <Wrapper>
-          <DemoExplorationMap
+          <MapWithDefaultControls
             datasets={mockDatasets}
             setDatasets={mockSetDatasets}
             selectedDay={mockSelectedDay}
             selectedCompareDay={mockSelectedCompareDay}
-          />
+          >
+            <AOIControl
+              onAOIUpdate={(aoi) => {
+                if (aoi?.length) setAoi(aoi[0]);
+                else setAoi(null);
+              }}
+            />
+            {aoi && <AoiLayer aoi={aoi} />}
+          </MapWithDefaultControls>
         </Wrapper>
       </Constrainer>
     </PageMainContent>

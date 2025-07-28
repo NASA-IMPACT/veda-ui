@@ -7,10 +7,12 @@ import { requestDatasetTimeseriesData } from '../analysis-data';
 import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
 import {
+  useTimelineDatasetAtom,
   useTimelineDatasetAnalysis,
   useAnalysisVariable,
   useAnalysisOptions
 } from '../atoms/hooks';
+
 import { analysisConcurrencyManager } from '../concurrency';
 import {
   TimelineDataset,
@@ -18,6 +20,7 @@ import {
   DatasetStatus
 } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
+// /import useTimelineDatasetAtom from './use-timeline-dataset-atom';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -69,16 +72,26 @@ export function useAnalysisController() {
   };
 }
 
+export function useAnalysisDataRequestWithID({
+  datasetAtomId
+}: {
+  datasetAtomId: string;
+}) {
+  const datasetAtom = useTimelineDatasetAtom(datasetAtomId);
+  const queryClient = useQueryClient();
+  return useAnalysisDataRequest({ datasetAtom });
+}
+
 export function useAnalysisDataRequest({
   datasetAtom
 }: {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
 }) {
-  const queryClient = useQueryClient();
-
-  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } = useVedaUI();
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } =
+    useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
+  const queryClient = useQueryClient();
 
   const { features } = useAois();
   const selectedFeatures = features.filter((f) => f.selected);
@@ -86,6 +99,7 @@ export function useAnalysisDataRequest({
   const { getRunId, isAnalyzing } = useAnalysisController();
 
   const dataset = useAtomValue(datasetAtom);
+
   const datasetStatus = dataset.status;
 
   const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
@@ -167,4 +181,6 @@ export function useAnalysisDataRequest({
       setSelectedVariable(Object.keys(analysisResult.data?.timeseries)[0]);
     }
   }, [setAnalysis, analysisResult, setVariableOptions, setSelectedVariable]);
+
+  return [analysisResult, setAnalysisResult];
 }
