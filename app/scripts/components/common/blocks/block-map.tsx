@@ -112,7 +112,7 @@ function validateBlockProps(props: MapBlockProps) {
 
 interface MapBlockProps {
   // datasets: VedaData<DatasetData>;
-  layers: VizDataset[];
+  // layers: VizDataset[];
   baseDataLayer: VizDatasetSuccess;
   compareDataLayer: VizDatasetSuccess;
   dateTime?: string;
@@ -151,7 +151,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
 
   const {
     // datasets,
-    layers,
+    // layers,
     baseDataLayer,
     compareDataLayer,
     // layerId,
