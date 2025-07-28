@@ -31,11 +31,11 @@ import {
   VizDatasetSuccess,
   DatasetStatus
 } from '$components/exploration/types.d.ts';
-import { reconcileDatasets } from '$components/exploration/data-utils';
-import { getDatasetLayers } from '$utils/data-utils';
-import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+// import { reconcileDatasets } from '$components/exploration/data-utils';
+// import { getDatasetLayers } from '$utils/data-utils';
+// import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
-import { useVedaUI } from '$context/veda-ui-provider';
+// import { useVedaUI } from '$context/veda-ui-provider';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -111,7 +111,10 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps {
-  datasets: VedaData<DatasetData>;
+  // datasets: VedaData<DatasetData>;
+  layers: VizDataset[];
+  baseDataLayer: VizDatasetSuccess;
+  compareDataLayer: VizDatasetSuccess;
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -123,10 +126,10 @@ interface MapBlockProps {
   allowProjectionChange?: boolean;
   basemapId?: BasemapId;
   datasetId?: string;
-  layerId: string;
+  // layerId: string;
 }
 
-const getDataLayer = (
+export const getDataLayer = (
   layerIndex: number,
   layers: VizDataset[] | undefined
 ): VizDatasetSuccess | null => {
@@ -147,8 +150,11 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
-    datasets,
-    layerId,
+    // datasets,
+    layers,
+    baseDataLayer,
+    compareDataLayer,
+    // layerId,
     dateTime,
     compareDateTime,
     compareLabel,
@@ -166,28 +172,28 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     throw new HintedError('Malformed Map Block', errors);
   }
 
-  const datasetLayers = getDatasetLayers(datasets);
-  const layersToFetch = useMemo(() => {
-    const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
-    let totalLayers = [baseMapStaticData];
-    const baseMapStaticCompareData = baseMapStaticData.data.compare;
-    if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
-      const compareLayerId = baseMapStaticCompareData.layerId;
-      const [compareMapStaticData] = reconcileDatasets(
-        compareLayerId ? [compareLayerId] : [],
-        datasetLayers,
-        []
-      );
-      totalLayers = [...totalLayers, compareMapStaticData];
-    }
-    return totalLayers;
-  }, [layerId, datasetLayers]);
+  // const datasetLayers = getDatasetLayers(datasets);
+  // const layersToFetch = useMemo(() => {
+  //   const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
+  //   let totalLayers = [baseMapStaticData];
+  //   const baseMapStaticCompareData = baseMapStaticData.data.compare;
+  //   if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
+  //     const compareLayerId = baseMapStaticCompareData.layerId;
+  //     const [compareMapStaticData] = reconcileDatasets(
+  //       compareLayerId ? [compareLayerId] : [],
+  //       datasetLayers,
+  //       []
+  //     );
+  //     totalLayers = [...totalLayers, compareMapStaticData];
+  //   }
+  //   return totalLayers;
+  // }, [layerId, datasetLayers]);
 
-  const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
+  // const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 
-  const { envApiStacEndpoint } = useVedaUI();
+  // const { envApiStacEndpoint } = useVedaUI();
 
-  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
+  // useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
 
   const selectedDatetime: Date | undefined = dateTime
     ? utcString2userTzDate(dateTime)
@@ -216,14 +222,14 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
 
   const [, setProjection] = useState(projectionStart);
 
-  const baseDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(0, layers),
-    [layers]
-  );
-  const compareDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(1, layers),
-    [layers]
-  );
+  // const baseDataLayer: VizDatasetSuccess | null = useMemo(
+  //   () => getDataLayer(0, layers),
+  //   [layers]
+  // );
+  // const compareDataLayer: VizDatasetSuccess | null = useMemo(
+  //   () => getDataLayer(1, layers),
+  //   [layers]
+  // );
 
   const baseTimeDensity = baseDataLayer?.data.timeDensity;
   const compareTimeDensity = compareDataLayer?.data.timeDensity;
