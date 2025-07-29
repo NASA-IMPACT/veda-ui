@@ -36,12 +36,14 @@ import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layer
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 import { checkEnvFlag } from '$utils/utils';
 
+import { useTimelineDatasetAtom } from '$components/exploration/atoms/hooks';
+
 import 'tippy.js/dist/tippy.css';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 
 interface CardProps {
   dataset: TimelineDataset;
-  datasetAtom: PrimitiveAtom<TimelineDataset>;
+  // datasetAtom: PrimitiveAtom<TimelineDataset>;
   isVisible: boolean | undefined;
   setVisible: any;
   colorMap: string | undefined;
@@ -123,16 +125,19 @@ const LegendColorMapTrigger = styled.div`
 export default function DataLayerCard(props: CardProps) {
   const {
     dataset,
-    datasetAtom,
+    // datasetAtom,
     isVisible,
     setVisible,
     colorMap,
     setColorMap,
     colorMapScale,
     setColorMapScale,
-    datasetLegend,
     onClickLayerInfo
   } = props;
+  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  console.log('atom check');
+  console.log(datasetAtom);
+  const datasetLegend = dataset.data.legend;
   const layerInfo = dataset.data.info;
   const [min, max] =
     datasetLegend?.type === 'gradient' &&
