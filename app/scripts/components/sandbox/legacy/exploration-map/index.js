@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAtom, useSetAtom } from 'jotai';
 import LineGraph from '../../line-graph';
@@ -428,10 +428,12 @@ const mockSetDatasets = () => {};
 function SandboxExplorationMap() {
   const [aoi, setAoi] = useState(null);
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
-  setExternalDatasets(mockRawData);
-  // const externals = useAtom(externalDatasetsAtom);
   const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
-  setTimelineDatasets(mockDatasets);
+
+  useEffect(() => {
+    setExternalDatasets(mockRawData);
+    setTimelineDatasets(mockDatasets);
+  }, [setExternalDatasets, setTimelineDatasets]);
 
   // const { analysisResult, isLoading, isError } =
   //   useAnalysisDataRequestWithParams({
