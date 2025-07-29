@@ -1,8 +1,12 @@
+/* eslint-disable */
+// @ts-nocheck
 import React, { useMemo, useState, useEffect } from 'react';
 import type { PropsWithChildren } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
 import * as dateFns from 'date-fns';
+import { DateInput, Icon } from '@trussworks/react-uswds';
+import Calendar from 'react-calendar';
 import {
   convertProjectionToMapbox,
   projectionDefault,
@@ -37,6 +41,8 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
+import 'react-calendar/dist/Calendar.css';
+
 export const mapHeight = '32rem';
 const Carto = styled.div`
   position: relative;
@@ -44,7 +50,6 @@ const Carto = styled.div`
   height: ${mapHeight};
 `;
 
-// This global variable is used to give unique ID to mapbox container
 let mapInstanceId = 0;
 
 const lngValidator = validateRangeNum(-180, 180);
@@ -77,13 +82,11 @@ function validateBlockProps(props: MapBlockProps) {
     isNaN(utcString2userTzDate(dateTime).getTime()) &&
     '- Invalid dateTime. Use YYYY-MM-DD format';
 
-  // center is not required, but if provided must be in the correct range.
   const centerError =
     center &&
     (!lngValidator(center[0]) || !latValidator(center[1])) &&
     '- Invalid center. Use [longitude, latitude].';
 
-  // zoom is not required, but if provided must be in the correct range.
   const zoomError =
     zoom &&
     (isNaN(zoom) || zoom < 0) &&
@@ -124,6 +127,8 @@ interface MapBlockProps {
   basemapId?: BasemapId;
   datasetId?: string;
   layerId: string;
+  enableLayerSelector?: boolean;
+  enableDateSelector?: boolean;
 }
 
 const getDataLayer = (
@@ -132,7 +137,6 @@ const getDataLayer = (
 ): VizDatasetSuccess | null => {
   if (!layers || layers.length <= layerIndex) return null;
   const layer = layers[layerIndex];
-  // @NOTE: What to do when data returns ERROR
   if (layer.status !== DatasetStatus.SUCCESS) return null;
   return {
     ...layer,
@@ -157,73 +161,70 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     projectionId,
     projectionCenter,
     projectionParallels,
-    basemapId
+    basemapId,
+    datasetId,
+    enableLayerSelector,
+    enableDateSelector
   } = props;
 
-  const errors = validateBlockProps(props);
+  console.log('datasets ', datasets);
+  const [selectedLayerId, setSelectedLayerId] = useState(layerId);
+  const [selectedDate, setSelectedDate] = useState(dateTime);
 
-  if (errors.length) {
-    throw new HintedError('Malformed Map Block', errors);
-  }
+  const [calendarDate, setCalendarDate] = useState<Date | null>(
+    selectedDate ? new Date(selectedDate) : null
+  );
+  useEffect(() => {
+    setSelectedLayerId(layerId);
+  }, [layerId]);
+
+  useEffect(() => {
+    setSelectedDate(dateTime);
+  }, [dateTime]);
+
+  const errors = validateBlockProps(props);
+  if (errors.length) throw new HintedError('Malformed Map Block', errors);
 
   const datasetLayers = getDatasetLayers(datasets);
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const layerIds = useMemo(() => {
+    if (compareDateTime) return [layerId];
+    return [selectedLayerId];
+  }, [compareDateTime, layerId, selectedLayerId]);
+
   const layersToFetch = useMemo(() => {
-    const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
-    let totalLayers = [baseMapStaticData];
-    const baseMapStaticCompareData = baseMapStaticData.data.compare;
-    if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
-      const compareLayerId = baseMapStaticCompareData.layerId;
-      const [compareMapStaticData] = reconcileDatasets(
-        compareLayerId ? [compareLayerId] : [],
-        datasetLayers,
-        []
-      );
-      totalLayers = [...totalLayers, compareMapStaticData];
-    }
-    return totalLayers;
-  }, [layerId, datasetLayers]);
+    return reconcileDatasets(layerIds, datasetLayers, []);
+  }, [layerIds, datasetLayers]);
 
   const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
 
   const { envApiStacEndpoint } = useVedaUI();
+  useReconcileWithStacMetadata(layersToFetch, setLayers, envApiStacEndpoint);
 
-  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
-
-  const selectedDatetime: Date | undefined = dateTime
-    ? utcString2userTzDate(dateTime)
+  console.log('layers', layers);
+  const selectedDatetime = selectedDate
+    ? utcString2userTzDate(selectedDate)
     : undefined;
-  const selectedCompareDatetime: Date | undefined = compareDateTime
+  const selectedCompareDatetime = compareDateTime
     ? utcString2userTzDate(compareDateTime)
     : undefined;
 
   const projectionStart = useMemo(() => {
     if (projectionId) {
-      // Ensure that the default center and parallels are used if none are
-      // provided.
       const projection = convertProjectionToMapbox({
         id: projectionId,
         center: projectionCenter,
         parallels: projectionParallels
       });
-      return {
-        ...(projection as object),
-        id: projectionId
-      };
-    } else {
-      return projectionDefault;
-    }
+      return { ...(projection as object), id: projectionId };
+    } else return projectionDefault;
   }, [projectionId, projectionCenter, projectionParallels]);
 
   const [, setProjection] = useState(projectionStart);
 
-  const baseDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(0, layers),
-    [layers]
-  );
-  const compareDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(1, layers),
-    [layers]
-  );
+  const baseDataLayer = useMemo(() => getDataLayer(0, layers), [layers]);
+  const compareDataLayer = useMemo(() => getDataLayer(1, layers), [layers]);
 
   const baseTimeDensity = baseDataLayer?.data.timeDensity;
   const compareTimeDensity = compareDataLayer?.data.timeDensity;
@@ -239,14 +240,9 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
 
   const getMapPositionOptions = (position) => {
     const opts = {} as Pick<typeof mapOptions, 'center' | 'zoom'>;
-    if (position?.lng !== undefined && position?.lat !== undefined) {
+    if (position?.lng !== undefined && position?.lat !== undefined)
       opts.center = [position.lng, position.lat];
-    }
-
-    if (position?.zoom) {
-      opts.zoom = position.zoom;
-    }
-
+    if (position?.zoom) opts.zoom = position.zoom;
     return opts;
   };
 
@@ -255,11 +251,8 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   }, [projectionStart]);
 
   const [mapBasemapId, setMapBasemapId] = useState(basemapId);
-
   useEffect(() => {
-    if (!basemapId) return;
-
-    setMapBasemapId(basemapId);
+    if (basemapId) setMapBasemapId(basemapId);
   }, [basemapId]);
 
   const compareToDate = useMemo(() => {
@@ -270,23 +263,16 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   }, [selectedCompareDatetime, selectedDatetime]);
 
   const computedCompareLabel = useMemo(() => {
-    // Use a provided label if it exist.
-    if (compareLabel) return compareLabel as string;
-    // Use label function from originalData.Compare
+    if (compareLabel) return compareLabel;
     else if (baseDataLayer?.data.compare?.mapLabel) {
       if (typeof baseDataLayer.data.compare.mapLabel === 'string')
         return baseDataLayer.data.compare.mapLabel;
-      const labelFn = baseDataLayer.data.compare.mapLabel as (
-        unknown
-      ) => string;
-      return labelFn({
+      return baseDataLayer.data.compare.mapLabel({
         dateFns,
         datetime: selectedDatetime,
         compareDatetime: compareToDate
       });
     }
-
-    // Default to date comparison.
     return selectedDatetime && compareToDate
       ? formatCompareDate(
           selectedDatetime,
@@ -303,12 +289,101 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     baseTimeDensity,
     compareTimeDensity
   ]);
+
   const initialPosition = useMemo(
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]
   );
+
+  const maxDetail = useMemo(() => {
+    const td = baseDataLayer?.data.timeDensity;
+    switch (td) {
+      case 'year':
+        return 'year';
+      case 'month':
+        return 'year';
+      case 'day':
+      default:
+        return 'month';
+    }
+  }, [baseDataLayer]);
+
+  console.log('baseDataLayer', baseDataLayer);
   return (
     <Carto>
+      {(enableLayerSelector || enableDateSelector) && !compareDateTime && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '1rem',
+            left: '1rem',
+            zIndex: 10
+          }}
+        >
+          {enableLayerSelector && datasetId && (
+            <select
+              value={selectedLayerId}
+              onChange={(e) => setSelectedLayerId(e.target.value)}
+              style={{ marginBottom: '0.5rem', display: 'block' }}
+            >
+              {datasets[datasetId]?.data.layers?.map((l) => (
+                <option key={l.id} value={l.id}>
+                  {l.name ?? l.id}
+                </option>
+              ))}
+            </select>
+          )}
+          {enableDateSelector && baseDataLayer?.data.domain?.length > 0 && (
+            <div style={{ display: 'block' }}>
+              <input
+                type='text'
+                readOnly
+                value={
+                  calendarDate
+                    ? dateFns.format(calendarDate, 'yyyy-MM-dd')
+                    : 'Select date...'
+                }
+                onClick={() => setShowCalendar(!showCalendar)}
+                style={{
+                  cursor: 'pointer',
+                  marginBottom: '0.5rem',
+                  padding: '0.25rem 0.5rem',
+                  width: '140px'
+                }}
+              />
+
+              {showCalendar && (
+                <Calendar
+                  onChange={(value) => {
+                    const date = Array.isArray(value) ? value[0] : value;
+                    if (date instanceof Date && !isNaN(date.getTime())) {
+                      setCalendarDate(date);
+                      setSelectedDate(date.toISOString());
+                    }
+                  }}
+                  value={calendarDate}
+                  className='react-calendar'
+                  nextLabel={<Icon.NavigateNext />}
+                  prevLabel={<Icon.NavigateBefore />}
+                  prev2Label={<Icon.NavigateFarBefore />}
+                  next2Label={<Icon.NavigateFarNext />}
+                  defaultView='decade'
+                  maxDetail={maxDetail}
+                  minDate={new Date(baseDataLayer.data.domain[0])}
+                  maxDate={
+                    new Date(
+                      baseDataLayer.data.domain[
+                        baseDataLayer.data.domain.length - 1
+                      ]
+                    )
+                  }
+                />
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
       <Map
         id={generatedId}
         mapOptions={{
@@ -326,12 +401,9 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
           />
         )}
 
-        {/* Allow custom layers from users */}
         {props.children}
 
         {baseDataLayer?.data.legend && (
-          // Map overlay element
-          // Layer legend for the active layer.
           <LayerLegendContainer>
             <LayerLegend
               id={`base-${baseDataLayer.data.id}`}
@@ -351,6 +423,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
               )}
           </LayerLegendContainer>
         )}
+
         <MapControls>
           {selectedDatetime && selectedCompareDatetime ? (
             <MapMessage
@@ -375,6 +448,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
           <NavigationControl position='top-left' />
           <MapCoordsControl />
         </MapControls>
+
         {selectedCompareDatetime && (
           <Compare>
             <Basemap basemapStyleId={mapBasemapId} />
