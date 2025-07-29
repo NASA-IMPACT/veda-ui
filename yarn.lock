@@ -13800,9 +13800,9 @@ react-calendar@^5.0.0:
     get-user-locale "^2.2.1"
     warning "^4.0.0"
 
-react-compare-image@^3.1.0:
+react-compare-image@~3.1.0:
   version "3.1.0"
-  resolved "http://verdaccio.ds.io:4873/react-compare-image/-/react-compare-image-3.1.0.tgz#effa6dda23fed0700d41f71b5158f75208b61aa7"
+  resolved "https://registry.npmjs.org/react-compare-image/-/react-compare-image-3.1.0.tgz#effa6dda23fed0700d41f71b5158f75208b61aa7"
   integrity sha512-47ISXkAx9KXA0rjgbQvaFK5AVbxVwP1XjTQEgsmMDN8bWpONVg/IoYmelRBdMs9gQICQCIw1se/cLENEBwHWlQ==
 
 react-cool-dimensions@^2.0.7:
