@@ -19,7 +19,7 @@ import { useFeedbackModal } from '../layout-root';
 import GlobalMenuLinkCSS from '$styles/menu-link';
 import { useMediaQuery } from '$utils/use-media-query';
 import { LinkProperties } from '$types/veda';
-
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 const rgbaFixed = rgba as any;
 
 export const GlobalNavActions = styled.div`

@@ -11,7 +11,7 @@
 
 ### Inline Code Annotation
 
-- Special cases use `@TODO`, `@FIXME`, and `@NOTE` tags for annotations in the code. We also use the temporary `@VEDA2-REFACTOR-WORK` note for core features while working to build a UI library out of VEDA UI
+- Special cases use `@TODO`, `@FIXME`, and `@NOTE` tags for annotations in the code. We also use the temporary
 
 ### Folder/File Naming Conventions
 
@@ -113,3 +113,16 @@ Install Required Extensions:
 
 Note: The project contains a file `.vscode/settings.json.sample` with our recommended vscode settings.
 To apply these settings to your workspace in VS Code, rename the file to `.vscode/settings.json` by removing the `.sample` extension.
+
+## Refactor in Progress
+The codebase is currently transitioning to a library format with modular components that can be exposed and reused across modules. However, veda-ui still supports legacy architecture. Until the full migration is complete, we’ll need to navigate both the legacy and new structures carefully to maintain code clarity and stability.
+
+### Keyword tags
+* `@DEPRECATED` notes that it is to be removed in the future and users should look for the modern alternative
+* `@LEGACY-SUPPORT` notes that it only exists or was created to support legacy architecture. Likely wrappers or some intermediate layer. These files will be removed once legacy architecture migrates
+
+### Notes
+* `styled-components` to be deprecated in favor of SCSS
+* DevseedUIThemeProvider to be deprecated in favor of USWDS
+   * imports from `@devseed-ui/*` are in the works to be removed
+* imports from `'veda'` which relies on the parcel-resolver-veda virtual modules are in the works to be removed

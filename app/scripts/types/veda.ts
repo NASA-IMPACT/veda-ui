@@ -114,8 +114,6 @@ export interface DatasetLayerCompareNormalized extends DatasetLayerCommonProps {
   legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
 }
 
-// export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
-
 // TODO: Complete once known
 export interface DatasetDatumFnResolverBag {
   /* The date selected by the user */

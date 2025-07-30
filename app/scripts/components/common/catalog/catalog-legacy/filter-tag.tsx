@@ -1,12 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import {
-  CollecticonXmarkSmall
-} from '@devseed-ui/collecticons';
+import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
-
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 interface FilterTagProps {
   item: OptionItem;
   onClick: (item: OptionItem) => void;
@@ -37,7 +35,7 @@ const Tag = styled.span`
 `;
 
 export default function FilterTagLegacy(props: FilterTagProps) {
-  const {item, onClick} = props;
+  const { item, onClick } = props;
 
   const handleClick = () => {
     onClick(item);

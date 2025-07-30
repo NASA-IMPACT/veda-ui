@@ -26,6 +26,8 @@ import { usePreviousValue } from '$utils/use-effect-previous';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
 import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
 
+// @DEPRECATED: This component is deprecated and will be removed in the future.
+
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';
 

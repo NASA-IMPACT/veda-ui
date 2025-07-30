@@ -1,6 +1,6 @@
 import { datasets, stories } from 'veda';
 import { VedaData, VedaDatum, DatasetData, StoryData } from '$types/veda';
-// @VEDA2-REFACTOR-WORK
+// @LEGACY-SUPPORT
 
 /**
  * @NOTE
