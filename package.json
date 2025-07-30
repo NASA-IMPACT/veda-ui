@@ -1,7 +1,16 @@
 {
   "name": "@teamimpact/veda-ui",
   "description": "Dashboard",
+<<<<<<< Updated upstream
   "version": "6.10.2",
+=======
+  "version": "6.10.1",
+  "private": true,
+  "workspaces": [
+    ".",
+    "packages/*"
+  ],
+>>>>>>> Stashed changes
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"

@@ -1,0 +1,16 @@
+{
+  "name": "@teamimpact/veda-ui-examples",
+  "description": "Examples for VEDA UI components",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "parcel serve src/index.html",
+    "build": "parcel build src/index.html"
+  },
+  "dependencies": {
+    "@teamimpact/veda-ui": "*"
+  },
+  "devDependencies": {
+    "parcel": "^2.12.0"
+  }
+}
