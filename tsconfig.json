@@ -15,7 +15,8 @@
       "$types/*": ["app/scripts/types/*"],
       "$context/*": ["app/scripts/context/*"],
       "$data-layer/*": ["app/scripts/data-layer/*"],
-      "$uswds": ["app/scripts/uswds/"]
+      "$uswds": ["app/scripts/uswds/"],
+      "$core": ["core/*"]
     }
   },
   "exclude": [
