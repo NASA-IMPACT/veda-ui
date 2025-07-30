@@ -21,6 +21,8 @@ import { variableGlsp } from '$styles/variable-utils';
 import './styles.scss';
 
 /**
+ * @LEGACY-SUPPORT
+ *
  * @NOTE: This component is the controller where a cardType can be passed in.
  * This is to support how card is currently used in legacy code.
  * This controller file can be used moving forward but instances and veda-ui can also now just use the specific card type directly with the different types now broken out

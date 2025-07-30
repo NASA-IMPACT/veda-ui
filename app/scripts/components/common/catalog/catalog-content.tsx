@@ -4,7 +4,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Icon } from '@trussworks/react-uswds';
 
 import TextHighlight from '../text-highlight';
-import { CollecticonDatasetLayers } from '../icons/dataset-layers';
+import { CollecticonDatasetLayers } from '../icons-legacy/dataset-layers';
 import { Card, CardType } from '../card';
 import { Tags } from '../tags';
 import { prepareDatasets } from './prepare-datasets';

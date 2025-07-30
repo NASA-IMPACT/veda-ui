@@ -122,6 +122,7 @@ The codebase is currently transitioning to a library format with modular compone
 * `@LEGACY-SUPPORT` notes that it only exists or was created to support legacy architecture. Likely wrappers or some intermediate layer. These files will be removed once legacy architecture migrates
 
 ### Notes
+* Files & folders appended with `-legacy` will be deprecated
 * `styled-components` to be deprecated in favor of SCSS
 * DevseedUIThemeProvider to be deprecated in favor of USWDS
    * imports from `@devseed-ui/*` are in the works to be removed
