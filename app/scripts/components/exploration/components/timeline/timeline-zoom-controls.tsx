@@ -6,8 +6,8 @@ import { scaleLog } from 'd3';
 
 import { clamp } from './timeline-utils';
 
-import { CollecticonMagnifierMinus } from '$components/common/icons/magnifier-minus';
-import { CollecticonMagnifierPlus } from '$components/common/icons/magnifier-plus';
+import { CollecticonMagnifierMinus } from '$components/common/icons-legacy/magnifier-minus';
+import { CollecticonMagnifierPlus } from '$components/common/icons-legacy/magnifier-plus';
 import { TipButton } from '$components/common/tip-button';
 import { SliderInput } from '$styles/range-slider';
 import {

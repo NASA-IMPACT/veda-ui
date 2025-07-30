@@ -18,7 +18,7 @@ import PageHero from '$components/common/page-hero';
 import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
 
 /**
- * @VEDA2-REFACTOR-WORK
+ * @LEGACY-SUPPORT
  *
  * @NOTE: This container component serves as a wrapper for the purpose of data management, this is ONLY to support current instances.
  * veda2 instances can just use the direct component, 'ExplorationAndAnalysis', and manage data directly in their page views

@@ -5,7 +5,7 @@ import FilterTagLegacy from './filter-tag';
 
 import { OptionItem } from '$components/common/form/checkable-filter';
 import { variableBaseType } from '$styles/variable-utils';
-
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;

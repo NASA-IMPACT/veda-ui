@@ -19,14 +19,14 @@ import '$static/styles/theme.css';
 import '$styles/veda-styles.scss';
 
 import { userPages } from 'veda';
-import DevseedUiThemeProvider from './theme-provider';
+import DevseedUiThemeProvider from './context/theme-provider';
 
 import { discoveryRoutes } from './redirects';
 import theme from '$styles/theme';
 import { GlobalStyles } from '$styles/legacy-global-styles';
 import { getAppURL } from '$utils/history';
 import LayoutRoot from '$components/common/layout-root';
-import { LayoutRootContextProvider } from '$components/common/layout-root/context';
+import { LayoutRootContextProvider } from '$context/layout-root-context-provider';
 import { useScrollbarWidthAsCssVar } from '$utils/use-scrollbar-width-css';
 // Page loading
 import { PageLoading } from '$components/common/loading-skeleton';

@@ -6,7 +6,7 @@ import { CollecticonArrowRight } from '@devseed-ui/collecticons';
 
 import UhOh from '.';
 import LayoutRoot, { LayoutProps } from '$components/common/layout-root';
-import { LayoutRootContextProvider } from '$components/common/layout-root/context';
+import { LayoutRootContextProvider } from '$context/layout-root-context-provider';
 import PageHero from '$components/common/page-hero';
 import { FoldProse } from '$components/common/fold';
 import { PageMainContent } from '$styles/page';

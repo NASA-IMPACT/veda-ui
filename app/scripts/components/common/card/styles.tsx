@@ -14,7 +14,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { Figure } from '$components/common/figure';
 import { VarHeading } from '$styles/variable-components';
 
-/**@NOTE: Ideally this would go away once we move cards over to USWDS */
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 
 export const CardBlank = styled.article`
   position: relative;

@@ -15,6 +15,8 @@ import {
 import { CardComponentProps, ExternalLinkFlag } from '.';
 import { useVedaUI } from '$context/veda-ui-provider';
 
+// @DEPRECATED: This component is deprecated and will be removed in the future.
+
 export const ClassicCardItem = styled(CardItem)`
   background: transparent;
 `;

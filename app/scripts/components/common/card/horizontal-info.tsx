@@ -5,6 +5,8 @@ import { CardItem, CardTitle } from './styles';
 import { variableBaseType } from '$styles/variable-utils';
 import { Pill } from '$styles/pill';
 
+// @DEPRECATED: This component is deprecated and will be removed in the future.
+
 const HorizontalCard = styled.div`
   display: flex;
   height: inherit;

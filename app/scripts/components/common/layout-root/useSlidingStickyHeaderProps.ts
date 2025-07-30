@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { LayoutRootContext } from "./context";
+import { useContext } from 'react';
+import { LayoutRootContext } from '$context/layout-root-context-provider';
 
 /**
  * Hook to access the values needed to position the sticky headers.

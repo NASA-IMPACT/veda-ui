@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../../text-highlight';
-import { CollecticonDatasetLayers } from '../../icons/dataset-layers';
+import { CollecticonDatasetLayers } from '../../icons-legacy/dataset-layers';
 import { prepareDatasets } from '../prepare-datasets';
 import { CatalogCard } from '../catalog-card';
 import { FilterActions } from '../utils';
@@ -25,6 +25,8 @@ import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
 import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
+
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 
 const EXCLUSIVE_SOURCE_WARNING =
   'Can only be analyzed with layers from the same source';

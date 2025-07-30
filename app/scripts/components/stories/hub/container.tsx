@@ -16,6 +16,10 @@ import {
   ContentOverride
 } from '$components/common/page-overrides';
 
+/**
+ * @LEGACY-SUPPORT
+ */
+
 const allStories = Object.values(stories)
   .map((d) => d!.data)
   .filter((d) => !d.isHidden)

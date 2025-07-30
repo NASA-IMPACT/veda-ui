@@ -8,6 +8,8 @@ import React, {
 import { useLocation } from 'react-router';
 import { useSlidingStickyHeader } from '$utils/use-sliding-sticky-header';
 
+// @DEPRECATED: This component is deprecated and will be removed in the future.
+
 interface LayoutRootContextProps extends Record<string, any> {
   setLayoutProps: Dispatch<SetStateAction<Record<string, any>>>;
   isHeaderHidden: boolean;

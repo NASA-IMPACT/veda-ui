@@ -32,7 +32,7 @@ import {
   TimelineDataset,
   colorMapScale
 } from '$components/exploration/types.d.ts';
-import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 import { checkEnvFlag } from '$utils/utils';
 
