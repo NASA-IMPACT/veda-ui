@@ -30,8 +30,8 @@ import {
   selectedIntervalAtom
 } from '$components/exploration/atoms/dates';
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
-import { CollecticonCalendarMinus } from '$components/common/icons-legacy/calendar-minus.js';
-import { CollecticonCalendarPlus } from '$components/common/icons-legacy/calendar-plus.js';
+import { CollecticonCalendarMinus } from '$components/common/icons-legacy/calendar-minus';
+import { CollecticonCalendarPlus } from '$components/common/icons-legacy/calendar-plus';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';

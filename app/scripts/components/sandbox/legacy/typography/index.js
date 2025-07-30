@@ -14,9 +14,9 @@ import {
   CollecticonProgressTickHigh,
   CollecticonProgressTickMedium,
   CollecticonProgressTickLow
-} from '$components/common/icons/progress-tick';
-import { CollecticonMedal } from '$components/common/icons/medal';
-import { CollecticonFlask } from '$components/common/icons/flask';
+} from '$components/common/icons-legacy/progress-tick';
+import { CollecticonMedal } from '$components/common/icons-legacy/medal';
+import { CollecticonFlask } from '$components/common/icons-legacy/flask';
 
 const IntroFold = styled.div`
   position: relative;
