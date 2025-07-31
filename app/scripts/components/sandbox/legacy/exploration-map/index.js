@@ -456,7 +456,11 @@ function SandboxExplorationMap() {
           >
             <AOIControl
               onAOIUpdate={(aoi) => {
-                if (aoi?.length) setAoi(aoi[0]);
+                if (aoi?.length)
+                  setAoi({
+                    type: 'FeatureCollection',
+                    features: aoi
+                  });
                 else setAoi(null);
               }}
             />
