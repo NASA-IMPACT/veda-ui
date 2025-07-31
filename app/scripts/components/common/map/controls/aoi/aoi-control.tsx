@@ -52,7 +52,13 @@ const FloatingBarSelf = styled.div`
   z-index: 100;
 `;
 
-const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
+const AoiControl = ({
+  disableReason,
+  onAOIUpdate
+}: {
+  disableReason?: React.ReactNode;
+  onAOIUpdate?: (features: Feature<Polygon>[]) => void;
+}) => {
   const theme = useTheme();
   const { main: mapboxMap } = useMaps();
   const { isDrawing, setIsDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
@@ -63,23 +69,25 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
   const resetAoi = () => {
     aoiDeleteAll();
     setSelectedState('');
+    onAOIUpdate && onAOIUpdate(null);
   };
 
   const onUploadConfirm = (features: Feature<Polygon>[]) => {
     resetAoi(); // delete all previous AOIs and clear selections
     setAoIModalRevealed(false); // close modal
-
     updateAoi({ features });
+    onAOIUpdate && onAOIUpdate(features);
   };
 
   const onPresetConfirm = (features: Feature<Polygon>[]) => {
     aoiDeleteAll(); // delete all previous AOIs but keep preset selection
-
     updateAoi({ features });
+    onAOIUpdate && onAOIUpdate(features);
   };
 
   const onTrashClick = () => {
     resetAoi();
+    onAOIUpdate && onAOIUpdate(null);
   };
 
   const [drawing, drawingIsValid] = useDrawControl({
@@ -92,8 +100,8 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
     confirm() {
       if (drawingIsValid) {
         resetAoi(); // delete all previous AOIs and clear selections
-
         updateAoi({ features: drawing }); // set the drawn AOI
+        onAOIUpdate && onAOIUpdate(drawing);
         setIsDrawing(false); // leave drawing mode
       }
     },

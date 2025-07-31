@@ -7,10 +7,12 @@ import { requestDatasetTimeseriesData } from '../analysis-data';
 import { analysisControllerAtom } from '../atoms/analysis';
 import { selectedIntervalAtom } from '../atoms/dates';
 import {
+  useTimelineDatasetAtom,
   useTimelineDatasetAnalysis,
   useAnalysisVariable,
   useAnalysisOptions
 } from '../atoms/hooks';
+
 import { analysisConcurrencyManager } from '../concurrency';
 import {
   TimelineDataset,
@@ -18,6 +20,7 @@ import {
   DatasetStatus
 } from '../types.d.ts';
 import { MAX_QUERY_NUM } from '../constants';
+// /import useTimelineDatasetAtom from './use-timeline-dataset-atom';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -69,16 +72,26 @@ export function useAnalysisController() {
   };
 }
 
+export function useAnalysisDataRequestWithID({
+  datasetAtomId
+}: {
+  datasetAtomId: string;
+}) {
+  const datasetAtom = useTimelineDatasetAtom(datasetAtomId);
+  const queryClient = useQueryClient();
+  return useAnalysisDataRequest({ datasetAtom });
+}
+
 export function useAnalysisDataRequest({
   datasetAtom
 }: {
   datasetAtom: PrimitiveAtom<TimelineDataset>;
 }) {
-  const queryClient = useQueryClient();
-
-  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } = useVedaUI();
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } =
+    useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
+  const queryClient = useQueryClient();
 
   const { features } = useAois();
   const selectedFeatures = features.filter((f) => f.selected);
@@ -86,6 +99,7 @@ export function useAnalysisDataRequest({
   const { getRunId, isAnalyzing } = useAnalysisController();
 
   const dataset = useAtomValue(datasetAtom);
+
   const datasetStatus = dataset.status;
 
   const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
@@ -167,4 +181,85 @@ export function useAnalysisDataRequest({
       setSelectedVariable(Object.keys(analysisResult.data?.timeseries)[0]);
     }
   }, [setAnalysis, analysisResult, setVariableOptions, setSelectedVariable]);
+
+  return [analysisResult, setAnalysisResult];
+}
+
+export function useAnalysisDataRequestWithParams({
+  start,
+  end,
+  aoi,
+  dataset
+}: {
+  start: Date;
+  end: Date;
+  aoi: FeatureCollection<Polygon>;
+  datasetId: string;
+  dataset: any;
+}) {
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } =
+    useVedaUI();
+
+  const queryClient = useQueryClient();
+  // const datasetAtom = useTimelineDatasetAtom(datasetId);
+  // const dataset = useAtomValue(datasetAtom);
+
+  // const setAnalysis = useTimelineDatasetAnalysis(datasetAtom);
+  // const setSelectedVariable = useAnalysisVariable(datasetAtom);
+  // const setVariableOptions = useAnalysisOptions(datasetAtom);
+
+  // useEffect(() => {
+  //   if (!aoi || !start || !end) return; // do not run if there is no aoi
+  // }, [aoi, start, end]);
+
+  const [analysisResult, setAnalysisResult] = useState<TimelineDatasetAnalysis>(
+    {
+      status: DatasetStatus.IDLE,
+      error: null,
+      data: null,
+      meta: {}
+    }
+  );
+
+  useEffect(() => {
+    if (!aoi || !start || !end) return;
+    if (analysisResult.data) return;
+    (async () => {
+      try {
+        const stat = await requestDatasetTimeseriesData({
+          maxItems: MAX_QUERY_NUM,
+          start,
+          end,
+          aoi,
+          dataset,
+          queryClient,
+          concurrencyManager: analysisConcurrencyManager,
+          envApiRasterEndpoint,
+          envApiStacEndpoint,
+          envApiCMREndpoint,
+          onProgress: () => {}
+          // onProgress: (data) => {
+          //   setAnalysis(data);
+          // }
+        });
+        setAnalysisResult(stat);
+      } catch (error) {
+        setAnalysisResult({
+          status: DatasetStatus.FAILED,
+          error: error instanceof Error ? error.message : 'Analysis failed',
+          data: null,
+          meta: {}
+        });
+      }
+    })();
+  }, [start, end, aoi, dataset]);
+
+  return {
+    analysisResult,
+    // requestAnalysis,
+    isLoading: analysisResult.status === DatasetStatus.LOADING,
+    isSuccess: analysisResult.status === DatasetStatus.SUCCESS,
+    isError: analysisResult.status === DatasetStatus.FAILED,
+    error: analysisResult.error
+  };
 }
