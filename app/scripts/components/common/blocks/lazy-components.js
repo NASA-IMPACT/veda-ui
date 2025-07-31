@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import T from 'prop-types';
 import LazyLoad from 'react-lazyload';
 
@@ -8,7 +8,10 @@ import { chartMaxHeight } from '$components/common/chart/constant';
 import Table, { tableHeight } from '$components/common/table';
 import CompareImage from '$components/common/blocks/images/compare';
 
-import Map, { mapHeight } from '$components/common/blocks/block-map';
+import Map, {
+  mapHeight,
+  getDataLayer
+} from '$components/common/blocks/block-map';
 import Embed from '$components/common/blocks/embed';
 import {
   ScrollytellingBlock,
@@ -17,6 +20,10 @@ import {
 
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 import { veda_faux_module_datasets } from '$data-layer/datasets';
+import { getDatasetLayers } from '$utils/data-utils';
+import { reconcileDatasets } from '$components/exploration/data-utils';
+import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 export function LazyChart(props) {
   return (
@@ -42,14 +49,58 @@ export function LazyScrollyTelling(props) {
   );
 }
 
+// export function LazyMap(props) {
+//   return (
+//     <LazyLoad
+//       placeholder={<LoadingSkeleton height={mapHeight} />}
+//       offset={100}
+//       once
+//     >
+//       <Map {...props} datasets={veda_faux_module_datasets} />
+//     </LazyLoad>
+//   );
+// }
+
 export function LazyMap(props) {
+  const datasetLayers = getDatasetLayers(veda_faux_module_datasets);
+  const { layerId } = props;
+
+  const layersToFetch = useMemo(() => {
+    const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
+    let totalLayers = [baseMapStaticData];
+    const baseMapStaticCompareData = baseMapStaticData.data.compare;
+    if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
+      const compareLayerId = baseMapStaticCompareData.layerId;
+      const [compareMapStaticData] = reconcileDatasets(
+        compareLayerId ? [compareLayerId] : [],
+        datasetLayers,
+        []
+      );
+      totalLayers = [...totalLayers, compareMapStaticData];
+    }
+    return totalLayers;
+  }, [layerId, datasetLayers]);
+
+  const [layers, setLayers] = useState(layersToFetch);
+
+  const { envApiStacEndpoint } = useVedaUI();
+
+  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
+
+  const baseDataLayer = useMemo(() => getDataLayer(0, layers), [layers]);
+  const compareDataLayer = useMemo(() => getDataLayer(1, layers), [layers]);
+
   return (
     <LazyLoad
       placeholder={<LoadingSkeleton height={mapHeight} />}
       offset={100}
       once
     >
-      <Map {...props} datasets={veda_faux_module_datasets} />
+      <Map
+        {...props}
+        baseDataLayer={baseDataLayer}
+        compareDataLayer={compareDataLayer}
+      />
     </LazyLoad>
   );
 }
