@@ -1,6 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import styled from 'styled-components';
-import { PrimitiveAtom } from 'jotai';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonCircleInformation,
@@ -13,14 +12,15 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import Tippy from '@tippyjs/react';
-import { LayerInfoLiner } from '../layer-info-modal';
+import { LayerInfoLiner, LayerInfoModalData } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
 import {
-  LayerLegendCategorical,
-  LayerLegendGradient,
-  LayerLegendText
-} from '$types/veda';
+  useTimelineDatasetAtom,
+  useTimelineDatasetColormap,
+  useTimelineDatasetVisibility,
+  useTimelineDatasetColormapScale
+} from '$components/exploration/atoms/hooks';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
@@ -34,26 +34,19 @@ import {
 } from '$components/exploration/types.d.ts';
 import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
-import { checkEnvFlag } from '$utils/utils';
 
 import 'tippy.js/dist/tippy.css';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 
 interface CardProps {
   dataset: TimelineDataset;
-  datasetAtom: PrimitiveAtom<TimelineDataset>;
   isVisible: boolean | undefined;
-  setVisible: any;
+  setVisible?: (any) => void;
   colorMap: string | undefined;
-  setColorMap: (colorMap: string) => void;
+  setColorMap?: (colorMap: string) => void;
   colorMapScale: colorMapScale | undefined;
-  setColorMapScale: (colorMapScale: colorMapScale) => void;
-  onClickLayerInfo: () => void;
-  datasetLegend:
-    | LayerLegendCategorical
-    | LayerLegendGradient
-    | LayerLegendText
-    | undefined;
+  setColorMapScale?: (colorMapScale: colorMapScale) => void;
+  onClickLayerInfo?: () => void;
 }
 
 const Header = styled.header`
@@ -123,16 +116,18 @@ const LegendColorMapTrigger = styled.div`
 export default function DataLayerCard(props: CardProps) {
   const {
     dataset,
-    datasetAtom,
     isVisible,
     setVisible,
     colorMap,
     setColorMap,
     colorMapScale,
     setColorMapScale,
-    datasetLegend,
     onClickLayerInfo
   } = props;
+
+  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  const datasetLegend = dataset.data.legend;
+
   const layerInfo = dataset.data.info;
   const [min, max] =
     datasetLegend?.type === 'gradient' &&
@@ -159,7 +154,10 @@ export default function DataLayerCard(props: CardProps) {
 
   const showLoadingConfigurableCmapSkeleton =
     dataset.status === 'loading' && datasetLegend?.type === 'gradient';
+
   const showConfigurableCmap =
+    !!setColorMap &&
+    !!setColorMapScale &&
     dataset.status === 'success' &&
     dataset.data.type !== 'wmts' &&
     dataset.data.type !== 'wms' &&
@@ -170,6 +168,9 @@ export default function DataLayerCard(props: CardProps) {
     !showConfigurableCmap &&
     !showLoadingConfigurableCmapSkeleton &&
     datasetLegend?.type === 'gradient';
+
+  const showDataLayerInfoModalButton = !!onClickLayerInfo;
+  const showVisibilityButton = !!setVisible;
 
   const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
   const chevToggleExpanded = () => {
@@ -190,37 +191,41 @@ export default function DataLayerCard(props: CardProps) {
               {dataset.data.name}
             </DatasetTitle>
             <DatasetToolbar size='small'>
-              <TipButton
-                tipContent='Layer info'
-                size='small'
-                fitting='skinny'
-                onPointerDownCapture={(e) => e.stopPropagation()}
-                onClick={onClickLayerInfo}
-              >
-                <CollecticonCircleInformation
-                  meaningful
-                  title='View dataset page'
-                />
-              </TipButton>
-              <TipButton
-                tipContent={isVisible ? 'Hide layer' : 'Show layer'}
-                size='small'
-                fitting='skinny'
-                onPointerDownCapture={(e) => e.stopPropagation()}
-                onClick={() => setVisible((v) => !v)}
-              >
-                {isVisible ? (
-                  <CollecticonEye
+              {showDataLayerInfoModalButton && (
+                <TipButton
+                  tipContent='Layer info'
+                  size='small'
+                  fitting='skinny'
+                  onPointerDownCapture={(e) => e.stopPropagation()}
+                  onClick={onClickLayerInfo}
+                >
+                  <CollecticonCircleInformation
                     meaningful
-                    title='Toggle dataset visibility'
+                    title='View dataset page'
                   />
-                ) : (
-                  <CollecticonEyeDisabled
-                    meaningful
-                    title='Toggle dataset visibility'
-                  />
-                )}
-              </TipButton>
+                </TipButton>
+              )}
+              {showVisibilityButton && (
+                <TipButton
+                  tipContent={isVisible ? 'Hide layer' : 'Show layer'}
+                  size='small'
+                  fitting='skinny'
+                  onPointerDownCapture={(e) => e.stopPropagation()}
+                  onClick={() => setVisible((v) => !v)}
+                >
+                  {isVisible ? (
+                    <CollecticonEye
+                      meaningful
+                      title='Toggle dataset visibility'
+                    />
+                  ) : (
+                    <CollecticonEyeDisabled
+                      meaningful
+                      title='Toggle dataset visibility'
+                    />
+                  )}
+                </TipButton>
+              )}
               {datasetLegend?.type === 'categorical' && (
                 <TipButton
                   tipContent={
@@ -315,5 +320,40 @@ export default function DataLayerCard(props: CardProps) {
         )}
       </DatasetInfo>
     </>
+  );
+}
+
+export function DataLayerCardWithSync(props: { dataset: TimelineDataset }) {
+  const { dataset } = props;
+
+  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+
+  const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
+  const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
+  const [colorMapScale, setColorMapScale] =
+    useTimelineDatasetColormapScale(datasetAtom);
+  const [, setModalLayerInfo] = useState<LayerInfoModalData>();
+
+  const onClickLayerInfo = useCallback(() => {
+    const data: LayerInfoModalData = {
+      name: dataset.data.name,
+      description: dataset.data.description,
+      info: dataset.data.info,
+      parentData: dataset.data.parentDataset
+    };
+    setModalLayerInfo(data);
+  }, [dataset]);
+
+  return (
+    <DataLayerCard
+      dataset={dataset}
+      colorMap={colorMap}
+      colorMapScale={colorMapScale}
+      setColorMap={setColorMap}
+      setColorMapScale={setColorMapScale}
+      isVisible={isVisible}
+      setVisible={setVisible}
+      onClickLayerInfo={onClickLayerInfo}
+    />
   );
 }
