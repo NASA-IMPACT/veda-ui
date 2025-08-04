@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useSetAtom } from 'jotai';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
@@ -7,7 +7,9 @@ import { PageMainContent } from '$styles/page';
 
 import { externalDatasetsAtom } from '$components/exploration/atoms/datasetLayers';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom.tsx';
-import { DataLayerCardWithSync } from '$components/exploration/components/datasets/data-layer-card';
+import DataLayerCard, {
+  DataLayerCardWithSync
+} from '$components/exploration/components/datasets/data-layer-card';
 import { ExplorationMap } from '$components/exploration/components/map';
 
 export const HugResetter = styled.div`
@@ -414,6 +416,36 @@ const mockDatasets = [
 ];
 const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 
+function ExampleComponent(props) {
+  const { timelineDatasets } = props;
+  const [isVisible, setIsVisible] = useState(true);
+  return (
+    <Grid row gap={3}>
+      <Grid col={6}>
+        {timelineDatasets.map((dataset) => (
+          <DataLayerCard
+            key={dataset.data.id}
+            dataset={dataset}
+            isVisible={isVisible}
+            setVisible={setIsVisible}
+          />
+        ))}
+      </Grid>
+      <Grid
+        col={6}
+        style={{
+          backgroundColor: 'red',
+          width: '100px',
+          height: '100px',
+          display: isVisible ? 'block' : 'none'
+        }}
+      >
+        Something is visible
+      </Grid>
+    </Grid>
+  );
+}
+
 function SandboxExplorationMap() {
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
   setExternalDatasets(mockRawData);
@@ -430,7 +462,9 @@ function SandboxExplorationMap() {
     <PageMainContent>
       <HugResetter>
         <GridContainer id='grid-contianer'>
-          <h2 className='margin-top-2 margin-bottom-2'>Sync with Map</h2>
+          <h2 className='margin-top-5 margin-bottom-2'>
+            Layer card in sync with Map
+          </h2>
           <Grid row gap={3}>
             <Grid style={{ height: '300px' }} col={6}>
               <ExplorationMap
@@ -448,6 +482,11 @@ function SandboxExplorationMap() {
               ))}
             </Grid>
           </Grid>
+          <h2 className='margin-top-5 margin-bottom-2'>
+            Layer Card as an independent component
+          </h2>
+
+          <ExampleComponent timelineDatasets={timelineDatasets} />
         </GridContainer>
       </HugResetter>
     </PageMainContent>
