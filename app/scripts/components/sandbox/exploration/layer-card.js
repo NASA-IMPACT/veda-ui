@@ -19,11 +19,12 @@ const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 
 function ExampleComponent(props) {
   const { timelineDatasets } = props;
+  const oneDataset = [timelineDatasets[0]];
   const [isVisible, setIsVisible] = useState(true);
   return (
     <Grid row gap={3}>
       <Grid col={6}>
-        {timelineDatasets.map((dataset) => (
+        {oneDataset.map((dataset) => (
           <DataLayerCard
             key={dataset.data.id}
             dataset={dataset}
@@ -57,7 +58,7 @@ function SandboxExplorationMap() {
   useEffect(() => {
     // IF no data came through URL
     if (timelineDatasets.length == 0) {
-      setTimelineDatasets(mockDatasets);
+      setTimelineDatasets([...mockDatasets]);
     }
   }, [setTimelineDatasets, timelineDatasets.length]);
   const onLayerInfoClick = (info) => {
