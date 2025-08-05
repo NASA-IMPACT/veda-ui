@@ -198,7 +198,10 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{ width: '100%' }} onPointerDown={onDragging}>
-              <DataLayerCardWithSync dataset={dataset} />
+              <DataLayerCardWithSync
+                dataset={dataset}
+                setLayerInfo={setModalLayerInfo}
+              />
             </div>
             {modalLayerInfo && (
               <LayerInfoModal

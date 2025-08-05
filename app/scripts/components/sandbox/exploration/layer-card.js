@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useSetAtom } from 'jotai';
-import { GridContainer, Grid } from '@trussworks/react-uswds';
-
+import { GridContainer, Grid, Modal } from '@trussworks/react-uswds';
 import { mockRawData, mockDatasets } from './mock-data';
 import { PageMainContent } from '$styles/page';
 
@@ -50,8 +49,10 @@ function ExampleComponent(props) {
 
 function SandboxExplorationMap() {
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
+  const modalRef = useRef(null);
   setExternalDatasets(mockRawData);
   const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
+  const [modalInfo, setModalInfo] = useState(null);
 
   useEffect(() => {
     // IF no data came through URL
@@ -59,7 +60,12 @@ function SandboxExplorationMap() {
       setTimelineDatasets(mockDatasets);
     }
   }, [setTimelineDatasets, timelineDatasets.length]);
-
+  const onLayerInfoClick = (info) => {
+    setModalInfo(info);
+    if (modalRef.current) {
+      modalRef.current.toggleModal(null, true);
+    }
+  };
   return (
     <PageMainContent>
       <HugResetter>
@@ -80,6 +86,7 @@ function SandboxExplorationMap() {
                 <DataLayerCardWithSync
                   key={dataset.data.id}
                   dataset={dataset}
+                  setLayerInfo={onLayerInfoClick}
                 />
               ))}
             </Grid>
@@ -90,6 +97,17 @@ function SandboxExplorationMap() {
 
           <ExampleComponent timelineDatasets={timelineDatasets} />
         </GridContainer>
+
+        <Modal
+          ref={modalRef}
+          id='example-modal-1'
+          aria-labelledby='modal-1-heading'
+          aria-describedby='modal-1-description'
+        >
+          <div className='usa-prose'>
+            <p id='modal-1-description'>{JSON.stringify(modalInfo)}</p>
+          </div>
+        </Modal>
       </HugResetter>
     </PageMainContent>
   );

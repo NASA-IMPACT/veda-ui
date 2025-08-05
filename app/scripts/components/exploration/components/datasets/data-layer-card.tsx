@@ -323,8 +323,11 @@ export default function DataLayerCard(props: CardProps) {
   );
 }
 
-export function DataLayerCardWithSync(props: { dataset: TimelineDataset }) {
-  const { dataset } = props;
+export function DataLayerCardWithSync(props: {
+  dataset: TimelineDataset;
+  setLayerInfo: (data: LayerInfoModalData) => void;
+}) {
+  const { dataset, setLayerInfo } = props;
 
   const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
 
@@ -332,7 +335,7 @@ export function DataLayerCardWithSync(props: { dataset: TimelineDataset }) {
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
-  const [, setModalLayerInfo] = useState<LayerInfoModalData>();
+  // const [, setModalLayerInfo] = useState<LayerInfoModalData>();
 
   const onClickLayerInfo = useCallback(() => {
     const data: LayerInfoModalData = {
@@ -341,8 +344,8 @@ export function DataLayerCardWithSync(props: { dataset: TimelineDataset }) {
       info: dataset.data.info,
       parentData: dataset.data.parentDataset
     };
-    setModalLayerInfo(data);
-  }, [dataset]);
+    setLayerInfo(data);
+  }, [dataset, setLayerInfo]);
 
   return (
     <DataLayerCard
