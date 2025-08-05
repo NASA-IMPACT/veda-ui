@@ -348,6 +348,7 @@ export async function requestDatasetTimeseriesData({
   envApiCMREndpoint,
   onProgress
 }: TimeseriesRequesterParams): Promise<TimelineDatasetAnalysis> {
+  console.log('analysis started');
   const datasetData = dataset.data;
   const datasetAnalysis = dataset.analysis;
 
