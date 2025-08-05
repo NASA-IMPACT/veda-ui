@@ -17,6 +17,8 @@ import { CardComponentProps, ExternalLinkFlag } from '.';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { variableGlsp } from '$styles/variable-utils';
 
+// @DEPRECATED: This component is deprecated and will be removed in the future.
+
 export const CoverCardItem = styled(CardItem)`
   padding-top: ${variableGlsp(2)};
   background: ${themeVal('color.base-400')};

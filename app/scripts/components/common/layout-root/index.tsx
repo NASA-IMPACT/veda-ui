@@ -25,7 +25,7 @@ const Banner = React.lazy(() => import('../banner'));
 const SiteAlert = React.lazy(() => import('../site-alert'));
 const CookieConsent = React.lazy(() => import('../cookie-consent'));
 
-import { LayoutRootContext } from './context';
+import { LayoutRootContext } from '$context/layout-root-context-provider';
 
 import { setGoogleTagManager } from '$utils/use-google-tag-manager';
 

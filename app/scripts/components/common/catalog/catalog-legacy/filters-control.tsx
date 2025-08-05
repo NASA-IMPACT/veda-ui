@@ -32,7 +32,7 @@ const ControlsWrapper = styled.div<{
   height: ${(props) => props.heightValue};
   transition: top ${HEADER_TRANSITION_DURATION}ms ease-out;
 `;
-
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 interface FiltersMenuProps {
   onAction: (action: FilterActions, value: any) => void;
   search?: string;
