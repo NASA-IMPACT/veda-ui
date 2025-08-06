@@ -20,7 +20,8 @@ const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 /* @TODO: This component is not working, leaving to investigate more later */
 // eslint-disable-next-line no-unused-vars
 function ExampleComponent(props) {
-  const oneDataset = [mockDatasets[0]];
+  const { timelineDatasets } = props;
+  const oneDataset = [timelineDatasets[0]];
   const [isVisible, setIsVisible] = useState(true);
 
   return (
@@ -59,7 +60,6 @@ function SandboxExplorationMap() {
   setExternalDatasets(mockRawData);
   const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
   const [modalInfo, setModalInfo] = useState(null);
-
   useEffect(() => {
     // IF no data came through URL
     if (timelineDatasets.length == 0) {
@@ -102,7 +102,9 @@ function SandboxExplorationMap() {
             Layer Card as an independent component
           </h2>
           <p> wip...</p>
-          {/* <ExampleComponent /> */}
+          {timelineDatasets.length > 0 && (
+            <ExampleComponent timelineDatasets={timelineDatasets} />
+          )}
         </GridContainer>
 
         <Modal
