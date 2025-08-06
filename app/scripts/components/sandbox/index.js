@@ -22,6 +22,7 @@ import CustomLayer from './customlayer';
 import Pagination from './pagination';
 import Widgets from './widgets';
 import SandboxUswdsCards from './cards';
+import SandboxCustomMap from './custom-map';
 import {
   FullscreenWidget,
   FullpageModalWidget
@@ -127,6 +128,11 @@ const pages = [
     id: 'custom-layer',
     name: 'Custom Layer',
     component: CustomLayer
+  },
+  {
+    id: 'custom-map',
+    name: 'Custom Exploration Map',
+    component: SandboxCustomMap
   }
 ];
 
