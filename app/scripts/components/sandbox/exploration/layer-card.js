@@ -17,21 +17,26 @@ export const HugResetter = styled.div`
 
 const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 
+/* @TODO: This component is not working, leaving to investigate more later */
+// eslint-disable-next-line no-unused-vars
 function ExampleComponent(props) {
-  const { timelineDatasets } = props;
-  const oneDataset = [timelineDatasets[0]];
+  const oneDataset = [mockDatasets[0]];
   const [isVisible, setIsVisible] = useState(true);
+
   return (
     <Grid row gap={3}>
       <Grid col={6}>
-        {oneDataset.map((dataset) => (
-          <DataLayerCard
-            key={dataset.data.id}
-            dataset={dataset}
-            isVisible={isVisible}
-            setVisible={setIsVisible}
-          />
-        ))}
+        {oneDataset.map(
+          (dataset) =>
+            dataset?.data && (
+              <DataLayerCard
+                key={dataset.data.id}
+                dataset={dataset}
+                isVisible={isVisible}
+                setVisible={setIsVisible}
+              />
+            )
+        )}
       </Grid>
       <Grid
         col={6}
@@ -61,6 +66,7 @@ function SandboxExplorationMap() {
       setTimelineDatasets([...mockDatasets]);
     }
   }, [setTimelineDatasets, timelineDatasets.length]);
+
   const onLayerInfoClick = (info) => {
     setModalInfo(info);
     if (modalRef.current) {
@@ -95,8 +101,8 @@ function SandboxExplorationMap() {
           <h2 className='margin-top-5 margin-bottom-2'>
             Layer Card as an independent component
           </h2>
-
-          <ExampleComponent timelineDatasets={timelineDatasets} />
+          <p> wip...</p>
+          {/* <ExampleComponent /> */}
         </GridContainer>
 
         <Modal
