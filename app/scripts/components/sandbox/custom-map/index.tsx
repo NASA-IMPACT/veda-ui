@@ -41,7 +41,6 @@ const SandboxCustomMap: React.FC = () => {
               <ScaleControl />
               <MapCoordsControl />
               <NavigationControl />
-              {/* Add any map controls you want here */}
             </MapControls>
           </Map>
         </VedaUIProvider>
