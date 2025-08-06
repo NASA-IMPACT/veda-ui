@@ -104,9 +104,9 @@ function SandboxExplorationMap() {
             Layer Card as an independent component
           </h2>
           <p> wip...</p>
-          <VedaUIConfigProvider>
-            <ExampleComponent timelineDatasets={timelineDatasets} />
-          </VedaUIConfigProvider>
+          {/* <VedaUIConfigProvider> */}
+          <ExampleComponent timelineDatasets={timelineDatasets} />
+          {/* </VedaUIConfigProvider> */}
         </GridContainer>
 
         <Modal
