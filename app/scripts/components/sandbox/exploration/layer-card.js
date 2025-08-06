@@ -11,6 +11,7 @@ import DataLayerCard, {
   DataLayerCardWithSync
 } from '$components/exploration/components/datasets/data-layer-card';
 import { ExplorationMap } from '$components/exploration/components/map';
+import { VedaUIConfigProvider } from '$test/utils';
 export const HugResetter = styled.div`
   /* To escape from HUG grid */
 `;
@@ -20,7 +21,8 @@ const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 /* @TODO: This component is not working, leaving to investigate more later */
 // eslint-disable-next-line no-unused-vars
 function ExampleComponent(props) {
-  const oneDataset = [mockDatasets[0]];
+  const { timelineDatasets } = props;
+  const oneDataset = [timelineDatasets[0]];
   const [isVisible, setIsVisible] = useState(true);
 
   return (
@@ -102,7 +104,9 @@ function SandboxExplorationMap() {
             Layer Card as an independent component
           </h2>
           <p> wip...</p>
-          {/* <ExampleComponent /> */}
+          <VedaUIConfigProvider>
+            <ExampleComponent timelineDatasets={timelineDatasets} />
+          </VedaUIConfigProvider>
         </GridContainer>
 
         <Modal
