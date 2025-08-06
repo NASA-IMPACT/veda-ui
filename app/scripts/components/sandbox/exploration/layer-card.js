@@ -20,23 +20,21 @@ const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 /* @TODO: This component is not working, leaving to investigate more later */
 // eslint-disable-next-line no-unused-vars
 function ExampleComponent(props) {
-  const oneDataset = [mockDatasets[0]];
+  const { timelineDatasets } = props;
+  const oneDataset = [timelineDatasets[0]];
   const [isVisible, setIsVisible] = useState(true);
 
   return (
     <Grid row gap={3}>
       <Grid col={6}>
-        {oneDataset.map(
-          (dataset) =>
-            dataset?.data && (
-              <DataLayerCard
-                key={dataset.data.id}
-                dataset={dataset}
-                isVisible={isVisible}
-                setVisible={setIsVisible}
-              />
-            )
-        )}
+        {oneDataset.map((dataset) => (
+          <DataLayerCard
+            key={dataset.data.id}
+            dataset={dataset}
+            isVisible={isVisible}
+            setVisible={setIsVisible}
+          />
+        ))}
       </Grid>
       <Grid
         col={6}
@@ -102,7 +100,9 @@ function SandboxExplorationMap() {
             Layer Card as an independent component
           </h2>
           <p> wip...</p>
-          {/* <ExampleComponent /> */}
+          {timelineDatasets.length > 0 && (
+            <ExampleComponent timelineDatasets={timelineDatasets} />
+          )}
         </GridContainer>
 
         <Modal
