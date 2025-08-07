@@ -9,6 +9,7 @@ import Table, { tableHeight } from '$components/common/table';
 import CompareImage from '$components/common/blocks/images/compare';
 
 import Map, { mapHeight } from '$components/common/blocks/block-map';
+import MultiLayerMapBlock from '$components/common/blocks/multilayer-block-map';
 import Embed from '$components/common/blocks/embed';
 import {
   ScrollytellingBlock,
@@ -50,6 +51,18 @@ export function LazyMap(props) {
       once
     >
       <Map {...props} datasets={veda_faux_module_datasets} />
+    </LazyLoad>
+  );
+}
+
+export function LazyMultilayerMap(props) {
+  return (
+    <LazyLoad
+      placeholder={<LoadingSkeleton height={mapHeight} />}
+      offset={100}
+      once
+    >
+      <MultiLayerMapBlock {...props} datasets={veda_faux_module_datasets} />
     </LazyLoad>
   );
 }
