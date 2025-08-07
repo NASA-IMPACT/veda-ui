@@ -1,0 +1,11 @@
+.multilayer-map .mapboxgl-ctrl-top-left {
+    top: 42px;
+    left: -8px;
+}
+
+.truncate-select {
+  max-width: 30ch;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
