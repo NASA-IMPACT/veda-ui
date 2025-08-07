@@ -22,6 +22,7 @@ import CustomLayer from './customlayer';
 import Pagination from './pagination';
 import Widgets from './widgets';
 import SandboxUswdsCards from './cards';
+import SandboxLayerCard from './exploration/layer-card';
 import {
   FullscreenWidget,
   FullpageModalWidget
@@ -48,6 +49,7 @@ const pages = [
     name: 'Exploration map',
     component: SandboxExplorationMap
   },
+
   {
     id: 'map-block',
     name: 'Map block',
@@ -107,6 +109,11 @@ const pages = [
     id: 'colors',
     name: 'USWDS Colors',
     component: USWDSColors
+  },
+  {
+    id: 'exploration-layer-card',
+    name: 'Exploration Layer Card',
+    component: SandboxLayerCard
   },
   {
     id: 'pagination',
@@ -191,6 +198,13 @@ function Sandbox() {
                       linkLabel='View more'
                       title='USWDS Cards'
                       to='uswds-cards'
+                    />
+                  </Grid>
+                  <Grid col={4} className='margin-bottom-3'>
+                    <Card
+                      linkLabel='View more'
+                      title='Exploration Layer Card'
+                      to='exploration-layer-card'
                     />
                   </Grid>
 
