@@ -124,6 +124,8 @@ interface MapBlockProps {
   basemapId?: BasemapId;
   datasetId?: string;
   layerId: string;
+  onLayerDataUpdate?: (layerData: VizDatasetSuccess | null) => void;
+  isMapMessageEnabled?: boolean;
 }
 
 const getDataLayer = (
@@ -157,7 +159,8 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     projectionId,
     projectionCenter,
     projectionParallels,
-    basemapId
+    basemapId,
+    isMapMessageEnabled = true
   } = props;
 
   const errors = validateBlockProps(props);
@@ -166,7 +169,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     throw new HintedError('Malformed Map Block', errors);
   }
 
-  const datasetLayers = getDatasetLayers(datasets);
+  const datasetLayers = useMemo(() => getDatasetLayers(datasets), [datasets]);
   const layersToFetch = useMemo(() => {
     const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
     let totalLayers = [baseMapStaticData];
@@ -184,6 +187,10 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   }, [layerId, datasetLayers]);
 
   const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
+
+  useEffect(() => {
+    setLayers(layersToFetch);
+  }, [layersToFetch]);
 
   const { envApiStacEndpoint } = useVedaUI();
 
@@ -307,6 +314,13 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]
   );
+
+  useEffect(() => {
+    if (props.onLayerDataUpdate && baseDataLayer) {
+      props.onLayerDataUpdate(baseDataLayer);
+    }
+  }, [baseDataLayer, props, props.onLayerDataUpdate]);
+
   return (
     <Carto>
       <Map
@@ -352,24 +366,28 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
           </LayerLegendContainer>
         )}
         <MapControls>
-          {selectedDatetime && selectedCompareDatetime ? (
-            <MapMessage
-              id='compare-message'
-              active={!!(compareDataLayer && selectedCompareDatetime)}
-            >
-              {computedCompareLabel}
-            </MapMessage>
-          ) : (
-            <MapMessage
-              id='single-map-message'
-              active={!!(selectedDatetime && baseDataLayer)}
-            >
-              {selectedDatetime &&
-                formatSingleDate(
-                  selectedDatetime,
-                  baseDataLayer?.data.timeDensity
-                )}
-            </MapMessage>
+          {isMapMessageEnabled && (
+            <>
+              {selectedDatetime && selectedCompareDatetime ? (
+                <MapMessage
+                  id='compare-message'
+                  active={!!(compareDataLayer && selectedCompareDatetime)}
+                >
+                  {computedCompareLabel}
+                </MapMessage>
+              ) : (
+                <MapMessage
+                  id='single-map-message'
+                  active={!!(selectedDatetime && baseDataLayer)}
+                >
+                  {selectedDatetime &&
+                    formatSingleDate(
+                      selectedDatetime,
+                      baseDataLayer?.data.timeDensity
+                    )}
+                </MapMessage>
+              )}
+            </>
           )}
           <ScaleControl />
           <NavigationControl position='top-left' />
