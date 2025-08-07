@@ -26,16 +26,8 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import { Layer } from '$components/exploration/components/map/layer';
-import {
-  VizDataset,
-  VizDatasetSuccess,
-  DatasetStatus
-} from '$components/exploration/types.d.ts';
-import { reconcileDatasets } from '$components/exploration/data-utils';
-import { getDatasetLayers } from '$utils/data-utils';
-import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
-import { ProjectionOptions, VedaData, DatasetData } from '$types/veda';
-import { useVedaUI } from '$context/veda-ui-provider';
+import { VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import { ProjectionOptions } from '$types/veda';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -61,7 +53,7 @@ function validateBlockProps(props: MapBlockProps) {
     projectionParallels
   } = props;
 
-  const requiredProperties = ['datasetId', 'layerId', 'dateTime'];
+  const requiredProperties = ['dateTime'];
   const missingMapProps = requiredProperties.filter(
     (p) => props[p] === undefined
   );
@@ -111,7 +103,8 @@ function validateBlockProps(props: MapBlockProps) {
 }
 
 interface MapBlockProps {
-  datasets: VedaData<DatasetData>;
+  baseDataLayer?: VizDatasetSuccess | null;
+  compareDataLayer?: VizDatasetSuccess | null;
   dateTime?: string;
   compareDateTime?: string;
   center?: [number, number];
@@ -123,34 +116,22 @@ interface MapBlockProps {
   allowProjectionChange?: boolean;
   basemapId?: BasemapId;
   datasetId?: string;
-  layerId: string;
+  layerId?: string;
   onLayerDataUpdate?: (layerData: VizDatasetSuccess | null) => void;
   isMapMessageEnabled?: boolean;
+  navigationControlPosition?:
+    | 'top-left'
+    | 'top-right'
+    | 'bottom-left'
+    | 'bottom-right';
 }
-
-const getDataLayer = (
-  layerIndex: number,
-  layers: VizDataset[] | undefined
-): VizDatasetSuccess | null => {
-  if (!layers || layers.length <= layerIndex) return null;
-  const layer = layers[layerIndex];
-  // @NOTE: What to do when data returns ERROR
-  if (layer.status !== DatasetStatus.SUCCESS) return null;
-  return {
-    ...layer,
-    settings: {
-      isVisible: true,
-      opacity: 100
-    }
-  };
-};
 
 export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
 
   const {
-    datasets,
-    layerId,
+    baseDataLayer,
+    compareDataLayer,
     dateTime,
     compareDateTime,
     compareLabel,
@@ -160,7 +141,8 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     projectionCenter,
     projectionParallels,
     basemapId,
-    isMapMessageEnabled = true
+    isMapMessageEnabled = true,
+    navigationControlPosition = 'top-left'
   } = props;
 
   const errors = validateBlockProps(props);
@@ -168,33 +150,6 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   if (errors.length) {
     throw new HintedError('Malformed Map Block', errors);
   }
-
-  const datasetLayers = useMemo(() => getDatasetLayers(datasets), [datasets]);
-  const layersToFetch = useMemo(() => {
-    const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
-    let totalLayers = [baseMapStaticData];
-    const baseMapStaticCompareData = baseMapStaticData.data.compare;
-    if (baseMapStaticCompareData && 'layerId' in baseMapStaticCompareData) {
-      const compareLayerId = baseMapStaticCompareData.layerId;
-      const [compareMapStaticData] = reconcileDatasets(
-        compareLayerId ? [compareLayerId] : [],
-        datasetLayers,
-        []
-      );
-      totalLayers = [...totalLayers, compareMapStaticData];
-    }
-    return totalLayers;
-  }, [layerId, datasetLayers]);
-
-  const [layers, setLayers] = useState<VizDataset[]>(layersToFetch);
-
-  useEffect(() => {
-    setLayers(layersToFetch);
-  }, [layersToFetch]);
-
-  const { envApiStacEndpoint } = useVedaUI();
-
-  useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
 
   const selectedDatetime: Date | undefined = dateTime
     ? utcString2userTzDate(dateTime)
@@ -222,15 +177,6 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   }, [projectionId, projectionCenter, projectionParallels]);
 
   const [, setProjection] = useState(projectionStart);
-
-  const baseDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(0, layers),
-    [layers]
-  );
-  const compareDataLayer: VizDatasetSuccess | null = useMemo(
-    () => getDataLayer(1, layers),
-    [layers]
-  );
 
   const baseTimeDensity = baseDataLayer?.data.timeDensity;
   const compareTimeDensity = compareDataLayer?.data.timeDensity;
@@ -310,6 +256,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     baseTimeDensity,
     compareTimeDensity
   ]);
+
   const initialPosition = useMemo(
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]
@@ -390,7 +337,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
             </>
           )}
           <ScaleControl />
-          <NavigationControl position='top-left' />
+          <NavigationControl position={navigationControlPosition} />
           <MapCoordsControl />
         </MapControls>
         {selectedCompareDatetime && (

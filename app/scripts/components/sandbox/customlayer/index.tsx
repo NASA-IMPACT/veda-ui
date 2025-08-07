@@ -150,7 +150,6 @@ export default function CustomLayerDemo() {
             <BlockMap
               datasetId='no2'
               layerId='no2-monthly'
-              datasets={veda_faux_module_datasets}
               center={[111.383, 42.465]}
               zoom={4}
               dateTime='2019-06-01'

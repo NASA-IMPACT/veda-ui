@@ -12,27 +12,16 @@ import type { PropsWithChildren } from 'react';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
 import type { BasemapId } from '../map/controls/map-options/basemap';
 import MapBlock from './block-map';
-import type { VedaData, DatasetData, ProjectionOptions } from '$types/veda';
+import type { ProjectionOptions } from '$types/veda';
 import type { VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import type { DatasetLayer } from '$types/veda';
 
 import 'react-calendar/dist/Calendar.css';
 import './multilayer-map.scss';
 
-export default function MultiLayerMapBlock({
-  datasets,
-  datasetId,
-  layerId,
-  dateTime,
-  center,
-  zoom,
-  projectionId,
-  projectionCenter,
-  projectionParallels,
-  basemapId,
-  excludeLayers = []
-}: PropsWithChildren<{
-  datasets: VedaData<DatasetData>;
-  datasetId: string;
+interface MultiLayerMapBlockProps {
+  baseDataLayer?: VizDatasetSuccess | null;
+  availableLayers?: DatasetLayer[];
   layerId: string;
   dateTime?: string;
   center?: [number, number];
@@ -42,7 +31,23 @@ export default function MultiLayerMapBlock({
   projectionParallels?: ProjectionOptions['parallels'];
   basemapId?: BasemapId;
   excludeLayers?: string[];
-}>) {
+  onLayerChange?: (layerId: string) => void;
+}
+
+export default function MultiLayerMapBlock({
+  baseDataLayer,
+  availableLayers = [],
+  layerId,
+  dateTime,
+  center,
+  zoom,
+  projectionId,
+  projectionCenter,
+  projectionParallels,
+  basemapId,
+  excludeLayers = [],
+  onLayerChange
+}: PropsWithChildren<MultiLayerMapBlockProps>) {
   const [selectedLayerId, setSelectedLayerId] = useState(layerId);
   const [selectedDate, setSelectedDate] = useState(dateTime);
   const [calendarDate, setCalendarDate] = useState(
@@ -51,7 +56,7 @@ export default function MultiLayerMapBlock({
   const [showCalendar, setShowCalendar] = useState(false);
 
   const [currentLayerData, setCurrentLayerData] =
-    useState<VizDatasetSuccess | null>(null);
+    useState<VizDatasetSuccess | null>(baseDataLayer || null);
 
   useEffect(() => {
     setSelectedLayerId(layerId);
@@ -62,13 +67,13 @@ export default function MultiLayerMapBlock({
     setCalendarDate(dateTime ? new Date(dateTime) : null);
   }, [dateTime]);
 
-  const availableLayers = useMemo(() => {
-    return (
-      datasets[datasetId]?.data.layers?.filter(
-        (layer) => !excludeLayers.includes(layer.id)
-      ) ?? []
-    );
-  }, [datasets, datasetId, excludeLayers]);
+  useEffect(() => {
+    setCurrentLayerData(baseDataLayer ?? null);
+  }, [baseDataLayer]);
+
+  const filteredLayers = useMemo(() => {
+    return availableLayers.filter((layer) => !excludeLayers.includes(layer.id));
+  }, [availableLayers, excludeLayers]);
 
   const dateDomain = useMemo(() => {
     return currentLayerData?.data.domain ?? [];
@@ -103,12 +108,18 @@ export default function MultiLayerMapBlock({
     setCurrentLayerData(layerData);
   };
 
+  const handleLayerSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLayerId = e.target.value;
+    setSelectedLayerId(newLayerId);
+    if (onLayerChange) {
+      onLayerChange(newLayerId);
+    }
+  };
+
   return (
     <div className='multilayer-map position-relative'>
       <MapBlock
-        datasets={datasets}
-        datasetId={datasetId}
-        layerId={selectedLayerId}
+        baseDataLayer={baseDataLayer}
         dateTime={selectedDate}
         center={center}
         zoom={zoom}
@@ -118,20 +129,21 @@ export default function MultiLayerMapBlock({
         basemapId={basemapId}
         onLayerDataUpdate={handleLayerDataUpdate}
         isMapMessageEnabled={false}
+        navigationControlPosition='bottom-left'
       />
 
       <div className='position-absolute top-3 left-3 z-200 radius-md shadow-lg'>
         <div className='grid-row grid-gap-1'>
-          {availableLayers.length > 1 && (
+          {filteredLayers.length > 1 && (
             <div>
               <Select
                 id='layer-select'
                 name='layer-select'
                 className='truncate-select padding-1 padding-right-3 margin-top-0'
                 value={selectedLayerId}
-                onChange={(e) => setSelectedLayerId(e.target.value)}
+                onChange={handleLayerSelectChange}
               >
-                {availableLayers.map((layer) => (
+                {filteredLayers.map((layer) => (
                   <option
                     key={layer.id}
                     value={layer.id}
