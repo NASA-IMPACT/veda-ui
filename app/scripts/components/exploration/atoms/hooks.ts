@@ -131,16 +131,22 @@ export function useTimelineDatasetSettings(
 
 /**
  * Hook to get/set the visibility of a dataset.
- * @param datasetAtom Single dataset atom.
+ * @param datasetAtom Single dataset id
  * @returns State getter/setter for the dataset visibility.
  */
-export function useTimelineDatasetVisibility(
-  datasetAtom: PrimitiveAtom<TimelineDataset>
-) {
+
+export function useTimelineDatasetVisibility(datasetId: string) {
+  const datasetAtom = useTimelineDatasetAtom(datasetId);
   const visibilityAtom = useMemo(() => {
-    return focusAtom(datasetAtom, (optic) =>
-      optic.prop('settings').prop('isVisible')
-    );
+    try {
+      return focusAtom(datasetAtom, (optic) =>
+        optic.prop('settings').prop('isVisible')
+      );
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      throw e;
+    }
   }, [datasetAtom]);
 
   return useAtom(visibilityAtom);

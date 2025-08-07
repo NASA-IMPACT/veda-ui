@@ -102,7 +102,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const { isAnalyzing, runAnalysis } = useAnalysisController();
 
-  const [isVisible] = useTimelineDatasetVisibility(datasetAtom);
+  const [isVisible] = useTimelineDatasetVisibility(datasetId);
 
   const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);

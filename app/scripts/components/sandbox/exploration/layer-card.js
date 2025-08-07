@@ -2,56 +2,54 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useSetAtom } from 'jotai';
 import { GridContainer, Grid, Modal } from '@trussworks/react-uswds';
+import { Button, Card, CardBody, CardFooter } from '@trussworks/react-uswds';
+
 import { mockRawData, mockDatasets } from './mock-data';
 import { PageMainContent } from '$styles/page';
 
 import { externalDatasetsAtom } from '$components/exploration/atoms/datasetLayers';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom.tsx';
-import DataLayerCard, {
-  DataLayerCardWithSync
-} from '$components/exploration/components/datasets/data-layer-card';
+import { useTimelineDatasetVisibility } from '$components/exploration/atoms/hooks';
+import { DataLayerCardWithSync } from '$components/exploration/components/datasets/data-layer-card';
 import { ExplorationMap } from '$components/exploration/components/map';
 export const HugResetter = styled.div`
   /* To escape from HUG grid */
 `;
 
 const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
-
-/* @TODO: This component is not working, leaving to investigate more later */
-// eslint-disable-next-line no-unused-vars
 function ExampleComponent(props) {
-  const { timelineDatasets } = props;
-  const oneDataset = [timelineDatasets[0]];
-  const [isVisible, setIsVisible] = useState(true);
+  const { dataset } = props;
+  const [isVisible, setIsVisible] = useTimelineDatasetVisibility(
+    dataset.data.id
+  );
 
   return (
     <Grid row gap={3}>
       <Grid col={6}>
-        {oneDataset.map((dataset) => (
-          <DataLayerCard
-            key={dataset.data.id}
-            dataset={dataset}
-            isVisible={isVisible}
-            setVisible={setIsVisible}
-          />
-        ))}
-      </Grid>
-      <Grid
-        col={6}
-        style={{
-          backgroundColor: 'red',
-          width: '100px',
-          height: '100px',
-          display: isVisible ? 'block' : 'none'
-        }}
-      >
-        Something is visible
+        <Card>
+          <CardBody>
+            Dataset Name: {dataset.data.name} <br />
+            Current visibility: {isVisible ? 'visible' : 'not visible'}
+          </CardBody>
+          <CardFooter>
+            <Button
+              type='button'
+              onClick={() => {
+                setIsVisible((prev) => {
+                  return !prev;
+                });
+              }}
+            >
+              Click me to toggle the layer
+            </Button>
+          </CardFooter>
+        </Card>
       </Grid>
     </Grid>
   );
 }
 
-function SandboxExplorationMap() {
+function SandboxExplorationMapWithLayerCard() {
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
   const modalRef = useRef(null);
   setExternalDatasets(mockRawData);
@@ -97,11 +95,10 @@ function SandboxExplorationMap() {
             </Grid>
           </Grid>
           <h2 className='margin-top-5 margin-bottom-2'>
-            Layer Card as an independent component
+            Custom UI using hooks
           </h2>
-          <p> wip...</p>
           {timelineDatasets.length > 0 && (
-            <ExampleComponent timelineDatasets={timelineDatasets} />
+            <ExampleComponent dataset={timelineDatasets[0]} />
           )}
         </GridContainer>
 
@@ -120,4 +117,4 @@ function SandboxExplorationMap() {
   );
 }
 
-export default SandboxExplorationMap;
+export default SandboxExplorationMapWithLayerCard;

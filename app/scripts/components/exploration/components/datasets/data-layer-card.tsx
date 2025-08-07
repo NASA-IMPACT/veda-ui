@@ -330,11 +330,14 @@ export function DataLayerCardWithSync(props: {
   const { dataset, setLayerInfo } = props;
 
   const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  // const [something] = useTimelineDatasetVisibilityTest(dataset.data.id);
 
-  const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
+  const [isVisible, setVisible] = useTimelineDatasetVisibility(dataset.data.id);
+
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
+
   // const [, setModalLayerInfo] = useState<LayerInfoModalData>();
 
   const onClickLayerInfo = useCallback(() => {
