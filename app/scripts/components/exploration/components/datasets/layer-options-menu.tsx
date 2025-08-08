@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PrimitiveAtom, useAtomValue, useAtom } from 'jotai';
+import { useAtomValue, useAtom } from 'jotai';
 import styled from 'styled-components';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -14,13 +14,11 @@ import {
 import { TileUrlModal } from './tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
-import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
+import { useTimelineDatasetAtom, useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
-
-
 interface LayerMenuOptionsProps {
-  datasetAtom: PrimitiveAtom<TimelineDataset>;
+  datasetId: TimelineDataset['data']['id']
 }
 
 // @NOTE: Class Name prefix is named after file name
@@ -60,7 +58,8 @@ const StyledDropdown = styled(Dropdown)`
 `;
 
 export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
-  const { datasetAtom } = props;
+  const { datasetId } = props;
+  const datasetAtom = useTimelineDatasetAtom(datasetId);
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const dataset = useAtomValue(datasetAtom);

@@ -16,7 +16,6 @@ import { LayerInfoLiner, LayerInfoModalData } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
 import {
-  useTimelineDatasetAtom,
   useTimelineDatasetColormap,
   useTimelineDatasetVisibility,
   useTimelineDatasetColormapScale
@@ -125,7 +124,6 @@ export default function DataLayerCard(props: CardProps) {
     onClickLayerInfo
   } = props;
 
-  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
   const datasetLegend = dataset.data.legend;
 
   const layerInfo = dataset.data.info;
@@ -242,7 +240,7 @@ export default function DataLayerCard(props: CardProps) {
                   )}
                 </TipButton>
               )}
-              <LayerMenuOptions datasetAtom={datasetAtom} />
+              <LayerMenuOptions datasetId={dataset.data.id} />
             </DatasetToolbar>
           </DatasetHeadline>
 
