@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { stories, getString } from 'veda';
+import HubContentLegacy from './hub-content-legacy';
 import HubContent from './hub-content';
 
 import { useFiltersWithQS } from '$components/common/catalog/controls/hooks/use-filters-with-query';
@@ -15,6 +16,7 @@ import {
   ComponentOverride,
   ContentOverride
 } from '$components/common/page-overrides';
+import { checkEnvFlag } from '$utils/utils';
 
 /**
  * @LEGACY-SUPPORT
@@ -27,6 +29,9 @@ const allStories = Object.values(stories)
 
 function StoriesHubContainer() {
   const controlVars = useFiltersWithQS();
+
+  const isUSWDSEnabled = checkEnvFlag(process.env.ENABLE_USWDS);
+
   return (
     <PageMainContent>
       <LayoutProps
@@ -41,14 +46,25 @@ function StoriesHubContainer() {
       </ComponentOverride>
       <FeaturedStories />
       <ContentOverride with='storiesHubContent'>
-        <HubContent
-          allStories={allStories}
-          onFilterchanges={() => controlVars}
-          storiesString={{
-            one: getString('stories').one,
-            other: getString('stories').other
-          }}
-        />
+        {isUSWDSEnabled ? (
+          <HubContent
+            allStories={allStories}
+            onFilterchanges={() => controlVars}
+            storiesString={{
+              one: getString('stories').one,
+              other: getString('stories').other
+            }}
+          />
+        ) : (
+          <HubContentLegacy
+            allStories={allStories}
+            onFilterchanges={() => controlVars}
+            storiesString={{
+              one: getString('stories').one,
+              other: getString('stories').other
+            }}
+          />
+        )}
       </ContentOverride>
     </PageMainContent>
   );
