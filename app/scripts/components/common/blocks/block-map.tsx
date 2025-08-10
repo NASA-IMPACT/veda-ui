@@ -113,10 +113,7 @@ interface MapBlockProps {
   projectionId?: ProjectionOptions['id'];
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
-  allowProjectionChange?: boolean;
   basemapId?: BasemapId;
-  datasetId?: string;
-  layerId?: string;
   onLayerDataUpdate?: (layerData: VizDatasetSuccess | null) => void;
   isMapMessageEnabled?: boolean;
   navigationControlPosition?:
