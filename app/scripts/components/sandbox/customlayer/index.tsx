@@ -15,6 +15,7 @@ import useMapStyle from '$components/common/map/hooks/use-map-style';
 import useMaps from '$components/common/map/hooks/use-maps';
 import useGeneratorParams from '$components/common/map/hooks/use-generator-params';
 import useLayerInteraction from '$components/common/map/hooks/use-layer-interaction';
+import { useMapLayers } from '$components/common/blocks/lazy-components';
 
 export function GeoJSONLayer(props) {
   const { id, geojsonURL, onClick } = props;
@@ -142,14 +143,22 @@ export function GeoJSONLayer(props) {
 
 export default function CustomLayerDemo() {
   const [info, setInfo] = useState('');
+
+  const { baseDataLayer, compareDataLayer: derivedCompare } = useMapLayers(
+    'no2-monthly',
+    veda_faux_module_datasets,
+    true
+  );
+  const compareDataLayer = derivedCompare;
+
   return (
     <GridContainer>
       <Grid row gap={3}>
         <Grid col={12} className='margin-top-2 margin-bottom-3'>
           <div style={{ width: '800px' }}>
             <BlockMap
-              datasetId='no2'
-              layerId='no2-monthly'
+              baseDataLayer={baseDataLayer}
+              compareDataLayer={compareDataLayer}
               center={[111.383, 42.465]}
               zoom={4}
               dateTime='2019-06-01'
