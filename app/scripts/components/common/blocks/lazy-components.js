@@ -37,7 +37,7 @@ const getDataLayer = (layerIndex, layers) => {
   };
 };
 
-function useMapLayers(layerId, datasets, includeCompare = true) {
+export function useMapLayers(layerId, datasets, includeCompare = true) {
   const { envApiStacEndpoint } = useVedaUI();
 
   const datasetLayers = useMemo(() => getDatasetLayers(datasets), [datasets]);
@@ -79,12 +79,10 @@ function useMapLayers(layerId, datasets, includeCompare = true) {
   return { baseDataLayer, compareDataLayer };
 }
 
-function useAvailableLayers(datasetId, datasets) {
-  return useMemo(() => {
-    if (!datasetId || !datasets[datasetId]) return [];
-    return datasets[datasetId]?.data?.layers || [];
-  }, [datasetId, datasets]);
-}
+const getAvailableLayers = (datasetId, datasets) => {
+  if (!datasetId || !datasets[datasetId]) return [];
+  return datasets[datasetId]?.data?.layers || [];
+};
 
 export function LazyChart(props) {
   return (
@@ -110,12 +108,32 @@ export function LazyScrollyTelling(props) {
   );
 }
 
-export function LazyMap({ datasetId, layerId, ...otherProps }) {
-  const { baseDataLayer, compareDataLayer } = useMapLayers(
+export function LazyMap({
+  datasetId,
+  layerId,
+  compareDataLayer: compareOverride,
+  ...otherProps
+}) {
+  // NOTE (BWC): Legacy consuming instances still pass `datasetId`. We keep this prop temporarily
+  // for backward compatibility while we migrate those usages. It is ignored internally.
+  // A deprecation warning is emitted in development until all .mdx files are updated.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== 'production') {
+      if (datasetId !== undefined) {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[LazyMap] The `datasetId` prop is no longer used internally. Please remove it from your code.'
+        );
+      }
+    }
+  }, [datasetId]);
+
+  const { baseDataLayer, compareDataLayer: derivedCompare } = useMapLayers(
     layerId,
     veda_faux_module_datasets,
     true
   );
+  const compareDataLayer = compareOverride ?? derivedCompare;
 
   return (
     <LazyLoad
@@ -125,8 +143,6 @@ export function LazyMap({ datasetId, layerId, ...otherProps }) {
     >
       <Map
         {...otherProps}
-        datasetId={datasetId}
-        layerId={layerId}
         baseDataLayer={baseDataLayer}
         compareDataLayer={compareDataLayer}
       />
@@ -147,9 +163,9 @@ export function LazyMultilayerMap({ datasetId, layerId, ...otherProps }) {
     false
   );
 
-  const availableLayers = useAvailableLayers(
-    datasetId,
-    veda_faux_module_datasets
+  const availableLayers = useMemo(
+    () => getAvailableLayers(datasetId, veda_faux_module_datasets),
+    [datasetId]
   );
 
   const handleLayerChange = (newLayerId) => {
@@ -198,7 +214,6 @@ export function LazyTable(props) {
 export function LazyEmbed(props) {
   return (
     <LazyLoad
-      // eslint-disable-next-line react/prop-types
       placeholder={<LoadingSkeleton height={props.height} />}
       offset={50}
       once
@@ -215,7 +230,8 @@ LazyEmbed.propTypes = {
 
 LazyMap.propTypes = {
   datasetId: T.string,
-  layerId: T.string.isRequired
+  layerId: T.string.isRequired,
+  compareDataLayer: T.object
 };
 
 LazyMultilayerMap.propTypes = {
