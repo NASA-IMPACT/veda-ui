@@ -1,5 +1,6 @@
 export { default as Block } from '$components/common/blocks';
 export { default as MapBlock } from '$components/common/blocks/block-map';
+export { default as MultilayerMapBlock } from '$components/common/blocks/multilayer-block-map';
 export { default as Chart } from '$components/common/chart/block';
 export { default as Table } from '$components/common/table';
 export { default as Embed } from '$components/common/blocks/embed';
