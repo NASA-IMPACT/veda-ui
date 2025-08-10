@@ -152,12 +152,22 @@ export function LazyMap({
   );
 }
 
-export function LazyMultilayerMap({ datasetId, layerId, ...otherProps }) {
-  const [selectedLayerId, setSelectedLayerId] = useState(layerId);
+export function LazyMultilayerMap({
+  datasetId,
+  defaultLayerId,
+  defaultDateTime,
+  ...otherProps
+}) {
+  const [selectedLayerId, setSelectedLayerId] = useState(defaultLayerId);
+  const [selectedDateTime, setSelectedDateTime] = useState(defaultDateTime);
 
   useEffect(() => {
-    setSelectedLayerId(layerId);
-  }, [layerId]);
+    setSelectedLayerId(defaultLayerId);
+  }, [defaultLayerId]);
+
+  useEffect(() => {
+    setSelectedDateTime(defaultDateTime);
+  }, [defaultDateTime]);
 
   const { baseDataLayer } = useMapLayers(
     datasetId,
@@ -175,6 +185,10 @@ export function LazyMultilayerMap({ datasetId, layerId, ...otherProps }) {
     setSelectedLayerId(newLayerId);
   };
 
+  const handleDateChange = (newDate) => {
+    setSelectedDateTime(newDate);
+  };
+
   return (
     <LazyLoad
       placeholder={<LoadingSkeleton height={mapHeight} />}
@@ -183,11 +197,12 @@ export function LazyMultilayerMap({ datasetId, layerId, ...otherProps }) {
     >
       <MultiLayerMapBlock
         {...otherProps}
-        datasetId={datasetId}
-        layerId={selectedLayerId}
+        selectedLayerId={selectedLayerId}
         baseDataLayer={baseDataLayer}
         availableLayers={availableLayers}
+        dateTime={selectedDateTime}
         onLayerChange={handleLayerChange}
+        onDateChange={handleDateChange}
       />
     </LazyLoad>
   );
@@ -195,7 +210,6 @@ export function LazyMultilayerMap({ datasetId, layerId, ...otherProps }) {
 
 export function LazyCompareImage(props) {
   return (
-    // We don't know the height of image, passing an arbitrary number (200) for placeholder height
     <LazyLoad placeholder={<LoadingSkeleton height={200} />} offset={50} once>
       <CompareImage {...props} />
     </LazyLoad>
@@ -239,5 +253,6 @@ LazyMap.propTypes = {
 
 LazyMultilayerMap.propTypes = {
   datasetId: T.string.isRequired,
-  layerId: T.string.isRequired
+  defaultLayerId: T.string.isRequired,
+  defaultDateTime: T.string
 };

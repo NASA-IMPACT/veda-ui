@@ -8,7 +8,6 @@ import {
 } from '@trussworks/react-uswds';
 import Calendar from 'react-calendar';
 import * as dateFns from 'date-fns';
-import type { PropsWithChildren } from 'react';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
 import type { BasemapId } from '../map/controls/map-options/basemap';
 import MapBlock from './block-map';
@@ -22,7 +21,7 @@ import './multilayer-map.scss';
 interface MultiLayerMapBlockProps {
   baseDataLayer?: VizDatasetSuccess | null;
   availableLayers?: DatasetLayer[];
-  layerId: string;
+  selectedLayerId: string;
   dateTime?: string;
   center?: [number, number];
   zoom?: number;
@@ -32,12 +31,13 @@ interface MultiLayerMapBlockProps {
   basemapId?: BasemapId;
   excludeLayers?: string[];
   onLayerChange?: (layerId: string) => void;
+  onDateChange?: (date: string) => void;
 }
 
 export default function MultiLayerMapBlock({
   baseDataLayer,
   availableLayers = [],
-  layerId,
+  selectedLayerId,
   dateTime,
   center,
   zoom,
@@ -46,21 +46,16 @@ export default function MultiLayerMapBlock({
   projectionParallels,
   basemapId,
   excludeLayers = [],
-  onLayerChange
-}: PropsWithChildren<MultiLayerMapBlockProps>) {
-  const [selectedLayerId, setSelectedLayerId] = useState(layerId);
+  onLayerChange,
+  onDateChange
+}: MultiLayerMapBlockProps) {
   const [selectedDate, setSelectedDate] = useState(dateTime);
   const [calendarDate, setCalendarDate] = useState(
     dateTime ? new Date(dateTime) : null
   );
   const [showCalendar, setShowCalendar] = useState(false);
-
   const [currentLayerData, setCurrentLayerData] =
     useState<VizDatasetSuccess | null>(baseDataLayer || null);
-
-  useEffect(() => {
-    setSelectedLayerId(layerId);
-  }, [layerId]);
 
   useEffect(() => {
     setSelectedDate(dateTime);
@@ -98,9 +93,13 @@ export default function MultiLayerMapBlock({
     }
 
     if (date && !isNaN(date.getTime())) {
+      const newDateString = dateFns.format(date, 'yyyy-MM-01');
       setCalendarDate(date);
-      setSelectedDate(dateFns.format(date, 'yyyy-MM-01'));
+      setSelectedDate(newDateString);
       setShowCalendar(false);
+      if (onDateChange) {
+        onDateChange(newDateString);
+      }
     }
   };
 
@@ -110,7 +109,6 @@ export default function MultiLayerMapBlock({
 
   const handleLayerSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLayerId = e.target.value;
-    setSelectedLayerId(newLayerId);
     if (onLayerChange) {
       onLayerChange(newLayerId);
     }
