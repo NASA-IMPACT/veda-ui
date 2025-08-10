@@ -37,13 +37,33 @@ const getDataLayer = (layerIndex, layers) => {
   };
 };
 
-export function useMapLayers(layerId, datasets, includeCompare = true) {
+const getAvailableLayers = (datasetId, datasets) => {
+  if (!datasetId || !datasets[datasetId]) return [];
+  return datasets[datasetId]?.data?.layers || [];
+};
+
+export function useMapLayers(
+  datasetId,
+  layerId,
+  datasets,
+  includeCompare = true
+) {
   const { envApiStacEndpoint } = useVedaUI();
 
   const datasetLayers = useMemo(() => getDatasetLayers(datasets), [datasets]);
 
+  const fullLayerId = useMemo(() => {
+    const layers = getAvailableLayers(datasetId, datasets);
+    const match = layers.find((l) => l.id === layerId);
+    return match ? match.id : layerId;
+  }, [datasetId, layerId, datasets]);
+
   const layersToFetch = useMemo(() => {
-    const [baseMapStaticData] = reconcileDatasets([layerId], datasetLayers, []);
+    const [baseMapStaticData] = reconcileDatasets(
+      [fullLayerId],
+      datasetLayers,
+      []
+    );
     let totalLayers = [baseMapStaticData];
 
     if (includeCompare) {
@@ -59,7 +79,7 @@ export function useMapLayers(layerId, datasets, includeCompare = true) {
       }
     }
     return totalLayers;
-  }, [layerId, datasetLayers, includeCompare]);
+  }, [fullLayerId, datasetLayers, includeCompare]);
 
   const [layers, setLayers] = useState(layersToFetch);
 
@@ -70,7 +90,6 @@ export function useMapLayers(layerId, datasets, includeCompare = true) {
   useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
 
   const baseDataLayer = useMemo(() => getDataLayer(0, layers), [layers]);
-
   const compareDataLayer = useMemo(
     () => (includeCompare ? getDataLayer(1, layers) : null),
     [layers, includeCompare]
@@ -78,11 +97,6 @@ export function useMapLayers(layerId, datasets, includeCompare = true) {
 
   return { baseDataLayer, compareDataLayer };
 }
-
-const getAvailableLayers = (datasetId, datasets) => {
-  if (!datasetId || !datasets[datasetId]) return [];
-  return datasets[datasetId]?.data?.layers || [];
-};
 
 export function LazyChart(props) {
   return (
@@ -114,25 +128,13 @@ export function LazyMap({
   compareDataLayer: compareOverride,
   ...otherProps
 }) {
-  // NOTE (BWC): Legacy consuming instances still pass `datasetId`. We keep this prop temporarily
-  // for backward compatibility while we migrate those usages. It is ignored internally.
-  // A deprecation warning is emitted in development until all .mdx files are updated.
-  useEffect(() => {
-    if (process.env.NODE_ENV !== 'production') {
-      if (datasetId !== undefined) {
-        // eslint-disable-next-line no-console
-        console.warn(
-          '[LazyMap] The `datasetId` prop is no longer used internally. Please remove it from your code.'
-        );
-      }
-    }
-  }, [datasetId]);
-
   const { baseDataLayer, compareDataLayer: derivedCompare } = useMapLayers(
+    datasetId,
     layerId,
     veda_faux_module_datasets,
     true
   );
+
   const compareDataLayer = compareOverride ?? derivedCompare;
 
   return (
@@ -158,6 +160,7 @@ export function LazyMultilayerMap({ datasetId, layerId, ...otherProps }) {
   }, [layerId]);
 
   const { baseDataLayer } = useMapLayers(
+    datasetId,
     selectedLayerId,
     veda_faux_module_datasets,
     false
@@ -229,12 +232,12 @@ LazyEmbed.propTypes = {
 };
 
 LazyMap.propTypes = {
-  datasetId: T.string,
+  datasetId: T.string.isRequired,
   layerId: T.string.isRequired,
   compareDataLayer: T.object
 };
 
 LazyMultilayerMap.propTypes = {
-  datasetId: T.string,
+  datasetId: T.string.isRequired,
   layerId: T.string.isRequired
 };
