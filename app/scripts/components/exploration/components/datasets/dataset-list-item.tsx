@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -23,7 +23,6 @@ import { getBlockBoundaries, lumpBlocks } from './block-utils';
 import DataLayerCard from './data-layer-card';
 import {
   DatasetStatus,
-  TimelineDataset,
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 import {
@@ -36,7 +35,8 @@ import {
   useTimelineDatasetColormap,
   useTimelineDatasetSettings,
   useTimelineDatasetVisibility,
-  useTimelineDatasetColormapScale
+  useTimelineDatasetColormapScale,
+  useAnalysisVariable
 } from '$components/exploration/atoms/hooks';
 import {
   useAnalysisController,
@@ -108,9 +108,9 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
-  const [modalLayerInfo, setModalLayerInfo] =
-    React.useState<LayerInfoModalData>();
+  const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
+  const setSelectedVariable = useAnalysisVariable(datasetAtom);
 
   const queryClient = useQueryClient();
 
@@ -146,7 +146,10 @@ export function DatasetListItem(props: DatasetListItemProps) {
     midY
   } = useDatasetHover();
 
-  const timeSeriesData = dataset.analysis.data?.timeseries;
+  const selectedVariable = dataset.settings.analysisVariable;
+  const timeSeriesData = selectedVariable
+    ? dataset.analysis.data?.timeseries[selectedVariable]
+    : [];
 
   const dataPoint = getInteractionDataPoint({
     isHovering,
@@ -249,7 +252,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
                   message={
-                    dataset.analysis.meta.total === undefined
+                    dataset.analysis.meta.total === undefined || dataset.analysis.meta.loaded === undefined
                       ? 'Fetching item information'
                       : `${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`
                   }
@@ -275,6 +278,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
                   activeMetrics={analysisMetrics}
                   highlightDate={dataPoint?.date}
                   onUpdateSettings={setSetting}
+                  setSelectedVariable={setSelectedVariable}
                 />
               )}
             </>

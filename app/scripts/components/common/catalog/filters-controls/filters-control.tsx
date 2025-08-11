@@ -24,8 +24,6 @@ interface FiltersMenuProps {
 
   onFilterChange?: (item: OptionItem, action: 'add' | 'remove') => void;
   exclusiveSourceSelected?: string | null;
-
-  openByDefault?: boolean;
   mobileFilterMenu: boolean;
   setMobileFilterMenu: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -40,7 +38,6 @@ export default function FiltersControl(props: FiltersMenuProps) {
     clearedTagItem,
     setClearedTagItem,
     exclusiveSourceSelected,
-    openByDefault,
     // Custom top offset to customize the top position of the controls.
     // This is a specific case for the Catalog view when it's embedded in the modal which
     // has a different header reference as opposed to what the useSlidingStickyHeader hook

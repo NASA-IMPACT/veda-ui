@@ -11,7 +11,10 @@ interface SlidingStickyHeaderResults {
   wrapperHeight: number;
 }
 
-export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderResults {
+export function useSlidingStickyHeader(
+  pathname?: string,
+  disabled = false
+): SlidingStickyHeaderResults {
   const [isHidden, setHidden] = useState(false);
   const [headerHeight, setHeaderHeight] = useState(0);
   const [wrapperHeight, setWrapperHeight] = useState(0);
@@ -23,22 +26,24 @@ export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderRe
   const prevPathname = usePreviousValue(pathname);
 
   useEffect(() => {
+    if (disabled) return;
+
     const pageChanged = prevPathname !== pathname;
     if (pageChanged) {
       setHidden(false);
       setHeaderHeight(0);
       setWrapperHeight(0);
     }
-  }, [pathname, prevPathname]);
+  }, [pathname, prevPathname, disabled]);
 
   useEffect(() => {
+    if (disabled || !navWrapperElement) return;
+
     let ticking = false;
     let prevY = window.scrollY;
     let scrollUpDelta = 0;
 
     // navWrapperElement should be mounted before the hook
-    if (!navWrapperElement) return;
-
     // When the element mounts the <Suspense> element is still in the DOM and
     // the page has display: none. The result is that any measurement of the
     // header would be 0. By using an IntersectionObserver we are able to get
@@ -48,7 +53,7 @@ export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderRe
         observer.unobserve(navWrapperElement);
 
         // Initial height.
-        // Get the height of the header and he wrapper. Both are needed because in
+        // Get the height of the header and the wrapper. Both are needed because in
         // some pages the wrapper contains the local nav as well.
         const headerHeightQueried =
           document.querySelector<HTMLElement>(`#${HEADER_ID}`)?.offsetHeight ||
@@ -63,7 +68,7 @@ export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderRe
     });
     observer.observe(navWrapperElement);
 
-    function tick(currY) {
+    function tick(currY: number) {
       const wrapperEl = document.querySelector<HTMLElement>(
         `#${HEADER_WRAPPER_ID}`
       );
@@ -140,7 +145,7 @@ export function useSlidingStickyHeader(pathname?: string): SlidingStickyHeaderRe
       window.removeEventListener('scroll', onViewportPositionChange);
       window.removeEventListener('resize', onViewportPositionChange);
     };
-  }, [navWrapperElement]);
+  }, [navWrapperElement, disabled]);
 
   return { isHeaderHidden: isHidden, headerHeight, wrapperHeight };
 }

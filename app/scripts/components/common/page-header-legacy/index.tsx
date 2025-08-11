@@ -27,7 +27,7 @@ import { variableGlsp } from '$styles/variable-utils';
 import { PAGE_BODY_ID } from '$components/common/layout-root';
 import { useMediaQuery } from '$utils/use-media-query';
 import { HEADER_ID } from '$utils/use-sliding-sticky-header';
-
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 const PageHeaderSelf = styled.header`
   display: flex;
   flex-flow: row nowrap;

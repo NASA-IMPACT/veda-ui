@@ -90,7 +90,7 @@ export default function CheckableFilters(props: CheckableFiltersProps) {
         <div
           key={id}
           id='veda-checkbox-container'
-          className={`border-2px radius-md  margin-bottom-105 ${
+          className={`veda-filter border-2px radius-md  margin-bottom-105 ${
             checked
               ? 'border-primary-light bg-primary-lighter'
               : 'border-base-light'

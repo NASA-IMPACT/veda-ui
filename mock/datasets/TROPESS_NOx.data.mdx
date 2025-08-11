@@ -1,0 +1,231 @@
+---
+id: TROPESS Anthropogenic NOx
+name: 'TROPESS Surface Anthropogenic NOx Emissions'
+description: "TROPESS Chemical Reanalysis Surface Anthropogenic NOx emissions Monthly 2-dimensional Product V1"
+media:
+  src: ::file ./tropess_tcr_optimized_news.jpg
+  alt: TROPESS NOx data visualized in a map
+  author:
+    name: NASA
+taxonomy:
+  - name: Topics
+    values:
+      - Air Quality
+  - name: Subtopics
+    values:
+      - Anthropogenic Emissions
+  - name: Source
+    values:
+      - NASA
+  - name: Gas
+    values:
+      - NOx
+  - name: Product Type
+    values:
+      - Model Output
+infoDescription: |
+  ::markdown
+    The TROPESS Chemical Reanalysis Surface Anthropogenic NOx emissions Monthly 2-dimensional Product contains nitrogen oxides (NO and NO2) emissions from anthropogenic sources. The data are part of the Tropospheric Chemical Reanalysis v2 (TCR-2) for the period 2005-2021
+layers:
+  - id: TROPESS_reanalysis_mon_emi_nox_anth
+    stacCol: TROPESS_reanalysis_mon_emi_nox_anth
+    type: cmr
+    stacApiEndpoint: "https://staging.openveda.cloud/api/stac/"
+    tileApiEndpoint: "https://staging.openveda.cloud/api/titiler-cmr/WebMercatorQuad/tilejson.json"
+    name: 'nitrogen oxides (NO and NO2)'
+    description: 'Monthly Surface Anthropogenic NOx Emissions'
+    time_density: month
+    zoomExtent:
+      - 0
+      - 11
+    sourceParams:
+      concept_id: C2837624964-GES_DISC
+      variable: nox
+      backend: xarray
+      colormap_name: reds
+      rescale:
+        - 0
+        - 5.0e-10
+      maxzoom: 12
+      tile_scale: 3
+      sel:
+        - time={start_datetime}      
+    compare:
+      datasetId: TROPESS_reanalysis_mon_emi_nox_anth
+      mapLabel: |
+        ::js ({ dateFns, datetime, compareDatetime }) => {
+          if (dateFns && datetime && compareDatetime) return `${dateFns.format(datetime, 'LLL yyyy')} VS ${dateFns.format(compareDatetime, 'LLL yyyy')}`;
+        }
+    analysis:
+      exclude: false
+      metrics:
+        - mean
+      sourceParams:
+        dst_crs: "+proj=cea"
+    legend:
+      type: gradient
+      label: NOx Concentration
+      min: "0"
+      max: "5.0e-10"
+      stops:
+      - "#313695"
+      - "#74add1"
+      - "#e0f3f8"
+      - "#fee090"
+      - "#f46d43"
+      - "#a50026"
+    info:
+      source: NASA
+      spatialExtent: Global
+      temporalResolution: Monthly
+      unit: mg/Nm³
+    dimensions:
+      - id: lat
+        type: spatial
+        extent: [-90, 90]
+        steps: 4326
+      - id: lon
+        type: spatial
+        extent: [-180, 180]
+        steps: 4326
+      - id: time
+        type: temporal
+        extent: ['2005-01-01T00:00:00Z', '2021-12-01T00:00:00Z']
+        step: P1M
+---
+
+<Block>
+  <Prose
+    style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'flex-start',
+      gap: '32px',
+      width: '100%'
+    }}
+  >
+    {/* Main Centered Text */}
+    <Prose
+      style={{
+        backgroundColor: '#f0f0f0',
+        padding: '18px',
+        borderRadius: '8px',
+        flex: 1,
+        maxWidth: '800px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
+        textAlign: 'justify',
+        border: '1px solid #ccc'
+      }}
+    >
+      <p>
+        <strong>Source:</strong> Tropospheric Ozone and Precursors from Earth System Sounding (TROPESS) Project<br />
+        <strong>Temporal Extent:</strong> January 2005 to January 2021<br />
+        <strong>Temporal Resolution:</strong> Monthly measurements<br />
+        <strong>Spatial Extent:</strong> Global<br />
+        <strong>Spatial Resolution:</strong> 1.125 x 1.125 degree <br />
+        <strong>Data Units:</strong> Mass of pollutant (in mg) per normal cubic meter of air (mg/Nm³) <br />
+        <strong>File Format:</strong> NetCDF <br />
+       <strong>Applications:</strong> Industrial emissions tracking, urban air quality studies, regulatory assessment, and climate research related to NOx
+      </p>
+    </Prose>
+  </Prose>
+</Block>
+
+<Block style={{ justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+  <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+    <p>
+      ## Introduction
+      <p style={{ marginBottom: '0.4em' }}>
+      Nitrogen oxides (NOx, including NO and NO₂) are critical air pollutants linked to respiratory and cardiovascular health risks, as well as environmental impacts like smog and acid rain. NOx is primarily emitted by fossil fuel combustion in transportation, power generation, and industry. Monitoring NOx emissions is essential for air quality management, regulatory compliance, and understanding atmospheric chemistry.
+      </p>
+      <p style={{ marginBottom: '0.4em' }}>
+      The TROPESS Chemical Reanalysis Surface Total NOx Emissions Monthly 2-dimensional Product provides global, monthly gridded estimates of surface-level nitrogen oxides (NOx) emissions from anthropogenic sources. Developed using JPL’s Multi-mOdel Multi-cOnstituent Chemical (MOMO-Chem) data assimilation system, the dataset integrates satellite observations with chemical transport models to produce accurate, observation-constrained emission fields. This reanalysis uses satellite measurements, such as tropospheric NO2 column retrievals from OMI and TROPOMI, to refine NOx emissions estimates.
+      </p>
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+      <p>
+    ## Data Preparation
+        These products are rigorously validated using uncertainty analysis in conjunction with independent measurements. These steps quantify the accuracies needed to make long-term trends through multi-satellite records and chemical data assimilation.
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+   <p>
+    ## Applications and Use Cases
+      - Tracking industrial and urban NOx emissions for air quality management
+      - Supporting atmospheric chemistry and climate modeling studies
+      - Assessing the effectiveness of emission reduction policies and regulations
+      - Supporting air quality forecasting and public health advisories
+  </p>
+  </Prose>
+</Block>
+
+<Block style={{ justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+  <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
+  <p>
+    ## Frequently Asked Questions (FAQs)
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>What is NOx?</strong><br />
+      NOx refers to nitrogen oxides (NO and NO₂), which are harmful air pollutants mainly produced by combustion processes.
+    </p>
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>How is the data reported?</strong><br />
+      NOx concentrations are given in mg/Nm³, which means milligrams of NOx per normal cubic meter of air.
+    </p>
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>How can I use this dataset?</strong><br />
+      The data is suitable for tracking emission trends, evaluating air quality interventions, and supporting scientific research in atmospheric chemistry and climate science.
+    </p>
+    <p style={{ marginBottom: '0.9em' }}>
+      <strong>What tools are available for data analysis?</strong><br />
+      Tools such as Jupyter Notebooks (TBD), the <a href="#">VEDA visualization platform</a>, and <a href="https://search.earthdata.nasa.gov/">Earthdata Search</a> can be used to analyze this dataset.
+    </p>
+  </p>
+  </Prose>
+</Block>
+
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+     <p> 
+    ## Scientific Resources
+      - [User guide for dataset navigation](https://cmr.earthdata.nasa.gov/search/concepts/C2837624983-GES_DISC.html)
+      - Algorithm theoretical basis documents [ATBD](https://tropess.gesdisc.eosdis.nasa.gov/data/TCR2_MON_EMISSIONS/TRPSCRENOXTM2D.1/doc/TROPESS_ChemReanalysis_Forward_Stream_README.pdf) detailing data processing methods
+      - Key publication: Updated tropospheric chemistry reanalysis and emission estimates, TCR-2, for 2005–2018 (https://essd.copernicus.org/articles/12/2223/2020/)
+      - User Jupyter Notebook: TBD
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+      <p>  
+    ## Disclaimer 
+      The users are encouraged to verify its suitability and accuracy for their intended purposes. Careful quality checks are used to ensure data transformation has been performed correctly.
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+    <p>  
+    ## License
+    This data is published for research academic and related non-commercial purposes. [Creative Commons Zero v1.0 Universal (CC0 1.0).](https://creativecommons.org/publicdomain/zero/1.0/deed.en)
+    </p>
+  </Prose>
+</Block>
+
+<Block style={{justifyContent: 'center', alignItems: 'center', margin: '0 auto', width: '100%' }}>
+   <Prose style={{ textAlign: 'justify', display: 'flex', alignItems: 'center' }}>
+   <p>
+    ## Acknowledgements
+       NASA JPL's Multi-mOdel Multi-cOnstituent Chemical (MOMO-Chem) science team.
+  </p>
+  </Prose>
+</Block>

@@ -1,28 +1,42 @@
 #!/bin/bash
 
-# This script automates the local development workflow between veda-ui and next-veda-ui.
+# This script automates the local development workflow between veda-ui and a Next.js VEDA project.
 # It builds the veda-ui library, links it globally, links it into the Next.js project,
 # and starts a file watcher to rebuild the library on changes.
 #
-# Assumes that the veda-ui and next-veda-ui folders are siblings, i.e. located at the same directory level.
-# If they are not, the NEXT_DIR path in this script must be modified manually.
-#
+# Assumes that the veda-ui and next-* folders are siblings i.e. located at the same directory level.
 # Usage:
-# 1) Start the Next.js project (e.g. with `yarn dev` or `npm run dev`) in a separate terminal first
-# 2) Then run this script (`./utils/link-next.sh`) from the veda-ui/utils directory in a separate terminal
+# 1) Start the Next.js project (e.g. with `yarn dev`) in a separate terminal first
+# 2) Then run this script (`./utils/link-next.sh`) from the veda-ui/utils directory
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 VEDA_UI_DIR="$SCRIPT_DIR/.."
-NEXT_DIR="$VEDA_UI_DIR/../next-veda-ui"
 
 GREEN="\033[0;32m"
 RED="\033[0;31m"
 NC="\033[0m"
 
+echo -e "${GREEN}Select the project you are developing with (enter the number):${NC}"
+select opt in "next-veda-ui" "next-earth-gov"; do
+  case $opt in
+    "next-veda-ui")
+      NEXT_DIR="$VEDA_UI_DIR/../next-veda-ui"
+      break
+      ;;
+    "next-earth-gov")
+      NEXT_DIR="$VEDA_UI_DIR/../next-earth-gov"
+      break
+      ;;
+    *)
+      echo -e "${RED}Invalid option. Please choose 1 or 2.${NC}"
+      ;;
+  esac
+done
+
 echo -e "${GREEN}Starting veda-ui link script...${NC}"
 
 if [ ! -d "$NEXT_DIR" ]; then
-  echo -e "${RED}next-veda-ui folder not found at: $NEXT_DIR${NC}"
+  echo -e "${RED}Selected folder not found at: $NEXT_DIR${NC}"
   exit 1
 fi
 
@@ -49,7 +63,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo -e "${GREEN}Linking veda-ui in next-veda-ui...${NC}"
+echo -e "${GREEN}Linking veda-ui in Next.js project...${NC}"
 cd "$NEXT_DIR"
 yarn link @teamimpact/veda-ui
 if [ $? -ne 0 ]; then
@@ -57,7 +71,7 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo -e "${GREEN}Cleaning .next cache in next-veda-ui...${NC}"
+echo -e "${GREEN}Cleaning .next cache...${NC}"
 rm -rf "$NEXT_DIR/.next"
 
 echo -e "${GREEN}Watching for changes in veda-ui and rebuilding...${NC}"

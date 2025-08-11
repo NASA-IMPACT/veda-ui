@@ -3,13 +3,18 @@ import React, { useMemo } from 'react';
 import * as dateFns from 'date-fns';
 
 import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
-import { getTimeDensityStartDate } from '$components/exploration/data-utils';
+import {
+  getRelevantDate,
+  getTimeDensityStartDate
+} from '$components/exploration/data-utils';
 
 import { resolveConfigFunctions } from '$components/common/map/utils';
 import { RasterTimeseries } from '$components/common/map/style-generators/raster-timeseries';
 import { VectorTimeseries } from '$components/common/map/style-generators/vector-timeseries';
 import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-timeseries';
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
+import { WMSTimeseries } from '$components/common/map/style-generators/wms-timeseries';
+import { WMTSTimeseries } from '$components/common/map/style-generators/wmts-timeseries';
 import { ActionStatus } from '$utils/status';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -29,8 +34,16 @@ export function Layer(props: LayerProps) {
 
   // The date needs to match the dataset's time density.
   const relevantDate = useMemo(
-    () => getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [selectedDay, dataset.data.timeDensity]
+    () =>
+      dataset.data.type === 'wms'
+        ? getRelevantDate(selectedDay, dataset.data.domain)
+        : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
+    [
+      selectedDay,
+      dataset.data.timeDensity,
+      dataset.data.domain,
+      dataset.data.type
+    ]
   );
 
   // Resolve config functions.
@@ -98,6 +111,36 @@ export function Layer(props: LayerProps) {
           reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
+        />
+      );
+    case 'wms':
+      return (
+        <WMSTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          date={relevantDate}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
+        />
+      );
+    case 'wmts':
+      return (
+        <WMTSTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          date={relevantDate}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
         />
       );
     case 'raster':

@@ -7,9 +7,9 @@ import {
   CollecticonProgressTickHigh,
   CollecticonProgressTickLow,
   CollecticonProgressTickMedium
-} from './icons/progress-tick';
-import { CollecticonFlask } from './icons/flask';
-import { CollecticonMedal } from './icons/medal';
+} from './icons-legacy/progress-tick';
+import { CollecticonFlask } from './icons-legacy/flask';
+import { CollecticonMedal } from './icons-legacy/medal';
 import { DatasetData } from '$types/veda';
 
 import { variableGlsp } from '$styles/variable-utils';

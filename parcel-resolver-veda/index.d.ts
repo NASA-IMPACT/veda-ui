@@ -1,3 +1,5 @@
+//@DEPRECATED: This module is deprecated and will be removed in the future in favor of /sripts/types/veda
+
 declare module 'veda' {
   import * as dateFns from 'date-fns';
   import { MDXModule } from 'mdx/types';
@@ -6,16 +8,11 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms';
 
   //
   // Dataset Layers
   //
-  export type MbProjectionOptions = Exclude<
-    mapboxgl.MapOptions['projection'],
-    undefined
-  >;
-
   export type ProjectionOptions = {
     id: mapboxgl.ProjectionSpecification['name'] | 'polarNorth' | 'polarSouth';
     parallels?: [number, number];
@@ -40,7 +37,7 @@ declare module 'veda' {
     type: DatasetLayerType;
     name: string;
     description: string;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
   }
 
   export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
@@ -72,7 +69,7 @@ declare module 'veda' {
     basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
     type: DatasetLayerType;
     compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
+    legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
     analysis?: {
       metrics: string[];
       exclude: boolean;
@@ -85,29 +82,6 @@ declare module 'veda' {
     time_density?: TimeDensity;
     info?: LayerInfo;
   }
-  // A normalized compare layer is the result after the compare definition is
-  // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
-  // difference with a "base" dataset layer is not having a name and
-  // description.
-  export interface DatasetLayerCompareBase extends DatasetLayerCommonProps {
-    id: string;
-    stacCol: string;
-    type: DatasetLayerType;
-  }
-  export interface DatasetLayerCompareNormalized
-    extends DatasetLayerCommonProps {
-    id: string;
-    name: string;
-    description: string;
-    stacApiEndpoint?: string;
-    tileApiEndpoint?: string;
-    time_density?: 'day' | 'month' | 'year';
-    stacCol: string;
-    type: DatasetLayerType;
-    legend?: LayerLegendCategorical | LayerLegendGradient;
-  }
-
-  // export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
 
   // TODO: Complete once known
   export interface DatasetDatumFnResolverBag {
@@ -144,6 +118,10 @@ declare module 'veda' {
     type: 'categorical';
     unit?: LayerLegendUnit;
     stops: CategoricalStop[];
+  }
+
+  export interface LayerLegendText {
+    type: 'text';
   }
 
   /**
@@ -253,6 +231,7 @@ declare module 'veda' {
     id: string;
     name: string;
   }
+
   /**
    * Not exporting this type
    * Since we are moving forward to ditching VEDA faux module
@@ -264,6 +243,7 @@ declare module 'veda' {
   }
 
   const infoTypeFlag = SiteAlertType.info;
+
   interface SiteAlertData {
     expires: Date;
     title: string;

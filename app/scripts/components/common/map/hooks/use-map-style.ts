@@ -1,7 +1,7 @@
-import { useContext } from "react";
-import { StylesContext, StylesContextType } from "../styles";
-import useCustomMarker from "./use-custom-marker";
-import useMaps from "./use-maps";
+import { useContext } from 'react';
+import { StylesContext, StylesContextType } from '../styles';
+import useCustomMarker from './use-custom-marker';
+import useMaps from './use-maps';
 
 export function useStylesContext(): StylesContextType {
   return useContext(StylesContext);

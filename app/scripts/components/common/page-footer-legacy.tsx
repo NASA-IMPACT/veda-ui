@@ -23,6 +23,8 @@ import { ComponentOverride } from '$components/common/page-overrides';
 
 import SmartLink from '$components/common/smart-link';
 
+// @DEPRECATED: This component is deprecated and will be removed in the future.
+
 const PageFooterSelf = styled.footer<{ isHidden: boolean }>`
   padding: ${variableGlsp(0.75, 1)};
   background: ${themeVal('color.base-50')};

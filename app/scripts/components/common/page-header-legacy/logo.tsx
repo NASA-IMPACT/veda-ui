@@ -5,7 +5,7 @@ import NasaLogo from '../nasa-logo';
 import { Tip } from '../tip';
 import { ComponentOverride } from '$components/common/page-overrides';
 import { LinkProperties } from '$types/veda';
-
+// @DEPRECATED: This component is deprecated and will be removed in the future.
 const appTitle = process.env.APP_TITLE;
 const appVersion = process.env.APP_VERSION;
 
@@ -98,19 +98,32 @@ export const PageTitleSecLink = styled.a`
   `}
 `;
 
-export default function Logo ({ linkProperties }: { linkProperties: LinkProperties }) {
-  const LinkElement: ComponentType<any> = linkProperties.LinkElement as ComponentType<any>;
+export default function Logo({
+  linkProperties
+}: {
+  linkProperties: LinkProperties;
+}) {
+  const LinkElement: ComponentType<any> =
+    linkProperties.LinkElement as ComponentType<any>;
 
   return (
-  <ComponentOverride with='headerBrand'>
-    <Brand>
-      <LinkElement {...{[linkProperties.pathAttributeKeyName]: '/'}}>
-        <NasaLogo />
-        <span>Earthdata</span> <span>{appTitle}</span>
-      </LinkElement>
-      <Tip content={`v${appVersion}`}>
-      <PageTitleSecLink {...{as: linkProperties.LinkElement as ComponentType<any>, [linkProperties.pathAttributeKeyName]: '/development'}}>Beta</PageTitleSecLink>
-      </Tip>
-    </Brand>
-  </ComponentOverride>);
+    <ComponentOverride with='headerBrand'>
+      <Brand>
+        <LinkElement {...{ [linkProperties.pathAttributeKeyName]: '/' }}>
+          <NasaLogo />
+          <span>Earthdata</span> <span>{appTitle}</span>
+        </LinkElement>
+        <Tip content={`v${appVersion}`}>
+          <PageTitleSecLink
+            {...{
+              as: linkProperties.LinkElement as ComponentType<any>,
+              [linkProperties.pathAttributeKeyName]: '/development'
+            }}
+          >
+            Beta
+          </PageTitleSecLink>
+        </Tip>
+      </Brand>
+    </ComponentOverride>
+  );
 }

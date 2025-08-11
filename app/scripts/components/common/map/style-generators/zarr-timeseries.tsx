@@ -3,6 +3,7 @@ import React from 'react';
 import { BaseTimeseriesProps } from '../types';
 import { useZarr } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
+import { useRequestStatus } from './hooks';
 
 export function ZarrTimeseries(props: BaseTimeseriesProps) {
   const {
@@ -12,7 +13,11 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     date,
     onStatusChange,
     sourceParams,
-    envApiStacEndpoint
+    tileApiEndpoint,
+    envApiStacEndpoint,
+    hidden,
+    opacity,
+    generatorOrder
   } = props;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint;
@@ -28,11 +33,26 @@ export function ZarrTimeseries(props: BaseTimeseriesProps) {
     datetime: date,
     ...sourceParams
   };
+  const { changeStatus } = useRequestStatus({
+    id,
+    onStatusChange,
+    requestsToTrack: []
+  });
   return (
     <RasterPaintLayer
       {...props}
       tileParams={tileParams}
+      onStatusChange={changeStatus}
       generatorPrefix='zarr-timeseries'
+      hidden={hidden}
+      opacity={opacity}
+      generatorOrder={generatorOrder}
+      metadataFormatter={(tilejsonData, tileParamsAsString) => {
+        return {
+          xyzTileUrl: tilejsonData?.tiles[0],
+          wmtsTileUrl: `${tileApiEndpoint}WMTSCapabilities.xml?${tileParamsAsString}`
+        };
+      }}
     />
   );
 }

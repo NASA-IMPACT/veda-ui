@@ -6,6 +6,7 @@ interface EnvironmentConfig {
   envMapboxToken: string;
   envApiStacEndpoint: string;
   envApiRasterEndpoint: string;
+  envApiCMREndpoint?: string;
 }
 
 interface LinkProps {

@@ -6,7 +6,9 @@ import {
   CollecticonCircleInformation,
   CollecticonEyeDisabled,
   CollecticonEye,
-  CollecticonChevronDownSmall
+  CollecticonChevronDownSmall,
+  CollecticonChevronDown,
+  CollecticonChevronUp
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
@@ -14,18 +16,23 @@ import Tippy from '@tippyjs/react';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
-import { LayerLegendCategorical, LayerLegendGradient } from '$types/veda';
+import {
+  LayerLegendCategorical,
+  LayerLegendGradient,
+  LayerLegendText
+} from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
-  LayerGradientColormapGraphic
+  LayerGradientColormapGraphic,
+  renderSwatchLine
 } from '$components/common/map/layer-legend';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import {
   TimelineDataset,
   colorMapScale
 } from '$components/exploration/types.d.ts';
-import { CollecticonDatasetLayers } from '$components/common/icons/dataset-layers';
+import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 import { checkEnvFlag } from '$utils/utils';
 
@@ -42,7 +49,11 @@ interface CardProps {
   colorMapScale: colorMapScale | undefined;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
   onClickLayerInfo: () => void;
-  datasetLegend: LayerLegendCategorical | LayerLegendGradient | undefined;
+  datasetLegend:
+    | LayerLegendCategorical
+    | LayerLegendGradient
+    | LayerLegendText
+    | undefined;
 }
 
 const Header = styled.header`
@@ -109,11 +120,6 @@ const LegendColorMapTrigger = styled.div`
   cursor: pointer;
 `;
 
-// Hiding configurable map for now until Instances are ready to adapt it
-const showConfigurableColorMap = checkEnvFlag(
-  process.env.SHOW_CONFIGURABLE_COLOR_MAP
-);
-
 export default function DataLayerCard(props: CardProps) {
   const {
     dataset,
@@ -128,7 +134,12 @@ export default function DataLayerCard(props: CardProps) {
     onClickLayerInfo
   } = props;
   const layerInfo = dataset.data.info;
-  const [min, max] = dataset.data.sourceParams?.rescale || [0, 1];
+  const [min, max] =
+    datasetLegend?.type === 'gradient' &&
+    datasetLegend.min != null &&
+    datasetLegend.max != null
+      ? [datasetLegend.min, datasetLegend.max]
+      : dataset.data.sourceParams?.rescale || [0, 1];
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
   const triggerRef = useRef<HTMLDivElement | null>(null);
 
@@ -147,15 +158,23 @@ export default function DataLayerCard(props: CardProps) {
   });
 
   const showLoadingConfigurableCmapSkeleton =
-    showConfigurableColorMap &&
-    dataset.status === 'loading' &&
-    datasetLegend?.type === 'gradient';
+    dataset.status === 'loading' && datasetLegend?.type === 'gradient';
   const showConfigurableCmap =
-    showConfigurableColorMap &&
     dataset.status === 'success' &&
-    datasetLegend?.type === 'gradient';
+    dataset.data.type !== 'wmts' &&
+    dataset.data.type !== 'wms' &&
+    datasetLegend?.type === 'gradient' &&
+    colorMap;
+
   const showNonConfigurableCmap =
-    !showConfigurableColorMap && datasetLegend?.type === 'gradient';
+    !showConfigurableCmap &&
+    !showLoadingConfigurableCmapSkeleton &&
+    datasetLegend?.type === 'gradient';
+
+  const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
+  const chevToggleExpanded = () => {
+    setIsChevToggleExpanded((prev) => !prev);
+  };
 
   return (
     <>
@@ -202,6 +221,22 @@ export default function DataLayerCard(props: CardProps) {
                   />
                 )}
               </TipButton>
+              {datasetLegend?.type === 'categorical' && (
+                <TipButton
+                  tipContent={
+                    isChevToggleExpanded ? 'Expand Legend' : 'Collapse Legend'
+                  }
+                  size='small'
+                  fitting='skinny'
+                  onClick={chevToggleExpanded}
+                >
+                  {isChevToggleExpanded ? (
+                    <CollecticonChevronDown title='Expand Legend' meaningful />
+                  ) : (
+                    <CollecticonChevronUp title='Collapse Legend' meaningful />
+                  )}
+                </TipButton>
+              )}
               <LayerMenuOptions datasetAtom={datasetAtom} />
             </DatasetToolbar>
           </DatasetHeadline>
@@ -211,6 +246,11 @@ export default function DataLayerCard(props: CardProps) {
           </DatasetMetricInfo>
         </DatasetCardInfo>
         {datasetLegend?.type === 'categorical' && (
+          <div style={{ cursor: 'pointer' }}>
+            {renderSwatchLine(datasetLegend)}
+          </div>
+        )}
+        {datasetLegend?.type === 'categorical' && !isChevToggleExpanded && (
           <LayerCategoricalGraphic
             type='categorical'
             stops={datasetLegend.stops}
@@ -233,6 +273,7 @@ export default function DataLayerCard(props: CardProps) {
             ref={triggerRef}
           >
             <LayerGradientColormapGraphic
+              stops={datasetLegend.stops}
               min={min}
               max={max}
               colorMap={colorMap}
@@ -241,8 +282,8 @@ export default function DataLayerCard(props: CardProps) {
               className='colormap-options'
               content={
                 <ColormapOptions
-                  min={min}
-                  max={max}
+                  min={Number(min)}
+                  max={Number(max)}
                   colorMap={colorMap}
                   setColorMap={setColorMap}
                   setColorMapScale={setColorMapScale}
@@ -266,6 +307,7 @@ export default function DataLayerCard(props: CardProps) {
         )}
         {showNonConfigurableCmap && (
           <LayerGradientColormapGraphic
+            stops={datasetLegend.stops}
             min={min}
             max={max}
             colorMap={colorMap}

@@ -5,7 +5,13 @@ import { ComponentType } from 'react';
 // ///////////////////////////////////////////////////////////////////////////
 //  Datasets                                                                //
 // ///////////////////////////////////////////////////////////////////////////
-export type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr';
+export type DatasetLayerType =
+  | 'raster'
+  | 'vector'
+  | 'zarr'
+  | 'cmr'
+  | 'wms'
+  | 'wmts';
 
 //
 // Dataset Layers
@@ -40,7 +46,7 @@ export interface DatasetLayerCompareSTAC extends DatasetLayerCommonProps {
   type: DatasetLayerType;
   name: string;
   description: string;
-  legend?: LayerLegendCategorical | LayerLegendGradient;
+  legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
 }
 
 export interface DatasetLayerCompareInternal extends DatasetLayerCommonProps {
@@ -74,7 +80,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   basemapId?: 'dark' | 'light' | 'satellite' | 'topo';
   type: DatasetLayerType;
   compare: DatasetLayerCompareSTAC | DatasetLayerCompareInternal | null;
-  legend?: LayerLegendCategorical | LayerLegendGradient;
+  legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
   analysis?: {
     metrics: string[];
     exclude: boolean;
@@ -105,10 +111,8 @@ export interface DatasetLayerCompareNormalized extends DatasetLayerCommonProps {
   time_density?: 'day' | 'month' | 'year';
   stacCol: string;
   type: DatasetLayerType;
-  legend?: LayerLegendCategorical | LayerLegendGradient;
+  legend?: LayerLegendCategorical | LayerLegendGradient | LayerLegendText;
 }
-
-// export type DatasetLayerCompareNormalized = DatasetLayerCompareNoLegend | DatasetLayerCompareWLegend
 
 // TODO: Complete once known
 export interface DatasetDatumFnResolverBag {
@@ -157,6 +161,10 @@ export interface LayerLegendCategorical {
   type: 'categorical';
   unit?: LayerLegendUnit;
   stops: CategoricalStop[];
+}
+
+export interface LayerLegendText {
+  type: 'text';
 }
 
 /**
@@ -296,3 +304,35 @@ export interface LinkProperties {
   LinkElement: string | ComponentType<any> | undefined;
   pathAttributeKeyName: string;
 }
+
+// eslint-disable-next-line inclusive-language/use-inclusive-words
+// Based on: https://github.com/mapbox/tilejson-spec/blob/master/3.0.0/schema.json
+export type TileJSON = {
+  tilejson: string; // must match pattern: /\d+\.\d+\.\d+\w?[\w\d]*/
+  tiles: string[];
+  // @NOTE: Vector layer is marked as required from tieljson spec
+  // But we do not have vector_layers to display
+  vector_layers?: Array<{
+    id: string;
+    fields: { [key: string]: string };
+    description?: string;
+    maxzoom?: number;
+    minzoom?: number;
+    [key: string]: any; // additional properties
+  }>;
+  attribution?: string;
+  bounds?: number[];
+  center?: number[];
+  data?: string[];
+  description?: string;
+  fillzoom?: number; // between 0 and 30
+  grids?: string[];
+  legend?: string;
+  maxzoom?: number; // between 0 and 30
+  minzoom?: number; // between 0 and 30
+  name?: string;
+  scheme?: string;
+  template?: string;
+  version?: string; // must match pattern: /\d+\.\d+\.\d+\w?[\w\d]*/
+  [key: string]: any; // allow additional properties at the top level
+};

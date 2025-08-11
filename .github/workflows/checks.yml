@@ -127,7 +127,6 @@ jobs:
     timeout-minutes: 60
     needs: prep
     runs-on: ubuntu-latest
-    if: startsWith(github.head_ref, 'release')
 
     steps:
       - name: Checkout

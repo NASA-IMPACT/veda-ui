@@ -1,19 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import qs from 'qs';
-import {
-  LayerSpecification,
-  SourceSpecification,
-  GeoJSONSourceSpecification,
-  LngLatBoundsLike,
-  RasterLayerSpecification,
-  RasterSourceSpecification,
-  SymbolLayerSpecification
-} from 'mapbox-gl';
-import { useTheme } from 'styled-components';
-import { featureCollection, point } from '@turf/helpers';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { LngLatBoundsLike } from 'mapbox-gl';
 import { RasterTimeseriesProps, StacFeature } from '../types';
-import useMapStyle from '../hooks/use-map-style';
 import {
   FIT_BOUNDS_PADDING,
   getFilterPayload,
@@ -21,115 +9,26 @@ import {
   requestQuickCache
 } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
-import useLayerInteraction from '../hooks/use-layer-interaction';
-import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
-import useGeneratorParams from '../hooks/use-generator-params';
 
-import {
-  ActionStatus,
-  S_FAILED,
-  S_IDLE,
-  S_LOADING,
-  S_SUCCEEDED
-} from '$utils/status';
+import PointsLayer from './points-layer';
+import { useRequestStatus, STATUS_KEY } from './hooks';
+import { RasterPaintLayer } from './raster-paint-layer';
+import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
-const LOG = true;
+const LOG = process.env.NODE_ENV !== 'production' ? true : false;
 
-enum STATUS_KEY {
-  Global,
-  Layer,
-  StacSearch
-}
-
-interface Statuses {
-  [STATUS_KEY.Global]: ActionStatus;
-  [STATUS_KEY.Layer]: ActionStatus;
-  [STATUS_KEY.StacSearch]: ActionStatus;
-}
-
-export function RasterTimeseries(props: RasterTimeseriesProps) {
-  const {
-    id,
-    stacCol,
-    date,
-    sourceParams,
-    zoomExtent,
-    bounds,
-    onStatusChange,
-    isPositionSet,
-    hidden,
-    opacity,
-    stacApiEndpoint,
-    tileApiEndpoint,
-    colorMap,
-    reScale,
-    envApiStacEndpoint,
-    envApiRasterEndpoint
-  } = props;
-
-  const { current: mapInstance } = useMaps();
-
-  const theme = useTheme();
-  const { updateStyle } = useMapStyle();
-
-  const minZoom = zoomExtent?.[0] ?? 0;
-  const generatorId = `raster-timeseries-${id}`;
-
-  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
-  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
-
-  // Status tracking.
-  // A raster timeseries layer has a base layer and may have markers.
-  // The status is succeeded only if all requests succeed.
-  const statuses = useRef<Statuses>({
-    [STATUS_KEY.Global]: S_IDLE,
-    [STATUS_KEY.Layer]: S_IDLE,
-    [STATUS_KEY.StacSearch]: S_IDLE
-  });
-
-  const changeStatus = useCallback(
-    ({
-      status,
-      context
-    }: {
-      status: ActionStatus;
-      context: STATUS_KEY.StacSearch | STATUS_KEY.Layer;
-    }) => {
-      // Set the new status
-      statuses.current[context] = status;
-
-      const layersToCheck = [
-        statuses.current[STATUS_KEY.StacSearch],
-        statuses.current[STATUS_KEY.Layer]
-      ];
-
-      let newStatus = statuses.current[STATUS_KEY.Global];
-      // All must succeed to be considered successful.
-      if (layersToCheck.every((s) => s === S_SUCCEEDED)) {
-        newStatus = S_SUCCEEDED;
-
-        // One failed status is enough for all.
-        // Failed takes priority over loading.
-      } else if (layersToCheck.some((s) => s === S_FAILED)) {
-        newStatus = S_FAILED;
-        // One loading status is enough for all.
-      } else if (layersToCheck.some((s) => s === S_LOADING)) {
-        newStatus = S_LOADING;
-      } else if (layersToCheck.some((s) => s === S_IDLE)) {
-        newStatus = S_IDLE;
-      }
-
-      // Only emit on status change.
-      if (newStatus !== statuses.current[STATUS_KEY.Global]) {
-        statuses.current[STATUS_KEY.Global] = newStatus;
-        onStatusChange?.({ status: newStatus, id });
-      }
-    },
-    [id, onStatusChange]
-  );
-
+export function useStacResponse({
+  id,
+  changeStatus,
+  stacCol,
+  date,
+  stacApiEndpointToUse
+}): [
+  StacFeature[],
+  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
+] {
   //
   // Load stac collection features
   //
@@ -152,33 +51,37 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           }
         };
 
-        /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
+          /* eslint-disable no-console */
           console.groupCollapsed(
             'RasterTimeseries %cLoading STAC features',
             'color: orange;',
             id
           );
-        LOG && console.log('Payload', payload);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
+          console.log('Payload', payload);
+          console.groupEnd();
+          /* eslint-enable no-console */
+        }
 
-        const responseData = await requestQuickCache<any>({
+        const responseData = await requestQuickCache<{
+          features: StacFeature[];
+        }>({
           url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
         });
 
-        /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
+          /* eslint-disable no-console */
           console.groupCollapsed(
             'RasterTimeseries %cAdding STAC features',
             'color: green;',
             id
           );
-        LOG && console.log('STAC response', responseData);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
+          console.log('STAC response', responseData);
+          console.groupEnd();
+          /* eslint-enable no-console */
+        }
 
         setStacCollection(responseData.features);
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
@@ -187,7 +90,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           setStacCollection([]);
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
-        LOG &&
+        if (LOG)
           /* eslint-disable-next-line no-console */
           console.log(
             'RasterTimeseries %cAborted STAC features',
@@ -208,7 +111,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   }, [id, changeStatus, stacCol, date, stacApiEndpointToUse]);
 
   //
-  // Markers
+  // Markers to show where the data is when zoom is low
   //
   const points = useMemo(() => {
     if (!stacCollection.length) return null;
@@ -226,10 +129,21 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     return points;
   }, [stacCollection]);
 
+  return [stacCollection, points];
+}
+
+function useMosaicUrl({
+  id,
+  stacCol,
+  date,
+  stacCollection,
+  changeStatus,
+  tileApiEndpointToUse
+}) {
   //
   // Tiles
   //
-  const [mosaicUrl, setMosaicUrl] = useState<string | null>(null);
+  const [mosaicUrl, setMosaicUrl] = useState<string | undefined>(undefined);
   useEffect(() => {
     if (!id || !stacCol) return;
 
@@ -238,7 +152,7 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     // though if a search returns no data, that date should not be available for
     // the dataset - may be a case of bad configuration.
     if (!stacCollection.length) {
-      setMosaicUrl(null);
+      setMosaicUrl(undefined);
       return;
     }
 
@@ -252,71 +166,48 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           filter: getFilterPayload(date, stacCol)
         };
 
-        /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
+          /* eslint-disable no-console */
           console.groupCollapsed(
             'RasterTimeseries %cLoading Mosaic',
             'color: orange;',
             id
           );
-        LOG && console.log('Payload', payload);
-        LOG && console.groupEnd();
-        /* eslint-enable no-console */
-
-        let responseData;
-
-        try {
-          responseData = await requestQuickCache<any>({
-            url: `${tileApiEndpointToUse}/searches/register`,
-            payload,
-            controller
-          });
-          const mosaicUrl = responseData.links[1].href;
-          setMosaicUrl(
-            mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
-          );
-        } catch (error) {
-          // @NOTE: conditional logic TO BE REMOVED once new BE endpoints have moved to prod... Fallback on old request url if new endpoints error with nonexistance...
-          if (error.request) {
-            // The request was made but no response was received
-            responseData = await requestQuickCache<any>({
-              url: `${tileApiEndpointToUse}/mosaic/register`, // @NOTE: This will fail anyways with "staging-raster.delta-backend.com" because its already deprecated...
-              payload,
-              controller
-            });
-
-            const mosaicUrl = responseData.links[1].href;
-            setMosaicUrl(mosaicUrl);
-          } else {
-            LOG &&
-              /* eslint-disable-next-line no-console */
-              console.log(
-                'Titiler /register %cEndpoint error',
-                'color: red;',
-                error
-              );
-            throw error;
-          }
+          console.log('Payload', payload);
+          console.groupEnd();
+          /* eslint-enable no-console */
         }
 
+        const responseData = await requestQuickCache<any>({
+          url: `${tileApiEndpointToUse}/searches/register`,
+          payload,
+          controller
+        });
+        const mosaicUrl = responseData.links[1].href;
+        setMosaicUrl(
+          mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
+        );
+
         /* eslint-disable no-console */
-        LOG &&
+        if (LOG) {
           console.groupCollapsed(
             'RasterTimeseries %cAdding Mosaic',
             'color: green;',
             id
           );
-        // links[0] : metadata , links[1]: tile
-        LOG && console.log('Url', responseData.links[1].href);
-        LOG && console.log('STAC response', responseData);
-        LOG && console.groupEnd();
+          // links[0] : metadata , links[1]: tile
+          console.log('Url', responseData.links[1].href);
+          console.log('STAC response', responseData);
+          console.groupEnd();
+        }
         /* eslint-enable no-console */
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         if (!controller.signal.aborted) {
           changeStatus({ status: S_FAILED, context: STATUS_KEY.Layer });
         }
-        LOG &&
+        if (LOG)
           /* eslint-disable-next-line no-console */
           console.log('RasterTimeseries %cAborted Mosaic', 'color: red;', id);
         return;
@@ -330,7 +221,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
       changeStatus({ status: 'idle', context: STATUS_KEY.Layer });
     };
   }, [
-    colorMap,
     stacCollection
     // This hook depends on a series of properties, but whenever they change the
     // `stacCollection` is guaranteed to change because a new STAC request is
@@ -346,194 +236,57 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     // resulted in a race condition when adding the source to the map leading to
     // an error.
   ]);
+  return [mosaicUrl];
+}
 
-  //
-  // Generate Mapbox GL layers and sources for raster timeseries
-  //
-  const haveSourceParamsChanged = useMemo(
-    () => JSON.stringify(sourceParams),
-    [sourceParams]
-  );
-
-  const generatorParams = useGeneratorParams(props);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    async function run() {
-      let layers: LayerSpecification[] = [];
-      let sources: Record<string, SourceSpecification> = {};
-
-      if (mosaicUrl) {
-        const tileParams = qs.stringify(
-          {
-            assets: 'cog_default',
-            ...(sourceParams ?? {}),
-            ...(colorMap && { colormap_name: colorMap }),
-            ...(reScale && { rescale: Object.values(reScale) })
-          },
-          // Temporary solution to pass different tile parameters for hls data
-          {
-            arrayFormat: id.toLowerCase().includes('hls') ? 'repeat' : 'comma'
-          }
-        );
-
-        const tilejsonUrl = `${mosaicUrl}?${tileParams}`;
-        try {
-          const tilejsonData = await requestQuickCache<any>({
-            url: tilejsonUrl,
-            method: 'GET',
-            payload: null,
-            controller
-          });
-          const tileServerUrl = tilejsonData.tiles[0];
-
-          const wmtsBaseUrl = mosaicUrl.replace(
-            'tilejson.json',
-            'WMTSCapabilities.xml'
-          );
-
-          const mosaicSource: RasterSourceSpecification = {
-            type: 'raster',
-            url: tilejsonUrl
-          };
-
-          const rasterOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
-
-          const mosaicLayer: RasterLayerSpecification = {
-            id: id,
-            type: 'raster',
-            source: id,
-            layout: {
-              visibility: hidden ? 'none' : 'visible'
-            },
-            paint: {
-              'raster-opacity': hidden ? 0 : rasterOpacity,
-              'raster-opacity-transition': {
-                duration: 320
-              }
-            },
-            minzoom: minZoom,
-            metadata: {
-              id,
-              layerOrderPosition: 'raster',
-              xyzTileUrl: tileServerUrl,
-              wmtsTileUrl: `${wmtsBaseUrl}?${tileParams}`
-            }
-          };
-
-          sources = {
-            ...sources,
-            [id]: mosaicSource
-          };
-          layers = [...layers, mosaicLayer];
-        } catch (error) {
-          if (!controller.signal.aborted) {
-            sources = {};
-            layers = [];
-            changeStatus({
-              status: S_FAILED,
-              context: STATUS_KEY.StacSearch
-            });
-          }
-
-          LOG &&
-            /* eslint-disable-next-line no-console */
-            console.log(
-              'MapLayerRasterTimeseries %cAborted Mosaic',
-              'color: red;',
-              id
-            );
-          // Continue to the style is updated to empty.
-        }
-      }
-
-      if (points && minZoom > 0) {
-        const pointsSourceId = `${id}-points`;
-        const pointsSource: GeoJSONSourceSpecification = {
-          type: 'geojson',
-          data: featureCollection(
-            points.map((p) => point(p.center, { bounds: p.bounds }))
-          )
-        };
-
-        const pointsLayer: SymbolLayerSpecification = {
-          type: 'symbol',
-          id: pointsSourceId,
-          source: pointsSourceId,
-          layout: {
-            ...(MARKER_LAYOUT as any),
-            'icon-allow-overlap': true
-          },
-          paint: {
-            'icon-color': theme.color?.primary,
-            'icon-halo-color': theme.color?.base,
-            'icon-halo-width': 1
-          },
-          maxzoom: minZoom,
-          metadata: {
-            layerOrderPosition: 'markers'
-          }
-        };
-        sources = {
-          ...sources,
-          [pointsSourceId]: pointsSource as SourceSpecification
-        };
-        layers = [...layers, pointsLayer];
-      }
-
-      updateStyle({
-        generatorId,
-        sources,
-        layers,
-        params: generatorParams
-      });
-    }
-
-    run();
-
-    return () => {
-      controller.abort();
-    };
-  }, [
-    mosaicUrl,
+export function RasterTimeseries(props: RasterTimeseriesProps) {
+  const {
+    id,
+    stacCol,
+    date,
+    sourceParams,
+    zoomExtent,
+    bounds,
+    onStatusChange,
+    isPositionSet,
+    hidden,
+    opacity,
+    generatorOrder,
+    stacApiEndpoint,
+    tileApiEndpoint,
     colorMap,
     reScale,
-    points,
-    minZoom,
-    haveSourceParamsChanged,
-    generatorParams
-    // This hook depends on a series of properties, but whenever they change the
-    // `mosaicUrl` is guaranteed to change because a new STAC request is
-    // needed to show the data. The following properties are therefore removed
-    // from the dependency array:
-    // - id
-    // - changeStatus
-    // - stacCol
-    // - date
-    // Keeping then in would cause multiple requests because for example when
-    // `date` changes the hook runs, then the request in the hook above
-    // fires and `mosaicUrl` changes, causing this hook to run again. This
-    // resulted in a race condition when adding the source to the map leading to
-    // an error.
-    // Other:
-    // -- generatorParams includes hidden and opacity
-    // -- sourceParams is tracked by haveSourceParamsChanged
-    // -- theme and updateStyle are stable
-  ]);
+    envApiStacEndpoint,
+    envApiRasterEndpoint
+  } = props;
 
-  //
-  // Cleanup layers on unmount.
-  //
-  useEffect(() => {
-    return () => {
-      updateStyle({
-        generatorId,
-        sources: {},
-        layers: []
-      });
-    };
-  }, [updateStyle, generatorId]);
+  const { current: mapInstance } = useMaps();
+
+  const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint ?? '';
+  const tileApiEndpointToUse = tileApiEndpoint ?? envApiRasterEndpoint ?? '';
+
+  const { changeStatus } = useRequestStatus({
+    id,
+    onStatusChange,
+    requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
+  });
+
+  const [stacCollection, points] = useStacResponse({
+    id,
+    changeStatus,
+    stacCol,
+    date,
+    stacApiEndpointToUse
+  });
+
+  const [mosaicUrl] = useMosaicUrl({
+    id,
+    stacCol,
+    date,
+    stacCollection,
+    changeStatus,
+    tileApiEndpointToUse
+  });
 
   //
   // Listen to mouse events on the markers layer
@@ -545,19 +298,51 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     },
     [mapInstance]
   );
-  useLayerInteraction({
-    layerId: `${id}-points`,
-    onClick: onPointsClick
-  });
 
   //
   // FitBounds when needed
   //
   const layerBounds = useMemo(
-    () => (stacCollection.length ? getMergedBBox(stacCollection) : undefined),
+    () => (stacCollection?.length ? getMergedBBox(stacCollection) : undefined),
     [stacCollection]
   );
   useFitBbox(!!isPositionSet, bounds, layerBounds);
 
-  return null;
+  return (
+    <>
+      {points && (
+        <PointsLayer
+          id={id}
+          points={points}
+          zoomExtent={zoomExtent}
+          onPointsClick={onPointsClick}
+        />
+      )}
+      {mosaicUrl && (
+        <RasterPaintLayer
+          id={id}
+          tileApiEndpoint={mosaicUrl}
+          tileParams={{ assets: ['cog_default'], ...sourceParams }}
+          zoomExtent={zoomExtent}
+          hidden={hidden}
+          opacity={opacity}
+          colorMap={colorMap}
+          generatorOrder={generatorOrder}
+          reScale={reScale}
+          generatorPrefix='raster-timeseries'
+          onStatusChange={changeStatus}
+          metadataFormatter={(tilejsonData, tileParamsAsString) => {
+            const wmtsBaseUrl = mosaicUrl.replace(
+              'tilejson.json',
+              'WMTSCapabilities.xml'
+            );
+            return {
+              xyzTileUrl: tilejsonData?.tiles[0],
+              wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
+            };
+          }}
+        />
+      )}
+    </>
+  );
 }

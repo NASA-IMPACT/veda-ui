@@ -124,7 +124,9 @@ export function ExplorationMap(props: ExplorationMapProps) {
               wmtsTileUrl: (layerMetadata.metadata as { wmtsTileUrl: string })
                 .wmtsTileUrl,
               xyzTileUrl: (layerMetadata.metadata as { xyzTileUrl: string })
-                .xyzTileUrl
+                .xyzTileUrl,
+              wmsTileUrl: (layerMetadata.metadata as { wmsTileUrl: string })
+                .wmsTileUrl
             }
           }
         };

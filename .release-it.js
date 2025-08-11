@@ -32,8 +32,10 @@ function groupCommitsByCategory(logs) {
 }
 
 module.exports = {
-  hooks: !debug && {
-    'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT" '
+  hooks: {
+    ...(!debug && {
+    "before:init": 'if [ "$(git log $(git describe --tags --abbrev=0)..HEAD)" = "" ]; then echo "NO_COMMIT=true" >> "$GITHUB_OUTPUT"; exit 1; fi;',
+    'after:release': 'echo "VERSION_NUMBER=v${version}" >> "$GITHUB_OUTPUT"'})
   },
   git: {
     release: debug ? false : true,
@@ -43,6 +45,8 @@ module.exports = {
     pushArgs: ['--follow-tags'],
     requireCleanWorkingDir: debug ? false : true,
     requireUpstream: debug ? false : true,
+    requireCommits: true,
+    requireCommitsFail: false,
     changelog: 'git log --pretty=format:%s ${latestTag}...HEAD' // The output will be passed to releaseNotes context.changelog
   },
   npm: {
