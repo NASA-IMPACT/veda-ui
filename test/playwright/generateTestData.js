@@ -4,8 +4,24 @@ const path = require('path');
 const matter = require('gray-matter');
 const fg = require('fast-glob');
 
-const catalogPaths = fg.globSync('**/mock/datasets/*.mdx');
-const storyPaths = fg.globSync('**/mock/stories/*.mdx');
+const datasetPath = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  'mock',
+  'datasets',
+  '*.mdx'
+);
+const storyPath = path.resolve(
+  __dirname,
+  '..',
+  '..',
+  'mock',
+  'stories',
+  '*.mdx'
+);
+const catalogPaths = fg.globSync(datasetPath);
+const storyPaths = fg.globSync(storyPath);
 const catalogNames = [];
 const datasetIds = [];
 const datasetIdDisableExplore = [];
