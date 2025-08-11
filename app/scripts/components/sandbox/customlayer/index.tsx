@@ -145,10 +145,12 @@ export default function CustomLayerDemo() {
   const [info, setInfo] = useState('');
 
   const { baseDataLayer, compareDataLayer: derivedCompare } = useMapLayers(
+    'no2',
     'no2-monthly',
     veda_faux_module_datasets,
     true
   );
+
   const compareDataLayer = derivedCompare;
 
   return (
