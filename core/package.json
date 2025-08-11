@@ -13,6 +13,10 @@
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.1"
   },
+  "dependencies": {
+    "@trussworks/react-uswds": "^9.0.0",
+    "@uswds/uswds": "^3.8.1"
+  },
   "devDependencies": {
     "@storybook/addon-onboarding": "^9.1.1",
     "@storybook/react": "^9.1.1",
@@ -25,7 +29,8 @@
     "globals": "^15.15.0",
     "storybook": "^9.1.1",
     "vite": "^6.2.0",
-    "vitest": "^3.1.1"
+    "vitest": "^3.1.1",
+    "sass": "^1.81.0"
   },
   "eslintConfig": {
     "extends": [
