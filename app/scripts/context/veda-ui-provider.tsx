@@ -94,10 +94,15 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
 
   const Link: React.FC<LinkProps> = ({ to, children, ...props }) => {
     const { LinkComponent, linkProps } = navigation;
-
+    const { pathAttributeKeyName, ...htmlLinkProps } = linkProps;
     if (utils.isExternalLink(to)) {
       return (
-        <a href={to} target='_blank' rel='noopener noreferrer' {...props}>
+        <a
+          href={to}
+          target='_blank'
+          rel='noopener noreferrer'
+          {...htmlLinkProps}
+        >
           {children}
         </a>
       );
@@ -105,7 +110,7 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
 
     return (
       <LinkComponent
-        {...{ [linkProps.pathAttributeKeyName]: to, ...linkProps }}
+        {...{ [pathAttributeKeyName]: to, ...htmlLinkProps }}
         {...props}
       >
         {children}
