@@ -15,6 +15,7 @@ import {
   LazyCompareImage,
   LazyScrollyTelling,
   LazyMap,
+  LazyMultilayerMap,
   LazyTable,
   LazyEmbed
 } from '$components/common/blocks/lazy-components';
@@ -40,6 +41,7 @@ function MdxContent(props) {
           Chapter,
           Image,
           Map: LazyMap,
+          MultilayerMap: LazyMultilayerMap,
           ScrollytellingBlock: LazyScrollyTelling,
           Chart: LazyChart,
           CompareImage: LazyCompareImage,

@@ -38,6 +38,7 @@ export {
   Block,
   Image,
   MapBlock,
+  MultilayerMapBlock,
   ScrollytellingBlock,
   Figure,
   Prose,

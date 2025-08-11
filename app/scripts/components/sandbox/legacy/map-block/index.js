@@ -25,8 +25,6 @@ function SandboxMapBlock() {
             dateTime='2020-03-01'
             compareDateTime='2018-03-01'
             projectionId='equirectangular'
-            allowProjectionChange
-            isComparing={true}
           />
         </Wrapper>
       </Constrainer>

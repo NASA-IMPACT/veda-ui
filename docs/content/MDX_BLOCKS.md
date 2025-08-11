@@ -29,12 +29,12 @@ Understanding of MDX is not required to write contents for Veda dashboard, but y
 <tr>
 <td>
 
-![How blocks look on story page](./media/prose-figure.jpg)   
+![How blocks look on story page](./media/prose-figure.jpg)
  </td>
- <td > 
- 
- ![blocks with each layout name labeled.](./media/prose-figure-w-quotation.jpg)   
-  </td> 
+ <td >
+
+ ![blocks with each layout name labeled.](./media/prose-figure-w-quotation.jpg)
+  </td>
 </tr>
 </table>
 
@@ -51,7 +51,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 </tr>
 <tr>
   <td> Default Prose Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block>
@@ -61,17 +61,17 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
       Your markdown contents comes here.
     </Prose>
   </Block>
-  ```  
-  </td> 
-  <td>  
+  ```
+  </td>
+  <td>
 
-  ![Screenshot of Default Prose Block](./media/block-default-prose.jpg)   
+  ![Screenshot of Default Prose Block](./media/block-default-prose.jpg)
   </td>
 </tr>
 
 <tr>
   <td> Wide Prose Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block type='wide'>
@@ -81,9 +81,9 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
       Your markdown contents comes here.
     </Prose>
   </Block>
-  ```  
-  </td> 
-  <td>  
+  ```
+  </td>
+  <td>
 
   ![Screenshot of Wide Prose Block](./media/block-wide-prose.jpg)
   </td>
@@ -91,7 +91,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 <tr>
   <td> Wide Figure Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block type='wide'>
@@ -102,8 +102,8 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
   </Block>
   ```
 
-  </td> 
-  <td>  
+  </td>
+  <td>
 
   ![Screenshot of Wide Figure Block](./media/block-wide-figure.jpg)
   </td>
@@ -111,7 +111,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 <tr>
   <td> Full Figure Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block type='full'>
@@ -121,8 +121,8 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
     </Figure>
   </Block>
   ```
-  </td> 
-  <td>  
+  </td>
+  <td>
 
   ![Screenshot of Full Figure Block](./media/block-full-figure.jpg)
   </td>
@@ -130,7 +130,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 <tr>
   <td> Prose Figure Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block>
@@ -143,9 +143,9 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
     </Figure>
   </Block>
   ```
-  </td> 
-  <td>  
-  
+  </td>
+  <td>
+
   ![Screenshot of Prose Figure Block](./media/block-prose-figure.jpg)
   </td>
 </tr>
@@ -153,7 +153,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 <tr>
   <td> Figure Prose Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block>
@@ -166,8 +166,8 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
     </Prose>
   </Block>
   ```
-  </td> 
-  <td>  
+  </td>
+  <td>
 
   ![Screenshot of Figure Prose Block](./media/block-figure-prose.jpg)
   </td>
@@ -175,7 +175,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 <tr>
   <td> Prose Full Figure Block </td>
-  <td> 
+  <td>
 
   ```jsx
   <Block type='full'>
@@ -188,8 +188,8 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
     </Figure>
   </Block>
   ```
-  </td> 
-  <td>  
+  </td>
+  <td>
 
   ![Screenshot of prose full figure Block](./media/block-prose-full-figure.jpg)
   </td>
@@ -197,7 +197,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 <tr>
   <td> Full Figure Prose Block </td>
-  <td> 
+  <td>
 
 
   ```jsx
@@ -211,8 +211,8 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
     </Prose>
   </Block>
   ```
-  </td> 
-  <td>  
+  </td>
+  <td>
 
   ![Screenshot of full figure prose Block](./media/block-full-figure-prose.jpg)
   </td>
@@ -223,7 +223,7 @@ Layouts do work in any size of screen, but this documentation mainly addresses h
 
 To create a bridge between the different types of content in the VEDA dashboard it may be necessary to create a link from one to another. One example of this would be linking to a dataset page from a story.
 
-Since the dashboard may be made available under different domains at different times (for example staging environment and then production) it is a good idea to use relative links.  
+Since the dashboard may be made available under different domains at different times (for example staging environment and then production) it is a good idea to use relative links.
 This is not possible with normal markdown links, but you can use the `Link` component for this purpose.
 
 Example:
@@ -244,7 +244,7 @@ You can also use the `Link` component for external links, but it is not required
 
 ⚠️ This feature is still under development and may change at any time. ⚠️
 
-When necessary, it is possible to include a callout to link to a dataset usage. This callout allows the user to add some custom text and define which dataset the callout is for. **Note that the linked dataset must have a [usage configuration](./CONTENT.md#datasets) defined on its file**.  
+When necessary, it is possible to include a callout to link to a dataset usage. This callout allows the user to add some custom text and define which dataset the callout is for. **Note that the linked dataset must have a [usage configuration](./CONTENT.md#datasets) defined on its file**.
 
 When the user clicks the button a modal will appear with the usage information.
 
@@ -269,11 +269,11 @@ When the user clicks the button a modal will appear with the usage information.
     </NotebookConnectCallout>
   ```
   </td>
-  <td> 
- 
+  <td>
+
   ![Screenshot of notebook callout](./media/dataset-usage-callout.png)
 
-  The information on the modal is derived from the [usage configuration](./CONTENT.md#datasets) and it is not customizable.  
+  The information on the modal is derived from the [usage configuration](./CONTENT.md#datasets) and it is not customizable.
 
   ![Screenshot of notebook callout modal](./media/dataset-usage-callout-modal.png)
   </td>
@@ -299,7 +299,7 @@ The `NotebookConnectCallout` is meant to be used in a `<Prose>` component like a
 </Block>
 ```
 
-## Image 
+## Image
 
 To offer rich visual and better experience, Veda dashboard offers `Image` component, which is a wrapper for `<img/>` HTML tag. You can use `Image` component to display any kind of image. Depending on where Image is used (is it inside of `Prose` as an inline image? or inside of `Figure`?), there are additional attributes you need to pass.
 
@@ -316,7 +316,7 @@ Also you can pass any attribute that you can use with `<img />` HTML element and
 
 ### Inline image & Figure image
 
-`Image` component can take different attributes depending on its context.  
+`Image` component can take different attributes depending on its context.
 
 When `Image` is used in `Prose`, it is inline image ad should be used when you need to put an image inside of `Prose`.
 
@@ -330,27 +330,27 @@ When `Image` is used in `Prose`, it is inline image ad should be used when you n
   <td>
 
   ```jsx
-    <Image 
-      src="http://via.placeholder.com/256x128?text=align-left" 
-      alt="Media example" 
-      align="left" 
-      caption="example caption" 
+    <Image
+      src="http://via.placeholder.com/256x128?text=align-left"
+      alt="Media example"
+      align="left"
+      caption="example caption"
       attrAuthor="example author"
       attrUrl="https://example.com"
       width="256"
     />
   ```
   </td>
-  <td> 
- 
+  <td>
+
   ![Screenshot of inline Image component](./media/image-inline.jpg)
   </td>
   </tr>
 </table>
 
 
-When `Image` is used in `Figure`, it is Figure image.  
-You can replace `attr` option with `<Caption>` component if your image is used in `Figure` block. In this way, you can display rich text as Caption. 
+When `Image` is used in `Figure`, it is Figure image.
+You can replace `attr` option with `<Caption>` component if your image is used in `Figure` block. In this way, you can display rich text as Caption.
 
 <table>
   <tr>
@@ -365,21 +365,21 @@ You can replace `attr` option with `<Caption>` component if your image is used i
   <Block type="full>
     <Figure>
       <Image
-        src="http://via.placeholder.com/1200x800?text=figure" 
+        src="http://via.placeholder.com/1200x800?text=figure"
         alt='description for image'
       />
-      <Caption 
-        attrAuthor='Development Seed' 
+      <Caption
+        attrAuthor='Development Seed'
         attrUrl='https://developmentseed.org'
       >
         This is an image. This is <a href="link">a link</a>.
-      </Caption> 
+      </Caption>
     </Figure>
   </Block>
   ```
   </td>
-  <td> 
- 
+  <td>
+
   ![Screenshot of full figure Image component](./media/image-figure.jpg)
   </td>
   </tr>
@@ -400,11 +400,11 @@ For example, if you put an image `image.jpg` inside of the folder where your mdx
 ```jsx
 <Image
   src={new URL('./img.jpg', import.meta.url).href}
-  align="left" 
-  attr="tux" 
+  align="left"
+  attr="tux"
   attrAuthor="penguin"
   attrUrl="https://linux.org"
-  width="256" 
+  width="256"
 />
 ```
 
@@ -436,18 +436,18 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
   <Figure>
     <Chart
       dataPath={new URL('./example.csv', import.meta.url).href}
-      dateFormat="%m/%d/%Y" 
-      idKey='County' 
-      xKey='Test Date' 
-      yKey='New Positives' 
+      dateFormat="%m/%d/%Y"
+      idKey='County'
+      xKey='Test Date'
+      yKey='New Positives'
       highlightStart = '12/10/2021'
       highlightEnd = '01/20/2022'
       highlightLabel = 'Omicron'
     />
-    <Caption 
-      attrAuthor='attribution for wide figure block, chart' 
+    <Caption
+      attrAuthor='attribution for wide figure block, chart'
       attrUrl='https://developmentseed.org'
-    /> 
+    />
   </Figure>
 </Block>
 ```
@@ -481,7 +481,7 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
 
 | Option | Type | Default | Description|
 |---|---|---|---|
-| datasetId | string | `''` | `id` defined in dataset mdx. |
+| datasetId | string | `''` | `id` defined in dataset mdx (deprecated, kept for backward compatibility with legacy instances). Previously used to scope which dataset the layer came from. Now ignored internally; layer selection is based on layerId. You can safely omit it unless you are migrating existing content. |
 | layerId | string | `''` | `id` for layer to display. The layer should be a part of the dataset above. |
 | dateTime | string | `''` | Optional. This string should follow `yyyy-mm-dd` format. When omitted, the very first available dateTime for the dataset will be displayed |
 | compareDateTime | string | `''` | Optional. This string should follow `yyyy-mm-dd` format. A date should only be specified if you wish to display the comparison slider |
@@ -489,7 +489,6 @@ Syntax for Chart used in Wide Figure Block looks like this. Check how the data i
 | projectionId | string | `mercator` | The id of the [projection](./frontmatter/layer.md#projections) to load. |
 | projectionCenter | [int, int] | `''` | Projection center for Conic projections |
 | projectionParallels | [int, int] | `''` | Projection parallels for Conic projections |
-| allowProjectionChange | boolean | `true` | Whether or not the user can change the position using a projection selector dropdown added to the map |
 
 Syntax for Map, which displays `nightlights-hd-monthly` layer from `sandbox` dataset in full figure block looks like this:
 
@@ -514,7 +513,7 @@ Syntax for Map, which displays `nightlights-hd-monthly` layer from `sandbox` dat
 
 ![](./media/scrollytelling.png)
 
-The Scrollytelling feature of Veda is map based and allows you to define different `Chapters` where each chapter corresponds to a map position and layer being displayed.  
+The Scrollytelling feature of Veda is map based and allows you to define different `Chapters` where each chapter corresponds to a map position and layer being displayed.
 As the user scrolls the chapter content comes into view on top of the map which will animate to a specific position.
 
 The scrollytelling is defined as a series os `Chapters` inside the `ScrollytellingBlock`.
@@ -559,7 +558,7 @@ The scrollytelling is defined as a series os `Chapters` inside the `Scrollytelli
 | projectionParallels | [int, int] | Projection parallels for Conic projections |
 
 
-🧑‍🎓 **Notes on projections**  
+🧑‍🎓 **Notes on projections**
 - As with other properties, the user is not allowed to change the projection used in a chapter
 - Once a chapter with a set projection is reached, that projection will be used on subsequent chapters, until one specifies a different projection.
 
