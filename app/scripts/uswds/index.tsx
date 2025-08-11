@@ -32,7 +32,12 @@ export {
 export { USWDSGridContainer, USWDSGrid } from './grid';
 export { USWDSHeader, USWDSHeaderTitle } from './header';
 export { USWDSIcon } from './icon';
-export { USWDSTextInput, USWDSTextInputMask } from './input';
+export {
+  USWDSTextInput,
+  USWDSTextInputMask,
+  USWDSInputSuffix,
+  USWDSInputGroup
+} from './input';
 export { USWDSLink } from './link';
 export { USWDSMenu } from './menu';
 export { USWDSNavMenuButton } from './nav-menu-button';
@@ -41,3 +46,4 @@ export { USWDSPagination } from './pagination';
 export { USWDSSiteAlert } from './site-alert';
 export { USWDSSearch } from './search';
 export { USWDSTag } from './tag';
+export { USWDSSelect } from './select';

@@ -1,16 +1,17 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import {
-  Icon,
-  Select,
-  TextInput,
-  InputSuffix,
-  InputGroup
-} from '@trussworks/react-uswds';
+
 import Calendar from 'react-calendar';
 import * as dateFns from 'date-fns';
 import type { Value } from 'react-calendar/dist/cjs/shared/types';
 import type { BasemapId } from '../map/controls/map-options/basemap';
 import MapBlock from './block-map';
+import {
+  USWDSIcon as Icon,
+  USWDSSelect as Select,
+  USWDSTextInput as TextInput,
+  USWDSInputSuffix as InputSuffix,
+  USWDSInputGroup as InputGroup
+} from '$uswds';
 import type { ProjectionOptions } from '$types/veda';
 import type { VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import type { DatasetLayer } from '$types/veda';
