@@ -36,7 +36,7 @@ interface ExplorationMapProps {
   selectedCompareDay: Date | null;
 }
 
-export function ExplorationMap(props: ExplorationMapProps) {
+export function MapWithDefaultControls(props: ExplorationMapProps) {
   const { envApiStacEndpoint, envMapboxToken } = useVedaUI();
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
@@ -136,9 +136,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
     },
     [datasets, setDatasets]
   );
-
-  const { aoi, isDrawing } = useAois();
-
   return (
     <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
       {/* Map layers */}
@@ -155,15 +152,16 @@ export function ExplorationMap(props: ExplorationMapProps) {
       )}
       {/* Map controls */}
       <MapControls>
-        <AoiControl
+        {props.children}
+        {/* <AoiControl
           disableReason={
             comparing && 'Analysis is not possible when comparing dates'
           }
-        />
+        /> */}
 
-        {aoi && <AoiLayer aoi={aoi} />}
+        {/* {aoi && <AoiLayer aoi={aoi} />} */}
 
-        {!isDrawing && <AnalysisMessageControl />}
+        {/* {!isDrawing && <AnalysisMessageControl />} */}
         <GeocoderControl envMapboxToken={envMapboxToken} />
         <MapOptionsControl
           envMapboxToken={envMapboxToken}
@@ -222,5 +220,23 @@ export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
         />
       ))}
     </>
+  );
+}
+
+export function ExplorationMap(props: ExplorationMapProps) {
+  const { selectedCompareDay } = props;
+  const comparing = !!selectedCompareDay;
+  const { aoi, isDrawing } = useAois();
+  console.log(aoi);
+  return (
+    <MapWithDefaultControls {...props}>
+      <AoiControl
+        disableReason={
+          comparing && 'Analysis is not possible when comparing dates'
+        }
+      />
+      {aoi && <AoiLayer aoi={aoi} />}
+      {!isDrawing && <AnalysisMessageControl />}
+    </MapWithDefaultControls>
   );
 }
