@@ -52,7 +52,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
     return {
       ...tileParams,
       ...(colorMap && { colormap_name: colorMap }),
-      ...(reScale && { reScale: Object.values(reScale) })
+      ...(reScale && { rescale: Object.values(reScale) })
     };
   }, [tileParams, colorMap, reScale]);
 
