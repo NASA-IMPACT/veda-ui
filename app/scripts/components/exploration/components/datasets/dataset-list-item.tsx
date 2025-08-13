@@ -14,13 +14,14 @@ import {
   usePopover
 } from '../chart-popover';
 import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
+import { EADataLayerCard } from '../..';
 import {
   DatasetTrackError,
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
-import { DataLayerCardWithSync } from './data-layer-card';
+// import { DataLayerCardWithSync } from './data-layer-card';
 import {
   DatasetStatus,
   TimelineDatasetSuccess
@@ -198,7 +199,11 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{ width: '100%' }} onPointerDown={onDragging}>
-              <DataLayerCardWithSync
+              {/* <DataLayerCardWithSync
+                dataset={dataset}
+                setLayerInfo={setModalLayerInfo}
+              /> */}
+              <EADataLayerCard
                 dataset={dataset}
                 setLayerInfo={setModalLayerInfo}
               />
@@ -296,7 +301,6 @@ interface DatasetTrackProps {
 
 function DatasetTrack(props: DatasetTrackProps) {
   const { width, xScaled, dataset, isVisible } = props;
-
   // Limit the items to render to increase performance.
   const domainToRender = useMemo(() => {
     const domain = xScaled.domain();
@@ -305,7 +309,7 @@ function DatasetTrack(props: DatasetTrackProps) {
 
     return dataset.data.domain.filter((d) => {
       const [blockStart, blockEnd] = getBlockBoundaries(
-        d,
+        d instanceof Date ? d : new Date(d),
         dataset.data.timeDensity
       );
 

@@ -10,8 +10,9 @@ import { PageMainContent } from '$styles/page';
 import { externalDatasetsAtom } from '$components/exploration/atoms/datasetLayers';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom.tsx';
 import { useTimelineDatasetVisibility } from '$components/exploration/atoms/hooks';
-import { DataLayerCardWithSync } from '$components/exploration/components/datasets/data-layer-card';
+// import { DataLayerCardWithSync } from '$components/exploration/components/datasets/data-layer-card';
 import { ExplorationMap } from '$components/exploration/components/map';
+import { EADataLayerCard } from '$components/exploration';
 export const HugResetter = styled.div`
   /* To escape from HUG grid */
 `;
@@ -68,7 +69,7 @@ function DataLayerCardSet({ timelineDatasets, onChange }) {
   return (
     <React.Fragment>
       {timelineDatasets.map((dataset) => (
-        <DataLayerCardWithSync
+        <EADataLayerCard
           key={dataset.data.id}
           dataset={dataset}
           setLayerInfo={onLayerInfoClick}

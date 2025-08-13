@@ -216,12 +216,11 @@ export default function Timeline(props: TimelineProps) {
   // Because the interaction rect traps the events, we need a ref to the
   // container to propagate the needed events to it, like scroll.
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
-
   const headPointRef = useRef(null);
   const headPointCompareRef = useRef(null);
   const headInRef = useRef(null);
   const headOutRef = useRef(null);
-
+  console.log('selectedDayFromTimeline', selectedDay);
   const [outOfViewHeads, setOutOfViewHeads] = useState<TimelineHead[]>([]);
 
   const dataDomain = useTimelineDatasetsDomain();
@@ -514,6 +513,7 @@ export default function Timeline(props: TimelineProps) {
     }
 
     const [start, end] = dataDomain;
+
     // If the selected day is not within the new domain, set it to the last
     // available dataset date. We can't use the date domain, because the end of
     // the domain is the max date + a duration so that all dataset dates fit in

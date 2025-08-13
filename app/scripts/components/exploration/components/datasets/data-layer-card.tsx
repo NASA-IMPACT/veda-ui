@@ -321,38 +321,38 @@ export default function DataLayerCard(props: CardProps) {
   );
 }
 
-export function DataLayerCardWithSync(props: {
-  dataset: TimelineDataset;
-  setLayerInfo: (data: LayerInfoModalData) => void;
-}) {
-  const { dataset, setLayerInfo } = props;
+// export function DataLayerCardWithSync(props: {
+//   dataset: TimelineDataset;
+//   setLayerInfo: (data: LayerInfoModalData) => void;
+// }) {
+//   const { dataset, setLayerInfo } = props;
 
-  const [isVisible, setVisible] = useTimelineDatasetVisibility(dataset.data.id);
-  const [colorMap, setColorMap] = useTimelineDatasetColormap(dataset.data.id);
-  const [colorMapScale, setColorMapScale] = useTimelineDatasetColormapScale(
-    dataset.data.id
-  );
+//   const [isVisible, setVisible] = useTimelineDatasetVisibility(dataset.data.id);
+//   const [colorMap, setColorMap] = useTimelineDatasetColormap(dataset.data.id);
+//   const [colorMapScale, setColorMapScale] = useTimelineDatasetColormapScale(
+//     dataset.data.id
+//   );
 
-  const onClickLayerInfo = useCallback(() => {
-    const data: LayerInfoModalData = {
-      name: dataset.data.name,
-      description: dataset.data.description,
-      info: dataset.data.info,
-      parentData: dataset.data.parentDataset
-    };
-    setLayerInfo(data);
-  }, [dataset, setLayerInfo]);
+//   const onClickLayerInfo = useCallback(() => {
+//     const data: LayerInfoModalData = {
+//       name: dataset.data.name,
+//       description: dataset.data.description,
+//       info: dataset.data.info,
+//       parentData: dataset.data.parentDataset
+//     };
+//     setLayerInfo(data);
+//   }, [dataset, setLayerInfo]);
 
-  return (
-    <DataLayerCard
-      dataset={dataset}
-      colorMap={colorMap}
-      colorMapScale={colorMapScale}
-      setColorMap={setColorMap}
-      setColorMapScale={setColorMapScale}
-      isVisible={isVisible}
-      setVisible={setVisible}
-      onClickLayerInfo={onClickLayerInfo}
-    />
-  );
-}
+//   return (
+//     <DataLayerCard
+//       dataset={dataset}
+//       colorMap={colorMap}
+//       colorMapScale={colorMapScale}
+//       setColorMap={setColorMap}
+//       setColorMapScale={setColorMapScale}
+//       isVisible={isVisible}
+//       setVisible={setVisible}
+//       onClickLayerInfo={onClickLayerInfo}
+//     />
+//   );
+// }

@@ -23,6 +23,7 @@ import Pagination from './pagination';
 import Widgets from './widgets';
 import SandboxUswdsCards from './cards';
 import SandboxLayerCard from './exploration/layer-card';
+import SandboxExplorationAnalysis from './exploration';
 import {
   FullscreenWidget,
   FullpageModalWidget
@@ -49,7 +50,11 @@ const pages = [
     name: 'Exploration map',
     component: SandboxExplorationMap
   },
-
+  {
+    id: 'exploration-analysis',
+    name: 'Exploration Analysis',
+    component: SandboxExplorationAnalysis
+  },
   {
     id: 'map-block',
     name: 'Map block',
