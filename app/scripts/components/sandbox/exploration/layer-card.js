@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import { useSetAtom } from 'jotai';
 import { GridContainer, Grid, Modal } from '@trussworks/react-uswds';
@@ -49,12 +49,50 @@ function ExampleComponent(props) {
   );
 }
 
+function DataLayerCardSet({ timelineDatasets, onChange }) {
+  const [modalInfo, setModalInfo] = useState(null);
+  const modalRef = useRef(null);
+  const onLayerInfoClick = (info) => {
+    setModalInfo(info);
+    if (modalRef.current) {
+      modalRef.current.toggleModal(null, true);
+    }
+  };
+
+  useEffect(() => {
+    if (onChange) {
+      onChange({ timelineDataset: timelineDatasets });
+    }
+  }, [timelineDatasets, onChange]);
+
+  return (
+    <React.Fragment>
+      {timelineDatasets.map((dataset) => (
+        <DataLayerCardWithSync
+          key={dataset.data.id}
+          dataset={dataset}
+          setLayerInfo={onLayerInfoClick}
+        />
+      ))}
+      <Modal
+        ref={modalRef}
+        id='example-modal-1'
+        aria-labelledby='modal-1-heading'
+        aria-describedby='modal-1-description'
+      >
+        <div className='usa-prose'>
+          <p id='modal-1-description'>{JSON.stringify(modalInfo)}</p>
+        </div>
+      </Modal>
+    </React.Fragment>
+  );
+}
+
 function SandboxExplorationMapWithLayerCard() {
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
-  const modalRef = useRef(null);
+
   setExternalDatasets(mockRawData);
   const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
-  const [modalInfo, setModalInfo] = useState(null);
 
   useEffect(() => {
     // IF no data came through URL
@@ -63,12 +101,8 @@ function SandboxExplorationMapWithLayerCard() {
     }
   }, [setTimelineDatasets, timelineDatasets.length]);
 
-  const onLayerInfoClick = (info) => {
-    setModalInfo(info);
-    if (modalRef.current) {
-      modalRef.current.toggleModal(null, true);
-    }
-  };
+  // eslint-disable-next-line no-console
+  const handleChange = useCallback((e) => console.log(e), []);
   return (
     <PageMainContent>
       <HugResetter>
@@ -85,13 +119,10 @@ function SandboxExplorationMapWithLayerCard() {
               />
             </Grid>
             <Grid col={6}>
-              {timelineDatasets.map((dataset) => (
-                <DataLayerCardWithSync
-                  key={dataset.data.id}
-                  dataset={dataset}
-                  setLayerInfo={onLayerInfoClick}
-                />
-              ))}
+              <DataLayerCardSet
+                timelineDatasets={timelineDatasets}
+                onChange={handleChange}
+              />
             </Grid>
           </Grid>
           <h2 className='margin-top-5 margin-bottom-2'>
@@ -101,17 +132,6 @@ function SandboxExplorationMapWithLayerCard() {
             <ExampleComponent dataset={timelineDatasets[0]} />
           )}
         </GridContainer>
-
-        <Modal
-          ref={modalRef}
-          id='example-modal-1'
-          aria-labelledby='modal-1-heading'
-          aria-describedby='modal-1-description'
-        >
-          <div className='usa-prose'>
-            <p id='modal-1-description'>{JSON.stringify(modalInfo)}</p>
-          </div>
-        </Modal>
       </HugResetter>
     </PageMainContent>
   );
