@@ -37,7 +37,7 @@ export {
   useTimelineDatasetColormapScale
 } from './hooks';
 
-export { DataLayerCardWithSync } from './components';
+export { EADataLayerCard } from './components';
 
 export {
   Block,

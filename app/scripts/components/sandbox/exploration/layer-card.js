@@ -12,7 +12,7 @@ import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-d
 import { useTimelineDatasetVisibility } from '$components/exploration/atoms/hooks';
 // import { DataLayerCardWithSync } from '$components/exploration/components/datasets/data-layer-card';
 import { ExplorationMap } from '$components/exploration/components/map';
-import { EADataLayerCard } from '$components/exploration';
+import { EADataLayerCard } from '$components/exploration/compound';
 export const HugResetter = styled.div`
   /* To escape from HUG grid */
 `;

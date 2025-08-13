@@ -14,7 +14,7 @@ import {
   usePopover
 } from '../chart-popover';
 import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
-import { EADataLayerCard } from '../..';
+import { EADataLayerCard } from '../../compound';
 import {
   DatasetTrackError,
   DatasetTrackLoading
