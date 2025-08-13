@@ -97,12 +97,7 @@ export function VedaUIProvider({ config, children }: VedaUIProviderProps) {
     const { pathAttributeKeyName, ...htmlLinkProps } = linkProps;
     if (utils.isExternalLink(to)) {
       return (
-        <a
-          href={to}
-          target='_blank'
-          rel='noopener noreferrer'
-          {...htmlLinkProps}
-        >
+        <a href={to} target='_blank' rel='noopener noreferrer' {...props}>
           {children}
         </a>
       );
