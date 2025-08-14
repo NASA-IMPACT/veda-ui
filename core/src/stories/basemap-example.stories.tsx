@@ -10,9 +10,13 @@ import {
 import { Basemap } from '$components/common/map/style-generators/basemap';
 import { useBasemap } from '$components/common/map/controls/hooks/use-basemap';
 import MapCoordsControl from '$components/common/map/controls/coords';
+import AoiControl from '$components/common/map/controls/aoi/aoi-control';
+import useAois from '$components/common/map/controls/hooks/use-aois';
+import AoiLayer from '$components/exploration/components/map/aoi-layer';
 
 const BaseMapExample: React.FC = () => {
   const { mapBasemapId, labelsOption, boundariesOption } = useBasemap();
+  const { aoi } = useAois();
   return (
     <div style={{ height: '100vh' }}>
       <StorybookProviders>
@@ -23,6 +27,8 @@ const BaseMapExample: React.FC = () => {
             boundariesOption={boundariesOption}
           />
           <MapControls>
+            <AoiControl />
+            {aoi && <AoiLayer aoi={aoi} />}
             <NavigationControl position='top-right' />
             <ScaleControl />
             <MapCoordsControl />
