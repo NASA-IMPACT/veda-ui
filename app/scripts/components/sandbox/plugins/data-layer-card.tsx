@@ -1,0 +1,346 @@
+import React, { useState, useCallback, useMemo } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
+import { mockDatasets } from '../mock-data.js';
+import theme from '$styles/theme';
+
+import DataLayerCardPresentational from '$components/exploration/components/datasets/data-layer-card-presentational';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
+export interface colorMapScale {
+  min: number;
+  max: number;
+}
+const SandboxContainer = styled.div`
+  padding: 2rem;
+  background: #f8f9fa;
+  min-height: 100vh;
+`;
+
+const Title = styled.h1`
+  margin-bottom: 2rem;
+  color: #333;
+`;
+
+const StateDisplay = styled.div`
+  padding: 1rem;
+  background: #f0f0f0;
+  border-radius: 4px;
+  font-size: 0.85em;
+  color: #666;
+  margin-top: 1rem;
+`;
+
+const mockParentDataset = {
+  id: 'no2',
+  name: 'Nitrogen Dioxide'
+};
+
+export default function DataLayerCardSandbox() {
+  // Use mockDatasets as state
+  const [datasets, setDatasets] = useState(mockDatasets);
+  const [lastAction, setLastAction] = useState('');
+
+  // Memoized factory functions to create handlers for each dataset
+  const createOpacityHandler = useCallback(
+    (datasetIndex: number) => (newOpacity: number) => {
+      setDatasets((prev) => {
+        const updated = prev.map((dataset, index) =>
+          index === datasetIndex
+            ? {
+                ...dataset,
+                settings: { ...dataset.settings, opacity: newOpacity }
+              }
+            : dataset
+        );
+        setLastAction(
+          `Opacity changed to ${newOpacity}% for ${prev[datasetIndex].data.name}`
+        );
+        return updated;
+      });
+    },
+    []
+  );
+
+  const createColorMapHandler = useCallback(
+    (datasetIndex: number) => (newColorMap: string) => {
+      setDatasets((prev) => {
+        const updated = prev.map((dataset, index) =>
+          index === datasetIndex
+            ? {
+                ...dataset,
+                settings: { ...dataset.settings, colorMap: newColorMap }
+              }
+            : dataset
+        );
+        setLastAction(
+          `ColorMap changed to: ${newColorMap} for ${prev[datasetIndex].data.name}`
+        );
+        return updated;
+      });
+    },
+    []
+  );
+
+  const createColorMapScaleHandler = useCallback(
+    (datasetIndex: number) => (newScale: colorMapScale) => {
+      setDatasets((prev) => {
+        const updated = prev.map((dataset, index) =>
+          index === datasetIndex
+            ? { ...dataset, settings: { ...dataset.settings, scale: newScale } }
+            : dataset
+        );
+        setLastAction(
+          `Scale changed to: ${newScale.min} - ${newScale.max} for ${prev[datasetIndex].data.name}`
+        );
+        return updated;
+      });
+    },
+    []
+  );
+
+  const createVisibilityHandler = useCallback(
+    (datasetIndex: number) => (setter: any) => {
+      setDatasets((prev) =>
+        prev.map((dataset, index) => {
+          if (index === datasetIndex) {
+            const currentVisible = dataset.settings.isVisible;
+            const newValue =
+              typeof setter === 'function' ? setter(currentVisible) : setter;
+            setLastAction(
+              `Layer visibility: ${newValue ? 'shown' : 'hidden'} for ${
+                dataset.data.name
+              }`
+            );
+            return {
+              ...dataset,
+              settings: { ...dataset.settings, isVisible: newValue }
+            };
+          }
+          return dataset;
+        })
+      );
+    },
+    []
+  );
+
+  const createLayerInfoHandler = useCallback(
+    (datasetIndex: number) => () => {
+      setDatasets((prev) => {
+        setLastAction(
+          `Layer info clicked for ${
+            prev[datasetIndex].data.name
+          } - ${new Date().toLocaleTimeString()}`
+        );
+        return prev;
+      });
+    },
+    []
+  );
+
+  const createRemoveLayerHandler = useCallback(
+    (datasetIndex: number) => () => {
+      setDatasets((prev) => {
+        const datasetName = prev[datasetIndex].data.name;
+        setLastAction(
+          `Removed layer: ${datasetName} - ${new Date().toLocaleTimeString()}`
+        );
+        return prev.filter((_, index) => index !== datasetIndex);
+      });
+    },
+    []
+  );
+
+  const createMoveUpHandler = useCallback(
+    (datasetIndex: number) => () => {
+      if (datasetIndex > 0) {
+        setDatasets((prev) => {
+          const datasetName = prev[datasetIndex].data.name;
+          setLastAction(
+            `Moved up: ${datasetName} - ${new Date().toLocaleTimeString()}`
+          );
+          const arr = [...prev];
+          [arr[datasetIndex], arr[datasetIndex - 1]] = [
+            arr[datasetIndex - 1],
+            arr[datasetIndex]
+          ];
+          return arr;
+        });
+      }
+    },
+    []
+  );
+
+  const createMoveDownHandler = useCallback(
+    (datasetIndex: number) => () => {
+      setDatasets((prev) => {
+        if (datasetIndex < prev.length - 1) {
+          const datasetName = prev[datasetIndex].data.name;
+          setLastAction(
+            `Moved down: ${datasetName} - ${new Date().toLocaleTimeString()}`
+          );
+          const arr = [...prev];
+          [arr[datasetIndex], arr[datasetIndex + 1]] = [
+            arr[datasetIndex + 1],
+            arr[datasetIndex]
+          ];
+          return arr;
+        }
+        return prev;
+      });
+    },
+    []
+  );
+
+  // Memoized handlers for each dataset
+  const handlers = useMemo(() => {
+    return datasets.map((_, index) => ({
+      onClickLayerInfo: createLayerInfoHandler(index),
+      setVisible: createVisibilityHandler(index),
+      setColorMap: createColorMapHandler(index),
+      setColorMapScale: createColorMapScaleHandler(index),
+      onRemoveLayer: createRemoveLayerHandler(index),
+      onMoveUp: createMoveUpHandler(index),
+      onMoveDown: createMoveDownHandler(index),
+      onOpacityChange: createOpacityHandler(index)
+    }));
+  }, [
+    datasets.length,
+    createVisibilityHandler,
+    createColorMapHandler,
+    createColorMapScaleHandler,
+    createLayerInfoHandler,
+    createRemoveLayerHandler,
+    createMoveUpHandler,
+    createMoveDownHandler,
+    createOpacityHandler
+  ]);
+
+  // Generate props for each dataset
+  const getDatasetProps = useCallback(
+    (dataset: TimelineDataset, index: number) => {
+      const isVisible = dataset.settings.isVisible;
+      const colorMap = dataset.settings.colorMap;
+      const colorMapScale = dataset.settings.scale;
+      const opacity = dataset.settings.opacity;
+
+      return {
+        dataset,
+        isVisible,
+        setVisible: handlers[index]?.setVisible,
+        colorMap,
+        setColorMap: handlers[index]?.setColorMap,
+        colorMapScale,
+        setColorMapScale: handlers[index]?.setColorMapScale,
+        onClickLayerInfo: handlers[index]?.onClickLayerInfo,
+        layerInfo: dataset.data.info,
+        min: colorMapScale?.min ?? 0,
+        max: colorMapScale?.max ?? 1,
+        parentDataset: mockParentDataset,
+        showLoadingConfigurableCmapSkeleton: false,
+        showConfigurableCmap: true,
+        showNonConfigurableCmap: false,
+        onRemoveLayer: handlers[index]?.onRemoveLayer,
+        onMoveUp: handlers[index]?.onMoveUp,
+        onMoveDown: handlers[index]?.onMoveDown,
+        canMoveUp: index > 0,
+        canMoveDown: index < datasets.length - 1,
+        opacity,
+        onOpacityChange: handlers[index]?.onOpacityChange,
+        datasetLegend: dataset.data.legend
+      };
+    },
+    [handlers, datasets.length]
+  );
+
+  return (
+    <ThemeProvider theme={theme}>
+      <SandboxContainer>
+        <Title>Data Layer Card Presentational Component Sandbox</Title>
+
+        <div style={{ marginBottom: '2rem' }}>
+          <h3>Dataset Stack ({datasets.length} layers)</h3>
+          <p style={{ color: '#666', fontSize: '0.9em' }}>
+            Each layer card shows real CASA-GFED3 carbon flux data. Interact
+            with any layer to see how state changes persist.
+          </p>
+        </div>
+
+        {lastAction && (
+          <div
+            style={{
+              padding: '0.5rem',
+              background: '#e8f5e8',
+              border: '1px solid #4caf50',
+              borderRadius: '4px',
+              fontSize: '0.9em',
+              color: '#2e7d32',
+              marginBottom: '2rem'
+            }}
+          >
+            <strong>Last Action:</strong> {lastAction}
+          </div>
+        )}
+
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '1rem',
+            maxWidth: '400px'
+          }}
+        >
+          {datasets.map((dataset, index) => (
+            <div
+              key={dataset.data.id}
+              style={{
+                border: '2px solid #e0e0e0',
+                borderRadius: '8px',
+                padding: '0.5rem',
+                background: 'white'
+              }}
+            >
+              <div
+                style={{
+                  fontSize: '0.8em',
+                  color: '#666',
+                  marginBottom: '0.5rem',
+                  fontWeight: 'bold'
+                }}
+              >
+                Layer {index + 1} of {datasets.length}
+              </div>
+              <DataLayerCardPresentational
+                {...getDatasetProps(dataset, index)}
+              />
+            </div>
+          ))}
+        </div>
+
+        <StateDisplay>
+          <h4>All Datasets State Summary:</h4>
+          <pre
+            style={{
+              background: 'white',
+              padding: '0.5rem',
+              borderRadius: '4px',
+              marginTop: '0.5rem',
+              overflow: 'auto',
+              fontSize: '0.8em'
+            }}
+          >
+            {JSON.stringify(
+              {
+                totalDatasets: datasets.length,
+                datasets: datasets.map((dataset, index) => ({
+                  index,
+                  ...dataset
+                }))
+              },
+              null,
+              2
+            )}
+          </pre>
+        </StateDisplay>
+      </SandboxContainer>
+    </ThemeProvider>
+  );
+}

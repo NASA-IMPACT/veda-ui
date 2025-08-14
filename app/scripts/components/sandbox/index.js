@@ -16,6 +16,7 @@ import SandboxColors from './legacy/colors';
 import SandboxMDXEditor from './legacy/mdx-editor';
 import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
+import SandboxEALayerCard from './plugins/data-layer-card';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
 import CustomLayer from './customlayer';
@@ -107,6 +108,11 @@ const pages = [
     id: 'colors',
     name: 'USWDS Colors',
     component: USWDSColors
+  },
+  {
+    id: 'layer-card',
+    name: 'Sandbox LayerCard',
+    component: SandboxEALayerCard
   },
   {
     id: 'pagination',

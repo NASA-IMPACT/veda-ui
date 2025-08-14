@@ -52,6 +52,7 @@ interface ColormapOptionsProps {
   max: number;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
   colorMapScale: colorMapScale | undefined;
+  toggleColormap: (toggle: boolean) => void;
 }
 
 export const getColormapColors = (
@@ -82,6 +83,7 @@ export function ColormapOptions({
   max,
   setColorMap,
   setColorMapScale,
+  toggleColormap,
   colorMapScale
 }: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
@@ -148,6 +150,7 @@ export function ColormapOptions({
     const baseColorMap = normalizeColorMap(colorMap);
     setSelectedColorMap(baseColorMap);
     setColorMap(isReversed ? `${baseColorMap}_r` : baseColorMap);
+    toggleColormap(false);
   };
 
   return (
