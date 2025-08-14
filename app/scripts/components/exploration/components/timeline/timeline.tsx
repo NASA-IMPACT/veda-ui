@@ -26,6 +26,7 @@ import useDimensions from 'react-cool-dimensions';
 import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
+import { LayerInfoModalData } from '../layer-info-modal';
 
 import {
   applyTransform,
@@ -176,6 +177,10 @@ interface TimelineProps {
   setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick?: () => void;
   panelHeight: number;
+  LayerCard?: React.ComponentType<{
+    dataset: TimelineDataset;
+    setLayerInfo: (data: LayerInfoModalData) => void;
+  }>;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -206,7 +211,8 @@ export default function Timeline(props: TimelineProps) {
     selectedCompareDay,
     setSelectedCompareDay,
     onDatasetAddClick,
-    panelHeight
+    panelHeight,
+    LayerCard
   } = props;
 
   // Refs for non react based interactions.
@@ -220,7 +226,6 @@ export default function Timeline(props: TimelineProps) {
   const headPointCompareRef = useRef(null);
   const headInRef = useRef(null);
   const headOutRef = useRef(null);
-  console.log('selectedDayFromTimeline', selectedDay);
   const [outOfViewHeads, setOutOfViewHeads] = useState<TimelineHead[]>([]);
 
   const dataDomain = useTimelineDatasetsDomain();
@@ -818,7 +823,7 @@ export default function Timeline(props: TimelineProps) {
           ref={datasetsContainerRef}
           panelHeight={panelHeight}
         >
-          <DatasetList width={width} xScaled={xScaled} />
+          <DatasetList width={width} xScaled={xScaled} LayerCard={LayerCard} />
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>

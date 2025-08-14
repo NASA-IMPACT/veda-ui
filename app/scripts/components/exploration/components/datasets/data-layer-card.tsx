@@ -12,14 +12,9 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import Tippy from '@tippyjs/react';
-import { LayerInfoLiner, LayerInfoModalData } from '../layer-info-modal';
+import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
-import {
-  useTimelineDatasetColormap,
-  useTimelineDatasetVisibility,
-  useTimelineDatasetColormapScale
-} from '$components/exploration/atoms/hooks';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,

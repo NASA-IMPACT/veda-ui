@@ -5,8 +5,10 @@ import { ScaleTime } from 'd3';
 import styled from 'styled-components';
 import { listReset } from '@devseed-ui/theme-provider';
 
+import { LayerInfoModalData } from '../layer-info-modal';
 import { DatasetListItem } from './dataset-list-item';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
 
 const DatasetListSelf = styled.ul`
   ${listReset()}
@@ -16,10 +18,14 @@ const DatasetListSelf = styled.ul`
 interface DatasetListProps {
   width: number;
   xScaled?: ScaleTime<number, number>;
+  LayerCard?: React.ComponentType<{
+    dataset: TimelineDataset;
+    setLayerInfo: (data: LayerInfoModalData) => void;
+  }>;
 }
 
 export function DatasetList(props: DatasetListProps) {
-  const { width, xScaled } = props;
+  const { width, xScaled, LayerCard } = props;
   const [isDragging, setIsDragging] = useState(false);
 
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
@@ -40,6 +46,7 @@ export function DatasetList(props: DatasetListProps) {
           xScaled={xScaled}
           onDragStart={() => setIsDragging(true)}
           onDragEnd={() => setIsDragging(false)}
+          LayerCard={LayerCard}
         />
       ))}
     </Reorder.Group>

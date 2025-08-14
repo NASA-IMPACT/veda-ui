@@ -1,6 +1,5 @@
 import { useAtom, useSetAtom } from 'jotai';
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
-import { SetState } from '$types/aliases';
 import { DatasetData } from '$types/veda';
 import {
   selectedDateAtom,
@@ -20,16 +19,18 @@ interface EACompoundStateValues {
   setSelectedDay: (day: Date) => void;
   selectedCompareDay: Date | null;
   setSelectedCompareDay: (day: Date) => void;
-  setEAExternalDatasets: SetState<DatasetData[]>;
 }
 
-export function useEACompoundState(): EACompoundStateValues {
+export function useEACompoundState(
+  rawDatasets: DatasetData[] // This is the raw MDX data
+): EACompoundStateValues {
+  const setEAExternalDatasets = useSetAtom(externalDatasetsAtom);
+  setEAExternalDatasets(rawDatasets);
   const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedCompareDay] = useAtom(
     selectedCompareDateAtom
   );
-  const setEAExternalDatasets = useSetAtom(externalDatasetsAtom);
 
   return {
     eaDatasets: timelineDatasets,
@@ -37,7 +38,6 @@ export function useEACompoundState(): EACompoundStateValues {
     selectedDay,
     setSelectedDay,
     selectedCompareDay,
-    setSelectedCompareDay,
-    setEAExternalDatasets
+    setSelectedCompareDay
   };
 }

@@ -23,7 +23,7 @@ import Pagination from './pagination';
 import Widgets from './widgets';
 import SandboxUswdsCards from './cards';
 import SandboxLayerCard from './exploration/layer-card';
-import SandboxExplorationAnalysis from './exploration';
+import SandboxExplorationAnalysis from './exploration/compound';
 import {
   FullscreenWidget,
   FullpageModalWidget

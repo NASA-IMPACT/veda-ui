@@ -41,6 +41,7 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -93,10 +94,15 @@ interface DatasetListItemProps {
   xScaled?: ScaleTime<number, number>;
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  LayerCard?: React.ComponentType<{
+    dataset: TimelineDataset;
+    setLayerInfo: (data: LayerInfoModalData) => void;
+  }>;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
+  const { datasetId, width, xScaled, onDragStart, onDragEnd, LayerCard } =
+    props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -122,6 +128,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const controls = useDragControls();
+
+  const LayerCardComponent = LayerCard ?? EADataLayerCard;
 
   // Hook to handle the hover state of the dataset. Check the source file as to
   // why this is needed.
@@ -199,11 +207,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{ width: '100%' }} onPointerDown={onDragging}>
-              {/* <DataLayerCardWithSync
-                dataset={dataset}
-                setLayerInfo={setModalLayerInfo}
-              /> */}
-              <EADataLayerCard
+              <LayerCardComponent
                 dataset={dataset}
                 setLayerInfo={setModalLayerInfo}
               />
