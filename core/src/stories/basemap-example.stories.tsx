@@ -14,29 +14,21 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 const BaseMapExample: React.FC = () => {
   const { mapBasemapId, labelsOption, boundariesOption } = useBasemap();
   return (
-    <div>
-      <div
-        style={{
-          height: '300px',
-          width: '100%',
-          position: 'relative'
-        }}
-      >
-        <StorybookProviders>
-          <Map id='custom-map'>
-            <Basemap
-              basemapStyleId={mapBasemapId}
-              labelsOption={labelsOption}
-              boundariesOption={boundariesOption}
-            />
-            <MapControls>
-              <NavigationControl position='top-right' />
-              <ScaleControl />
-              <MapCoordsControl />
-            </MapControls>
-          </Map>
-        </StorybookProviders>
-      </div>
+    <div style={{ height: '100vh' }}>
+      <StorybookProviders>
+        <Map id='custom-map'>
+          <Basemap
+            basemapStyleId={mapBasemapId}
+            labelsOption={labelsOption}
+            boundariesOption={boundariesOption}
+          />
+          <MapControls>
+            <NavigationControl position='top-right' />
+            <ScaleControl />
+            <MapCoordsControl />
+          </MapControls>
+        </Map>
+      </StorybookProviders>
     </div>
   );
 };
@@ -45,7 +37,7 @@ const meta: Meta<typeof BaseMapExample> = {
   title: 'Components/CustomAOIControl',
   component: BaseMapExample,
   parameters: {
-    layout: 'padded'
+    layout: 'fullscreen'
   },
   tags: ['autodocs']
 };
