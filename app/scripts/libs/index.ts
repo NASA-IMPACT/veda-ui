@@ -31,8 +31,13 @@ export {
   VedaUIProvider,
   ReactQueryProvider,
   useTimelineDatasetAtom,
-  useFiltersWithQS
+  useFiltersWithQS,
+  useTimelineDatasetVisibility,
+  useTimelineDatasetColormap,
+  useTimelineDatasetColormapScale
 } from './hooks';
+
+export { DataLayerCardWithSync } from './components';
 
 export {
   Block,

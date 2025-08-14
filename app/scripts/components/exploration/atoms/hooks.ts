@@ -131,24 +131,29 @@ export function useTimelineDatasetSettings(
 
 /**
  * Hook to get/set the visibility of a dataset.
- * @param datasetAtom Single dataset atom.
+ * @param datasetAtom Single dataset id
  * @returns State getter/setter for the dataset visibility.
  */
-export function useTimelineDatasetVisibility(
-  datasetAtom: PrimitiveAtom<TimelineDataset>
-) {
+
+export function useTimelineDatasetVisibility(datasetId: string) {
+  const datasetAtom = useTimelineDatasetAtom(datasetId);
   const visibilityAtom = useMemo(() => {
-    return focusAtom(datasetAtom, (optic) =>
-      optic.prop('settings').prop('isVisible')
-    );
+    try {
+      return focusAtom(datasetAtom, (optic) =>
+        optic.prop('settings').prop('isVisible')
+      );
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      throw e;
+    }
   }, [datasetAtom]);
 
   return useAtom(visibilityAtom);
 }
 
-export function useTimelineDatasetColormap(
-  datasetAtom: PrimitiveAtom<TimelineDataset>
-) {
+export function useTimelineDatasetColormap(datasetId: string) {
+  const datasetAtom = useTimelineDatasetAtom(datasetId);
   const colorMapAtom = useMemo(() => {
     return focusAtom(datasetAtom, (optic) =>
       optic.prop('settings').prop('colorMap')
@@ -171,9 +176,8 @@ export const useTimelineDatasetAnalysis = (
   );
 };
 
-export function useTimelineDatasetColormapScale(
-  datasetAtom: PrimitiveAtom<TimelineDataset>
-) {
+export function useTimelineDatasetColormapScale(datasetId: string) {
+  const datasetAtom = useTimelineDatasetAtom(datasetId);
   const colorMapScaleAtom = useMemo(() => {
     return focusAtom(datasetAtom, (optic) =>
       optic.prop('settings').prop('scale')
