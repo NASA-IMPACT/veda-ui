@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { GridContainer, Grid, Modal } from '@trussworks/react-uswds';
 import { mockRawData, mockDatasets } from '../mock-data';
 import ExternalLayerCardExample from './external-layer-card';
+import InfoTableViewExample from './external-info-table-example';
 import { PageMainContent } from '$styles/page';
 import { ExplorationAndAnalysisCompound } from '$components/exploration/compound';
 import { useEACompoundState } from '$components/exploration/compound/hooks';
@@ -20,7 +21,7 @@ function SandboxExplorationAndAnalysis() {
   const {
     eaDatasets,
     setEaDatasets,
-    setSelectedDay, // @NOTE-SANDRA: When pass this in, it is breaking...
+    setSelectedDay,
     selectedDay,
     selectedCompareDay,
     setSelectedCompareDay
@@ -45,8 +46,7 @@ function SandboxExplorationAndAnalysis() {
   const EACompoundSystemFull = () => (
     <ExplorationAndAnalysisCompound
       selectedDay={selectedDay}
-      setSelectedDay={() => true}
-      // setSelectedDay={setSelectedDay} // @NOTE-SANDRA: When pass this in, it is breaking...
+      setSelectedDay={setSelectedDay}
       selectedCompareDay={selectedCompareDay}
       setSelectedCompareDay={setSelectedCompareDay}
       datasets={eaDatasets}
@@ -71,34 +71,41 @@ function SandboxExplorationAndAnalysis() {
   );
 
   const EACompoundSystemPartial = () => (
-    <ExplorationAndAnalysisCompound
-      selectedDay={selectedDay}
-      setSelectedDay={() => true}
-      // setSelectedDay={setSelectedDay} // @NOTE-SANDRA: When pass this in, it is breaking...
-      selectedCompareDay={selectedCompareDay}
-      setSelectedCompareDay={setSelectedCompareDay}
-      datasets={eaDatasets}
-      setDatasets={setEaDatasets}
-    >
-      <Grid row gap={3}>
-        <Grid style={{ height: '300px' }} col={6}>
-          <ExplorationAndAnalysisCompound.Map />
+    <>
+      <ExplorationAndAnalysisCompound
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        selectedCompareDay={selectedCompareDay}
+        setSelectedCompareDay={setSelectedCompareDay}
+        datasets={eaDatasets}
+        setDatasets={setEaDatasets}
+      >
+        <Grid row gap={3}>
+          <Grid style={{ height: '300px' }} col={6}>
+            <ExplorationAndAnalysisCompound.Map />
+          </Grid>
+          <Grid col={6}>
+            <h4>External Layer Cards</h4>
+            {eaDatasets.map((dataset) => (
+              <ExternalLayerCardExample
+                key={dataset.data.id}
+                dataset={dataset}
+                setLayerInfo={onLayerInfoClick}
+              />
+            ))}
+          </Grid>
+          <h4>Timeline with External Layer Cards</h4>
+          <ExplorationAndAnalysisCompound.Timeline
+            panelHeight={300}
+            LayerCard={ExternalLayerCardExample}
+          />
         </Grid>
-        <Grid col={6}>
-          {eaDatasets.map((dataset) => (
-            <ExternalLayerCardExample
-              key={dataset.data.id}
-              dataset={dataset}
-              setLayerInfo={onLayerInfoClick}
-            />
-          ))}
-        </Grid>
-        <ExplorationAndAnalysisCompound.Timeline
-          panelHeight={300}
-          LayerCard={ExternalLayerCardExample}
-        />
-      </Grid>
-    </ExplorationAndAnalysisCompound>
+      </ExplorationAndAnalysisCompound>
+      <br />
+      <h4>Table outside of EA Compound Provider but uses EA Compound State</h4>
+      <InfoTableViewExample rawDatasets={mockRawData} />{' '}
+      {/* This is a showcase example of just using the larger hook wrapper (atom hooks only) so no need to be wrapped in provider. */}
+    </>
   );
 
   return (
