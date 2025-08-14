@@ -12,14 +12,9 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import Tippy from '@tippyjs/react';
-import { LayerInfoLiner, LayerInfoModalData } from '../layer-info-modal';
+import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
-import {
-  useTimelineDatasetColormap,
-  useTimelineDatasetVisibility,
-  useTimelineDatasetColormapScale
-} from '$components/exploration/atoms/hooks';
 import { TipButton } from '$components/common/tip-button';
 import {
   LayerCategoricalGraphic,
@@ -318,41 +313,5 @@ export default function DataLayerCard(props: CardProps) {
         )}
       </DatasetInfo>
     </>
-  );
-}
-
-export function DataLayerCardWithSync(props: {
-  dataset: TimelineDataset;
-  setLayerInfo: (data: LayerInfoModalData) => void;
-}) {
-  const { dataset, setLayerInfo } = props;
-
-  const [isVisible, setVisible] = useTimelineDatasetVisibility(dataset.data.id);
-  const [colorMap, setColorMap] = useTimelineDatasetColormap(dataset.data.id);
-  const [colorMapScale, setColorMapScale] = useTimelineDatasetColormapScale(
-    dataset.data.id
-  );
-
-  const onClickLayerInfo = useCallback(() => {
-    const data: LayerInfoModalData = {
-      name: dataset.data.name,
-      description: dataset.data.description,
-      info: dataset.data.info,
-      parentData: dataset.data.parentDataset
-    };
-    setLayerInfo(data);
-  }, [dataset, setLayerInfo]);
-
-  return (
-    <DataLayerCard
-      dataset={dataset}
-      colorMap={colorMap}
-      colorMapScale={colorMapScale}
-      setColorMap={setColorMap}
-      setColorMapScale={setColorMapScale}
-      isVisible={isVisible}
-      setVisible={setVisible}
-      onClickLayerInfo={onClickLayerInfo}
-    />
   );
 }

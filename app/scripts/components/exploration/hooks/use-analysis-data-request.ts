@@ -75,8 +75,8 @@ export function useAnalysisDataRequest({
   datasetAtom: PrimitiveAtom<TimelineDataset>;
 }) {
   const queryClient = useQueryClient();
-
-  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } = useVedaUI();
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } =
+    useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
 

@@ -1,1 +1,1 @@
-export { DataLayerCardWithSync } from '$components/exploration/components/datasets/data-layer-card';
+export { EADataLayerCard } from '$components/exploration/compound';

@@ -26,6 +26,7 @@ import useDimensions from 'react-cool-dimensions';
 import styled from 'styled-components';
 
 import { DatasetList } from '../datasets/dataset-list';
+import { LayerInfoModalData } from '../layer-info-modal';
 
 import {
   applyTransform,
@@ -176,6 +177,10 @@ interface TimelineProps {
   setSelectedCompareDay: (d: Date | null) => void;
   onDatasetAddClick?: () => void;
   panelHeight: number;
+  LayerCard?: React.ComponentType<{
+    dataset: TimelineDataset;
+    setLayerInfo: (data: LayerInfoModalData) => void;
+  }>;
 }
 
 const getIntervalFromDate = (selectedDay: Date, dataDomain: [Date, Date]) => {
@@ -206,7 +211,8 @@ export default function Timeline(props: TimelineProps) {
     selectedCompareDay,
     setSelectedCompareDay,
     onDatasetAddClick,
-    panelHeight
+    panelHeight,
+    LayerCard
   } = props;
 
   // Refs for non react based interactions.
@@ -216,12 +222,10 @@ export default function Timeline(props: TimelineProps) {
   // Because the interaction rect traps the events, we need a ref to the
   // container to propagate the needed events to it, like scroll.
   const datasetsContainerRef = useRef<HTMLDivElement>(null);
-
   const headPointRef = useRef(null);
   const headPointCompareRef = useRef(null);
   const headInRef = useRef(null);
   const headOutRef = useRef(null);
-
   const [outOfViewHeads, setOutOfViewHeads] = useState<TimelineHead[]>([]);
 
   const dataDomain = useTimelineDatasetsDomain();
@@ -514,6 +518,7 @@ export default function Timeline(props: TimelineProps) {
     }
 
     const [start, end] = dataDomain;
+
     // If the selected day is not within the new domain, set it to the last
     // available dataset date. We can't use the date domain, because the end of
     // the domain is the max date + a duration so that all dataset dates fit in
@@ -521,8 +526,13 @@ export default function Timeline(props: TimelineProps) {
     let newSelectedDay; // needed for the interval
     if (!selectedDay || !isWithinInterval(selectedDay, { start, end })) {
       const maxDate = max(
-        successDatasets.map((d) => d.data.domain.last) as Date[]
+        successDatasets.map((d) => {
+          const date = d.data.domain.last ?? new Date();
+          if (!(date instanceof Date)) return new Date(date);
+          return date;
+        })
       );
+
       setSelectedDay(maxDate);
       newSelectedDay = maxDate;
     } else {
@@ -818,7 +828,7 @@ export default function Timeline(props: TimelineProps) {
           ref={datasetsContainerRef}
           panelHeight={panelHeight}
         >
-          <DatasetList width={width} xScaled={xScaled} />
+          <DatasetList width={width} xScaled={xScaled} LayerCard={LayerCard} />
         </TimelineContentInner>
       </TimelineContent>
     </TimelineWrapper>

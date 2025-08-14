@@ -50,7 +50,7 @@ export function useTimelineDatasetsDomain() {
 
     // To speed up the calculation of the extent, we assume the dataset's domain
     // is ordered and only look at first and last dates.
-    const [start, end] = extent(
+    let [start, end] = extent(
       successDatasets.flatMap((d) =>
         d.data.domain.length
           ? [
@@ -61,6 +61,12 @@ export function useTimelineDatasetsDomain() {
       )
     ) as [Date, Date];
 
+    if (!(start instanceof Date)) {
+      start = new Date(start);
+    }
+    if (!(end instanceof Date)) {
+      end = new Date(end);
+    }
     return [start, max([end, add(start, { days: minDays })])] as [Date, Date];
   }, [datasets, minDays]);
 }

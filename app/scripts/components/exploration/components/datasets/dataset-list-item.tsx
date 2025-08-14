@@ -14,13 +14,14 @@ import {
   usePopover
 } from '../chart-popover';
 import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
+import { EADataLayerCard } from '../../compound';
 import {
   DatasetTrackError,
   DatasetTrackLoading
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
-import { DataLayerCardWithSync } from './data-layer-card';
+// import { DataLayerCardWithSync } from './data-layer-card';
 import {
   DatasetStatus,
   TimelineDatasetSuccess
@@ -40,6 +41,7 @@ import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
+import { TimelineDataset } from '$components/exploration/types.d.ts';
 
 const DatasetItem = styled.article`
   width: 100%;
@@ -92,10 +94,15 @@ interface DatasetListItemProps {
   xScaled?: ScaleTime<number, number>;
   onDragStart?: () => void;
   onDragEnd?: () => void;
+  LayerCard?: React.ComponentType<{
+    dataset: TimelineDataset;
+    setLayerInfo: (data: LayerInfoModalData) => void;
+  }>;
 }
 
 export function DatasetListItem(props: DatasetListItemProps) {
-  const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
+  const { datasetId, width, xScaled, onDragStart, onDragEnd, LayerCard } =
+    props;
 
   const datasetAtom = useTimelineDatasetAtom(datasetId);
   const dataset = useAtomValue(datasetAtom);
@@ -121,6 +128,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
   }, [queryClient, datasetId]);
 
   const controls = useDragControls();
+
+  const LayerCardComponent = LayerCard ?? EADataLayerCard;
 
   // Hook to handle the hover state of the dataset. Check the source file as to
   // why this is needed.
@@ -198,7 +207,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{ width: '100%' }} onPointerDown={onDragging}>
-              <DataLayerCardWithSync
+              <LayerCardComponent
                 dataset={dataset}
                 setLayerInfo={setModalLayerInfo}
               />
@@ -296,7 +305,6 @@ interface DatasetTrackProps {
 
 function DatasetTrack(props: DatasetTrackProps) {
   const { width, xScaled, dataset, isVisible } = props;
-
   // Limit the items to render to increase performance.
   const domainToRender = useMemo(() => {
     const domain = xScaled.domain();
@@ -305,7 +313,7 @@ function DatasetTrack(props: DatasetTrackProps) {
 
     return dataset.data.domain.filter((d) => {
       const [blockStart, blockEnd] = getBlockBoundaries(
-        d,
+        d instanceof Date ? d : new Date(d),
         dataset.data.timeDensity
       );
 
