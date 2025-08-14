@@ -52,7 +52,7 @@ const pages = [
   },
   {
     id: 'exploration-analysis',
-    name: 'Exploration Analysis',
+    name: 'Exploration Analysis System',
     component: SandboxExplorationAnalysis
   },
   {
