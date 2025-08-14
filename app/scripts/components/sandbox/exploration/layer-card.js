@@ -88,53 +88,96 @@ function DataLayerCardSet({ timelineDatasets, onChange }) {
   );
 }
 
-function SandboxExplorationMapWithLayerCard() {
-  const setExternalDatasets = useSetAtom(externalDatasetsAtom);
+class ReactPlugin extends React.Component {
+  // react specific things needed for plugin
+  getter(key) {
+    return this.state[key];
+  }
 
-  setExternalDatasets(mockRawData);
-  const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
-
-  useEffect(() => {
-    // IF no data came through URL
-    if (timelineDatasets.length == 0) {
-      setTimelineDatasets([...mockDatasets]);
-    }
-  }, [setTimelineDatasets, timelineDatasets.length]);
-
-  // eslint-disable-next-line no-console
-  const handleChange = useCallback((e) => console.log(e), []);
-  return (
-    <PageMainContent>
-      <HugResetter>
-        <GridContainer id='grid-contianer'>
-          <h2 className='margin-top-5 margin-bottom-2'>
-            Layer card in sync with Map
-          </h2>
-          <Grid row gap={3}>
-            <Grid style={{ height: '300px' }} col={6}>
-              <ExplorationMap
-                datasets={timelineDatasets}
-                setDatasets={setTimelineDatasets}
-                selectedDay={mockSelectedDay}
-              />
-            </Grid>
-            <Grid col={6}>
-              <DataLayerCardSet
-                timelineDatasets={timelineDatasets}
-                onChange={handleChange}
-              />
-            </Grid>
-          </Grid>
-          <h2 className='margin-top-5 margin-bottom-2'>
-            Custom UI using hooks
-          </h2>
-          {timelineDatasets.length > 0 && (
-            <ExampleComponent dataset={timelineDatasets[0]} />
-          )}
-        </GridContainer>
-      </HugResetter>
-    </PageMainContent>
-  );
+  setter(key, value) {
+    this.setState({
+      key: value
+    });
+  }
 }
+// Higher-Order Component that handles hooks
+function withHooks(WrappedComponent) {
+  return function HOCComponent(props) {
+    const setExternalDatasets = useSetAtom(externalDatasetsAtom);
+    const [timelineDatasets, setTimelineDatasets] = useTimelineDatasetAtom();
+
+    useEffect(() => {
+      // Initialize external datasets
+      setExternalDatasets(mockRawData);
+    }, [setExternalDatasets]);
+
+    useEffect(() => {
+      // IF no data came through URL
+      if (timelineDatasets.length === 0) {
+        setTimelineDatasets([...mockDatasets]);
+      }
+    }, [setTimelineDatasets, timelineDatasets.length]);
+
+    const handleChange = useCallback((e) => {
+      // eslint-disable-next-line no-console
+      console.log(e);
+    }, []);
+
+    // Pass hook values as props to the class component
+    return (
+      <WrappedComponent
+        {...props}
+        timelineDatasets={timelineDatasets}
+        setTimelineDatasets={setTimelineDatasets}
+        handleChange={handleChange}
+      />
+    );
+  };
+}
+
+// Class Component (pure presentation)
+class SandboxExplorationMapWithLayerCardClass extends ReactPlugin {
+  render() {
+    const { timelineDatasets, setTimelineDatasets, handleChange } = this.props;
+
+    return (
+      <PageMainContent>
+        <HugResetter>
+          <GridContainer id='grid-contianer'>
+            <h2 className='margin-top-5 margin-bottom-2'>
+              Layer card in sync with Map
+            </h2>
+            <Grid row gap={3}>
+              <Grid style={{ height: '300px' }} col={6}>
+                <ExplorationMap
+                  datasets={timelineDatasets}
+                  setDatasets={setTimelineDatasets}
+                  selectedDay={mockSelectedDay}
+                />
+              </Grid>
+              <Grid col={6}>
+                <DataLayerCardSet
+                  timelineDatasets={timelineDatasets}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+            <h2 className='margin-top-5 margin-bottom-2'>
+              Custom UI using hooks
+            </h2>
+            {timelineDatasets.length > 0 && (
+              <ExampleComponent dataset={timelineDatasets[0]} />
+            )}
+          </GridContainer>
+        </HugResetter>
+      </PageMainContent>
+    );
+  }
+}
+
+// Final component with HOC applied
+const SandboxExplorationMapWithLayerCard = withHooks(
+  SandboxExplorationMapWithLayerCardClass
+);
 
 export default SandboxExplorationMapWithLayerCard;
