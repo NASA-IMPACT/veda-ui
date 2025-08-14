@@ -8,6 +8,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     envDir: rootEnvDir,
+    publicDir: path.resolve(__dirname, '../static'),
     plugins: [react()],
     resolve: {
       alias: {
