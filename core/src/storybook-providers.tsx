@@ -12,7 +12,8 @@ export const StorybookProviders: React.FC<{
         envMapboxToken: import.meta.env.MAPBOX_TOKEN ?? '',
         envApiStacEndpoint: import.meta.env.API_STAC_ENDPOINT ?? '',
         envApiRasterEndpoint: import.meta.env.API_RASTER_ENDPOINT ?? '',
-        envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? ''
+        envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? '',
+        geoDataPath: '/public/geo-data/'
       }}
     >
       <DevseedUiThemeProvider>

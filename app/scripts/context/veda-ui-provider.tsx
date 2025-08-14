@@ -7,6 +7,7 @@ interface EnvironmentConfig {
   envApiStacEndpoint: string;
   envApiRasterEndpoint: string;
   envApiCMREndpoint?: string;
+  geoDataPath?: string;
 }
 
 interface LinkProps {
