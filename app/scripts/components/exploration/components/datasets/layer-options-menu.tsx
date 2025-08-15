@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { PrimitiveAtom, useAtomValue, useAtom } from 'jotai';
 import styled from 'styled-components';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
@@ -9,18 +8,22 @@ import {
   CollecticonXmarkSmall,
   CollecticonArrowDown,
   CollecticonArrowUp,
-  CollecticonShare,
+  CollecticonShare
 } from '@devseed-ui/collecticons';
 import { TileUrlModal } from './tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
-import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
-import { useTimelineDatasetSettings } from '$components/exploration/atoms/hooks';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 
-
 interface LayerMenuOptionsProps {
-  datasetAtom: PrimitiveAtom<TimelineDataset>;
+  dataset: TimelineDataset;
+  onRemoveLayer: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
+  opacity: number;
+  onOpacityChange: (opacity: number) => void;
 }
 
 // @NOTE: Class Name prefix is named after file name
@@ -33,7 +36,7 @@ const StyledDropdown = styled(Dropdown)`
     padding: ${glsp(0.25)};
     border-bottom: 1px solid ${themeVal('color.base-200')};
     ${DropMenuItem} {
-      cursor:pointer;
+      cursor: pointer;
     }
   }
 
@@ -44,7 +47,7 @@ const StyledDropdown = styled(Dropdown)`
   li:first-child {
     padding-top: 0;
   }
-  
+
   & .${classNamePrefix}-opacity {
     min-width: 1.5rem;
     font-size: 0.875rem;
@@ -59,43 +62,19 @@ const StyledDropdown = styled(Dropdown)`
   }
 `;
 
-export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
-  const { datasetAtom } = props;
-
-  const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
-  const dataset = useAtomValue(datasetAtom);
-  const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
-  const opacity = (getSettings('opacity') ?? 100) as number;
+export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
+  const {
+    dataset,
+    onRemoveLayer,
+    onMoveUp,
+    onMoveDown,
+    canMoveUp,
+    canMoveDown,
+    opacity,
+    onOpacityChange
+  } = props;
 
   const [tileModalRevealed, setTileModalRevealed] = useState(false);
-
-  const currentIndex = datasets.findIndex(d => d.data.id === dataset.data.id);
-
-  const handleRemove = () => {
-      setDatasets((prevDatasets) =>
-      prevDatasets.filter((d) => d.data.id !== dataset.data.id)
-    );
-  };
-
-  const moveUp = () => {
-    if (currentIndex > 0 ) {
-      setDatasets((prevDatasets) => {
-        const arr = [...prevDatasets];
-        [arr[currentIndex], arr[currentIndex - 1]] = [arr[currentIndex - 1], arr[currentIndex]];
-        return arr;
-      });
-    }
-  };
-
-  const moveDown = () => {
-    if (currentIndex < datasets.length - 1) {
-      setDatasets((prevDatasets) => {
-        const arr = [...prevDatasets];
-        [arr[currentIndex], arr[currentIndex + 1]] = [arr[currentIndex + 1], arr[currentIndex]];
-        return arr;
-      });
-    }
-  };
 
   const handleLoadIntoGIS = () => {
     setTileModalRevealed(true);
@@ -124,16 +103,13 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
               <CollecticonDrop />
               Layer opacity
             </div>
-            <OpacityControl
-              value={opacity}
-              onInput={(v) => setSetting('opacity', v)}
-            />
+            <OpacityControl value={opacity} onInput={onOpacityChange} />
           </li>
           <li>
             <DropMenuItem
-              disabled={currentIndex === 0}
-              aria-disabled={currentIndex === 0}
-              onClick={moveUp}
+              disabled={!canMoveUp}
+              aria-disabled={!canMoveUp}
+              onClick={onMoveUp}
               data-dropdown='click.close'
             >
               <CollecticonArrowUp />
@@ -142,27 +118,23 @@ export default function LayerMenuOptions (props: LayerMenuOptionsProps) {
           </li>
           <li>
             <DropMenuItem
-              disabled={currentIndex === datasets.length -1}
-              aria-disabled={currentIndex === 0}
-              onClick={moveDown}
+              disabled={!canMoveDown}
+              aria-disabled={!canMoveDown}
+              onClick={onMoveDown}
               data-dropdown='click.close'
             >
               <CollecticonArrowDown />
-                Move down
+              Move down
             </DropMenuItem>
           </li>
           <li>
-            <DropMenuItem
-              onClick={handleLoadIntoGIS}
-            >
+            <DropMenuItem onClick={handleLoadIntoGIS}>
               <CollecticonShare />
               Load into GIS
             </DropMenuItem>
           </li>
           <li className={`${classNamePrefix}-remove-layer`}>
-            <DropMenuItem
-              onClick={handleRemove}
-            >
+            <DropMenuItem onClick={onRemoveLayer}>
               <CollecticonXmarkSmall />
               Remove layer
             </DropMenuItem>

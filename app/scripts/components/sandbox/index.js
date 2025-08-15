@@ -16,6 +16,9 @@ import SandboxColors from './legacy/colors';
 import SandboxMDXEditor from './legacy/mdx-editor';
 import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
+import SandboxEALayerCard from './plugins/data-layer-card';
+import SandboxEALayerCardWithAtom from './plugins/data-layer-card-with-atom';
+import CommunicationReceiver from './plugins/communication-receiver';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
 import CustomLayer from './customlayer';
@@ -109,6 +112,16 @@ const pages = [
     component: USWDSColors
   },
   {
+    id: 'layer-card',
+    name: 'Sandbox LayerCard',
+    component: SandboxEALayerCard
+  },
+  {
+    id: 'layer-card-atom',
+    name: 'Sandbox LayerCard Atom',
+    component: SandboxEALayerCardWithAtom
+  },
+  {
     id: 'pagination',
     name: 'USWDS Pagination',
     component: Pagination
@@ -127,6 +140,11 @@ const pages = [
     id: 'custom-layer',
     name: 'Custom Layer',
     component: CustomLayer
+  },
+  {
+    id: 'comm-receiver',
+    name: 'CommunicationReceiver',
+    component: CommunicationReceiver
   }
 ];
 
