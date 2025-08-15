@@ -17,6 +17,7 @@ import SandboxMDXEditor from './legacy/mdx-editor';
 import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
 import SandboxEALayerCard from './plugins/data-layer-card';
+import CommunicationReceiver from './plugins/communication-receiver';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
 import CustomLayer from './customlayer';
@@ -133,6 +134,11 @@ const pages = [
     id: 'custom-layer',
     name: 'Custom Layer',
     component: CustomLayer
+  },
+  {
+    id: 'comm-receiver',
+    name: 'CommunicationReceiver',
+    component: CommunicationReceiver
   }
 ];
 

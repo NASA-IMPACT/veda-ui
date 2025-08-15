@@ -1,4 +1,10 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useEffect,
+  useRef
+} from 'react';
 import styled, { ThemeProvider } from 'styled-components';
 import { mockDatasets } from '../mock-data.js';
 import theme from '$styles/theme';
@@ -20,7 +26,7 @@ const Title = styled.h1`
   color: #333;
 `;
 
-const StateDisplay = styled.div`
+const StateDisplay = styled.iframe`
   padding: 1rem;
   background: #f0f0f0;
   border-radius: 4px;
@@ -38,6 +44,27 @@ export default function DataLayerCardSandbox() {
   // Use mockDatasets as state
   const [datasets, setDatasets] = useState(mockDatasets);
   const [lastAction, setLastAction] = useState('');
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  // Send message to iframe whenever datasets change
+  useEffect(() => {
+    if (datasets && iframeRef.current?.contentWindow) {
+      // eslint-disable-next-line no-console
+      console.log('sending it');
+      iframeRef.current.contentWindow.postMessage(
+        {
+          plugin: 'data-layer-card',
+          payload: {
+            type: 'dataset-change',
+            message: `Datasets updated (${datasets.length} layers)`,
+            timestamp: Date.now(),
+            datasets
+          }
+        },
+        '*'
+      );
+    }
+  }, [datasets]);
 
   // Memoized factory functions to create handlers for each dataset
   const createOpacityHandler = useCallback(
@@ -315,31 +342,11 @@ export default function DataLayerCardSandbox() {
           ))}
         </div>
 
-        <StateDisplay>
-          <h4>All Datasets State Summary:</h4>
-          <pre
-            style={{
-              background: 'white',
-              padding: '0.5rem',
-              borderRadius: '4px',
-              marginTop: '0.5rem',
-              overflow: 'auto',
-              fontSize: '0.8em'
-            }}
-          >
-            {JSON.stringify(
-              {
-                totalDatasets: datasets.length,
-                datasets: datasets.map((dataset, index) => ({
-                  index,
-                  ...dataset
-                }))
-              },
-              null,
-              2
-            )}
-          </pre>
-        </StateDisplay>
+        <StateDisplay
+          ref={iframeRef}
+          style={{ width: '100%', height: '400px' }}
+          src='comm-receiver'
+        />
       </SandboxContainer>
     </ThemeProvider>
   );
