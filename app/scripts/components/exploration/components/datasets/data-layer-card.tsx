@@ -10,13 +10,6 @@ import { TimelineDataset } from '$components/exploration/types.d.ts';
 
 interface CardProps {
   dataset: TimelineDataset;
-  datasetAtom: PrimitiveAtom<TimelineDataset>;
-  onClickLayerInfo: () => void;
-  datasetLegend:
-    | LayerLegendCategorical
-    | LayerLegendGradient
-    | LayerLegendText
-    | undefined;
 }
 
 export default function DataLayerCard(props: CardProps) {

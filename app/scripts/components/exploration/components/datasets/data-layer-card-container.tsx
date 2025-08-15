@@ -13,25 +13,21 @@ import {
   useTimelineDatasetSettings,
   useTimelineDatasetVisibility,
   useTimelineDatasetColormap,
-  useTimelineDatasetColormapScale
+  useTimelineDatasetColormapScale,
+  useTimelineDatasetAtom
 } from '$components/exploration/atoms/hooks';
 
 interface CardProps {
   dataset: TimelineDataset;
-  datasetAtom: PrimitiveAtom<TimelineDataset>;
-  onClickLayerInfo: () => void;
-  datasetLegend:
-    | LayerLegendCategorical
-    | LayerLegendGradient
-    | LayerLegendText
-    | undefined;
 }
 
 export default function DataLayerCardContainer(props: CardProps) {
-  const { dataset, datasetAtom, datasetLegend, onClickLayerInfo } = props;
+  const { dataset } = props;
 
   // All atom-based state management
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
+  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  const datasetLegend = dataset.data.legend;
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
@@ -112,7 +108,6 @@ export default function DataLayerCardContainer(props: CardProps) {
       colorMapScale={colorMapScale}
       setColorMapScale={setColorMapScale}
       datasetLegend={datasetLegend}
-      onClickLayerInfo={onClickLayerInfo}
       layerInfo={layerInfo}
       min={min}
       max={max}

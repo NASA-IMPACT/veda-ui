@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
@@ -12,6 +12,7 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import Tippy from '@tippyjs/react';
+import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapOptions } from './colormap-options';
@@ -44,7 +45,7 @@ interface PresentationalProps {
   setColorMap: (colorMap: string) => void;
   colorMapScale: colorMapScale | undefined;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
-  onClickLayerInfo: () => void;
+
   datasetLegend:
     | LayerLegendCategorical
     | LayerLegendGradient
@@ -142,7 +143,7 @@ export default function DataLayerCardPresentational(
     colorMapScale,
     setColorMapScale,
     datasetLegend,
-    onClickLayerInfo,
+
     layerInfo,
     min,
     max,
@@ -160,6 +161,18 @@ export default function DataLayerCardPresentational(
   } = props;
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
+
+  const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
+
+  const onClickLayerInfo = useCallback(() => {
+    const data: LayerInfoModalData = {
+      name: dataset.data.name,
+      description: dataset.data.description,
+      info: dataset.data.info,
+      parentData: dataset.data.parentDataset
+    };
+    setModalLayerInfo(data);
+  }, [dataset]);
 
   const handleColorMapTriggerClick = () => {
     setIsColorMapOpen((prev) => !prev);
@@ -321,6 +334,13 @@ export default function DataLayerCardPresentational(
             min={min}
             max={max}
             colorMap={colorMap}
+          />
+        )}
+        {modalLayerInfo && (
+          <LayerInfoModal
+            revealed={!!modalLayerInfo}
+            close={() => setModalLayerInfo(undefined)}
+            layerData={modalLayerInfo}
           />
         )}
       </DatasetInfo>
