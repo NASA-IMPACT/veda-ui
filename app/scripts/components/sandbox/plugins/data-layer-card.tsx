@@ -6,7 +6,9 @@ import React, {
   useRef
 } from 'react';
 import styled, { ThemeProvider } from 'styled-components';
+import { GridContainer, Grid } from '@trussworks/react-uswds';
 import { mockDatasets } from '../mock-data.js';
+
 import theme from '$styles/theme';
 
 import DataLayerCardPresentational from '$components/exploration/components/datasets/data-layer-card-presentational';
@@ -15,12 +17,10 @@ export interface colorMapScale {
   min: number;
   max: number;
 }
-const SandboxContainer = styled.div`
-  padding: 2rem;
-  background: #f8f9fa;
-  min-height: 100vh;
-`;
 
+const HugResetter = styled.div`
+  /* To break hug */
+`;
 const Title = styled.h1`
   margin-bottom: 2rem;
   color: #333;
@@ -280,74 +280,72 @@ export default function DataLayerCardSandbox() {
 
   return (
     <ThemeProvider theme={theme}>
-      <SandboxContainer>
-        <Title>Data Layer Card Presentational Component Sandbox</Title>
+      <HugResetter>
+        <GridContainer>
+          <Title>Data Layer Card Presentational Component Sandbox</Title>
 
-        <div style={{ marginBottom: '2rem' }}>
-          <h3>Dataset Stack ({datasets.length} layers)</h3>
-          <p style={{ color: '#666', fontSize: '0.9em' }}>
-            Each layer card shows real CASA-GFED3 carbon flux data. Interact
-            with any layer to see how state changes persist.
-          </p>
-        </div>
-
-        {lastAction && (
-          <div
-            style={{
-              padding: '0.5rem',
-              background: '#e8f5e8',
-              border: '1px solid #4caf50',
-              borderRadius: '4px',
-              fontSize: '0.9em',
-              color: '#2e7d32',
-              marginBottom: '2rem'
-            }}
-          >
-            <strong>Last Action:</strong> {lastAction}
+          <div style={{ marginBottom: '2rem' }}>
+            <h3>Dataset Stack ({datasets.length} layers)</h3>
+            <p style={{ color: '#666', fontSize: '0.9em' }}>
+              Each layer card shows real CASA-GFED3 carbon flux data. Interact
+              with any layer to see how state changes persist.
+            </p>
           </div>
-        )}
 
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            maxWidth: '400px'
-          }}
-        >
-          {datasets.map((dataset, index) => (
+          {lastAction && (
             <div
-              key={dataset.data.id}
               style={{
-                border: '2px solid #e0e0e0',
-                borderRadius: '8px',
                 padding: '0.5rem',
-                background: 'white'
+                background: '#e8f5e8',
+                border: '1px solid #4caf50',
+                borderRadius: '4px',
+                fontSize: '0.9em',
+                color: '#2e7d32',
+                marginBottom: '2rem'
               }}
             >
-              <div
-                style={{
-                  fontSize: '0.8em',
-                  color: '#666',
-                  marginBottom: '0.5rem',
-                  fontWeight: 'bold'
-                }}
-              >
-                Layer {index + 1} of {datasets.length}
-              </div>
-              <DataLayerCardPresentational
-                {...getDatasetProps(dataset, index)}
-              />
+              <strong>Last Action:</strong> {lastAction}
             </div>
-          ))}
-        </div>
+          )}
+          <Grid row gap={3}>
+            <Grid col={6}>
+              {datasets.map((dataset, index) => (
+                <div
+                  key={dataset.data.id}
+                  style={{
+                    border: '2px solid #e0e0e0',
+                    borderRadius: '8px',
+                    padding: '0.5rem',
+                    background: 'white'
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: '0.8em',
+                      color: '#666',
+                      marginBottom: '0.5rem',
+                      fontWeight: 'bold'
+                    }}
+                  >
+                    Layer {index + 1} of {datasets.length}
+                  </div>
+                  <DataLayerCardPresentational
+                    {...getDatasetProps(dataset, index)}
+                  />
+                </div>
+              ))}
+            </Grid>
 
-        <StateDisplay
-          ref={iframeRef}
-          style={{ width: '100%', height: '400px' }}
-          src='comm-receiver'
-        />
-      </SandboxContainer>
+            <Grid col={6}>
+              <StateDisplay
+                ref={iframeRef}
+                style={{ width: '100%', height: '400px' }}
+                src='comm-receiver'
+              />
+            </Grid>
+          </Grid>
+        </GridContainer>
+      </HugResetter>
     </ThemeProvider>
   );
 }

@@ -17,6 +17,7 @@ import SandboxMDXEditor from './legacy/mdx-editor';
 import SandboxTable from './legacy/table';
 import SandboxLayerInfo from './legacy/layer-info';
 import SandboxEALayerCard from './plugins/data-layer-card';
+import SandboxEALayerCardWithAtom from './plugins/data-layer-card-with-atom';
 import CommunicationReceiver from './plugins/communication-receiver';
 import SandboxOverride from './override';
 import { USWDSColors } from './colors';
@@ -114,6 +115,11 @@ const pages = [
     id: 'layer-card',
     name: 'Sandbox LayerCard',
     component: SandboxEALayerCard
+  },
+  {
+    id: 'layer-card-atom',
+    name: 'Sandbox LayerCard Atom',
+    component: SandboxEALayerCardWithAtom
   },
   {
     id: 'pagination',

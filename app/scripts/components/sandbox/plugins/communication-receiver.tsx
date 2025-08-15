@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import {
+  GridContainer,
+  Grid,
+  Button
+} from '@trussworks/react-uswds';
 import { PluginCommunication } from './plugin-communication.js';
+import Map from './map';
 
 interface ReceivedData {
   message?: string;
@@ -7,7 +13,7 @@ interface ReceivedData {
   type?: string;
   data?: any;
 }
-
+const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 const CommunicationReceiver: React.FC = () => {
   const [receivedData, setReceivedData] = useState<ReceivedData | null>(null);
   const [pluginComm, setPluginComm] = useState<PluginCommunication | null>(
@@ -44,60 +50,76 @@ const CommunicationReceiver: React.FC = () => {
   };
 
   return (
-    <div
-      style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '8px' }}
-    >
-      <h3>Communication Receiver</h3>
+    <GridContainer>
+      <Grid row className='margin-bottom-5'>
+        <Grid col={12}>
+          <h3>Communication Receiver</h3>
+          <Grid row gap='md'>
+            <Grid col={12}>
+              <Button type='button' onClick={clearData}>
+                Clear Data
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
 
-      <div style={{ marginBottom: '10px' }}>
-        <button type='button' onClick={clearData}>
-          Clear Data
-        </button>
-      </div>
+      {receivedData?.data.datasets.length && (
+        <Grid row className='margin-bottom-5'>
+          <Grid col={12} style={{ height: '400px' }}>
+            <h4>Map Visualization</h4>
+            <Map
+              datasets={receivedData?.data.datasets}
+              setDatasets={() => {}}
+              selectedDay={mockSelectedDay}
+            />
+          </Grid>
+        </Grid>
+      )}
 
-      <div
-        style={{
-          minHeight: '200px',
-          border: '1px solid #ddd',
-          padding: '10px',
-          backgroundColor: '#f9f9f9',
-          overflowY: 'auto',
-          maxHeight: '400px'
-        }}
-      >
-        <h4>Received Data:</h4>
-        {receivedData === null ? (
-          <p>No data received yet...</p>
-        ) : (
+      <Grid row className='margin-bottom-5'>
+        <Grid col={12}>
           <div
             style={{
-              marginBottom: '10px',
-              padding: '8px',
-              border: '1px solid #eee',
-              backgroundColor: 'white',
-              borderRadius: '4px'
+              minHeight: '200px',
+              overflowY: 'auto',
+              maxHeight: '400px'
             }}
           >
-            <div>
-              <strong>Type:</strong> {receivedData.type}
-            </div>
-            <div>
-              <strong>Message:</strong> {receivedData.message}
-            </div>
-            <div>
-              <strong>Timestamp:</strong>{' '}
-              {new Date(receivedData.timestamp || 0).toLocaleTimeString()}
-            </div>
-            <details>
-              <summary>Raw Data</summary>
-              <pre style={{ fontSize: '12px', marginTop: '5px' }}>
-                {JSON.stringify(receivedData.data, null, 2)}
-              </pre>
-            </details>
+            {receivedData === null ? (
+              <p>No data received yet...</p>
+            ) : (
+              <Grid row gap='sm'>
+                <Grid col={12} tablet={{ col: 4 }}>
+                  <div>
+                    <strong>Type:</strong> {receivedData.type}
+                  </div>
+                </Grid>
+                <Grid col={12} tablet={{ col: 8 }}>
+                  <div>
+                    <strong>Message:</strong> {receivedData.message}
+                  </div>
+                </Grid>
+                <Grid col={12}>
+                  <div>
+                    <strong>Timestamp:</strong>{' '}
+                    {new Date(receivedData.timestamp || 0).toLocaleTimeString()}
+                  </div>
+                </Grid>
+                <Grid col={12}>
+                  <details>
+                    <summary>Raw Data</summary>
+                    <pre style={{ fontSize: '12px', marginTop: '5px' }}>
+                      {JSON.stringify(receivedData.data, null, 2)}
+                    </pre>
+                  </details>
+                </Grid>
+              </Grid>
+            )}
           </div>
-        )}
-      </div>
-    </div>
+        </Grid>
+      </Grid>
+    </GridContainer>
   );
 };
 
