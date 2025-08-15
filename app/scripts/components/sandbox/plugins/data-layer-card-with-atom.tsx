@@ -3,6 +3,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import styled, { ThemeProvider } from 'styled-components';
 import { GridContainer, Grid } from '@trussworks/react-uswds';
 import { mockRawData, mockDatasets } from '../mock-data.js';
+import { PluginCommunication } from './plugin-communication.js';
 import theme from '$styles/theme';
 import { externalDatasetsAtom } from '$components/exploration/atoms/datasetLayers';
 // import DataLayerCardPresentational from '$components/exploration/components/datasets/data-layer-card-presentational';
@@ -53,22 +54,65 @@ export default function DataLayerCardWithAtom() {
   }, [setTimelineDatasets, timelineDatasets.length, externalDatasets.length]);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [pluginComm, setPluginComm] = useState<PluginCommunication | null>(
+    null
+  );
+  const [lastMessageTimestamp, setLastMessageTimestamp] = useState(0);
+
+  // Listen for messages from iframe (comm-receiver) - parent needs direct event listener, not PluginCommunication
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Only accept messages from the iframe
+      if (event.source !== iframeRef.current?.contentWindow) return;
+
+      const data = event.data;
+      if (data?.plugin !== 'data-layer-card') return;
+
+      const payload = data.payload;
+      console.log('Received message from iframe:', payload);
+
+      // Prevent infinite loops by checking timestamp and message type
+      if (
+        payload?.timestamp <= lastMessageTimestamp ||
+        payload?.type === 'dataset-change-atom'
+      ) {
+        return;
+      }
+
+      // Handle dataset changes from comm-receiver
+      if (
+        payload?.type === 'dataset-update-from-receiver' &&
+        payload?.datasets
+      ) {
+        console.log(
+          'Received dataset update from comm-receiver:',
+          payload.datasets
+        );
+        setTimelineDatasets(payload.datasets);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [lastMessageTimestamp, setTimelineDatasets]);
 
   // Send message to iframe whenever datasets change
   useEffect(() => {
     if (timelineDatasets.length && iframeRef.current?.contentWindow) {
+      const timestamp = Date.now();
       iframeRef.current.contentWindow.postMessage(
         {
           plugin: 'data-layer-card',
           payload: {
             type: 'dataset-change-atom',
             message: `Datasets updated via atoms (${timelineDatasets.length} layers)`,
-            timestamp: Date.now(),
+            timestamp,
             datasets: timelineDatasets
           }
         },
         '*'
       );
+      setLastMessageTimestamp(timestamp);
     }
   }, [timelineDatasets, externalDatasets]);
 

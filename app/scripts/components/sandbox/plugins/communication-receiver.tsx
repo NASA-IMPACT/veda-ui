@@ -16,14 +16,27 @@ const CommunicationReceiver: React.FC = () => {
     null
   );
 
-  const setDatasets = useCallback((datasets) => {
-    setReceivedData((prev) => ({
-      ...prev,
-      data: {
-        datasets
+  const setDatasets = useCallback(
+    (datasets) => {
+      setReceivedData((prev) => ({
+        ...prev,
+        data: {
+          datasets
+        }
+      }));
+      console.log(datasets);
+      // Send dataset changes back to parent (data-layer-card-with-atom)
+      if (pluginComm) {
+        pluginComm.send({
+          type: 'dataset-update-from-receiver',
+          message: `Datasets updated from map interaction (${datasets.length} layers)`,
+          timestamp: Date.now(),
+          datasets
+        });
       }
-    }));
-  }, []);
+    },
+    [pluginComm]
+  );
 
   useEffect(() => {
     const handleMessage = (payload: any) => {
