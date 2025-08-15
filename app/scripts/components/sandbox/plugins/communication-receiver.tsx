@@ -1,9 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import {
-  GridContainer,
-  Grid,
-  Button
-} from '@trussworks/react-uswds';
+import React, { useState, useCallback, useEffect } from 'react';
+import { GridContainer, Grid, Button } from '@trussworks/react-uswds';
 import { PluginCommunication } from './plugin-communication.js';
 import Map from './map';
 
@@ -20,6 +16,15 @@ const CommunicationReceiver: React.FC = () => {
     null
   );
 
+  const setDatasets = useCallback((datasets) => {
+    setReceivedData((prev) => ({
+      ...prev,
+      data: {
+        datasets
+      }
+    }));
+  }, []);
+
   useEffect(() => {
     const handleMessage = (payload: any) => {
       const newData: ReceivedData = {
@@ -30,6 +35,7 @@ const CommunicationReceiver: React.FC = () => {
       };
       // eslint-disable-next-line no-console
       console.log('got it');
+      console.log(newData);
       setReceivedData(newData);
     };
 
@@ -64,18 +70,16 @@ const CommunicationReceiver: React.FC = () => {
         </Grid>
       </Grid>
 
-      {receivedData?.data.datasets.length && (
-        <Grid row className='margin-bottom-5'>
-          <Grid col={12} style={{ height: '400px' }}>
-            <h4>Map Visualization</h4>
-            <Map
-              datasets={receivedData?.data.datasets}
-              setDatasets={() => {}}
-              selectedDay={mockSelectedDay}
-            />
-          </Grid>
+      <Grid row className='margin-bottom-5'>
+        <Grid col={12} style={{ height: '400px' }}>
+          <h4>Map Visualization</h4>
+          <Map
+            datasets={receivedData?.data.datasets ?? []}
+            setDatasets={setDatasets}
+            selectedDay={mockSelectedDay}
+          />
         </Grid>
-      )}
+      </Grid>
 
       <Grid row className='margin-bottom-5'>
         <Grid col={12}>
