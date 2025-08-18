@@ -96,6 +96,41 @@ interface DatasetListItemProps {
   onDragEnd?: () => void;
 }
 
+export function DataLayerCardWithDefaultOption(props) {
+  const { dataset } = props;
+  const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
+  console.log('in default option')
+console.log(useAtomValue(datasetAtom));  
+  const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
+  const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
+  const [colorMapScale, setColorMapScale] =
+    useTimelineDatasetColormapScale(datasetAtom);
+  const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
+
+  const onClickLayerInfo = useCallback(() => {
+    const data: LayerInfoModalData = {
+      name: dataset.data.name,
+      description: dataset.data.description,
+      info: dataset.data.info,
+      parentData: dataset.data.parentDataset
+    };
+    setModalLayerInfo(data);
+  }, [dataset]);
+
+  return (
+    <DataLayerCard
+      dataset={dataset}
+      colorMap={colorMap}
+      colorMapScale={colorMapScale}
+      setColorMap={setColorMap}
+      setColorMapScale={setColorMapScale}
+      isVisible={isVisible}
+      setVisible={setVisible}
+      onClickLayerInfo={onClickLayerInfo}
+    />
+  );
+}
+
 export function DatasetListItem(props: DatasetListItemProps) {
   const { datasetId, width, xScaled, onDragStart, onDragEnd } = props;
 
@@ -185,7 +220,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const isAnalysisAndSuccess =
     isAnalyzing && dataset.analysis.status === DatasetStatus.SUCCESS;
 
-  const datasetLegend = dataset.data.legend;
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]
@@ -194,7 +228,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const onDragging = (e) => {
     controls.start(e);
   };
-
+  console.log(dataset);
   return (
     <Reorder.Item
       ref={datasetLiRef}
@@ -213,18 +247,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{ width: '100%' }} onPointerDown={onDragging}>
-              <DataLayerCard
-                dataset={dataset}
-                datasetAtom={datasetAtom}
-                colorMap={colorMap}
-                colorMapScale={colorMapScale}
-                setColorMap={setColorMap}
-                setColorMapScale={setColorMapScale}
-                isVisible={isVisible}
-                setVisible={setVisible}
-                datasetLegend={datasetLegend}
-                onClickLayerInfo={onClickLayerInfo}
-              />
+              <DataLayerCardWithDefaultOption dataset={dataset} />
             </div>
             {modalLayerInfo && (
               <LayerInfoModal
@@ -252,7 +275,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
                   message={
-                    dataset.analysis.meta.total === undefined || dataset.analysis.meta.loaded === undefined
+                    dataset.analysis.meta.total === undefined ||
+                    dataset.analysis.meta.loaded === undefined
                       ? 'Fetching item information'
                       : `${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`
                   }
