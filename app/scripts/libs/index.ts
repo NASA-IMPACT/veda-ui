@@ -67,10 +67,11 @@ export {
 } from './uswds-components';
 
 export {
+  VEDAMap,
   DataLayerCardPresentational,
   Layer,
-  VEDAMap,
-  MapControls
+  MapControls,
+  Basemap
 } from './components';
 
 export { PageHero, LegacyGlobalStyles };
