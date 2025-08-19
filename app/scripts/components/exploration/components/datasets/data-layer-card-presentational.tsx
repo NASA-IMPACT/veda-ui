@@ -65,6 +65,7 @@ interface PresentationalProps {
   canMoveDown: boolean;
   opacity: number;
   onOpacityChange: (opacity: number) => void;
+  footerContent?: React.ReactNode;
 }
 
 const Header = styled.header`
@@ -157,7 +158,8 @@ export default function DataLayerCardPresentational(
     canMoveUp,
     canMoveDown,
     opacity,
-    onOpacityChange
+    onOpacityChange,
+    footerContent
   } = props;
   const triggerRef = useRef<HTMLDivElement | null>(null);
   const [isColorMapOpen, setIsColorMapOpen] = useState(false);
@@ -341,6 +343,7 @@ export default function DataLayerCardPresentational(
             revealed={!!modalLayerInfo}
             close={() => setModalLayerInfo(undefined)}
             layerData={modalLayerInfo}
+            footerContent={footerContent}
           />
         )}
       </DatasetInfo>
