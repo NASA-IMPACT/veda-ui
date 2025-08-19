@@ -1,11 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { PrimitiveAtom, useAtom } from 'jotai';
 import DataLayerCardPresentational from './data-layer-card-presentational';
-import {
-  LayerLegendCategorical,
-  LayerLegendGradient,
-  LayerLegendText
-} from '$types/veda';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
@@ -16,6 +11,8 @@ import {
   useTimelineDatasetColormapScale,
   useTimelineDatasetAtom
 } from '$components/exploration/atoms/hooks';
+import { useVedaUI } from '$context/veda-ui-provider';
+import { USWDSButton } from '$uswds';
 
 interface CardProps {
   dataset: TimelineDataset;
@@ -46,6 +43,30 @@ export default function DataLayerCardContainer(props: CardProps) {
   const { parentDataset } = useParentDataset({
     datasetId: dataset.data.parentDataset.id
   });
+
+  // Set up footer content for modal
+  const {
+    navigation: { LinkComponent, linkProps },
+    routes: { dataCatalogPath }
+  } = useVedaUI();
+
+  const path = {
+    [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentDataset?.id}`
+  };
+
+  const footerContent = (
+    <LinkComponent {...path}>
+      <USWDSButton
+        type='button'
+        size='small'
+        inverse={true}
+        outline={false}
+        tabIndex='-1'
+      >
+        Open in Data Catalog
+      </USWDSButton>
+    </LinkComponent>
+  );
 
   const showLoadingConfigurableCmapSkeleton =
     dataset.status === 'loading' && datasetLegend?.type === 'gradient';
@@ -122,6 +143,7 @@ export default function DataLayerCardContainer(props: CardProps) {
       canMoveDown={currentIndex < datasets.length - 1}
       opacity={opacity}
       onOpacityChange={handleOpacityChange}
+      footerContent={footerContent}
     />
   );
 }
