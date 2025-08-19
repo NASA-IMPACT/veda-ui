@@ -37,7 +37,7 @@ interface ExplorationMapProps {
 }
 
 export function ExplorationMap(props: ExplorationMapProps) {
-  const { envApiStacEndpoint, envMapboxToken } = useVedaUI();
+  const { envApiStacEndpoint, envApiRasterEndpoint, envMapboxToken } = useVedaUI();
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
 
@@ -140,17 +140,20 @@ export function ExplorationMap(props: ExplorationMapProps) {
   const { aoi, isDrawing } = useAois();
 
   return (
-    <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate}>
+    <Map id='exploration' projection={projection} onStyleUpdate={onStyleUpdate} envMapboxToken={envMapboxToken}>
       {/* Map layers */}
       <Basemap
         basemapStyleId={mapBasemapId}
         labelsOption={labelsOption}
         boundariesOption={boundariesOption}
+        envMapboxToken={envMapboxToken}
       />
       {selectedDay && (
         <ExplorationMapLayers
           datasets={loadedDatasets}
           selectedDay={selectedDay}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       )}
       {/* Map controls */}
@@ -187,12 +190,15 @@ export function ExplorationMap(props: ExplorationMapProps) {
             basemapStyleId={mapBasemapId}
             labelsOption={labelsOption}
             boundariesOption={boundariesOption}
+            envMapboxToken={envMapboxToken}
           />
           {selectedDay && (
             <ExplorationMapLayers
               datasets={loadedDatasets}
               selectedDay={selectedCompareDay}
               idSuffix='-compare'
+              envApiStacEndpoint={envApiStacEndpoint}
+              envApiRasterEndpoint={envApiRasterEndpoint}
             />
           )}
         </Compare>
@@ -205,10 +211,12 @@ interface ExplorationMapLayersProps {
   datasets: TimelineDatasetSuccess[];
   selectedDay: Date;
   idSuffix?: string;
+  envApiStacEndpoint: string;
+  envApiRasterEndpoint: string;
 }
 
 export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
-  const { datasets, selectedDay, idSuffix = '' } = props;
+  const { datasets, selectedDay, idSuffix = '', envApiStacEndpoint, envApiRasterEndpoint } = props;
 
   return (
     <>
@@ -219,6 +227,8 @@ export function ExplorationMapLayers(props: ExplorationMapLayersProps) {
           dataset={dataset}
           selectedDay={selectedDay}
           order={idx}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
         />
       ))}
     </>

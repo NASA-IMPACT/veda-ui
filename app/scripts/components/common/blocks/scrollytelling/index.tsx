@@ -251,7 +251,7 @@ const MAP_OPTIONS = {
 function Scrollytelling(props) {
   const { children, datasets } = props;
 
-  const { envApiStacEndpoint } = useVedaUI();
+  const { envApiStacEndpoint, envApiRasterEndpoint, envMapboxToken } = useVedaUI();
 
   const { isHeaderHidden, headerHeight, wrapperHeight } =
     useSlidingStickyHeaderProps();
@@ -440,6 +440,7 @@ function Scrollytelling(props) {
             mapRef.current?.resize();
           }}
           projection={projection}
+          envMapboxToken={envMapboxToken}
         >
           {isMapLoaded &&
             resolvedLayers.map((resolvedLayer, lIdx) => {
@@ -465,10 +466,12 @@ function Scrollytelling(props) {
                   selectedDay={runtimeData.datetime ?? new Date()}
                   order={lIdx}
                   onStatusChange={onLayerLoadSuccess}
+                  envApiStacEndpoint={envApiStacEndpoint}
+                  envApiRasterEndpoint={envApiRasterEndpoint}
                 />
               );
             })}
-          <Basemap />
+          <Basemap envMapboxToken={envMapboxToken} />
         </Map>
       </ScrollyMapContainer>
       <TheChapters>{children}</TheChapters>

@@ -16,7 +16,6 @@ import { CMRTimeseries } from '$components/common/map/style-generators/cmr-times
 import { WMSTimeseries } from '$components/common/map/style-generators/wms-timeseries';
 import { WMTSTimeseries } from '$components/common/map/style-generators/wmts-timeseries';
 import { ActionStatus } from '$utils/status';
-import { useVedaUI } from '$context/veda-ui-provider';
 
 interface LayerProps {
   id: string;
@@ -24,12 +23,12 @@ interface LayerProps {
   order?: number;
   selectedDay: Date;
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
+  envApiStacEndpoint: string;
+  envApiRasterEndpoint: string;
 }
 
 export function Layer(props: LayerProps) {
-  const { envApiStacEndpoint, envApiRasterEndpoint } = useVedaUI();
-
-  const { id: layerId, dataset, order, selectedDay, onStatusChange } = props;
+  const { id: layerId, dataset, order, selectedDay, onStatusChange, envApiStacEndpoint, envApiRasterEndpoint } = props;
   const { isVisible, opacity, colorMap, scale } = dataset.settings;
 
   // The date needs to match the dataset's time density.

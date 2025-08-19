@@ -8,7 +8,6 @@ import { convertProjectionToMapbox } from './controls/map-options/projections';
 import { ProjectionOptions } from '$types/veda';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import 'mapbox-gl-compare/dist/mapbox-gl-compare.css';
-import { useVedaUI } from '$context/veda-ui-provider';
 
 const maxMapBounds: LngLatBoundsLike = [
   [-540, -90], // SW
@@ -21,7 +20,8 @@ export default function MapComponent({
   projection,
   mapRef,
   onMapLoad,
-  interactive = true
+  interactive = true,
+  envMapboxToken
 }: {
   controls: ReactElement[];
   isCompared?: boolean;
@@ -29,8 +29,8 @@ export default function MapComponent({
   mapRef?: Ref<MapRef>;
   onMapLoad?: () => void;
   interactive?: boolean;
+  envMapboxToken: string;
 }) {
-  const { envMapboxToken } = useVedaUI();
 
   const { initialViewState, setInitialViewState, mainId, comparedId } =
     useMapsContext();

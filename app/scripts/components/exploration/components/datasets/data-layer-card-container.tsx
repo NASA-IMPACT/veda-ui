@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { PrimitiveAtom, useAtom } from 'jotai';
+import React from 'react';
+import { useAtom } from 'jotai';
 import DataLayerCardPresentational from './data-layer-card-presentational';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import { TimelineDataset } from '$components/exploration/types.d.ts';

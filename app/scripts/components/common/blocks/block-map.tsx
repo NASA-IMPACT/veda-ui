@@ -28,6 +28,7 @@ import {
 import { Layer } from '$components/exploration/components/map/layer';
 import { VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { ProjectionOptions } from '$types/veda';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -125,6 +126,7 @@ interface MapBlockProps {
 
 export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
+  const { envMapboxToken, envApiStacEndpoint, envApiRasterEndpoint } = useVedaUI();
 
   const {
     baseDataLayer,
@@ -273,14 +275,17 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
           ...mapOptions,
           ...getMapPositionOptions(initialPosition)
         }}
+        envMapboxToken={envMapboxToken}
       >
-        <Basemap basemapStyleId={mapBasemapId} />
+        <Basemap basemapStyleId={mapBasemapId} envMapboxToken={envMapboxToken} />
         {selectedDatetime && baseDataLayer && (
           <Layer
             key={baseDataLayer.data.id}
             id={`base-${baseDataLayer.data.id}`}
             dataset={baseDataLayer}
             selectedDay={selectedDatetime}
+            envApiStacEndpoint={envApiStacEndpoint}
+            envApiRasterEndpoint={envApiRasterEndpoint}
           />
         )}
 
@@ -339,13 +344,15 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
         </MapControls>
         {selectedCompareDatetime && (
           <Compare>
-            <Basemap basemapStyleId={mapBasemapId} />
+            <Basemap basemapStyleId={mapBasemapId} envMapboxToken={envMapboxToken} />
             {compareDataLayer && (
               <Layer
                 key={compareDataLayer.data.id}
                 id={`compare-${compareDataLayer.data.id}`}
                 dataset={compareDataLayer}
                 selectedDay={selectedCompareDatetime}
+                envApiStacEndpoint={envApiStacEndpoint}
+                envApiRasterEndpoint={envApiRasterEndpoint}
               />
             )}
           </Compare>

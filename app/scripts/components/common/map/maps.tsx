@@ -90,7 +90,7 @@ const MapsContainer = styled.div`
 
 type MapsProps = Pick<
   MapsContextWrapperProps,
-  'projection' | 'onStyleUpdate' | 'mapRef' | 'onMapLoad'
+  'projection' | 'onStyleUpdate' | 'mapRef' | 'onMapLoad' | 'envMapboxToken'
 > & {
   children: ReactNode;
   interactive?: boolean;
@@ -102,7 +102,8 @@ function Maps({
   onStyleUpdate,
   mapRef,
   onMapLoad,
-  interactive
+  interactive,
+  envMapboxToken
 }: MapsProps) {
   // Instantiate MGL Compare, if compare is enabled
   useMapCompare();
@@ -163,6 +164,7 @@ function Maps({
           onMapLoad={onMapLoad}
           controls={controls}
           projection={projection}
+          envMapboxToken={envMapboxToken}
         />
       </Styles>
       {!!compareGenerators.length && (
@@ -175,6 +177,7 @@ function Maps({
             controls={controls}
             projection={projection}
             onMapLoad={onMapLoad}
+            envMapboxToken={envMapboxToken}
           />
         </Styles>
       )}
@@ -190,6 +193,7 @@ export interface MapsContextWrapperProps {
   projection?: ProjectionOptions;
   onStyleUpdate?: (style: ExtendedStyle) => void;
   mapOptions?: Partial<Omit<MapboxOptions, 'container'>>;
+  envMapboxToken: string;
 }
 
 export default function MapsContextWrapper(props: MapsContextWrapperProps) {

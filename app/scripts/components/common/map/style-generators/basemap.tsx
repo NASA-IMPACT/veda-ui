@@ -9,12 +9,11 @@ import {
 } from '../controls/map-options/basemap';
 import { ExtendedLayer } from '../types';
 import useMapStyle from '../hooks/use-map-style';
-import { useVedaUI } from '$context/veda-ui-provider';
-
 interface BasemapProps {
   basemapStyleId?: BasemapId;
   labelsOption?: boolean;
   boundariesOption?: boolean;
+  envMapboxToken: string;
 }
 
 function mapGroupNameToGroupId(
@@ -31,9 +30,9 @@ function mapGroupNameToGroupId(
 export function Basemap({
   basemapStyleId = 'satellite',
   labelsOption = true,
-  boundariesOption = true
+  boundariesOption = true,
+  envMapboxToken
 }: BasemapProps) {
-  const { envMapboxToken } = useVedaUI();
   const { updateStyle } = useMapStyle();
   const [baseStyle, setBaseStyle] = useState<StyleSpecification | undefined>(
     undefined

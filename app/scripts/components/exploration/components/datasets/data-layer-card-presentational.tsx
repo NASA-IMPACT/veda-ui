@@ -45,12 +45,10 @@ interface PresentationalProps {
   setColorMap: (colorMap: string) => void;
   colorMapScale: colorMapScale | undefined;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
-
   datasetLegend:
     | LayerLegendCategorical
     | LayerLegendGradient
-    | LayerLegendText
-    | undefined;
+    | LayerLegendText | undefined;
   layerInfo: any;
   min: number;
   max: number;
@@ -144,7 +142,6 @@ export default function DataLayerCardPresentational(
     colorMapScale,
     setColorMapScale,
     datasetLegend,
-
     layerInfo,
     min,
     max,
@@ -296,12 +293,13 @@ export default function DataLayerCardPresentational(
             className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md'
             ref={triggerRef}
           >
+            {datasetLegend?.type === 'gradient' &&
             <LayerGradientColormapGraphic
               stops={datasetLegend.stops}
               min={min}
               max={max}
               colorMap={colorMap}
-            />
+            />}
             <Tippy
               className='colormap-options'
               content={
@@ -330,7 +328,7 @@ export default function DataLayerCardPresentational(
             </Tippy>
           </div>
         )}
-        {showNonConfigurableCmap && (
+        {showNonConfigurableCmap && datasetLegend?.type === 'gradient' && (
           <LayerGradientColormapGraphic
             stops={datasetLegend.stops}
             min={min}
