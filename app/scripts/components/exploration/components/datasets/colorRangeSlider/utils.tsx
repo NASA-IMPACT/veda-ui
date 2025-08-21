@@ -40,7 +40,7 @@ export const rangeCalculation = (maxPercent, minPercent, range) => {
   return;
 };
 
-export const displayWarningMessage = (
+export const displayIssueMessage = (
   inputError,
   min,
   max,
@@ -52,7 +52,7 @@ export const displayWarningMessage = (
   if (inputError.max || inputError.min) {
     return (
       <p className='text-orange'>
-        Warning: The provided values are outside the range {min} and {max}
+        {`Warning: The provided values are outside the recommended range [${min}, ${max}]`}
       </p>
     );
   }
@@ -62,8 +62,8 @@ export const displayWarningMessage = (
 
   if (inputError.largerThanMax) {
     return (
-      <p className='text-orange'>
-        Warning: The max rescale {maxValRef.current.actual} is larger than the suggested max of {max}
+      <p className='text-secondary-vivid'>
+        Please enter a value less than {maxValRef.current.actual}
       </p>
     );
   }
@@ -73,8 +73,8 @@ export const displayWarningMessage = (
 
   if (inputError.lessThanMin) {
     return (
-      <p className='text-orange'>
-        Warning: The min rescale {minValRef.current.actual} is less than the suggested min of {min}
+      <p className='text-secondary-vivid'>
+        Please enter a value larger than {minValRef.current.actual}
       </p>
     );
   }

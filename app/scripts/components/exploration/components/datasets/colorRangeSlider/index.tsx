@@ -5,7 +5,7 @@ import {
   sterlizeNumber,
   calculateStep,
   rangeCalculation,
-  displayWarningMessage,
+  displayIssueMessage,
   textInputClasses,
   thumbPosition,
   tooltiptextClasses
@@ -47,7 +47,7 @@ export function ColorRangeSlider({
   const range = useRef<HTMLDivElement>(null);
 
   const [fieldFocused, setFieldFocused] = useState(false);
-  const [inputWarning, setInputWarning] = useState({
+  const [inputIssue, setInputIssue] = useState({
     min: false,
     max: false,
     largerThanMax: false,
@@ -63,8 +63,8 @@ export function ColorRangeSlider({
   const resetWarningOnSlide = (value, slider) => {
     if (value > min || value < max) {
       slider === 'max'
-        ? setInputWarning({ ...inputWarning, max: false, lessThanMin: false })
-        : setInputWarning({ ...inputWarning, min: false, largerThanMax: false });
+        ? setInputIssue({ ...inputIssue, max: false, lessThanMin: false })
+        : setInputIssue({ ...inputIssue, min: false, largerThanMax: false });
     }
   };
 
@@ -135,7 +135,7 @@ export function ColorRangeSlider({
         min: Number(minValRef.current.actual),
         max: Number(maxValRef.current.actual)
       }); /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [maxVal, minVal, getPercent, setColorMapScale, inputWarning, max, min]);
+  }, [maxVal, minVal, getPercent, setColorMapScale, inputIssue, max, min]);
 
   return (
     <div className='border-bottom-1px padding-bottom-1 border-base-light width-full text-normal'>
@@ -157,9 +157,11 @@ export function ColorRangeSlider({
             id='range slider min'
             name='min'
             className={`${textInputClasses} ${
-              inputWarning.min || inputWarning.largerThanMax
+              inputIssue.min
                 ? 'border-orange text-orange'
-                : ' border-base-light'
+                : inputIssue.largerThanMax
+                ? 'border-secondary-vivid text-secondary-vivid'
+                : 'border-base-light'
             }`}
             data-testid='minInput'
             value={
@@ -184,16 +186,17 @@ export function ColorRangeSlider({
                   event.target.value === '' ? 0 : event.target.value;
                 const value = Number(event.target.value);
 
+                if (value > maxVal - minMaxBuffer)
+                  return setInputIssue({ ...inputIssue, largerThanMax: true });
+
                 const calculatedVal = Math.min(value, maxVal - minMaxBuffer);
                 setMinVal(calculatedVal);
 
-                if (value > maxVal - minMaxBuffer)
-                  return setInputWarning({ ...inputWarning, largerThanMax: true });
                 if (value < min || value > max) {
-                  return setInputWarning({ ...inputWarning, min: true });
+                  return setInputIssue({ ...inputIssue, min: true });
                 } else {
-                  return setInputWarning({
-                    ...inputWarning,
+                  return setInputIssue({
+                    ...inputIssue,
                     min: false,
                     largerThanMax: false
                   });
@@ -275,9 +278,11 @@ export function ColorRangeSlider({
             name='max'
             data-testid='maxInput'
             className={`${textInputClasses} ${
-              inputWarning.max || inputWarning.lessThanMin
+              inputIssue.min
                 ? 'border-orange text-orange'
-                : ' border-base-light'
+                : inputIssue.largerThanMax
+                ? 'border-secondary-vivid text-secondary-vivid'
+                : 'border-base-light'
             }`}
             placeholder={
               fieldFocused
@@ -301,18 +306,18 @@ export function ColorRangeSlider({
                   event.target.value === '' ? 0 : event.target.value;
                 const value = Number(event.target.value);
 
+                if (value < minVal + minMaxBuffer)
+                  return setInputIssue({ ...inputIssue, lessThanMin: true });
+
                 const calculatedVal = Math.max(value, minVal + minMaxBuffer);
                 setMaxVal(calculatedVal);
 
-                if (value < minVal + minMaxBuffer)
-                  return setInputWarning({ ...inputWarning, lessThanMin: true });
-
                 if (value < min || value > max) {
-                  return setInputWarning({ ...inputWarning, max: true });
+                  return setInputIssue({ ...inputIssue, max: true });
                 } else {
                   //unsetting error
-                  return setInputWarning({
-                    ...inputWarning,
+                  return setInputIssue({
+                    ...inputIssue,
                     max: false,
                     lessThanMin: false
                   });
@@ -323,7 +328,7 @@ export function ColorRangeSlider({
         </div>
       </form>
 
-      {displayWarningMessage(inputWarning, min, max, maxValRef, minValRef)}
+      {displayIssueMessage(inputIssue, min, max, maxValRef, minValRef)}
     </div>
   );
 }
