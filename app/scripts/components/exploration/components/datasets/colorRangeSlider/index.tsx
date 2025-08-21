@@ -5,7 +5,7 @@ import {
   sterlizeNumber,
   calculateStep,
   rangeCalculation,
-  displayErrorMessage,
+  displayWarningMessage,
   textInputClasses,
   thumbPosition,
   tooltiptextClasses
@@ -47,7 +47,7 @@ export function ColorRangeSlider({
   const range = useRef<HTMLDivElement>(null);
 
   const [fieldFocused, setFieldFocused] = useState(false);
-  const [inputError, setInputError] = useState({
+  const [inputWarning, setInputWarning] = useState({
     min: false,
     max: false,
     largerThanMax: false,
@@ -60,11 +60,11 @@ export function ColorRangeSlider({
     [min, max]
   );
 
-  const resetErrorOnSlide = (value, slider) => {
+  const resetWarningOnSlide = (value, slider) => {
     if (value > min || value < max) {
       slider === 'max'
-        ? setInputError({ ...inputError, max: false, lessThanMin: false })
-        : setInputError({ ...inputError, min: false, largerThanMax: false });
+        ? setInputWarning({ ...inputWarning, max: false, lessThanMin: false })
+        : setInputWarning({ ...inputWarning, min: false, largerThanMax: false });
     }
   };
 
@@ -74,42 +74,40 @@ export function ColorRangeSlider({
     let maxValPrevious;
     let minValPrevious;
     //checking that there are no current errors with inputs
-    if (Object.values(inputError).every((error) => !error)) {
-      //set the filled range bar on initial load
-      if (
-        colorMapScale &&
-        maxVal != maxValPrevious &&
-        minVal != minValPrevious
-      ) {
-        const minPercent = getPercent(minValRef.current.actual);
-        const maxPercent = getPercent(maxValRef.current.actual);
+    //set the filled range bar on initial load
+    if (
+      colorMapScale &&
+      maxVal != maxValPrevious &&
+      minVal != minValPrevious
+    ) {
+      const minPercent = getPercent(minValRef.current.actual);
+      const maxPercent = getPercent(maxValRef.current.actual);
 
+      rangeCalculation(maxPercent, minPercent, range);
+
+      if (range.current)
+        range.current.style.left = `calc(${minPercent}% + ${
+          10 - minPercent * 0.2
+        }px)`;
+    } else {
+      //set the filled range bar if change to max slider
+      if (maxVal != maxValPrevious) {
+        maxValPrevious = maxVal;
+        const minPercent = getPercent(minValRef.current.actual);
+        const maxPercent = getPercent(maxVal);
+        rangeCalculation(maxPercent, minPercent, range);
+      }
+      //set the filled range bar if change to min slider
+      if (minVal != minValPrevious) {
+        minValPrevious = minVal;
+        const minPercent = getPercent(minVal);
+        const maxPercent = getPercent(maxValRef.current.actual);
         rangeCalculation(maxPercent, minPercent, range);
 
         if (range.current)
           range.current.style.left = `calc(${minPercent}% + ${
             10 - minPercent * 0.2
           }px)`;
-      } else {
-        //set the filled range bar if change to max slider
-        if (maxVal != maxValPrevious) {
-          maxValPrevious = maxVal;
-          const minPercent = getPercent(minValRef.current.actual);
-          const maxPercent = getPercent(maxVal);
-          rangeCalculation(maxPercent, minPercent, range);
-        }
-        //set the filled range bar if change to min slider
-        if (minVal != minValPrevious) {
-          minValPrevious = minVal;
-          const minPercent = getPercent(minVal);
-          const maxPercent = getPercent(maxValRef.current.actual);
-          rangeCalculation(maxPercent, minPercent, range);
-
-          if (range.current)
-            range.current.style.left = `calc(${minPercent}% + ${
-              10 - minPercent * 0.2
-            }px)`;
-        }
       }
     }
 
@@ -137,7 +135,7 @@ export function ColorRangeSlider({
         min: Number(minValRef.current.actual),
         max: Number(maxValRef.current.actual)
       }); /* eslint-disable-next-line react-hooks/exhaustive-deps */
-  }, [maxVal, minVal, getPercent, setColorMapScale, inputError, max, min]);
+  }, [maxVal, minVal, getPercent, setColorMapScale, inputWarning, max, min]);
 
   return (
     <div className='border-bottom-1px padding-bottom-1 border-base-light width-full text-normal'>
@@ -159,8 +157,8 @@ export function ColorRangeSlider({
             id='range slider min'
             name='min'
             className={`${textInputClasses} ${
-              inputError.min || inputError.largerThanMax
-                ? 'border-secondary-vivid text-secondary-vivid'
+              inputWarning.min || inputWarning.largerThanMax
+                ? 'border-orange text-orange'
                 : ' border-base-light'
             }`}
             data-testid='minInput'
@@ -186,18 +184,19 @@ export function ColorRangeSlider({
                   event.target.value === '' ? 0 : event.target.value;
                 const value = Number(event.target.value);
 
+                const calculatedVal = Math.min(value, maxVal - minMaxBuffer);
+                setMinVal(calculatedVal);
+
                 if (value > maxVal - minMaxBuffer)
-                  return setInputError({ ...inputError, largerThanMax: true });
+                  return setInputWarning({ ...inputWarning, largerThanMax: true });
                 if (value < min || value > max) {
-                  return setInputError({ ...inputError, min: true });
+                  return setInputWarning({ ...inputWarning, min: true });
                 } else {
-                  setInputError({
-                    ...inputError,
+                  return setInputWarning({
+                    ...inputWarning,
                     min: false,
                     largerThanMax: false
                   });
-                  const calculatedVal = Math.min(value, maxVal - minMaxBuffer);
-                  setMinVal(calculatedVal);
                 }
               }
             }}
@@ -216,7 +215,7 @@ export function ColorRangeSlider({
                 Number(event.target.value),
                 maxVal - minMaxBuffer
               );
-              resetErrorOnSlide(value, 'min');
+              resetWarningOnSlide(value, 'min');
               setMinVal(value);
               minValRef.current.actual = value;
             }}
@@ -237,7 +236,7 @@ export function ColorRangeSlider({
                 Number(event.target.value),
                 minVal + minMaxBuffer
               );
-              resetErrorOnSlide(value, 'max');
+              resetWarningOnSlide(value, 'max');
               setMaxVal(value);
               maxValRef.current.actual = value;
             }}
@@ -276,8 +275,8 @@ export function ColorRangeSlider({
             name='max'
             data-testid='maxInput'
             className={`${textInputClasses} ${
-              inputError.max || inputError.lessThanMin
-                ? 'border-secondary-vivid text-secondary-vivid'
+              inputWarning.max || inputWarning.lessThanMin
+                ? 'border-orange text-orange'
                 : ' border-base-light'
             }`}
             placeholder={
@@ -302,20 +301,21 @@ export function ColorRangeSlider({
                   event.target.value === '' ? 0 : event.target.value;
                 const value = Number(event.target.value);
 
+                const calculatedVal = Math.max(value, minVal + minMaxBuffer);
+                setMaxVal(calculatedVal);
+
                 if (value < minVal + minMaxBuffer)
-                  return setInputError({ ...inputError, lessThanMin: true });
+                  return setInputWarning({ ...inputWarning, lessThanMin: true });
 
                 if (value < min || value > max) {
-                  return setInputError({ ...inputError, max: true });
+                  return setInputWarning({ ...inputWarning, max: true });
                 } else {
                   //unsetting error
-                  setInputError({
-                    ...inputError,
+                  return setInputWarning({
+                    ...inputWarning,
                     max: false,
                     lessThanMin: false
                   });
-                  const calculatedVal = Math.max(value, minVal + minMaxBuffer);
-                  setMaxVal(calculatedVal);
                 }
               }
             }}
@@ -323,7 +323,7 @@ export function ColorRangeSlider({
         </div>
       </form>
 
-      {displayErrorMessage(inputError, min, max, maxValRef, minValRef)}
+      {displayWarningMessage(inputWarning, min, max, maxValRef, minValRef)}
     </div>
   );
 }
