@@ -24,7 +24,7 @@ export default function DataLayerCardContainer(props: CardProps) {
   // All atom-based state management
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  const datasetLegend = dataset.data.legend;
+
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);

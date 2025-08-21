@@ -10,8 +10,10 @@ import { GridContainer, Grid } from '@trussworks/react-uswds';
 import { mockDatasets } from '../mock-data.js';
 
 import theme from '$styles/theme';
-
-import DataLayerCardPresentational from '$components/exploration/components/datasets/data-layer-card-presentational';
+import LayerMenuOptions from '$components/exploration/components/datasets/layer-options-menu';
+import DataLayerCardPresentational, {
+  ColormapGroup
+} from '$components/exploration/components/datasets/data-layer-card-presentational';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 export interface colorMapScale {
   min: number;
@@ -257,22 +259,30 @@ export default function DataLayerCardSandbox() {
         setColorMap: handlers[index]?.setColorMap,
         colorMapScale,
         setColorMapScale: handlers[index]?.setColorMapScale,
-        onClickLayerInfo: handlers[index]?.onClickLayerInfo,
-        layerInfo: dataset.data.info,
-        min: colorMapScale?.min ?? 0,
-        max: colorMapScale?.max ?? 1,
         parentDataset: mockParentDataset,
-        showLoadingConfigurableCmapSkeleton: false,
-        showConfigurableCmap: true,
-        showNonConfigurableCmap: false,
         onRemoveLayer: handlers[index]?.onRemoveLayer,
         onMoveUp: handlers[index]?.onMoveUp,
         onMoveDown: handlers[index]?.onMoveDown,
         canMoveUp: index > 0,
         canMoveDown: index < datasets.length - 1,
         opacity,
-        onOpacityChange: handlers[index]?.onOpacityChange,
-        datasetLegend: dataset.data.legend
+        onOpacityChange: handlers[index]?.onOpacityChange
+      };
+    },
+    [handlers, datasets.length]
+  );
+
+  // Generate props for each dataset
+  const generateColormapProps = useCallback(
+    (dataset: TimelineDataset, index: number) => {
+      const colorMap = dataset.settings.colorMap;
+      const colorMapScale = dataset.settings.scale;
+      return {
+        dataset,
+        colorMap,
+        setColorMap: handlers[index]?.setColorMap,
+        colorMapScale,
+        setColorMapScale: handlers[index]?.setColorMapScale
       };
     },
     [handlers, datasets.length]
@@ -335,8 +345,15 @@ export default function DataLayerCardSandbox() {
                 </div>
               ))}
             </Grid>
-
             <Grid col={6}>
+              {datasets.map((dataset, index) => (
+                <>
+                  <ColormapGroup {...generateColormapProps(dataset, index)} />
+                  <LayerMenuOptions {...getDatasetProps(dataset, index)} />
+                </>
+              ))}
+            </Grid>
+            <Grid col={12}>
               <StateDisplay
                 ref={iframeRef}
                 style={{ width: '100%', height: '400px' }}
