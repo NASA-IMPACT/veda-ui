@@ -278,9 +278,9 @@ export function ColorRangeSlider({
             name='max'
             data-testid='maxInput'
             className={`${textInputClasses} ${
-              inputIssue.min
+              inputIssue.max
                 ? 'border-orange text-orange'
-                : inputIssue.largerThanMax
+                : inputIssue.lessThanMin
                 ? 'border-secondary-vivid text-secondary-vivid'
                 : 'border-base-light'
             }`}
