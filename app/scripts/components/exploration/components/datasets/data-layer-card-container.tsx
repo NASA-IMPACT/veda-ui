@@ -32,14 +32,6 @@ export default function DataLayerCardContainer(props: CardProps) {
     useTimelineDatasetColormapScale(datasetAtom);
   const opacity = (getSettings('opacity') ?? 100) as number;
 
-  const layerInfo = dataset.data.info;
-  const [min, max] =
-    datasetLegend?.type === 'gradient' &&
-    datasetLegend.min != null &&
-    datasetLegend.max != null
-      ? ([datasetLegend.min, datasetLegend.max] as [number, number])
-      : dataset.data.sourceParams?.rescale || [0, 1];
-
   const { parentDataset } = useParentDataset({
     datasetId: dataset.data.parentDataset.id
   });
@@ -67,19 +59,6 @@ export default function DataLayerCardContainer(props: CardProps) {
       </USWDSButton>
     </LinkComponent>
   );
-
-  const showLoadingConfigurableCmapSkeleton =
-    dataset.status === 'loading' && datasetLegend?.type === 'gradient';
-  const showConfigurableCmap = (dataset.status === 'success' &&
-    dataset.data.type !== 'wmts' &&
-    dataset.data.type !== 'wms' &&
-    datasetLegend?.type === 'gradient' &&
-    colorMap) as boolean;
-
-  const showNonConfigurableCmap =
-    !showConfigurableCmap &&
-    !showLoadingConfigurableCmapSkeleton &&
-    datasetLegend?.type === 'gradient';
 
   const currentIndex = datasets.findIndex((d) => d.data.id === dataset.data.id);
 
@@ -128,14 +107,7 @@ export default function DataLayerCardContainer(props: CardProps) {
       setColorMap={setColorMap}
       colorMapScale={colorMapScale}
       setColorMapScale={setColorMapScale}
-      datasetLegend={datasetLegend}
-      layerInfo={layerInfo}
-      min={min}
-      max={max}
       parentDataset={parentDataset}
-      showLoadingConfigurableCmapSkeleton={showLoadingConfigurableCmapSkeleton}
-      showConfigurableCmap={showConfigurableCmap}
-      showNonConfigurableCmap={showNonConfigurableCmap}
       onRemoveLayer={handleRemoveLayer}
       onMoveUp={handleMoveUp}
       onMoveDown={handleMoveDown}

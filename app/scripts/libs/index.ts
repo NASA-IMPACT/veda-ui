@@ -68,10 +68,12 @@ export {
 
 export {
   VEDAMap,
-  DataLayerCardPresentational,
-  Layer,
-  MapControls,
-  Basemap
+  VEDADataLayerCard,
+  VEDALayerModal,
+  VEDALayerColormap,
+  VEDALayer,
+  VEDAMapControls,
+  VEDABasemap
 } from './components';
 
 export { PageHero, LegacyGlobalStyles };

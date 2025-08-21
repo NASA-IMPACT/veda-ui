@@ -93,6 +93,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
   const { parentDataset } = useParentDataset({
     datasetId: layerData.parentData.id
   });
+
   return (
     <StyledModal
       id='modal'
