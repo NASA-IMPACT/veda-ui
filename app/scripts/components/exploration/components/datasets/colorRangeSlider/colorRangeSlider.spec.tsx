@@ -55,13 +55,13 @@ describe('colorRangeSlider should render with correct content.', () => {
 
     fireEvent.change(minInput, { target: { value: -0.1 } });
     expect(
-      screen.getByText('Please enter a value between 0 and 0.3')
+      screen.getByText('Warning: The provided values are outside the recommended range [0, 0.3]')
     ).toBeInTheDocument();
     const maxInput = screen.getByTestId('maxInput');
 
     fireEvent.change(maxInput, { target: { value: 0.4 } });
     expect(
-      screen.getByText('Please enter a value between 0 and 0.3')
+      screen.getByText('Warning: The provided values are outside the recommended range [0, 0.3]')
     ).toBeInTheDocument();
   });
 });
