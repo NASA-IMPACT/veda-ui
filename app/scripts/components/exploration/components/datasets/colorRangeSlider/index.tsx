@@ -28,6 +28,33 @@ interface ColorrangeRangeSlideProps {
   setColorMapScale: (colorMapScale: colorMapScale) => void;
 }
 
+function validateInputIssues(
+  minVal: number,
+  maxVal: number,
+  min: number,
+  max: number
+) {
+  const issues = {
+    min: false,
+    max: false,
+    largerThanMax: false,
+    lessThanMin: false
+  };
+
+  if (minVal < min || minVal > max) {
+    issues.min = true;
+  }
+  if (maxVal < min || maxVal > max) {
+    issues.max = true;
+  }
+  if (minVal >= maxVal) {
+    issues.largerThanMax = true;
+    issues.lessThanMin = true;
+  }
+
+  return issues;
+}
+
 export function ColorRangeSlider({
   min,
   max,
@@ -75,11 +102,7 @@ export function ColorRangeSlider({
     let minValPrevious;
     //checking that there are no current errors with inputs
     //set the filled range bar on initial load
-    if (
-      colorMapScale &&
-      maxVal != maxValPrevious &&
-      minVal != minValPrevious
-    ) {
+    if (colorMapScale && maxVal != maxValPrevious && minVal != minValPrevious) {
       const minPercent = getPercent(minValRef.current.actual);
       const maxPercent = getPercent(maxValRef.current.actual);
 
@@ -137,6 +160,10 @@ export function ColorRangeSlider({
       }); /* eslint-disable-next-line react-hooks/exhaustive-deps */
   }, [maxVal, minVal, getPercent, setColorMapScale, inputIssue, max, min]);
 
+  useEffect(() => {
+    setInputIssue(validateInputIssues(minVal, maxVal, min, max));
+  }, [minVal, maxVal, min, max]);
+
   return (
     <div className='border-bottom-1px padding-bottom-1 border-base-light width-full text-normal'>
       <form className='usa-form display-flex flex-row flex-justify flex-align-center padding-bottom-1'>
@@ -182,25 +209,15 @@ export function ColorRangeSlider({
             }}
             onChange={(event) => {
               if (event.target.value != undefined) {
-                minValRef.current.actual =
-                  event.target.value === '' ? 0 : event.target.value;
-                const value = Number(event.target.value);
-
-                if (value > maxVal - minMaxBuffer)
-                  return setInputIssue({ ...inputIssue, largerThanMax: true });
+                const value = Number(event.target.value) || 0;
+                minValRef.current.actual = value;
 
                 const calculatedVal = Math.min(value, maxVal - minMaxBuffer);
                 setMinVal(calculatedVal);
 
-                if (value < min || value > max) {
-                  return setInputIssue({ ...inputIssue, min: true });
-                } else {
-                  return setInputIssue({
-                    ...inputIssue,
-                    min: false,
-                    largerThanMax: false
-                  });
-                }
+                setInputIssue(
+                  validateInputIssues(calculatedVal, maxVal, min, max)
+                );
               }
             }}
           />
