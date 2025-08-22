@@ -148,8 +148,23 @@ export function ColorRangeSlider({
   }, [maxVal, minVal, getPercent, setColorMapScale, inputIssue, max, min]);
 
   useEffect(() => {
-    setInputIssue(validateInputIssues(minVal, maxVal, min, max));
-  }, [minVal, maxVal, min, max]);
+    const minNum = Number(minValRef.current.actual);
+    const maxNum = Number(maxValRef.current.actual);
+
+    if (minNum < min || minNum > max) {
+      setInputIssue((prev) => ({ ...prev, min: true }));
+    }
+    if (maxNum < min || maxNum > max) {
+      setInputIssue((prev) => ({ ...prev, max: true }));
+    }
+    if (minNum >= maxNum) {
+      setInputIssue((prev) => ({
+        ...prev,
+        largerThanMax: true,
+        lessThanMin: true
+      }));
+    }
+  }, []);
 
   return (
     <div className='border-bottom-1px padding-bottom-1 border-base-light width-full text-normal'>
@@ -195,10 +210,26 @@ export function ColorRangeSlider({
               setFieldFocused(false);
             }}
             onChange={(event) => {
-              if (event.target.value !== undefined) {
-                const value = Number(event.target.value) || 0;
-                minValRef.current.actual = value;
-                setMinVal(value);
+              if (event.target.value != undefined) {
+                minValRef.current.actual =
+                  event.target.value === '' ? 0 : event.target.value;
+                const value = Number(event.target.value);
+
+                if (value > maxVal - minMaxBuffer)
+                  return setInputIssue({ ...inputIssue, largerThanMax: true });
+
+                const calculatedVal = Math.min(value, maxVal - minMaxBuffer);
+                setMinVal(calculatedVal);
+
+                if (value < min || value > max) {
+                  return setInputIssue({ ...inputIssue, min: true });
+                } else {
+                  return setInputIssue({
+                    ...inputIssue,
+                    min: false,
+                    largerThanMax: false
+                  });
+                }
               }
             }}
           />
@@ -299,10 +330,26 @@ export function ColorRangeSlider({
               setFieldFocused(false);
             }}
             onChange={(event) => {
-              if (event.target.value !== undefined) {
-                const value = Number(event.target.value) || 0;
-                maxValRef.current.actual = value;
-                setMaxVal(value);
+              if (event.target.value != undefined) {
+                maxValRef.current.actual =
+                  event.target.value === '' ? 0 : event.target.value;
+                const value = Number(event.target.value);
+
+                if (value < minVal + minMaxBuffer)
+                  return setInputIssue({ ...inputIssue, lessThanMin: true });
+
+                const calculatedVal = Math.max(value, minVal + minMaxBuffer);
+                setMaxVal(calculatedVal);
+
+                if (value < min || value > max) {
+                  return setInputIssue({ ...inputIssue, max: true });
+                } else {
+                  return setInputIssue({
+                    ...inputIssue,
+                    max: false,
+                    lessThanMin: false
+                  });
+                }
               }
             }}
           />
