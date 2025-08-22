@@ -34,25 +34,12 @@ function validateInputIssues(
   min: number,
   max: number
 ) {
-  const issues = {
-    min: false,
-    max: false,
-    largerThanMax: false,
-    lessThanMin: false
+  return {
+    min: minVal < min || minVal > max,
+    max: maxVal < min || maxVal > max,
+    largerThanMax: minVal >= maxVal,
+    lessThanMin: maxVal <= minVal
   };
-
-  if (minVal < min || minVal > max) {
-    issues.min = true;
-  }
-  if (maxVal < min || maxVal > max) {
-    issues.max = true;
-  }
-  if (minVal >= maxVal) {
-    issues.largerThanMax = true;
-    issues.lessThanMin = true;
-  }
-
-  return issues;
 }
 
 export function ColorRangeSlider({
@@ -208,16 +195,10 @@ export function ColorRangeSlider({
               setFieldFocused(false);
             }}
             onChange={(event) => {
-              if (event.target.value != undefined) {
+              if (event.target.value !== undefined) {
                 const value = Number(event.target.value) || 0;
                 minValRef.current.actual = value;
-
-                const calculatedVal = Math.min(value, maxVal - minMaxBuffer);
-                setMinVal(calculatedVal);
-
-                setInputIssue(
-                  validateInputIssues(calculatedVal, maxVal, min, max)
-                );
+                setMinVal(value);
               }
             }}
           />
@@ -318,27 +299,10 @@ export function ColorRangeSlider({
               setFieldFocused(false);
             }}
             onChange={(event) => {
-              if (event.target.value != undefined) {
-                maxValRef.current.actual =
-                  event.target.value === '' ? 0 : event.target.value;
-                const value = Number(event.target.value);
-
-                if (value < minVal + minMaxBuffer)
-                  return setInputIssue({ ...inputIssue, lessThanMin: true });
-
-                const calculatedVal = Math.max(value, minVal + minMaxBuffer);
-                setMaxVal(calculatedVal);
-
-                if (value < min || value > max) {
-                  return setInputIssue({ ...inputIssue, max: true });
-                } else {
-                  //unsetting error
-                  return setInputIssue({
-                    ...inputIssue,
-                    max: false,
-                    lessThanMin: false
-                  });
-                }
+              if (event.target.value !== undefined) {
+                const value = Number(event.target.value) || 0;
+                maxValRef.current.actual = value;
+                setMaxVal(value);
               }
             }}
           />

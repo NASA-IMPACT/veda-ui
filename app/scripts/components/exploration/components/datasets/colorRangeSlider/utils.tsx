@@ -47,35 +47,23 @@ export const displayIssueMessage = (
   maxValRef,
   minValRef
 ) => {
-  // error message for min input that is outside min max of color map
-
-  if (inputError.max || inputError.min) {
-    return (
-      <p className='text-orange'>
+  const messages: JSX.Element[] = [
+    (inputError.max || inputError.min) && (
+      <p key='range' className='text-orange'>
         {`Warning: The provided values are outside the recommended range [${min}, ${max}]`}
       </p>
-    );
-  }
-  {
-    /* error message for max input that is less than current min */
-  }
-
-  if (inputError.largerThanMax) {
-    return (
-      <p className='text-secondary-vivid'>
+    ),
+    inputError.largerThanMax && (
+      <p key='larger' className='text-secondary-vivid'>
         Please enter a value less than {maxValRef.current.actual}
       </p>
-    );
-  }
-  {
-    /* error message for min input that is larger than current max */
-  }
-
-  if (inputError.lessThanMin) {
-    return (
-      <p className='text-secondary-vivid'>
+    ),
+    inputError.lessThanMin && (
+      <p key='less' className='text-secondary-vivid'>
         Please enter a value larger than {minValRef.current.actual}
       </p>
-    );
-  }
+    )
+  ].filter(Boolean) as JSX.Element[];
+
+  return <>{messages}</>;
 };
