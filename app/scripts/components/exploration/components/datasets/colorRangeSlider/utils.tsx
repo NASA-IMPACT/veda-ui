@@ -10,6 +10,7 @@ export const textInputClasses =
 export const thumbPosition = `position-absolute pointer-events width-card height-0 outline-0`;
 export const tooltiptextClasses =
   'text-no-wrap text-white text-center radius-lg padding-x-105 padding-y-05 position-absolute z-1 bottom-205';
+
 export const calculateStep = (max, min, digitCount) => {
   const numericDistance = max - min;
   if (numericDistance >= 100) {
@@ -23,13 +24,12 @@ export const calculateStep = (max, min, digitCount) => {
     }
     digitCount.current = decimalPoints + 2;
 
-    //adding a default buffer for granular control
+    // adding a default buffer for granular control
     return Math.pow(10, (decimalPoints + 2) * -1);
   }
 };
 
-//Calculate the range
-
+// Calculate the range
 export const rangeCalculation = (maxPercent, minPercent, range) => {
   const thumbWidth = 20;
   if (range.current) {
@@ -40,26 +40,23 @@ export const rangeCalculation = (maxPercent, minPercent, range) => {
   return;
 };
 
-export const displayErrorMessage = (
+export const displayIssueMessage = (
   inputError,
   min,
   max,
   maxValRef,
   minValRef
 ) => {
-  // error message for min input that is outside min max of color map
-
+  // error message for min/max input that is outside min/max of colormap
   if (inputError.max || inputError.min) {
     return (
-      <p className='text-secondary-vivid'>
-        Please enter a value between {min} and {max}
+      <p className='text-orange'>
+        {`Warning: The provided values are outside the recommended range [${min}, ${max}]`}
       </p>
     );
   }
-  {
-    /* error message for max input that is less than current min */
-  }
 
+  // error message for max input that is less than current min
   if (inputError.largerThanMax) {
     return (
       <p className='text-secondary-vivid'>
@@ -67,10 +64,8 @@ export const displayErrorMessage = (
       </p>
     );
   }
-  {
-    /* error message for min input that is larger than current max */
-  }
 
+  // error message for min input that is larger than current max
   if (inputError.lessThanMin) {
     return (
       <p className='text-secondary-vivid'>
