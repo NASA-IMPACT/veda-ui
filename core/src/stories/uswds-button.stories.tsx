@@ -12,101 +12,57 @@ export default meta;
 type Story = StoryObj<typeof USWDSButton>;
 
 export const Default: Story = {
-  render: () => <USWDSButton type='button'>Click Me</USWDSButton>
+  args: { type: 'button', children: 'Click Me' }
 };
 
 export const Secondary: Story = {
-  render: () => (
-    <USWDSButton type='button' secondary>
-      Secondary Button
-    </USWDSButton>
-  )
+  args: { type: 'button', secondary: true, children: 'Secondary Button' }
 };
 
 export const AccentCool: Story = {
-  render: () => (
-    <USWDSButton type='button' accentStyle='cool'>
-      Accent Cool
-    </USWDSButton>
-  )
+  args: { type: 'button', accentStyle: 'cool', children: 'Accent Cool' }
 };
 
 export const AccentWarm: Story = {
-  render: () => (
-    <USWDSButton type='button' accentStyle='warm'>
-      Accent Warm
-    </USWDSButton>
-  )
+  args: { type: 'button', accentStyle: 'warm', children: 'Accent Warm' }
 };
 
 export const Base: Story = {
-  render: () => (
-    <USWDSButton type='button' base>
-      Base Button
-    </USWDSButton>
-  )
+  args: { type: 'button', base: true, children: 'Base Button' }
 };
 
 export const Outline: Story = {
-  render: () => (
-    <USWDSButton type='button' outline>
-      Outline Button
-    </USWDSButton>
-  )
+  args: { type: 'button', outline: true, children: 'Outline Button' }
 };
 
 export const Inverse: Story = {
-  render: () => (
-    <USWDSButton type='button' inverse>
-      Inverse Button
-    </USWDSButton>
-  )
+  args: { type: 'button', inverse: true, children: 'Inverse Button' }
 };
 
 export const Big: Story = {
-  render: () => (
-    <USWDSButton type='button' size='big'>
-      Big Button
-    </USWDSButton>
-  )
+  args: { type: 'button', size: 'big', children: 'Big Button' }
 };
 
 export const Small: Story = {
-  render: () => (
-    <USWDSButton type='button' size='small'>
-      Small Button
-    </USWDSButton>
-  )
+  args: { type: 'button', size: 'small', children: 'Small Button' }
 };
 
 export const Unstyled: Story = {
-  render: () => (
-    <USWDSButton type='button' unstyled>
-      Unstyled Button
-    </USWDSButton>
-  )
+  args: { type: 'button', unstyled: true, children: 'Unstyled Button' }
 };
 
 export const CustomClass: Story = {
-  render: () => (
-    <USWDSButton type='button' className='custom-class'>
-      Custom Class
-    </USWDSButton>
-  )
+  args: { type: 'button', className: 'custom-class', children: 'Custom Class' }
 };
 
 export const Disabled: Story = {
-  render: () => (
-    <USWDSButton type='button' disabled>
-      Disabled Button
-    </USWDSButton>
-  )
+  args: { type: 'button', disabled: true, children: 'Disabled Button' }
 };
 
 export const WithClickHandler: Story = {
-  render: () => (
-    <USWDSButton type='button' onClick={() => alert('Button clicked!')}>
-      Click Me
-    </USWDSButton>
-  )
+  args: {
+    type: 'button',
+    children: 'Click Me',
+    onClick: () => alert('Button clicked!')
+  }
 };
