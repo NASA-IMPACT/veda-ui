@@ -13,7 +13,7 @@ import {
   getInteractionDataPoint,
   usePopover
 } from '../chart-popover';
-import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
+
 import {
   DatasetTrackError,
   DatasetTrackLoading
@@ -108,7 +108,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
-  const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const setSelectedVariable = useAnalysisVariable(datasetAtom);
 
@@ -123,16 +122,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
       { throwOnError: false }
     );
   }, [queryClient, datasetId]);
-
-  const onClickLayerInfo = useCallback(() => {
-    const data: LayerInfoModalData = {
-      name: dataset.data.name,
-      description: dataset.data.description,
-      info: dataset.data.info,
-      parentData: dataset.data.parentDataset
-    };
-    setModalLayerInfo(data);
-  }, [dataset]);
 
   const controls = useDragControls();
 
@@ -192,6 +181,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
   );
 
   const onDragging = (e) => {
+    // Do not start if dragging is on modal
+    if (e.target?.offsetParent?.id === 'modal') return;
     controls.start(e);
   };
 
@@ -213,26 +204,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
         <DatasetHeader>
           <DatasetHeaderInner>
             <div style={{ width: '100%' }} onPointerDown={onDragging}>
-              <DataLayerCard
-                dataset={dataset}
-                datasetAtom={datasetAtom}
-                colorMap={colorMap}
-                colorMapScale={colorMapScale}
-                setColorMap={setColorMap}
-                setColorMapScale={setColorMapScale}
-                isVisible={isVisible}
-                setVisible={setVisible}
-                datasetLegend={datasetLegend}
-                onClickLayerInfo={onClickLayerInfo}
-              />
+              <DataLayerCard dataset={dataset} />
             </div>
-            {modalLayerInfo && (
-              <LayerInfoModal
-                revealed={!!modalLayerInfo}
-                close={() => setModalLayerInfo(undefined)}
-                layerData={modalLayerInfo}
-              />
-            )}
           </DatasetHeaderInner>
         </DatasetHeader>
         <DatasetData>
@@ -252,7 +225,8 @@ export function DatasetListItem(props: DatasetListItemProps) {
               {isAnalysisAndLoading && (
                 <DatasetTrackLoading
                   message={
-                    dataset.analysis.meta.total === undefined || dataset.analysis.meta.loaded === undefined
+                    dataset.analysis.meta.total === undefined ||
+                    dataset.analysis.meta.loaded === undefined
                       ? 'Fetching item information'
                       : `${dataset.analysis.meta.loaded} of ${dataset.analysis.meta.total} items loaded`
                   }

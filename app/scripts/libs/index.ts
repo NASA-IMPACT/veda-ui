@@ -66,4 +66,11 @@ export {
   Widget
 } from './uswds-components';
 
+export {
+  DataLayerCardPresentational,
+  Layer,
+  VEDAMap,
+  MapControls
+} from './components';
+
 export { PageHero, LegacyGlobalStyles };
