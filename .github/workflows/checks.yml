@@ -68,8 +68,8 @@ jobs:
       - name: Install
         run: yarn install
 
-      - name: Install Core Dependencies
-        run: cd core && yarn install
+      - name: Install Storybook Dependencies
+        run: cd storybook && yarn install
 
       - name: Lint JS and CSS
         run: yarn lint
@@ -97,8 +97,8 @@ jobs:
       - name: Install
         run: yarn install
 
-      - name: Install Core Dependencies
-        run: cd core && yarn install
+      - name: Install Storybook Dependencies
+        run: cd storybook && yarn install
 
       - name: Check TS errors
         run: yarn ts-check
@@ -126,8 +126,8 @@ jobs:
       - name: Install
         run: yarn install
 
-      - name: Install Core Dependencies
-        run: cd core && yarn install
+      - name: Install Storybook Dependencies
+        run: cd storybook && yarn install
 
       - name: Test
         run: yarn test
@@ -156,8 +156,8 @@ jobs:
       - name: Install
         run: yarn install
 
-      - name: Install Core Dependencies
-        run: cd core && yarn install
+      - name: Install Storybook Dependencies
+        run: cd storybook && yarn install
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps

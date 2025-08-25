@@ -121,7 +121,7 @@
       "extends": "plugin:playwright/recommended"
     },
     {
-      "files": "core/**",
+      "files": "storybook/**",
       "rules": {
         "prettier/prettier": [
           "error",
