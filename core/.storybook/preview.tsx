@@ -1,0 +1,40 @@
+import type { Preview } from '@storybook/react';
+import React from 'react';
+import { VedaUIProvider } from '$context/veda-ui-provider';
+import DevseedUiThemeProvider from '$context/theme-provider';
+import ReactQueryProvider from '$context/react-query';
+
+// Import USWDS core styles globally for all stories
+import '@uswds/uswds/css/uswds.css';
+
+const preview: Preview = {
+  decorators: [
+    (Story) => (
+      <VedaUIProvider
+        config={{
+          envMapboxToken: import.meta.env.MAPBOX_TOKEN ?? '',
+          envApiStacEndpoint: import.meta.env.API_STAC_ENDPOINT ?? '',
+          envApiRasterEndpoint: import.meta.env.API_RASTER_ENDPOINT ?? '',
+          envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? '',
+          geoDataPath: '/public/geo-data/'
+        }}
+      >
+        <DevseedUiThemeProvider>
+          <ReactQueryProvider>
+            <Story />
+          </ReactQueryProvider>
+        </DevseedUiThemeProvider>
+      </VedaUIProvider>
+    )
+  ],
+  parameters: {
+    controls: {
+      matchers: {
+        color: /(background|color)$/i,
+        date: /Date$/i
+      }
+    }
+  }
+};
+
+export default preview;

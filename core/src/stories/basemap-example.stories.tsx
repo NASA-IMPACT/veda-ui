@@ -1,6 +1,5 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { StorybookProviders } from '../storybook-providers';
 import Map, { MapControls } from '$components/common/map';
 import {
   NavigationControl,
@@ -19,22 +18,20 @@ const BaseMapExample: React.FC = () => {
   const { aoi } = useAois();
   return (
     <div style={{ height: '100vh' }}>
-      <StorybookProviders>
-        <Map id='custom-map'>
-          <Basemap
-            basemapStyleId={mapBasemapId}
-            labelsOption={labelsOption}
-            boundariesOption={boundariesOption}
-          />
-          <MapControls>
-            <AoiControl />
-            {aoi && <AoiLayer aoi={aoi} />}
-            <NavigationControl position='top-right' />
-            <ScaleControl />
-            <MapCoordsControl />
-          </MapControls>
-        </Map>
-      </StorybookProviders>
+      <Map id='custom-map'>
+        <Basemap
+          basemapStyleId={mapBasemapId}
+          labelsOption={labelsOption}
+          boundariesOption={boundariesOption}
+        />
+        <MapControls>
+          <AoiControl />
+          {aoi && <AoiLayer aoi={aoi} />}
+          <NavigationControl position='top-right' />
+          <ScaleControl />
+          <MapCoordsControl />
+        </MapControls>
+      </Map>
     </div>
   );
 };
