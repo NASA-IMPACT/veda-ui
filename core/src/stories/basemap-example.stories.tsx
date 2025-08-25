@@ -37,7 +37,7 @@ const BaseMapExample: React.FC = () => {
 };
 
 const meta: Meta<typeof BaseMapExample> = {
-  title: 'Components/CustomAOIControl',
+  title: 'Components/BaseMapExample',
   component: BaseMapExample,
   parameters: {
     layout: 'fullscreen'
