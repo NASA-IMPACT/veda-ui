@@ -9,15 +9,6 @@ const config: StorybookConfig = {
   framework: {
     name: '@storybook/react-vite',
     options: {}
-  },
-  viteFinal: async (config) => {
-    if (config.resolve) {
-      config.resolve.alias = {
-        ...config.resolve.alias,
-        $uswds: uswdsPath
-      };
-    }
-    return config;
   }
 };
 export default config;
