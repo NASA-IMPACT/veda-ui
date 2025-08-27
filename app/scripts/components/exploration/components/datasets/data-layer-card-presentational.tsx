@@ -1,21 +1,19 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import {
   CollecticonCircleInformation,
   CollecticonEyeDisabled,
   CollecticonEye,
-  CollecticonChevronDownSmall,
   CollecticonChevronDown,
   CollecticonChevronUp
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
-import Tippy from '@tippyjs/react';
 import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
-import { ColormapOptions } from './colormap-options';
+import { ColormapSection } from './colormap-section';
 import {
   LayerLegendCategorical,
   LayerLegendGradient,
@@ -23,11 +21,7 @@ import {
   LayerInfo
 } from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
-import {
-  LayerCategoricalGraphic,
-  LayerGradientColormapGraphic,
-  renderSwatchLine
-} from '$components/common/map/layer-legend';
+
 import {
   TimelineDataset,
   colorMapScale
@@ -36,7 +30,6 @@ import { CollecticonDatasetLayers } from '$components/common/icons-legacy/datase
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 
 import 'tippy.js/dist/tippy.css';
-import { LoadingSkeleton } from '$components/common/loading-skeleton';
 
 interface PresentationalProps {
   dataset: TimelineDataset;
@@ -127,12 +120,6 @@ const DatasetMetricInfo = styled.div`
   color: ${themeVal('color.base-500')};
 `;
 
-const LegendColorMapTrigger = styled.div`
-  min-height: 46px;
-  min-width: 25px;
-  cursor: pointer;
-`;
-
 export default function DataLayerCardPresentational(
   props: PresentationalProps
 ) {
@@ -161,9 +148,6 @@ export default function DataLayerCardPresentational(
     onOpacityChange,
     footerContent
   } = props;
-  const triggerRef = useRef<HTMLDivElement | null>(null);
-  const [isColorMapOpen, setIsColorMapOpen] = useState(false);
-
   const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
 
   const onClickLayerInfo = useCallback(() => {
@@ -176,24 +160,10 @@ export default function DataLayerCardPresentational(
     setModalLayerInfo(data);
   }, [dataset]);
 
-  const handleColorMapTriggerClick = () => {
-    setIsColorMapOpen((prev) => !prev);
-  };
-
-  const handleColorMapClose = () => {
-    setIsColorMapOpen(false);
-  };
-
   const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(true);
 
   const chevToggleExpanded = () => {
     setIsChevToggleExpanded((prev) => !prev);
-  };
-  // Handle click outside to close colormap dropdown
-  const handleClickOutside = (event: any) => {
-    if (triggerRef.current && !triggerRef.current.contains(event.target)) {
-      handleColorMapClose();
-    }
   };
 
   return (
@@ -274,71 +244,22 @@ export default function DataLayerCardPresentational(
             {layerInfo && <LayerInfoLiner info={layerInfo} />}
           </DatasetMetricInfo>
         </DatasetCardInfo>
-        {datasetLegend?.type === 'categorical' && (
-          <div style={{ cursor: 'pointer' }}>
-            {renderSwatchLine(datasetLegend)}
-          </div>
-        )}
-        {datasetLegend?.type === 'categorical' && !isChevToggleExpanded && (
-          <LayerCategoricalGraphic
-            type='categorical'
-            stops={datasetLegend.stops}
-          />
-        )}
 
-        {showLoadingConfigurableCmapSkeleton && (
-          <div className='display-flex flex-align-center height-8'>
-            <LoadingSkeleton />
-          </div>
-        )}
-        {showConfigurableCmap && (
-          <div
-            className='display-flex flex-align-center flex-justify margin-y-1 padding-left-1 border-bottom-1px border-base-lightest radius-md'
-            ref={triggerRef}
-          >
-            <LayerGradientColormapGraphic
-              /* @ts-expect-error showConfigurableCMap should guarantee .stops*/
-              stops={datasetLegend?.stops}
-              min={min}
-              max={max}
-              colorMap={colorMap}
-            />
-            <Tippy
-              className='colormap-options'
-              content={
-                <ColormapOptions
-                  min={Number(min)}
-                  max={Number(max)}
-                  colorMap={colorMap}
-                  setColorMap={setColorMap}
-                  toggleColormap={handleColorMapTriggerClick}
-                  setColorMapScale={setColorMapScale}
-                  colorMapScale={colorMapScale}
-                />
-              }
-              appendTo={() => document.body}
-              visible={isColorMapOpen}
-              interactive={true}
-              placement='top'
-              onClickOutside={(_, event) => handleClickOutside(event)}
-            >
-              <LegendColorMapTrigger
-                className='display-flex flex-align-center flex-justify bg-base-lightest margin-left-1 padding-05'
-                onClick={handleColorMapTriggerClick}
-              >
-                <CollecticonChevronDownSmall />
-              </LegendColorMapTrigger>
-            </Tippy>
-          </div>
-        )}
-        {showNonConfigurableCmap && datasetLegend?.type === 'gradient' && (
-          <LayerGradientColormapGraphic
-            stops={datasetLegend.stops}
-            min={min}
-            max={max}
-            colorMap={colorMap}
-          />
-        )}
+        <ColormapSection
+          colorMap={colorMap}
+          setColorMap={setColorMap}
+          colorMapScale={colorMapScale}
+          setColorMapScale={setColorMapScale}
+          datasetLegend={datasetLegend}
+          min={min}
+          max={max}
+          showLoadingConfigurableCmapSkeleton={
+            showLoadingConfigurableCmapSkeleton
+          }
+          isCategoricalLegendExpanded={isChevToggleExpanded}
+          showConfigurableCmap={showConfigurableCmap}
+          showNonConfigurableCmap={showNonConfigurableCmap}
+        />
         {modalLayerInfo && (
           <LayerInfoModal
             revealed={!!modalLayerInfo}
