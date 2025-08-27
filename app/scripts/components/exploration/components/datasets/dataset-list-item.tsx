@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useAtomValue } from 'jotai';
 import { Reorder, useDragControls } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
@@ -20,7 +20,7 @@ import {
 } from './dataset-list-item-status';
 import { DatasetChart } from './dataset-chart';
 import { getBlockBoundaries, lumpBlocks } from './block-utils';
-import DataLayerCard from './data-layer-card';
+import DataLayerCard from './data-layer-card-container';
 import {
   DatasetStatus,
   TimelineDatasetSuccess
@@ -104,10 +104,7 @@ export function DatasetListItem(props: DatasetListItemProps) {
 
   const { isAnalyzing, runAnalysis } = useAnalysisController();
 
-  const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
-  const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
-  const [colorMapScale, setColorMapScale] =
-    useTimelineDatasetColormapScale(datasetAtom);
+  const [isVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const setSelectedVariable = useAnalysisVariable(datasetAtom);
 
@@ -174,7 +171,6 @@ export function DatasetListItem(props: DatasetListItemProps) {
   const isAnalysisAndSuccess =
     isAnalyzing && dataset.analysis.status === DatasetStatus.SUCCESS;
 
-  const datasetLegend = dataset.data.legend;
   const analysisMetrics = useMemo(
     () => dataset.settings.analysisMetrics ?? [],
     [dataset]

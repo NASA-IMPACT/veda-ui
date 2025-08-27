@@ -19,7 +19,8 @@ import { ColormapOptions } from './colormap-options';
 import {
   LayerLegendCategorical,
   LayerLegendGradient,
-  LayerLegendText
+  LayerLegendText,
+  LayerInfo
 } from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
 import {
@@ -51,7 +52,7 @@ interface PresentationalProps {
     | LayerLegendGradient
     | LayerLegendText
     | undefined;
-  layerInfo: any;
+  layerInfo: LayerInfo | undefined;
   min: number;
   max: number;
   parentDataset: any;
@@ -144,7 +145,6 @@ export default function DataLayerCardPresentational(
     colorMapScale,
     setColorMapScale,
     datasetLegend,
-
     layerInfo,
     min,
     max,
@@ -297,7 +297,8 @@ export default function DataLayerCardPresentational(
             ref={triggerRef}
           >
             <LayerGradientColormapGraphic
-              stops={datasetLegend.stops}
+              /* @ts-expect-error showConfigurableCMap should guarantee .stops*/
+              stops={datasetLegend?.stops}
               min={min}
               max={max}
               colorMap={colorMap}
@@ -330,7 +331,7 @@ export default function DataLayerCardPresentational(
             </Tippy>
           </div>
         )}
-        {showNonConfigurableCmap && (
+        {showNonConfigurableCmap && datasetLegend?.type === 'gradient' && (
           <LayerGradientColormapGraphic
             stops={datasetLegend.stops}
             min={min}

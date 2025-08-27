@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { PrimitiveAtom, useAtom } from 'jotai';
+import React from 'react';
+import { useAtom } from 'jotai';
 import DataLayerCardPresentational from './data-layer-card-presentational';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
@@ -30,7 +30,7 @@ export default function DataLayerCardContainer(props: CardProps) {
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
-  const opacity = (getSettings('opacity') ?? 100) as number;
+  const opacity = getSettings('opacity') ?? 100;
 
   const layerInfo = dataset.data.info;
   const [min, max] =
