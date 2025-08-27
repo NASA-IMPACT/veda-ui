@@ -28,11 +28,16 @@ import {
   WidgetItemHeadline,
   WidgetItemHGroup
 } from '$styles/panel';
-import { LayerLegendCategorical, LayerLegendGradient, LayerLegendText} from '$types/veda';
+import {
+  LayerLegendCategorical,
+  LayerLegendGradient,
+  LayerLegendText
+} from '$types/veda';
 import {
   divergingColorMaps,
   sequentialColorMaps,
-  restColorMaps } from '$components/exploration/components/datasets/colorMaps';
+  restColorMaps
+} from '$components/exploration/components/datasets/colorMaps';
 import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
 
 interface LayerLegendCommonProps {
@@ -52,7 +57,7 @@ interface LayerLegendContainerProps {
 }
 
 interface LegendListProps {
-  type: 'categorical' | 'gradient'
+  type: 'categorical' | 'gradient';
 }
 
 const makeGradient = (stops: string[]) => {
@@ -140,65 +145,64 @@ const LayerLegendSelf = styled.div`
   }
 `;
 
-
-
 const LegendList = styled.dl<LegendListProps>`
+  width: 100%;
   ${({ type }) => {
     if (type === 'gradient') {
       return css`
-      display: grid;
-      grid-gap: 0 ${glsp(0.125)};
-      grid-auto-columns: minmax(1rem, 1fr);
-      grid-auto-flow: column;
+        display: grid;
+        grid-gap: 0 ${glsp(0.125)};
+        grid-auto-columns: minmax(1rem, 1fr);
+        grid-auto-flow: column;
 
-      dt {
-        grid-row: 1;
-      }
+        dt {
+          grid-row: 1;
+        }
 
-      dd {
-        font-size: 0.75rem;
-        line-height: 1rem;
-        grid-row: 2;
-        display: flex;
-        justify-content: space-between;
-
-        /* stylelint-disable-next-line no-descending-specificity */
-        > * {
-          width: 8rem;
+        dd {
+          font-size: 0.75rem;
+          line-height: 1rem;
+          grid-row: 2;
+          display: flex;
+          justify-content: space-between;
 
           /* stylelint-disable-next-line no-descending-specificity */
           > * {
-            ${truncated()}
-            display: block;
+            width: 8rem;
+
+            /* stylelint-disable-next-line no-descending-specificity */
+            > * {
+              ${truncated()}
+              display: block;
+            }
+
+            &:last-child:not(:first-child) {
+              text-align: right;
+            }
           }
 
-          &:last-child:not(:first-child) {
-            text-align: right;
+          &:not(:first-of-type):not(:last-of-type) {
+            ${visuallyHidden()}
           }
         }
 
-        &:not(:first-of-type):not(:last-of-type) {
-          ${visuallyHidden()}
+        .unit {
+          grid-row: 3;
+          width: 100%;
+          text-align: center;
+          font-size: 0.75rem;
+          line-height: 1rem;
+          justify-content: center;
         }
-      }
-
-      .unit {
-        grid-row: 3;
-        width: 100%;
-        text-align: center;
-        font-size: 0.75rem;
-        line-height: 1rem;
-        justify-content: center;
-      }
-    `;
-    }
-    else if (type === 'categorical') {
+      `;
+    } else if (type === 'categorical') {
       return css`
         display: flex;
         flex-direction: column;
         gap: ${glsp(0.25)};
 
-        dt, dd {
+        dt,
+        dd {
           margin: 0;
           padding: 0;
         }
@@ -208,11 +212,11 @@ const LegendList = styled.dl<LegendListProps>`
           align-items: flex-start;
           gap: ${glsp(0.25)};
         }
-      
+
         dt > span {
           display: block;
           max-width: calc(100% - 1rem);
-        } 
+        }
 
         dt > *:first-child {
           margin-top: 0.5rem;
@@ -222,16 +226,16 @@ const LegendList = styled.dl<LegendListProps>`
           font-size: 0.75rem;
           line-height: 1rem;
           margin: 0 0 0 calc(1rem + ${glsp(0.25)});
-        } 
-        
+        }
+
         overflow-y: scroll;
         overscroll-behavior: none;
-        max-height: 300px;  
+        max-height: 300px;
         scrollbar-color: transparent transparent;
       `;
     }
-  }
-}`;
+  }}
+`;
 
 const LegendSwatch = styled.span<LegendSwatchProps>`
   /* position is needed to ensure that the layerX on the event is relative to
@@ -248,9 +252,8 @@ const LegendSwatch = styled.span<LegendSwatchProps>`
   margin-right: ${({ type }) => (type === 'gradient' ? '0' : '0.5rem')};
   box-shadow: inset 0 0 0 1px ${themeVal('color.base-100a')};
   cursor: ${({ hasHelp }) => (hasHelp ? 'help' : 'auto')};
-  flex-shrink: 0; 
+  flex-shrink: 0;
 `;
-
 
 const LayerLegendTitle = styled.h3`
   font-size: ${variableBaseType('0.75rem')};
@@ -272,7 +275,8 @@ const LegendBody = styled(WidgetItemBodyInner)`
 `;
 
 export function LayerLegend(
-  props: LayerLegendCommonProps & (LayerLegendGradient | LayerLegendCategorical | LayerLegendText)
+  props: LayerLegendCommonProps &
+    (LayerLegendGradient | LayerLegendCategorical | LayerLegendText)
 ) {
   const { id, type, title, description } = props;
   const [isChevToggleExpanded, setIsChevToggleExpanded] = useState(false);
@@ -297,32 +301,27 @@ export function LayerLegend(
                 active={isExpanded}
                 onClick={toggleExpanded}
               >
-              <CollecticonCircleInformation
-              title='Information about layer'
-              meaningful
-              />
+                <CollecticonCircleInformation
+                  title='Information about layer'
+                  meaningful
+                />
               </ToolbarIconButton>
-              {
-                type === 'categorical' && (
-                  <ToolbarIconButton
-                    variation='base-text'
-                    active={isChevToggleExpanded}
-                    onClick={chevToggleExpanded}
-                  >
-                    {isChevToggleExpanded ? (
-                    <CollecticonChevronUp
-                    title='Expand Legend'
-                    meaningful
-                    />
+              {type === 'categorical' && (
+                <ToolbarIconButton
+                  variation='base-text'
+                  active={isChevToggleExpanded}
+                  onClick={chevToggleExpanded}
+                >
+                  {isChevToggleExpanded ? (
+                    <CollecticonChevronUp title='Expand Legend' meaningful />
                   ) : (
                     <CollecticonChevronDown
-                    title='Collapse Legend'
-                    meaningful
+                      title='Collapse Legend'
+                      meaningful
                     />
                   )}
-                  </ToolbarIconButton>
-                )
-              }
+                </ToolbarIconButton>
+              )}
             </Toolbar>
           </WidgetItemHGroup>
           {type === 'categorical' && (
@@ -370,23 +369,13 @@ export function LayerCategoricalGraphic(props: LayerLegendCategorical) {
     stops.map((stop) => (
       <Fragment key={`legend-item-${stop.color}`}>
         <dt>
-          <LegendSwatch
-            type='categorical'
-            stops={stop.color}
-          />
-          <span>
-            {stop.label}
-          </span>
+          <LegendSwatch type='categorical' stops={stop.color} />
+          <span>{stop.label}</span>
         </dt>
       </Fragment>
-    )
-  );
+    ));
 
-  return (
-    <LegendList type='categorical'>
-      {renderLegendItems()}
-    </LegendList>
-  );
+  return <LegendList type='categorical'>{renderLegendItems()}</LegendList>;
 }
 
 interface SwatchSegmentProps {
@@ -412,10 +401,7 @@ export const renderSwatchLine = (props: LayerLegendCategorical) => {
   return (
     <SwatchContainer>
       {stops.map((stop) => (
-        <Tip
-          key={`${stop.color}-${stop.label}`}
-          content={stop.label}
-        >
+        <Tip key={`${stop.color}-${stop.label}`} content={stop.label}>
           <SwatchSegment color={stop.color} />
         </Tip>
       ))}
@@ -455,7 +441,11 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
           followCursor='horizontal'
           plugins={[followCursor]}
         >
-          <LegendSwatch type='gradient' stops={stops} onMouseMove={moveListener}>
+          <LegendSwatch
+            type='gradient'
+            stops={stops}
+            onMouseMove={moveListener}
+          >
             {stops[0]} to {stops[stops.length - 1]}
           </LegendSwatch>
         </Tip>
@@ -469,7 +459,9 @@ export const LayerGradientGraphic = (props: LayerLegendGradient) => {
   );
 };
 
-export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 'type'>) => {
+export const LayerGradientColormapGraphic = (
+  props: Omit<LayerLegendGradient, 'type'>
+) => {
   const { colorMap, stops: defaultStops, ...otherProps } = props;
 
   const processedStops = React.useMemo(() => {
@@ -477,24 +469,37 @@ export const LayerGradientColormapGraphic = (props: Omit<LayerLegendGradient, 't
 
     const { foundColorMap, isReversed } = findColormapByName(colorMap);
     const stops = Object.values(foundColorMap)
-      .filter(value => Array.isArray(value) && value.length === 4)
-      .map(value => `rgba(${(value as number[]).join(',')})`);
+      .filter((value) => Array.isArray(value) && value.length === 4)
+      .map((value) => `rgba(${(value as number[]).join(',')})`);
 
     return isReversed ? [...stops].reverse() : stops;
   }, [colorMap, defaultStops]);
 
-  return <LayerGradientGraphic type='gradient' {...otherProps} stops={processedStops} />;
+  return (
+    <LayerGradientGraphic
+      type='gradient'
+      {...otherProps}
+      stops={processedStops}
+    />
+  );
 };
 
 export const findColormapByName = (name: string) => {
   const isReversed = name.toLowerCase().endsWith('_r');
-  const baseName = isReversed ? name.slice(0, -2).toLowerCase() : name.toLowerCase();
-  const colormap = sequentialColorMaps[baseName] ?? divergingColorMaps[baseName] ?? restColorMaps[baseName];
+  const baseName = isReversed
+    ? name.slice(0, -2).toLowerCase()
+    : name.toLowerCase();
+  const colormap =
+    sequentialColorMaps[baseName] ??
+    divergingColorMaps[baseName] ??
+    restColorMaps[baseName];
 
   if (!colormap) {
-    const defaultColormap = sequentialColorMaps[DEFAULT_COLORMAP.toLowerCase()] ?? divergingColorMaps[DEFAULT_COLORMAP.toLowerCase()];
-    return { foundColorMap: {...defaultColormap}, isReversed: false };
+    const defaultColormap =
+      sequentialColorMaps[DEFAULT_COLORMAP.toLowerCase()] ??
+      divergingColorMaps[DEFAULT_COLORMAP.toLowerCase()];
+    return { foundColorMap: { ...defaultColormap }, isReversed: false };
   }
 
-  return { foundColorMap: {...colormap}, isReversed };
+  return { foundColorMap: { ...colormap }, isReversed };
 };
