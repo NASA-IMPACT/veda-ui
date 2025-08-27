@@ -14,18 +14,13 @@ import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
 import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapSection } from './colormap-section';
-import {
-  LayerLegendCategorical,
-  LayerLegendGradient,
-  LayerLegendText,
-  LayerInfo
-} from '$types/veda';
 import { TipButton } from '$components/common/tip-button';
 
 import {
   TimelineDataset,
   colorMapScale
 } from '$components/exploration/types.d.ts';
+import { DatasetData } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 
@@ -34,31 +29,19 @@ import 'tippy.js/dist/tippy.css';
 interface PresentationalProps {
   dataset: TimelineDataset;
   isVisible: boolean | undefined;
-  setVisible: any;
+  setVisible: React.Dispatch<React.SetStateAction<boolean>>;
   colorMap: string | undefined;
-  setColorMap: (colorMap: string) => void;
+  setColorMap: React.Dispatch<React.SetStateAction<string>>;
   colorMapScale: colorMapScale | undefined;
-  setColorMapScale: (colorMapScale: colorMapScale) => void;
-
-  datasetLegend:
-    | LayerLegendCategorical
-    | LayerLegendGradient
-    | LayerLegendText
-    | undefined;
-  layerInfo: LayerInfo | undefined;
-  min: number;
-  max: number;
-  parentDataset: any;
-  showLoadingConfigurableCmapSkeleton: boolean;
-  showConfigurableCmap: boolean;
-  showNonConfigurableCmap: boolean;
+  setColorMapScale: React.Dispatch<React.SetStateAction<colorMapScale>>;
+  parentDataset: DatasetData | undefined;
   onRemoveLayer: () => void;
   onMoveUp: () => void;
   onMoveDown: () => void;
   canMoveUp: boolean;
   canMoveDown: boolean;
   opacity: number;
-  onOpacityChange: (opacity: number) => void;
+  onOpacityChange: React.Dispatch<React.SetStateAction<number>>;
   footerContent?: React.ReactNode;
 }
 
@@ -131,14 +114,7 @@ export default function DataLayerCardPresentational(
     setColorMap,
     colorMapScale,
     setColorMapScale,
-    datasetLegend,
-    layerInfo,
-    min,
-    max,
     parentDataset,
-    showLoadingConfigurableCmapSkeleton,
-    showConfigurableCmap,
-    showNonConfigurableCmap,
     onRemoveLayer,
     onMoveUp,
     onMoveDown,
@@ -148,7 +124,10 @@ export default function DataLayerCardPresentational(
     onOpacityChange,
     footerContent
   } = props;
+
   const [modalLayerInfo, setModalLayerInfo] = useState<LayerInfoModalData>();
+  const layerInfo = dataset.data.info;
+  const datasetLegend = dataset.data.legend;
 
   const onClickLayerInfo = useCallback(() => {
     const data: LayerInfoModalData = {
@@ -246,19 +225,12 @@ export default function DataLayerCardPresentational(
         </DatasetCardInfo>
 
         <ColormapSection
+          dataset={dataset}
           colorMap={colorMap}
           setColorMap={setColorMap}
           colorMapScale={colorMapScale}
           setColorMapScale={setColorMapScale}
-          datasetLegend={datasetLegend}
-          min={min}
-          max={max}
-          showLoadingConfigurableCmapSkeleton={
-            showLoadingConfigurableCmapSkeleton
-          }
           isCategoricalLegendExpanded={isChevToggleExpanded}
-          showConfigurableCmap={showConfigurableCmap}
-          showNonConfigurableCmap={showNonConfigurableCmap}
         />
         {modalLayerInfo && (
           <LayerInfoModal

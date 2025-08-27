@@ -3,13 +3,11 @@ import styled from 'styled-components';
 import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
 import Tippy from '@tippyjs/react';
 import { ColormapOptions } from './colormap-options';
-import {
-  LayerLegendCategorical,
-  LayerLegendGradient,
-  LayerLegendText
-} from '$types/veda';
 import { LayerGradientColormapGraphic } from '$components/common/map/layer-legend';
-import { colorMapScale } from '$components/exploration/types.d.ts';
+import {
+  TimelineDataset,
+  colorMapScale
+} from '$components/exploration/types.d.ts';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 import {
   LayerCategoricalGraphic,
@@ -17,20 +15,11 @@ import {
 } from '$components/common/map/layer-legend';
 
 interface ColormapSectionProps {
+  dataset: TimelineDataset;
   colorMap: string | undefined;
   setColorMap: (colorMap: string) => void;
   colorMapScale: colorMapScale | undefined;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
-  datasetLegend:
-    | LayerLegendCategorical
-    | LayerLegendGradient
-    | LayerLegendText
-    | undefined;
-  min: number;
-  max: number;
-  showLoadingConfigurableCmapSkeleton: boolean;
-  showConfigurableCmap: boolean;
-  showNonConfigurableCmap: boolean;
   isCategoricalLegendExpanded: boolean;
 }
 
@@ -41,16 +30,11 @@ const LegendColorMapTrigger = styled.div`
 `;
 
 export function ColormapSection({
+  dataset,
   colorMap,
   setColorMap,
   colorMapScale,
   setColorMapScale,
-  datasetLegend,
-  min,
-  max,
-  showLoadingConfigurableCmapSkeleton,
-  showConfigurableCmap,
-  showNonConfigurableCmap,
   isCategoricalLegendExpanded
 }: ColormapSectionProps) {
   const triggerRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +42,28 @@ export function ColormapSection({
   const handleColorMapTriggerClick = () => {
     setIsColorMapOpen((prev) => !prev);
   };
+  const datasetLegend = dataset.data.legend;
+
+  const [min, max] =
+    datasetLegend?.type === 'gradient' &&
+    datasetLegend.min != null &&
+    datasetLegend.max != null
+      ? ([datasetLegend.min, datasetLegend.max] as [number, number])
+      : dataset.data.sourceParams?.rescale || [0, 1];
+
+  const showLoadingConfigurableCmapSkeleton =
+    dataset.status === 'loading' && datasetLegend?.type === 'gradient';
+
+  const showConfigurableCmap = (dataset.status === 'success' &&
+    dataset.data.type !== 'wmts' &&
+    dataset.data.type !== 'wms' &&
+    datasetLegend?.type === 'gradient' &&
+    colorMap) as boolean;
+
+  const showNonConfigurableCmap =
+    !showConfigurableCmap &&
+    !showLoadingConfigurableCmapSkeleton &&
+    datasetLegend?.type === 'gradient';
 
   const handleColorMapClose = () => {
     setIsColorMapOpen(false);
@@ -131,7 +137,6 @@ export function ColormapSection({
       )}
       {showNonConfigurableCmap && (
         <LayerGradientColormapGraphic
-          // @ts-expect-error Show NonConfigurableCmap guarantees stops
           stops={datasetLegend.stops}
           min={min}
           max={max}
