@@ -9,23 +9,28 @@ import '@uswds/uswds/css/uswds.css';
 
 const preview: Preview = {
   decorators: [
-    (Story) => (
-      <VedaUIProvider
-        config={{
-          envMapboxToken: import.meta.env.MAPBOX_TOKEN ?? '',
-          envApiStacEndpoint: import.meta.env.API_STAC_ENDPOINT ?? '',
-          envApiRasterEndpoint: import.meta.env.API_RASTER_ENDPOINT ?? '',
-          envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? '',
-          geoDataPath: `${import.meta.env.PUBLIC_URL ?? ''}/public/geo-data`
-        }}
-      >
-        <DevseedUiThemeProvider>
-          <ReactQueryProvider>
-            <Story />
-          </ReactQueryProvider>
-        </DevseedUiThemeProvider>
-      </VedaUIProvider>
-    )
+    (Story, context) => {
+      if (context.parameters?.withProviders) {
+        return (
+          <VedaUIProvider
+            config={{
+              envMapboxToken: import.meta.env.MAPBOX_TOKEN ?? '',
+              envApiStacEndpoint: import.meta.env.API_STAC_ENDPOINT ?? '',
+              envApiRasterEndpoint: import.meta.env.API_RASTER_ENDPOINT ?? '',
+              envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? '',
+              geoDataPath: `${import.meta.env.PUBLIC_URL ?? ''}/public/geo-data`
+            }}
+          >
+            <DevseedUiThemeProvider>
+              <ReactQueryProvider>
+                <Story />
+              </ReactQueryProvider>
+            </DevseedUiThemeProvider>
+          </VedaUIProvider>
+        );
+      }
+      return <Story />;
+    }
   ],
   parameters: {
     controls: {
