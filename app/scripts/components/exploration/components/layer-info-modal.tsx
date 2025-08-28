@@ -13,8 +13,6 @@ import useParentDataset from '../hooks/use-parent-data';
 import { LayerInfo, ParentDatset } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
-import { useVedaUI } from '$context/veda-ui-provider';
-import { USWDSButton } from '$uswds';
 
 const StyledModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};
@@ -64,6 +62,7 @@ interface LayerInfoModalProps {
   revealed: boolean;
   close: () => void;
   layerData: LayerInfoModalData;
+  footerContent?: React.ReactNode;
 }
 
 export function LayerInfoLiner(props: { info: LayerInfo }) {
@@ -89,19 +88,11 @@ const LayerInfoLinerModal = styled.div`
 `;
 
 export default function LayerInfoModal(props: LayerInfoModalProps) {
-  const { revealed, close, layerData } = props;
-  const {
-    navigation: { LinkComponent, linkProps },
-    routes: { dataCatalogPath }
-  } = useVedaUI();
+  const { revealed, close, layerData, footerContent } = props;
 
   const { parentDataset } = useParentDataset({
     datasetId: layerData.parentData.id
   });
-
-  const path = {
-    [linkProps.pathAttributeKeyName]: `${dataCatalogPath}/${parentDataset?.id}`
-  };
   return (
     <StyledModal
       id='modal'
@@ -135,20 +126,7 @@ export default function LayerInfoModal(props: LayerInfoModalProps) {
           }}
         />
       }
-      footerContent={
-        <LinkComponent {...path}>
-          <USWDSButton
-            onClick={close}
-            type='button'
-            size='small'
-            inverse={true}
-            outline={false}
-            tabIndex='-1'
-          >
-            Open in Data Catalog
-          </USWDSButton>
-        </LinkComponent>
-      }
+      footerContent={footerContent}
     />
   );
 }
