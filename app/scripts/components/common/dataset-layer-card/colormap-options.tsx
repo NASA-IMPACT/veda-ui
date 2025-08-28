@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 import { CollecticonDrop } from '@devseed-ui/collecticons';
+import './colormap-options.scss';
+import { ColorRangeSlider } from './color-range-slider';
 import {
   sequentialColorMaps,
   divergingColorMaps,
   restColorMaps
-} from './colorMaps';
+} from './color-maps';
 
-import './colormap-options.scss';
-import { ColorRangeSlider } from './colorRangeSlider/index';
 import { colorMapScale } from '$components/exploration/types.d.ts';
+
 export const DEFAULT_COLORMAP = 'viridis';
 
 const CURATED_SEQUENTIAL_COLORMAPS = [

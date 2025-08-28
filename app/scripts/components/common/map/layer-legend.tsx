@@ -37,8 +37,8 @@ import {
   divergingColorMaps,
   sequentialColorMaps,
   restColorMaps
-} from '$components/exploration/components/datasets/colorMaps';
-import { DEFAULT_COLORMAP } from '$components/exploration/components/datasets/colormap-options';
+} from '$components/common/dataset-layer-card/color-maps';
+import { DEFAULT_COLORMAP } from '$components/common/dataset-layer-card/colormap-options';
 
 interface LayerLegendCommonProps {
   id: string;

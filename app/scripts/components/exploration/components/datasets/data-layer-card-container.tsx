@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import DataLayerCardPresentational from './data-layer-card-presentational';
+import DataLayerCardPresentational from '$components/common/dataset-layer-card';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';

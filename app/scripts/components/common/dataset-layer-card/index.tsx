@@ -10,10 +10,12 @@ import {
 } from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
-import LayerInfoModal, { LayerInfoModalData } from '../layer-info-modal';
-import { LayerInfoLiner } from '../layer-info-modal';
-import LayerMenuOptions from './layer-options-menu';
 import { ColormapSection } from './colormap-section';
+import LayerInfoModal, {
+  LayerInfoModalData
+} from '$components/exploration/components/layer-info-modal';
+import { LayerInfoLiner } from '$components/exploration/components/layer-info-modal';
+import LayerMenuOptions from '$components/exploration/components/datasets/layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 
 import {
