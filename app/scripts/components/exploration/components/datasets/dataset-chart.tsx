@@ -3,7 +3,7 @@ import { useTheme } from 'styled-components';
 import { extent, scaleLinear, ScaleTime, line, area, ScaleLinear } from 'd3';
 import { SVGMotionProps, AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
-import { CollecticonChartLine } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { themeVal } from '@devseed-ui/theme-provider';
 import {
   RIGHT_AXIS_SPACE,
@@ -113,7 +113,7 @@ export function DatasetChart(props: DatasetChartProps) {
   }, [yExtent, height]);
 
   const chartAnalysisIconTrigger: JSX.Element = (
-    <CollecticonChartLine meaningful title='View layer options' />
+    <Icon.Assessment aria-hidden='false' aria-label='View layer options' />
   );
   return (
     <div>
