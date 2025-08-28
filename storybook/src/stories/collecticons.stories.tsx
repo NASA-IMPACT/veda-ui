@@ -1,9 +1,9 @@
 import React from 'react';
-import { Meta, StoryObj } from '@storybook/react';
+import { Meta, StoryObj } from '@storybook/react-vite';
 
 import { CollecticonCalendarMinus } from '$components/common/icons-legacy/calendar-minus';
 import { CollecticonCalendarPlus } from '$components/common/icons-legacy/calendar-plus';
-import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
+import { CollecticonDrop } from '$components/common/icons-legacy/drop';
 
 export default {
   title: 'Collecticons/Custom Icons',
@@ -20,15 +20,14 @@ export const CustomIcons: StoryObj = {
         display: 'flex',
         gap: '2rem',
         alignItems: 'center',
-        fontSize: 32,
         color: 'teal'
       }}
     >
-      <CollecticonCalendarMinus />
+      <CollecticonCalendarMinus width='48' height='48' className='test' />
 
       <CollecticonCalendarPlus />
 
-      <CollecticonDatasetLayers />
+      <CollecticonDrop width='12' height='12' />
     </div>
   )
 };
