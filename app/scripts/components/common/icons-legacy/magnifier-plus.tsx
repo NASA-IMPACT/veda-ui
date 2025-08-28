@@ -1,14 +1,12 @@
 import React from 'react';
-import { createCollecticon } from '@devseed-ui/collecticons';
+import { createCollecticon } from '@devseed-ui/collecticons-react';
 import styled from 'styled-components';
 
 export const CollecticonMagnifierPlus = styled(
   createCollecticon((props: any) => (
     <svg {...props}>
       <title>{props.title || 'Magnifier with plus icon'}</title>
-      <path
-        d='M7.5 7.5H9.5V5.5H7.5V3.5H5.5V5.5H3.5V7.5H5.5V9.5H7.5V7.5Z'
-      />
+      <path d='M7.5 7.5H9.5V5.5H7.5V3.5H5.5V5.5H3.5V7.5H5.5V9.5H7.5V7.5Z' />
       <path
         fillRule='evenodd'
         clipRule='evenodd'

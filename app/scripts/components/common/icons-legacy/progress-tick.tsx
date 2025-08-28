@@ -1,5 +1,5 @@
 import React from 'react';
-import { createCollecticon } from '@devseed-ui/collecticons';
+import { createCollecticon } from '@devseed-ui/collecticons-react';
 import styled from 'styled-components';
 
 export const CollecticonProgressTickHigh = styled(

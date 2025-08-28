@@ -1,14 +1,12 @@
 import React from 'react';
-import { createCollecticon } from '@devseed-ui/collecticons';
+import { createCollecticon } from '@devseed-ui/collecticons-react';
 import styled from 'styled-components';
 
 export const CollecticonCalendarMinus = styled(
   createCollecticon((props: any) => (
     <svg {...props}>
       <title>{props.title || 'Calendar with minus icon'}</title>
-      <path
-        d='M11.5 0H10V3H9V1H5V0H3.5V3H2.5V1H1C0.447715 1 0 1.44772 0 2V12C0 12.5523 0.447716 13 1 13H5.34141C5.12031 12.3744 5 11.7013 5 11H2V5H12C13 5 13.3926 5.36838 14 5.71974V2C14 1.44772 13.5523 1 13 1H11.5V0Z'
-      />
+      <path d='M11.5 0H10V3H9V1H5V0H3.5V3H2.5V1H1C0.447715 1 0 1.44772 0 2V12C0 12.5523 0.447716 13 1 13H5.34141C5.12031 12.3744 5 11.7013 5 11H2V5H12C13 5 13.3926 5.36838 14 5.71974V2C14 1.44772 13.5523 1 13 1H11.5V0Z' />
       <path
         fillRule='evenodd'
         clipRule='evenodd'
