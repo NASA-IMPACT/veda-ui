@@ -81,8 +81,9 @@ export function reconcileQueryDataWithDataset(
     } as TimelineDataset | VizDataset;
   }
 }
-// CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-// Apply the same handling universally for WMTS, WMS, etc.
+// STAC collections may use `null` as the end datetime to indicate ongoing data
+// This util normalizes all such intervals by replacing `null` with the current datetime
+// Applied consistently across CMR, WMTS, WMS and other dataset types
 export function normalizeDomain(
   domain: (string | null)[] | undefined
 ): string[] {
