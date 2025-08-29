@@ -17,7 +17,6 @@ export default defineConfig(({ mode }) => {
         $components: path.resolve(__dirname, '../app/scripts/components'),
         $context: path.resolve(__dirname, '../app/scripts/context'),
         $utils: path.resolve(__dirname, '../app/scripts/utils'),
-        $libs: path.resolve(__dirname, '../app/scripts/libs'),
         $styles: path.resolve(__dirname, '../app/scripts/styles'),
 
         // Shim for @devseed-ui/collecticons compatibility
