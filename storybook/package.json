@@ -8,10 +8,10 @@
     "build-storybook": "storybook build"
   },
   "peerDependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
     "@types/react": "^18.3.1",
-    "@types/react-dom": "^18.3.1"
+    "@types/react-dom": "^18.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "dependencies": {
     "@trussworks/react-uswds": "^9.0.0",
@@ -19,18 +19,19 @@
   },
   "devDependencies": {
     "@storybook/addon-onboarding": "^9.1.1",
+    "@storybook/addon-vitest": "^9.1.1",
     "@storybook/react": "^9.1.1",
     "@storybook/react-vite": "^9.1.1",
-    "@storybook/addon-vitest": "^9.1.1",
     "@vitejs/plugin-react": "^4.3.4",
     "@vitest/browser": "^3.1.1",
     "@vitest/coverage-v8": "^3.1.1",
     "eslint-plugin-storybook": "^9.1.1",
     "globals": "^15.15.0",
+    "sass": "^1.81.0",
+    "sass-embedded": "^1.91.0",
     "storybook": "^9.1.1",
     "vite": "^6.2.0",
-    "vitest": "^3.1.1",
-    "sass": "^1.81.0"
+    "vitest": "^3.1.1"
   },
   "eslintConfig": {
     "extends": [
