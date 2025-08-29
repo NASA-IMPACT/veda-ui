@@ -151,7 +151,7 @@ export default function DataLayerCardPresentational(
         <DatasetCardInfo>
           <Header>
             <ParentDatasetTitle size='small'>
-              <CollecticonDatasetLayers /> <p>{parentDataset?.name}</p>
+              {/* <CollecticonDatasetLayers /> <p>{parentDataset?.name}</p> */}
             </ParentDatasetTitle>
           </Header>
           <DatasetHeadline>
@@ -224,22 +224,22 @@ export default function DataLayerCardPresentational(
           </DatasetMetricInfo>
         </DatasetCardInfo>
 
-        <ColormapSection
+        {/* <ColormapSection
           dataset={dataset}
           colorMap={colorMap}
           setColorMap={setColorMap}
           colorMapScale={colorMapScale}
           setColorMapScale={setColorMapScale}
           isCategoricalLegendExpanded={isChevToggleExpanded}
-        />
-        {modalLayerInfo && (
+        /> */}
+        {/* {modalLayerInfo && (
           <LayerInfoModal
             revealed={!!modalLayerInfo}
             close={() => setModalLayerInfo(undefined)}
             layerData={modalLayerInfo}
             footerContent={footerContent}
           />
-        )}
+        )} */}
       </DatasetInfo>
     </>
   );
