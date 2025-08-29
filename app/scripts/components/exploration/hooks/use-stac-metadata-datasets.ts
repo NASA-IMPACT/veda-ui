@@ -19,7 +19,7 @@ import {
 import { useEffectPrevious } from '$utils/use-effect-previous';
 import { SetState } from '$types/aliases';
 
-function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
+export function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
   const currKey = `${curr.errorUpdatedAt}-${curr.dataUpdatedAt}-${curr.failureCount}`;
   const prevKey = `${prev?.errorUpdatedAt}-${prev?.dataUpdatedAt}-${prev?.failureCount}`;
 
@@ -34,7 +34,7 @@ function didDataChange(curr: UseQueryResult, prev?: UseQueryResult) {
  *
  * @returns Reconciled dataset with STAC data.
  */
-function reconcileQueryDataWithDataset(
+export function reconcileQueryDataWithDataset(
   queryData: UseQueryResult<StacDatasetData>,
   dataset: TimelineDataset | VizDataset
 ): TimelineDataset | VizDataset {
@@ -81,8 +81,18 @@ function reconcileQueryDataWithDataset(
     } as TimelineDataset | VizDataset;
   }
 }
+// CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
+// Apply the same handling universally for WMTS, WMS, etc.
+export function normalizeDomain(
+  domain: (string | null)[] | undefined
+): string[] {
+  if (!domain) return [];
+  const start = domain[0] ?? new Date().toISOString();
+  const end = domain[1] ?? new Date().toISOString();
+  return [start, end];
+}
 
-async function fetchStacDatasetById(
+export async function fetchStacDatasetById(
   dataset: TimelineDataset | VizDataset,
   envApiStacEndpoint: string
 ): Promise<StacDatasetData> {
@@ -114,7 +124,7 @@ async function fetchStacDatasetById(
 
     return {
       ...commonTimeseriesParams,
-      domain: featuresApiData.extent.temporal.interval[0]
+      domain: normalizeDomain(featuresApiData.extent.temporal.interval[0])
     };
   } else if (type === 'wms') {
     let domain = data.summaries?.datetime?.[0]
@@ -130,7 +140,7 @@ async function fetchStacDatasetById(
 
     return {
       ...commonTimeseriesParams,
-      domain
+      domain: normalizeDomain(domain)
     };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
@@ -138,13 +148,28 @@ async function fetchStacDatasetById(
       : data.extent.temporal.interval[0];
     const domainStart = domain[0];
 
-    // CMR STAC returns datetimes with `null` as the last value to indicate ongoing data.
-    const lastDatetime = domain[domain.length - 1] || new Date().toISOString();
+    const normalized = normalizeDomain(domain);
+
     // CMR STAC misses the dashboard specific attributes, shim these values
     return {
       ...commonTimeseriesParams,
       isPeriodic: true,
-      domain: [domainStart, lastDatetime]
+      domain: [domainStart, normalized[1]]
+    };
+  } else if (type === 'wmts') {
+    let domain = data.summaries?.datetime?.[0]
+      ? data.summaries.datetime
+      : data.extent.temporal.interval[0];
+
+    if (data['dashboard:is_timeless']) {
+      const date = new Date();
+      const tempStart = new Date(date.setDate(date.getDate() - 10));
+      domain = [tempStart.toISOString(), new Date().toISOString()];
+    }
+
+    return {
+      ...commonTimeseriesParams,
+      domain: normalizeDomain(domain)
     };
   } else {
     const domain = data.summaries?.datetime?.[0]
@@ -159,7 +184,7 @@ async function fetchStacDatasetById(
 
     return {
       ...commonTimeseriesParams,
-      domain,
+      domain: normalizeDomain(domain),
       renders
     };
   }
