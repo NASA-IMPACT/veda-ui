@@ -12,7 +12,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import useParentDataset from '../hooks/use-parent-data';
 import { LayerInfo, ParentDatset } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
-import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
+import { ParentDatasetTitle } from '$components/common/parent-dataset-title';
 
 const StyledModal = styled(Modal)`
   z-index: ${themeVal('zIndices.modal')};

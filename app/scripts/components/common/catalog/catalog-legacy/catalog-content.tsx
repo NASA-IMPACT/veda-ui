@@ -25,6 +25,7 @@ import { Pill } from '$styles/pill';
 import { usePreviousValue } from '$utils/use-effect-previous';
 import { findParentDatasetFromLayer } from '$utils/data-utils';
 import { legacyGlobalStyleCSSBlock } from '$styles/legacy-global-styles';
+import { ParentDatasetTitle } from '$components/common/parent-dataset-title';
 
 // @DEPRECATED: This component is deprecated and will be removed in the future.
 
@@ -336,31 +337,6 @@ function CatalogContent({
 export default CatalogContent;
 const WarningPill = styled(Pill)`
   margin-left: 8px;
-`;
-
-export const ParentDatasetTitle = styled.h2<{ size?: string }>`
-  color: ${themeVal('color.primary')};
-  text-align: left;
-  font-size: ${(props) => (props.size == 'small' ? '0.75rem' : '1rem')};
-  line-height: 0.75rem;
-  font-weight: normal;
-  ${(props) => (props.size == 'small' ? '400' : 'normal')};
-  display: flex;
-  min-width: 0;
-  justify-content: center;
-  gap: 0.1rem;
-  align-items: center;
-
-  p {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  svg {
-    fill: ${themeVal('color.primary')};
-    min-width: ${(props) => (props.size == 'small' ? '1rem' : 'auto')};
-  }
 `;
 
 const Headline = styled.div`

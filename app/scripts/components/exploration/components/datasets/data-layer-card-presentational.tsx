@@ -15,6 +15,7 @@ import { LayerInfoLiner } from '../layer-info-modal';
 import LayerMenuOptions from './layer-options-menu';
 import { ColormapSection } from './colormap-section';
 import { TipButton } from '$components/common/tip-button';
+import { ParentDatasetTitle } from '$components/common/parent-dataset-title';
 
 import {
   TimelineDataset,
@@ -22,7 +23,6 @@ import {
 } from '$components/exploration/types.d.ts';
 import { DatasetData } from '$types/veda';
 import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
-import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 
 import 'tippy.js/dist/tippy.css';
 
