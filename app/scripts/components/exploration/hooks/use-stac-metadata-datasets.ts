@@ -127,7 +127,7 @@ export async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       domain: normalizeDomain(featuresApiData.extent.temporal.interval[0])
     };
-  } else if (type === 'wms') {
+  } else if (type === 'wms' || type === 'wmts') {
     let domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
@@ -156,21 +156,6 @@ export async function fetchStacDatasetById(
       ...commonTimeseriesParams,
       isPeriodic: true,
       domain: [domainStart, normalized[1]]
-    };
-  } else if (type === 'wmts') {
-    let domain = data.summaries?.datetime?.[0]
-      ? data.summaries.datetime
-      : data.extent.temporal.interval[0];
-
-    if (data['dashboard:is_timeless']) {
-      const date = new Date();
-      const tempStart = new Date(date.setDate(date.getDate() - 10));
-      domain = [tempStart.toISOString(), new Date().toISOString()];
-    }
-
-    return {
-      ...commonTimeseriesParams,
-      domain: normalizeDomain(domain)
     };
   } else {
     const domain = data.summaries?.datetime?.[0]
