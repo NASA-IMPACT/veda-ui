@@ -13,7 +13,7 @@ jest.mock('$components/exploration/data-utils', () => ({
   ]),
   resolveRenderParams: jest.fn(),
   isRenderParamsApplicable: jest.fn(() => false),
-  getTimeDensityFromInterval: jest.fn()
+  getTimeDensityFromInterval: jest.fn(() => 'day')
 }));
 
 jest.mock('axios');
@@ -82,7 +82,7 @@ describe('fetchStacDatasetById', () => {
       data: {
         summaries: { datetime: ['2020-01-01T00:00:00Z', null] },
         extent: { temporal: { interval: [['2020-01-01T00:00:00Z', null]] } },
-        'dashboard:time_density': 'day' // 👈 prevents crash
+        'dashboard:time_density': 'day'
       }
     });
 
@@ -99,5 +99,112 @@ describe('fetchStacDatasetById', () => {
     expect(new Date(result.domain[1]).getTime()).toBeLessThanOrEqual(
       Date.now()
     );
+  });
+
+  it('handles wms with timeless data', async () => {
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        extent: {
+          temporal: {
+            interval: [['2020-01-01T00:00:00Z', '2020-02-01T00:00:00Z']]
+          }
+        },
+        'dashboard:time_density': 'day',
+        'dashboard:is_timeless': true
+      }
+    });
+
+    const dataset = {
+      data: { id: 'd2', type: 'wms', stacCol: 'col2' }
+    } as any;
+
+    const { fetchStacDatasetById } = await import(
+      './use-stac-metadata-datasets'
+    );
+    const result = await fetchStacDatasetById(dataset, 'http://fake');
+
+    expect(result.domain.length).toBe(2);
+  });
+
+  it('handles cmr with null end date', async () => {
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        summaries: { datetime: ['2020-01-01T00:00:00Z', null] },
+        extent: { temporal: { interval: [['2020-01-01T00:00:00Z', null]] } },
+        'dashboard:time_density': 'day'
+      }
+    });
+
+    const dataset = {
+      data: { id: 'd3', type: 'cmr', stacCol: 'col3' }
+    } as any;
+
+    const { fetchStacDatasetById } = await import(
+      './use-stac-metadata-datasets'
+    );
+    const result = await fetchStacDatasetById(dataset, 'http://fake');
+
+    expect(result.domain[0]).toBe('2020-01-01T00:00:00Z');
+    expect(new Date(result.domain[1]).getTime()).toBeLessThanOrEqual(
+      Date.now()
+    );
+    expect(result.isPeriodic).toBe(true);
+  });
+
+  it('handles vector data', async () => {
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        links: [{ rel: 'external', href: 'http://fake-features' }],
+        'dashboard:time_density': 'day'
+      }
+    });
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        extent: {
+          temporal: {
+            interval: [['2020-01-01T00:00:00Z', '2020-02-01T00:00:00Z']]
+          }
+        }
+      }
+    });
+
+    const dataset = {
+      data: { id: 'd4', type: 'vector', stacCol: 'col4' }
+    } as any;
+
+    const { fetchStacDatasetById } = await import(
+      './use-stac-metadata-datasets'
+    );
+    const result = await fetchStacDatasetById(dataset, 'http://fake');
+
+    expect(result.domain[0]).toBe('2020-01-01T00:00:00Z');
+    expect(result.domain[1]).toBe('2020-02-01T00:00:00Z');
+  });
+
+  it('handles generic type with renders', async () => {
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        summaries: {
+          datetime: ['2020-01-01T00:00:00Z', '2020-02-01T00:00:00Z']
+        },
+        renders: [{ id: 'r2' }],
+        'dashboard:time_density': 'day'
+      }
+    });
+
+    const dataset = {
+      data: { id: 'd5', type: 'other', stacCol: 'col5' }
+    } as any;
+
+    const { fetchStacDatasetById } = await import(
+      './use-stac-metadata-datasets'
+    );
+    const result = await fetchStacDatasetById(dataset, 'http://fake');
+
+    expect(result.domain).toEqual([
+      '2020-01-01T00:00:00Z',
+      '2020-02-01T00:00:00Z'
+    ]);
+    expect(result.renders).toEqual([{ id: 'r2' }]);
   });
 });
