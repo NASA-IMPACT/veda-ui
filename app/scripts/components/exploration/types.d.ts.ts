@@ -19,7 +19,7 @@ export interface StacDatasetData {
   isTimeless?: boolean;
   timeInterval: string;
   timeDensity: TimeDensity;
-  domain: string[];
+  domain: (string | null)[];
   renders?: Record<string, any> | undefined;
 }
 

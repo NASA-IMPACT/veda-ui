@@ -86,11 +86,10 @@ export function reconcileQueryDataWithDataset(
 // Applied consistently across CMR, WMTS, WMS and other dataset types
 export function normalizeDomain(
   domain: (string | null)[] | undefined
-): string[] {
+): (string | null)[] {
   if (!domain) return [];
-  const start = domain[0] ?? new Date().toISOString();
-  const end = domain[1] ?? new Date().toISOString();
-  return [start, end];
+  const [start, end] = domain;
+  return [start, end ?? new Date().toISOString()];
 }
 
 export async function fetchStacDatasetById(
