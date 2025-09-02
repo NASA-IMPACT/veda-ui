@@ -19,7 +19,6 @@ export interface colorMapScale {
 
 // providers
 import ReactQueryProvider from '$context/react-query';
-import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const HugResetter = styled.div`
   /* To break hug */
@@ -29,18 +28,12 @@ const Title = styled.h1`
   color: #333;
 `;
 
-const StateDisplay = styled.iframe`
-  padding: 1rem;
-  background: #f0f0f0;
-  border-radius: 4px;
-  font-size: 0.85em;
-  color: #666;
-  margin-top: 1rem;
-`;
-
 const mockParentDataset = {
   id: 'no2',
-  name: 'Nitrogen Dioxide'
+  name: 'Nitrogen Dioxide',
+  layers: [],
+  description: 'Lorem ipsum',
+  taxonomy: []
 };
 const mockSelectedDay = new Date('2017-12-01T00:00:00.000Z');
 const theme = {};
@@ -224,7 +217,6 @@ export default function DataLayerCardHooked() {
   // Memoized handlers for each dataset
   const handlers = useMemo(() => {
     return datasets.map((_, index) => ({
-      onClickLayerInfo: createLayerInfoHandler(index),
       setVisible: createVisibilityHandler(index),
       setColorMap: createColorMapHandler(index),
       setColorMapScale: createColorMapScaleHandler(index),
@@ -251,7 +243,7 @@ export default function DataLayerCardHooked() {
       const isVisible = dataset.settings.isVisible;
       const colorMap = dataset.settings.colorMap;
       const colorMapScale = dataset.settings.scale;
-      const opacity = dataset.settings.opacity;
+      const opacity = dataset.settings.opacity as number;
 
       return {
         dataset,
@@ -261,10 +253,6 @@ export default function DataLayerCardHooked() {
         setColorMap: handlers[index]?.setColorMap,
         colorMapScale,
         setColorMapScale: handlers[index]?.setColorMapScale,
-        onClickLayerInfo: handlers[index]?.onClickLayerInfo,
-        layerInfo: dataset.data.info,
-        min: colorMapScale?.min ?? 0,
-        max: colorMapScale?.max ?? 1,
         parentDataset: mockParentDataset,
         showLoadingConfigurableCmapSkeleton: false,
         showConfigurableCmap: true,
@@ -275,8 +263,7 @@ export default function DataLayerCardHooked() {
         canMoveUp: index > 0,
         canMoveDown: index < datasets.length - 1,
         opacity,
-        onOpacityChange: handlers[index]?.onOpacityChange,
-        datasetLegend: dataset.data.legend
+        onOpacityChange: handlers[index]?.onOpacityChange
       };
     },
     [handlers, datasets.length]
@@ -346,6 +333,7 @@ export default function DataLayerCardHooked() {
                   datasets={datasets}
                   setDatasets={setDatasets}
                   selectedDay={mockSelectedDay}
+                  selectedCompareDay={null}
                 />
               </ReactQueryProvider>
             </Grid>
