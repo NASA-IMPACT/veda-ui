@@ -2,12 +2,12 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 import { mockDatasets } from './mock-data';
-import { VEDADatasetLayerCard, VEDALayerColormap } from '$libs/';
+import DataLayerCardPresentational from '$components/exploration/components/datasets/data-layer-card-presentational';
 
 const DataLayerCardExample: React.FC = () => {
   return (
     <>
-      {mockDatasets.map((dataset, index) => (
+      {mockDatasets.map((dataset) => (
         <div
           key={dataset.data.id}
           style={{
@@ -17,7 +17,7 @@ const DataLayerCardExample: React.FC = () => {
             background: 'white'
           }}
         >
-          <VEDADatasetLayerCard
+          <DataLayerCardPresentational
             dataset={dataset}
             isVisible={true}
             setVisible={() => {}}

@@ -10,6 +10,19 @@ export default defineConfig(({ mode }) => {
     envDir: rootEnvDir,
     publicDir: path.resolve(__dirname, '../static'),
     plugins: [react()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'legacy',
+          includePaths: [
+            // USWDS from node_modules
+            path.resolve(__dirname, 'node_modules/@uswds/uswds'),
+            path.resolve(__dirname, 'node_modules/@uswds/uswds/dist'),
+            path.resolve(__dirname, 'node_modules/@uswds/uswds/packages')
+          ]
+        }
+      }
+    },
     resolve: {
       alias: {
         // Application path aliases
@@ -17,7 +30,6 @@ export default defineConfig(({ mode }) => {
         $components: path.resolve(__dirname, '../app/scripts/components'),
         $context: path.resolve(__dirname, '../app/scripts/context'),
         $utils: path.resolve(__dirname, '../app/scripts/utils'),
-        $libs: path.resolve(__dirname, '../app/scripts/libs'),
         $styles: path.resolve(__dirname, '../app/scripts/styles'),
 
         // Shim for @devseed-ui/collecticons compatibility
