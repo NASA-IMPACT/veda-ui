@@ -1,8 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import DataLayerCardExampleHooked from './data-layer-card-hooked';
 import { mockDatasets } from './mock-data';
-import DataLayerCardPresentational from '$components/exploration/components/datasets/data-layer-card-presentational';
+import DataLayerCardPresentational from '$components/common/dataset-layer-card';
 
 const DataLayerCardExample: React.FC = () => {
   return (
@@ -54,4 +55,8 @@ type Story = StoryObj<typeof DataLayerCardExample>;
 
 export const Default: Story = {
   render: () => <DataLayerCardExample />
+};
+
+export const Hooked: Story = {
+  render: () => <DataLayerCardExampleHooked />
 };
