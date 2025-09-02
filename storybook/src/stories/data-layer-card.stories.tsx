@@ -7,7 +7,7 @@ import DataLayerCardPresentational from '$components/exploration/components/data
 const DataLayerCardExample: React.FC = () => {
   return (
     <>
-      {mockDatasets.map((dataset, index) => (
+      {mockDatasets.map((dataset) => (
         <div
           key={dataset.data.id}
           style={{
