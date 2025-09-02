@@ -31,7 +31,6 @@ export default defineConfig(({ mode }) => {
         $context: path.resolve(__dirname, '../app/scripts/context'),
         $utils: path.resolve(__dirname, '../app/scripts/utils'),
         $styles: path.resolve(__dirname, '../app/scripts/styles'),
-        $context: path.resolve(__dirname, '../app/context'),
 
         // Shim for @devseed-ui/collecticons compatibility
         // The library uses 'react-dom/server', which is not supported in Vite

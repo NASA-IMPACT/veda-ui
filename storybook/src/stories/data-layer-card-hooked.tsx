@@ -19,6 +19,7 @@ export interface colorMapScale {
 
 // providers
 import ReactQueryProvider from '$context/react-query';
+import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const HugResetter = styled.div`
   /* To break hug */
@@ -53,7 +54,7 @@ export default function DataLayerCardHooked() {
   // Send message to iframe whenever datasets change
   useEffect(() => {
     if (datasets && iframeRef.current?.contentWindow) {
-      // eslint-disable-next-line no-console  
+      // eslint-disable-next-line no-console
       iframeRef.current.contentWindow.postMessage(
         {
           plugin: 'data-layer-card',
@@ -340,16 +341,6 @@ export default function DataLayerCardHooked() {
             </Grid>
 
             <Grid col={6}>
-              <StateDisplay
-                ref={iframeRef}
-                style={{ width: '100%', height: '400px' }}
-                src='comm-receiver'
-              />
-            </Grid>
-          </Grid>
-          <Grid row className='margin-bottom-5'>
-            <Grid col={12} style={{ height: '400px' }}>
-              <h4>Map Visualization</h4>
               <ReactQueryProvider>
                 <ExplorationMap
                   datasets={datasets}
