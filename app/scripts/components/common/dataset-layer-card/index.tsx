@@ -15,7 +15,7 @@ import LayerInfoModal, {
   LayerInfoModalData
 } from '$components/exploration/components/layer-info-modal';
 import { LayerInfoLiner } from '$components/exploration/components/layer-info-modal';
-import LayerMenuOptions from '$components/exploration/components/datasets/layer-options-menu';
+import LayerMenuOptions from '$components/common/dataset-layer-card/layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 
 import {

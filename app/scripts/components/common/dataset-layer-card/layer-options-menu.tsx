@@ -10,19 +10,19 @@ import {
   CollecticonArrowUp,
   CollecticonShare
 } from '@devseed-ui/collecticons';
-import { TileUrlModal } from './tile-link-modal';
+import { TileUrlModal } from '../../exploration/components/datasets/tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { VizDataset } from '$components/exploration/types.d.ts';
 
 interface LayerMenuOptionsProps {
-  dataset: TimelineDataset;
-  onRemoveLayer: () => void;
-  onMoveUp: () => void;
-  onMoveDown: () => void;
+  dataset: VizDataset;
   canMoveUp: boolean;
   canMoveDown: boolean;
   opacity: number;
+  onRemoveLayer: () => void;
+  onMoveUp: () => void;
+  onMoveDown: () => void;
   onOpacityChange: (opacity: number) => void;
 }
 
