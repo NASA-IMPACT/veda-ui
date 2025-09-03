@@ -1424,6 +1424,11 @@
     "@devseed-ui/collecticons" "^4.1.0"
     "@devseed-ui/theme-provider" "^4.1.0"
 
+"@devseed-ui/collecticons-react@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@devseed-ui/collecticons-react/-/collecticons-react-4.0.0.tgz#914e5316cbbf2d47e2420cbbb576f0fb0f1ed3f5"
+  integrity sha512-fDE48LEWX5DPvQoc27DE3HguQd80yHIhwx4LXrEjGgx+DzCIv6+ohECZdXw1So0LF7cpHzhS/a2T9i1cS2G4+w==
+
 "@devseed-ui/collecticons@4.1.0", "@devseed-ui/collecticons@^4.1.0":
   version "4.1.0"
   resolved "http://verdaccio.ds.io:4873/@devseed-ui%2fcollecticons/-/collecticons-4.1.0.tgz#d0d5237f1c03ce59d0d3a44cfd019d613761aba6"

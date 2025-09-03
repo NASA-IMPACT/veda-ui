@@ -149,6 +149,7 @@
     "@devseed-ui/animation": "4.1.0",
     "@devseed-ui/button": "4.1.0",
     "@devseed-ui/collecticons": "4.1.0",
+    "@devseed-ui/collecticons-react": "^4.0.0",
     "@devseed-ui/date-picker": "4.1.0",
     "@devseed-ui/dropdown": "4.1.0",
     "@devseed-ui/form": "4.1.0",
