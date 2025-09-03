@@ -50,7 +50,7 @@ export interface AnalysisTimeseriesEntry {
   percentile_98: number;
 }
 
-interface AnalysisMeta {
+export interface AnalysisMeta {
   loaded: number;
   total: number;
 }

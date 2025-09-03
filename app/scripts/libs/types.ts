@@ -7,14 +7,41 @@ import type { DatasetData, StoryData, VedaData } from '$types/veda';
 
 // Exploration feature types
 import type {
-  VizDatasetSuccess,
+  // Enums
+  TimeDensity,
   DatasetStatus,
-  VizDataset,
+  // Core data types
+  StacDatasetData,
   EADatasetDataLayer,
+  AnalysisTimeseriesEntry,
+  AnalysisMeta,
+  // TimelineDatasetAnalysis types
+  TimelineDatasetAnalysisIdle,
+  TimelineDatasetAnalysisLoading,
+  TimelineDatasetAnalysisError,
+  TimelineDatasetAnalysisSuccess,
+  TimelineDatasetAnalysis,
+  TimeseriesData,
+  // Settings and configuration
+  colorMapScale,
   DatasetSettings,
   DatasetMeta,
+  // VizDataset types
+  VizDatasetIdle,
+  VizDatasetLoading,
+  VizDatasetError,
+  VizDatasetSuccess,
+  VizDataset,
+  // TimelineDataset types
+  TimelineDatasetIdle,
+  TimelineDatasetLoading,
+  TimelineDatasetError,
+  TimelineDatasetSuccess,
   TimelineDataset,
-  TimelineDatasetAnalysis
+  // Additional types
+  TimelineDatasetForUrl,
+  DateRange,
+  ZoomTransformPlain
 } from '$components/exploration/types.d.ts';
 
 export type {
@@ -26,12 +53,32 @@ export type {
   StoryData,
   VedaData,
   // Exploration
-  VizDatasetSuccess,
+  TimeDensity,
   DatasetStatus,
-  VizDataset,
+  StacDatasetData,
   EADatasetDataLayer,
+  AnalysisTimeseriesEntry,
+  AnalysisMeta,
+  TimelineDatasetAnalysisIdle,
+  TimelineDatasetAnalysisLoading,
+  TimelineDatasetAnalysisError,
+  TimelineDatasetAnalysisSuccess,
+  TimelineDatasetAnalysis,
+  TimeseriesData,
+  colorMapScale,
   DatasetSettings,
   DatasetMeta,
+  VizDatasetIdle,
+  VizDatasetLoading,
+  VizDatasetError,
+  VizDatasetSuccess,
+  VizDataset,
+  TimelineDatasetIdle,
+  TimelineDatasetLoading,
+  TimelineDatasetError,
+  TimelineDatasetSuccess,
   TimelineDataset,
-  TimelineDatasetAnalysis
+  TimelineDatasetForUrl,
+  DateRange,
+  ZoomTransformPlain
 };
