@@ -50,7 +50,7 @@ export interface AnalysisTimeseriesEntry {
   percentile_98: number;
 }
 
-interface AnalysisMeta {
+export interface AnalysisMeta {
   loaded: number;
   total: number;
 }
@@ -114,7 +114,7 @@ export interface DatasetSettings {
 
 // Any sort of meta information the dataset like:
 // Tile endpoints for the layer given the current map view.
-type DatasetMeta = Record<string, any>;
+export type DatasetMeta = Record<string, any>;
 
 // Holds only dataset needed for visualization (Subset of timeline dataset)
 // @ TODO: Rename Timeline specific variable names
