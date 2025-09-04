@@ -28,7 +28,7 @@ import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/ca
 
 import 'tippy.js/dist/tippy.css';
 
-interface PresentationalProps {
+interface DataLayerCardProps {
   dataset: TimelineDataset;
   isVisible: boolean | undefined;
   setVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -105,9 +105,7 @@ const DatasetMetricInfo = styled.div`
   color: ${themeVal('color.base-500')};
 `;
 
-export default function DataLayerCardPresentational(
-  props: PresentationalProps
-) {
+export default function DataLayerCard(props: DataLayerCardProps) {
   const {
     dataset,
     isVisible,
