@@ -17,9 +17,6 @@ export interface colorMapScale {
   max: number;
 }
 
-// providers
-import ReactQueryProvider from '$context/react-query';
-
 const HugResetter = styled.div`
   /* To break hug */
 `;
@@ -328,14 +325,12 @@ export default function DataLayerCardHooked() {
             </Grid>
 
             <Grid col={6}>
-              <ReactQueryProvider>
-                <ExplorationMap
-                  datasets={datasets}
-                  setDatasets={setDatasets}
-                  selectedDay={mockSelectedDay}
-                  selectedCompareDay={null}
-                />
-              </ReactQueryProvider>
+              <ExplorationMap
+                datasets={datasets}
+                setDatasets={setDatasets}
+                selectedDay={mockSelectedDay}
+                selectedCompareDay={null}
+              />
             </Grid>
           </Grid>
         </GridContainer>
