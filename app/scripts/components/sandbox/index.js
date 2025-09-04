@@ -6,6 +6,7 @@ import { GridContainer, Grid } from '@trussworks/react-uswds';
 import SandboxTypography from './legacy/typography';
 import SandboxHug from './legacy/hug';
 import SandboxExplorationMap from './legacy/exploration-map';
+import SandboxTimelineAnalysis from './legacy/exploration/timeline-analysis';
 import SandboxMapBlock from './legacy/map-block';
 import SandboxContentBlocks from './legacy/content-blocks';
 import SandboxCards from './legacy/cards';
@@ -47,6 +48,11 @@ const pages = [
     id: 'exploration-map',
     name: 'Exploration map',
     component: SandboxExplorationMap
+  },
+  {
+    id: 'timeline-analysis',
+    name: 'Timeline Analysis',
+    component: SandboxTimelineAnalysis
   },
   {
     id: 'map-block',
