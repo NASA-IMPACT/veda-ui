@@ -12,7 +12,6 @@ import MapCoordsControl from '$components/common/map/controls/coords';
 import AoiControl from '$components/common/map/controls/aoi/aoi-control';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import AoiLayer from '$components/exploration/components/map/aoi-layer';
-import { VedaUIProvider } from '$context/veda-ui-provider';
 
 const BaseMapExample: React.FC = () => {
   const { mapBasemapId, labelsOption, boundariesOption } = useBasemap();

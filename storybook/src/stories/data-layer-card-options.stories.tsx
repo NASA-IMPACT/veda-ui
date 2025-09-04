@@ -5,7 +5,6 @@ import { GridContainer, Grid } from '@trussworks/react-uswds';
 
 import { mockDatasets } from './mock-data';
 import DataLayerCardOptionsMenu from '$components/common/dataset-layer-card/layer-options-menu';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
 import { ExplorationMap } from '$components/exploration/components/map';
 import ReactQueryProvider from '$context/react-query';
 
