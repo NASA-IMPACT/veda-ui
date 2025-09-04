@@ -66,4 +66,10 @@ export {
   Widget
 } from './uswds-components';
 
+export {
+  ColormapSection as VEDALayerColormap,
+  LayerMenuOptions as VEDALayerMenuOptions,
+  DatasetLayerCard as VEDADatasetLayerCard
+} from './components';
+
 export { PageHero, LegacyGlobalStyles };
