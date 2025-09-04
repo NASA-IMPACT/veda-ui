@@ -2,6 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Icon } from '@trussworks/react-uswds';
 import { CollecticonDrop } from '@devseed-ui/collecticons';
+import { Drop, CalendarPlus, CalendarMinus } from '$components/common/icons';
 
 // Import all collecticons from icons-legacy
 import {
@@ -26,15 +27,91 @@ import {
   CollecticonCalendarPlus,
   CollecticonCalendarMinus,
   CollecticonFlask,
-  CollecticonMedal,
-  CollecticonProgressTickHigh,
-  CollecticonProgressTickMedium,
-  CollecticonProgressTickLow
+  CollecticonMedal
 } from '$components/common/icons-legacy';
+
+// Clean table styles
+const tableStyles = {
+  container: {
+    padding: '12px',
+    maxWidth: '900px',
+    fontFamily: 'system-ui, -apple-system, sans-serif'
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse' as const,
+    border: '1px solid #e5e7eb',
+    borderRadius: '6px',
+    overflow: 'hidden',
+    backgroundColor: '#fff',
+    tableLayout: 'fixed' as const
+  },
+  header: {
+    backgroundColor: '#f9fafb',
+    borderBottom: '1px solid #e5e7eb'
+  },
+  headerCell: {
+    padding: '8px 12px',
+    textAlign: 'left' as const,
+    fontWeight: '600',
+    fontSize: '13px',
+    color: '#374151',
+    borderRight: '1px solid #e5e7eb',
+    width: '33.33%'
+  },
+  cell: {
+    padding: '8px 12px',
+    textAlign: 'left' as const,
+    borderBottom: '1px solid #f3f4f6',
+    borderRight: '1px solid #e5e7eb',
+    verticalAlign: 'middle' as const,
+    width: '33.33%'
+  },
+  iconContainer: {
+    display: 'flex',
+    flexDirection: 'row' as const,
+    alignItems: 'center',
+    gap: '6px'
+  },
+  iconName: {
+    fontWeight: '500',
+    fontSize: '11px',
+    color: '#6b7280',
+    fontFamily: 'monospace'
+  }
+};
+
+const IconRenderer = ({
+  icon: IconComponent,
+  iconName,
+  size = 3
+}: {
+  icon?: React.ComponentType<any> | null;
+  iconName: string;
+  size?: number;
+}) => (
+  <div style={tableStyles.iconContainer}>
+    {IconComponent ? (
+      <>
+        <IconComponent size={size} aria-hidden='true' />
+        <span style={tableStyles.iconName}>{iconName}</span>
+      </>
+    ) : (
+      <span style={{ ...tableStyles.iconName, color: '#6b7280' }}>-</span>
+    )}
+  </div>
+);
 
 const IconMigrationGuide: React.FC = () => {
   // Icon mapping data
-  const iconMappings = [
+  const iconMappings: Array<{
+    collecticon: React.ComponentType<any>;
+    collecticonName: string;
+    uswdsIcon: React.ComponentType<any> | null;
+    uswdsIconName: string;
+    customIcon?: React.ComponentType<any>;
+    customIconName?: string;
+  }> = [
     {
       collecticon: CollecticonArrowRight,
       collecticonName: 'CollecticonArrowRight',
@@ -147,19 +224,25 @@ const IconMigrationGuide: React.FC = () => {
       collecticon: CollecticonDrop,
       collecticonName: 'CollecticonDrop',
       uswdsIcon: null,
-      uswdsIconName: '-'
+      uswdsIconName: '-',
+      customIcon: Drop,
+      customIconName: 'Drop'
     },
     {
       collecticon: CollecticonCalendarPlus,
       collecticonName: 'CollecticonCalendarPlus',
       uswdsIcon: null,
-      uswdsIconName: '-'
+      uswdsIconName: '-',
+      customIcon: CalendarPlus,
+      customIconName: 'CalendarPlus'
     },
     {
       collecticon: CollecticonCalendarMinus,
       collecticonName: 'CollecticonCalendarMinus',
       uswdsIcon: null,
-      uswdsIconName: '-'
+      uswdsIconName: '-',
+      customIcon: CalendarMinus,
+      customIconName: 'CalendarMinus'
     },
     {
       collecticon: CollecticonFlask,
@@ -172,77 +255,8 @@ const IconMigrationGuide: React.FC = () => {
       collecticonName: 'CollecticonMedal',
       uswdsIcon: Icon.EmojiEvents,
       uswdsIconName: 'Icon.EmojiEvents'
-    },
-    {
-      collecticon: CollecticonProgressTickHigh,
-      collecticonName: 'CollecticonProgressTickHigh',
-      uswdsIcon: null,
-      uswdsIconName: '-'
-    },
-    {
-      collecticon: CollecticonProgressTickMedium,
-      collecticonName: 'CollecticonProgressTickMedium',
-      uswdsIcon: null,
-      uswdsIconName: '-'
-    },
-    {
-      collecticon: CollecticonProgressTickLow,
-      collecticonName: 'CollecticonProgressTickLow',
-      uswdsIcon: null,
-      uswdsIconName: '-'
     }
   ];
-
-  // Clean table styles
-  const tableStyles = {
-    container: {
-      padding: '12px',
-      maxWidth: '900px',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
-    },
-    table: {
-      width: '100%',
-      borderCollapse: 'collapse' as const,
-      border: '1px solid #e5e7eb',
-      borderRadius: '6px',
-      overflow: 'hidden',
-      backgroundColor: '#fff',
-      tableLayout: 'fixed' as const
-    },
-    header: {
-      backgroundColor: '#f9fafb',
-      borderBottom: '1px solid #e5e7eb'
-    },
-    headerCell: {
-      padding: '8px 12px',
-      textAlign: 'left' as const,
-      fontWeight: '600',
-      fontSize: '13px',
-      color: '#374151',
-      borderRight: '1px solid #e5e7eb',
-      width: '33.33%'
-    },
-    cell: {
-      padding: '8px 12px',
-      textAlign: 'left' as const,
-      borderBottom: '1px solid #f3f4f6',
-      borderRight: '1px solid #e5e7eb',
-      verticalAlign: 'middle' as const,
-      width: '33.33%'
-    },
-    iconContainer: {
-      display: 'flex',
-      flexDirection: 'row' as const,
-      alignItems: 'center',
-      gap: '6px'
-    },
-    iconName: {
-      fontWeight: '500',
-      fontSize: '11px',
-      color: '#6b7280',
-      fontFamily: 'monospace'
-    }
-  };
 
   return (
     <div style={tableStyles.container}>
@@ -259,9 +273,7 @@ const IconMigrationGuide: React.FC = () => {
           <tr>
             <th style={tableStyles.headerCell}>Collecticon</th>
             <th style={tableStyles.headerCell}>USWDS Equivalent</th>
-            <th style={tableStyles.headerCell}>
-              Custom Icons (No USWDS Equivalent)
-            </th>
+            <th style={tableStyles.headerCell}>Veda UI Icons</th>
           </tr>
         </thead>
         <tbody>
@@ -276,20 +288,17 @@ const IconMigrationGuide: React.FC = () => {
                 </div>
               </td>
               <td style={tableStyles.cell}>
-                <div style={tableStyles.iconContainer}>
-                  {mapping.uswdsIcon ? (
-                    <mapping.uswdsIcon size={3} />
-                  ) : (
-                    <span style={{ ...tableStyles.iconName, color: '#6b7280' }}>
-                      -
-                    </span>
-                  )}
-                  <span style={tableStyles.iconName}>
-                    {mapping.uswdsIconName}
-                  </span>
-                </div>
+                <IconRenderer
+                  icon={mapping.uswdsIcon}
+                  iconName={mapping.uswdsIconName}
+                />
               </td>
-              <td style={tableStyles.cell} />
+              <td style={tableStyles.cell}>
+                <IconRenderer
+                  icon={mapping.customIcon}
+                  iconName={mapping.customIconName || '-'}
+                />
+              </td>
             </tr>
           ))}
         </tbody>
