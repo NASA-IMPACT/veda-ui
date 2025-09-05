@@ -4,6 +4,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
 import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
+import { Close } from '$components/common/icons';
 // @DEPRECATED: This component is deprecated and will be removed in the future.
 interface FilterTagProps {
   item: OptionItem;
@@ -46,6 +47,23 @@ export default function FilterTagLegacy(props: FilterTagProps) {
       {item.name}
       <button type='button' onClick={handleClick}>
         <CollecticonXmarkSmall />
+      </button>
+    </Tag>
+  );
+}
+
+export function FilterTagLegacyMigrated(props: FilterTagProps) {
+  const { item, onClick } = props;
+
+  const handleClick = () => {
+    onClick(item);
+  };
+
+  return (
+    <Tag>
+      {item.name}
+      <button type='button' onClick={handleClick}>
+        <Close />
       </button>
     </Tag>
   );

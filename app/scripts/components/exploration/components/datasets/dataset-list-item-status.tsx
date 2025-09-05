@@ -1,8 +1,8 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
+import { Icon } from '@trussworks/react-uswds';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { CollecticonArrowLoop } from '@devseed-ui/collecticons';
 
 import { pulsingAnimation } from '$components/common/loading-skeleton';
 import {
@@ -175,7 +175,7 @@ export function DatasetTrackError(props: {
           <p>{message}</p>
           {typeof onRetryClick === 'function' ? (
             <Button variation='danger-fill' size='small' onClick={onRetryClick}>
-              Retry <CollecticonArrowLoop size='small' />
+              Retry <Icon.Autorenew aria-hidden='true' />
             </Button>
           ) : null}
         </TrackMessage>

@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled, { keyframes, css } from 'styled-components';
+import { Icon } from '@trussworks/react-uswds';
 import { glsp, themeVal, visuallyHidden } from '@devseed-ui/theme-provider';
-import { CollecticonChartLine } from '@devseed-ui/collecticons';
 
 import { variableGlsp } from '$styles/variable-utils';
 
@@ -224,7 +224,7 @@ export const MapLoading = (props) => {
 export const ChartLoading = (props: { message: ReactNode }) => {
   return (
     <ChartLoadingWrapper>
-      <CollecticonChartLine size='xlarge' />
+      <Icon.Assessment aria-hidden='true' />
       <p>{props.message}</p>
     </ChartLoadingWrapper>
   );

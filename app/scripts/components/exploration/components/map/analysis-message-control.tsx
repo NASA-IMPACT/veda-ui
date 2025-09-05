@@ -2,13 +2,11 @@ import React, { useCallback, useEffect } from 'react';
 import { useAtomValue } from 'jotai';
 import styled, { css } from 'styled-components';
 import { LngLatBoundsLike, MapRef } from 'react-map-gl';
+import { Icon } from '@trussworks/react-uswds';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import bbox from '@turf/bbox';
-import {
-  CollecticonChartLine,
-  CollecticonCircleInformation
-} from '@devseed-ui/collecticons';
+import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import { selectedIntervalAtom } from '../../atoms/dates';
 
@@ -22,7 +20,6 @@ import { calcFeatCollArea } from '$components/common/map/controls/aoi/utils';
 import { formatDateRange } from '$utils/date';
 import { useAnalysisController } from '$components/exploration/hooks/use-analysis-data-request';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
-import { getZoomFromBbox } from '$components/common/map/utils';
 import { AoIFeature } from '$components/common/map/types';
 import { ShortcutCode } from '$styles/shortcut-code';
 import {
@@ -353,7 +350,7 @@ function MessagesWhileNotAnalyzing(props: MessagesProps) {
 function StatusIconObsolete() {
   return (
     <MessageStatusIndicator status='obsolete'>
-      <CollecticonChartLine />
+      <Icon.Assessment aria-hidden='false' aria-label='obsolete' />
     </MessageStatusIndicator>
   );
 }
@@ -361,7 +358,7 @@ function StatusIconObsolete() {
 function StatusIconAnalyzing() {
   return (
     <MessageStatusIndicator status='analyzing'>
-      <CollecticonChartLine />
+      <Icon.Assessment aria-hidden='false' aria-label='analyzing' />
     </MessageStatusIndicator>
   );
 }
@@ -369,7 +366,7 @@ function StatusIconAnalyzing() {
 function StatusIconPreAnalyzing() {
   return (
     <MessageStatusIndicator status='info'>
-      <CollecticonChartLine />
+      <Icon.Assessment aria-hidden='false' aria-label='info' />
     </MessageStatusIndicator>
   );
 }
