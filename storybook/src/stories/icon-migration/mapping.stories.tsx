@@ -1,8 +1,30 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Icon } from '@trussworks/react-uswds';
-import { CollecticonDrop } from '@devseed-ui/collecticons';
-import { Drop, CalendarPlus, CalendarMinus } from '$components/common/icons';
+import {
+  ArrowForward,
+  Assessment,
+  Autorenew,
+  CalendarMinus,
+  CalendarPlus,
+  Check,
+  Close,
+  ContactPage,
+  Drop,
+  EmojiEvents,
+  ExpandMore,
+  HelpOutline,
+  HighlightOff,
+  Info,
+  Launch,
+  Map,
+  Menu,
+  NavigateNext,
+  NearMe,
+  Science,
+  ZoomIn,
+  ZoomOut
+} from '$components/common/icons';
 
 // Import all collecticons from icons-legacy
 import {
@@ -15,6 +37,7 @@ import {
   CollecticonCircleXmark,
   CollecticonCircleInformation,
   CollecticonCompass,
+  CollecticonDrop,
   CollecticonExpandTopRight,
   CollecticonHamburgerMenu,
   CollecticonMap,
@@ -116,109 +139,145 @@ const IconMigrationGuide: React.FC = () => {
       collecticon: CollecticonArrowRight,
       collecticonName: 'CollecticonArrowRight',
       uswdsIcon: Icon.ArrowForward,
-      uswdsIconName: 'Icon.ArrowForward'
+      uswdsIconName: 'Icon.ArrowForward',
+      customIcon: ArrowForward,
+      customIconName: 'ArrowForward'
     },
     {
       collecticon: CollecticonArrowLoop,
       collecticonName: 'CollecticonArrowLoop',
       uswdsIcon: Icon.Autorenew,
-      uswdsIconName: 'Icon.Autorenew'
+      uswdsIconName: 'Icon.Autorenew',
+      customIcon: Autorenew,
+      customIconName: 'Autorenew'
     },
     {
       collecticon: CollecticonChartLine,
       collecticonName: 'CollecticonChartLine',
       uswdsIcon: Icon.Assessment,
-      uswdsIconName: 'Icon.Assessment'
+      uswdsIconName: 'Icon.Assessment',
+      customIcon: Assessment,
+      customIconName: 'Assessment'
     },
     {
       collecticon: CollecticonChevronRightSmall,
       collecticonName: 'CollecticonChevronRightSmall',
       uswdsIcon: Icon.NavigateNext,
-      uswdsIconName: 'Icon.NavigateNext'
+      uswdsIconName: 'Icon.NavigateNext',
+      customIcon: NavigateNext,
+      customIconName: 'NavigateNext'
     },
     {
       collecticon: CollecticonChevronDownSmall,
       collecticonName: 'CollecticonChevronDownSmall',
       uswdsIcon: Icon.ExpandMore,
-      uswdsIconName: 'Icon.ExpandMore'
+      uswdsIconName: 'Icon.ExpandMore',
+      customIcon: ExpandMore,
+      customIconName: 'ExpandMore'
     },
     {
       collecticon: CollecticonCircleQuestion,
       collecticonName: 'CollecticonCircleQuestion',
       uswdsIcon: Icon.HelpOutline,
-      uswdsIconName: 'Icon.HelpOutline'
+      uswdsIconName: 'Icon.HelpOutline',
+      customIcon: HelpOutline,
+      customIconName: 'HelpOutline'
     },
     {
       collecticon: CollecticonCircleXmark,
       collecticonName: 'CollecticonCircleXmark',
       uswdsIcon: Icon.HighlightOff,
-      uswdsIconName: 'Icon.HighlightOff'
+      uswdsIconName: 'Icon.HighlightOff',
+      customIcon: HighlightOff,
+      customIconName: 'HighlightOff'
     },
     {
       collecticon: CollecticonCircleInformation,
       collecticonName: 'CollecticonCircleInformation',
       uswdsIcon: Icon.Info,
-      uswdsIconName: 'Icon.Info'
+      uswdsIconName: 'Icon.Info',
+      customIcon: Info,
+      customIconName: 'Info'
     },
     {
       collecticon: CollecticonCompass,
       collecticonName: 'CollecticonCompass',
       uswdsIcon: Icon.NearMe,
-      uswdsIconName: 'Icon.NearMe'
+      uswdsIconName: 'Icon.NearMe',
+      customIcon: NearMe,
+      customIconName: 'NearMe'
     },
     {
       collecticon: CollecticonExpandTopRight,
       collecticonName: 'CollecticonExpandTopRight',
       uswdsIcon: Icon.Launch,
-      uswdsIconName: 'Icon.Launch'
+      uswdsIconName: 'Icon.Launch',
+      customIcon: Launch,
+      customIconName: 'Launch'
     },
     {
       collecticon: CollecticonHamburgerMenu,
       collecticonName: 'CollecticonHamburgerMenu',
       uswdsIcon: Icon.Menu,
-      uswdsIconName: 'Icon.Menu'
+      uswdsIconName: 'Icon.Menu',
+      customIcon: Menu,
+      customIconName: 'Menu'
     },
     {
       collecticon: CollecticonMap,
       collecticonName: 'CollecticonMap',
       uswdsIcon: Icon.Map,
-      uswdsIconName: 'Icon.Map'
+      uswdsIconName: 'Icon.Map',
+      customIcon: Map,
+      customIconName: 'Map'
     },
     {
       collecticon: CollecticonPage,
       collecticonName: 'CollecticonPage',
       uswdsIcon: Icon.ContactPage,
-      uswdsIconName: 'Icon.ContactPage'
+      uswdsIconName: 'Icon.ContactPage',
+      customIcon: ContactPage,
+      customIconName: 'ContactPage'
     },
     {
       collecticon: CollecticonTick,
       collecticonName: 'CollecticonTick',
       uswdsIcon: Icon.Check,
-      uswdsIconName: 'Icon.Check'
+      uswdsIconName: 'Icon.Check',
+      customIcon: Check,
+      customIconName: 'Check'
     },
     {
       collecticon: CollecticonXmark,
       collecticonName: 'CollecticonXmark',
       uswdsIcon: Icon.Close,
-      uswdsIconName: 'Icon.Close'
+      uswdsIconName: 'Icon.Close',
+      customIcon: Close,
+      customIconName: 'Close'
     },
     {
       collecticon: CollecticonXmarkSmall,
       collecticonName: 'CollecticonXmarkSmall',
       uswdsIcon: Icon.Close,
-      uswdsIconName: 'Icon.Close'
+      uswdsIconName: 'Icon.Close',
+      customIcon: Close,
+      customIconName: 'Close'
     },
     {
       collecticon: CollecticonMagnifierPlus,
       collecticonName: 'CollecticonMagnifierPlus',
       uswdsIcon: Icon.ZoomIn,
-      uswdsIconName: 'Icon.ZoomIn'
+      uswdsIconName: 'Icon.ZoomIn',
+      customIcon: ZoomIn,
+      customIconName: 'ZoomIn'
     },
     {
       collecticon: CollecticonMagnifierMinus,
       collecticonName: 'CollecticonMagnifierMinus',
       uswdsIcon: Icon.ZoomOut,
-      uswdsIconName: 'Icon.ZoomOut'
+      uswdsIconName: 'Icon.ZoomOut',
+      customIcon: ZoomOut,
+      customIconName: 'ZoomOut'
     },
     {
       collecticon: CollecticonDrop,
@@ -248,13 +307,17 @@ const IconMigrationGuide: React.FC = () => {
       collecticon: CollecticonFlask,
       collecticonName: 'CollecticonFlask',
       uswdsIcon: Icon.Science,
-      uswdsIconName: 'Icon.Science'
+      uswdsIconName: 'Icon.Science',
+      customIcon: Science,
+      customIconName: 'Science'
     },
     {
       collecticon: CollecticonMedal,
       collecticonName: 'CollecticonMedal',
       uswdsIcon: Icon.EmojiEvents,
-      uswdsIconName: 'Icon.EmojiEvents'
+      uswdsIconName: 'Icon.EmojiEvents',
+      customIcon: EmojiEvents,
+      customIconName: 'EmojiEvents'
     }
   ];
 
@@ -264,16 +327,17 @@ const IconMigrationGuide: React.FC = () => {
         Collecticon to USWDS Migration Guide
       </h2>
       <p style={{ marginBottom: '24px', color: '#6b7280', fontSize: '14px' }}>
-        Complete mapping of collecticons to their USWDS equivalents for
-        migration.
+        Complete mapping of collecticons to their USWDS equivalents and final
+        icons for migration. The final column shows the actual icons that will
+        be used in Veda UI.
       </p>
 
       <table style={tableStyles.table}>
         <thead style={tableStyles.header}>
           <tr>
             <th style={tableStyles.headerCell}>Collecticon</th>
-            <th style={tableStyles.headerCell}>USWDS Equivalent</th>
-            <th style={tableStyles.headerCell}>Veda UI Icons</th>
+            <th style={tableStyles.headerCell}>USWDS Icon</th>
+            <th style={tableStyles.headerCell}>Veda UI Icon</th>
           </tr>
         </thead>
         <tbody>
