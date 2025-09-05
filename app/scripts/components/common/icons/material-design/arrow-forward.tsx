@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const ArrowForwardIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const ArrowForwardIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default ArrowForwardIcon;
+ArrowForwardIcon.displayName = 'ArrowForwardIcon';
+
+export const ArrowForward = makeUSWDSIcon(ArrowForwardIcon);

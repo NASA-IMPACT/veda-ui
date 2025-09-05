@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const HelpOutlineIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const HelpOutlineIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default HelpOutlineIcon;
+HelpOutlineIcon.displayName = 'HelpOutlineIcon';
+
+export const HelpOutline = makeUSWDSIcon(HelpOutlineIcon);

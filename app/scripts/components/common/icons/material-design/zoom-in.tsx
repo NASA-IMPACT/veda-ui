@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const ZoomInIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -13,4 +14,6 @@ const ZoomInIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default ZoomInIcon;
+ZoomInIcon.displayName = 'ZoomInIcon';
+
+export const ZoomIn = makeUSWDSIcon(ZoomInIcon);

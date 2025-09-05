@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const InfoIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default InfoIcon;
+InfoIcon.displayName = 'InfoIcon';
+
+export const Info = makeUSWDSIcon(InfoIcon);

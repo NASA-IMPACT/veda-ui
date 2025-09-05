@@ -1,16 +1,16 @@
 // Material Design Icons
 // Source: https://github.com/marella/material-design-icons
 
-export { default as ArrowForward } from './arrow-forward';
-export { default as Autorenew } from './autorenew';
-export { default as NavigateNext } from './navigate-next';
-export { default as ExpandMore } from './expand-more';
-export { default as HighlightOff } from './highlight-off';
-export { default as Info } from './info';
-export { default as Launch } from './launch';
-export { default as Menu } from './menu';
-export { default as ContactPage } from './contact-page';
-export { default as Check } from './check';
-export { default as Close } from './close';
-export { default as ZoomIn } from './zoom-in';
-export { default as ZoomOut } from './zoom-out';
+export { ArrowForward } from './arrow-forward';
+export { Autorenew } from './autorenew';
+export { NavigateNext } from './navigate-next';
+export { ExpandMore } from './expand-more';
+export { HighlightOff } from './highlight-off';
+export { Info } from './info';
+export { Launch } from './launch';
+export { Menu } from './menu';
+export { ContactPage } from './contact-page';
+export { Check } from './check';
+export { Close } from './close';
+export { ZoomIn } from './zoom-in';
+export { ZoomOut } from './zoom-out';

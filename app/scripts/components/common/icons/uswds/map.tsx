@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const MapIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const MapIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default MapIcon;
+MapIcon.displayName = 'MapIcon';
+
+export const Map = makeUSWDSIcon(MapIcon);

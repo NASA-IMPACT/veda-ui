@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const EmojiEventsIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const EmojiEventsIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default EmojiEventsIcon;
+EmojiEventsIcon.displayName = 'EmojiEventsIcon';
+
+export const EmojiEvents = makeUSWDSIcon(EmojiEventsIcon);

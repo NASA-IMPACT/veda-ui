@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const CloseIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default CloseIcon;
+CloseIcon.displayName = 'CloseIcon';
+
+export const Close = makeUSWDSIcon(CloseIcon);

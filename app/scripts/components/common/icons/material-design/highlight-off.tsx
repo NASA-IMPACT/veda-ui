@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const HighlightOffIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const HighlightOffIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default HighlightOffIcon;
+HighlightOffIcon.displayName = 'HighlightOffIcon';
+
+export const HighlightOff = makeUSWDSIcon(HighlightOffIcon);

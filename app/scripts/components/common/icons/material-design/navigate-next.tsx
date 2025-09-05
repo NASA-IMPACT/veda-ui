@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const NavigateNextIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const NavigateNextIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default NavigateNextIcon;
+NavigateNextIcon.displayName = 'NavigateNextIcon';
+
+export const NavigateNext = makeUSWDSIcon(NavigateNextIcon);

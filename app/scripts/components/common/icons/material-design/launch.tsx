@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const LaunchIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const LaunchIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default LaunchIcon;
+LaunchIcon.displayName = 'LaunchIcon';
+
+export const Launch = makeUSWDSIcon(LaunchIcon);

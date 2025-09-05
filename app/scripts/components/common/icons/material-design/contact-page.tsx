@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const ContactPageIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const ContactPageIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default ContactPageIcon;
+ContactPageIcon.displayName = 'ContactPageIcon';
+
+export const ContactPage = makeUSWDSIcon(ContactPageIcon);

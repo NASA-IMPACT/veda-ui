@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const MenuIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const MenuIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default MenuIcon;
+MenuIcon.displayName = 'MenuIcon';
+
+export const Menu = makeUSWDSIcon(MenuIcon);

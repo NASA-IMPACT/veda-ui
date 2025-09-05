@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const ScienceIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const ScienceIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default ScienceIcon;
+ScienceIcon.displayName = 'ScienceIcon';
+
+export const Science = makeUSWDSIcon(ScienceIcon);

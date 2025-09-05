@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const NearMeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const NearMeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default NearMeIcon;
+NearMeIcon.displayName = 'NearMeIcon';
+
+export const NearMe = makeUSWDSIcon(NearMeIcon);

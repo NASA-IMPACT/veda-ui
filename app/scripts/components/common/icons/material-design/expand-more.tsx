@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const ExpandMoreIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const ExpandMoreIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default ExpandMoreIcon;
+ExpandMoreIcon.displayName = 'ExpandMoreIcon';
+
+export const ExpandMore = makeUSWDSIcon(ExpandMoreIcon);

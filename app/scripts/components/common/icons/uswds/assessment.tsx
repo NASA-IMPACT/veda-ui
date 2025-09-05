@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const AssessmentIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const AssessmentIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default AssessmentIcon;
+AssessmentIcon.displayName = 'AssessmentIcon';
+
+export const Assessment = makeUSWDSIcon(AssessmentIcon);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const CheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default CheckIcon;
+CheckIcon.displayName = 'CheckIcon';
+
+export const Check = makeUSWDSIcon(CheckIcon);

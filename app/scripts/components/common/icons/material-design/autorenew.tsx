@@ -1,4 +1,5 @@
 import React from 'react';
+import { makeUSWDSIcon } from '../utils';
 
 const AutorenewIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -12,4 +13,6 @@ const AutorenewIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-export default AutorenewIcon;
+AutorenewIcon.displayName = 'AutorenewIcon';
+
+export const Autorenew = makeUSWDSIcon(AutorenewIcon);
