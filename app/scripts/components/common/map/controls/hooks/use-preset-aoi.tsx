@@ -2,32 +2,22 @@ import { Feature, Polygon } from 'geojson';
 import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAoiAppropriateFeatures } from './use-custom-aoi';
-import { useVedaUI } from '$context/veda-ui-provider';
 
-const presetSuffix = `.geojson`;
-
-function usePresetAOI(selectedState: string) {
-  const { geoDataPath } = useVedaUI();
-  const presetFilePath = geoDataPath
-    ? `${geoDataPath.replace(/\/$/, '')}/states/`
-    : '';
+function usePresetAOI(presetPath?: string) {
   const [error, setError] = useState<string | null>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [features, setFeatures] = useState<Feature<Polygon>[] | null>(null);
 
   useEffect(() => {
-    if (!selectedState || !presetFilePath) return;
+    if (!presetPath) return;
     const abortController = new AbortController(); // Create an instance of AbortController
 
     async function loadData() {
       setIsLoading(true);
       try {
-        const res = await axios.get(
-          `${presetFilePath}${selectedState}${presetSuffix}`,
-          {
-            signal: abortController.signal // Pass the abort signal to Axios
-          }
-        );
+        const res = await axios.get(presetPath!, {
+          signal: abortController.signal // Pass the abort signal to Axios
+        });
         setIsLoading(false);
         const geojson = res.data;
         if (!geojson?.features?.length) {
@@ -58,7 +48,7 @@ function usePresetAOI(selectedState: string) {
     return () => {
       abortController.abort();
     };
-  }, [selectedState, presetFilePath]);
+  }, [presetPath]);
 
   const reset = useCallback(() => {
     setFeatures(null);

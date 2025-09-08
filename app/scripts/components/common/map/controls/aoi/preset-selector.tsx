@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import { Button } from '@devseed-ui/button';
@@ -8,77 +8,6 @@ import {
   CollecticonArrowSpinCcw
 } from '@devseed-ui/collecticons';
 import { glsp, truncated } from '@devseed-ui/theme-provider';
-import usePresetAOI from '../hooks/use-preset-aoi';
-
-const analysisStatesPreset = [
-  'Alabama',
-  'Alaska',
-  'Arizona',
-  'Arkansas',
-  'California',
-  'Colorado',
-  'Connecticut',
-  'Delaware',
-  'District of Columbia',
-  'Florida',
-  'Georgia',
-  'Hawaii',
-  'Idaho',
-  'Illinois',
-  'Indiana',
-  'Iowa',
-  'Kansas',
-  'Kentucky',
-  'Louisiana',
-  'Maine',
-  'Maryland',
-  'Massachusetts',
-  'Michigan',
-  'Minnesota',
-  'Mississippi',
-  'Missouri',
-  'Montana',
-  'Nebraska',
-  'Nevada',
-  'New Hampshire',
-  'New Jersey',
-  'New Mexico',
-  'New York',
-  'North Carolina',
-  'North Dakota',
-  'Ohio',
-  'Oklahoma',
-  'Oregon',
-  'Pennsylvania',
-  'Puerto Rico',
-  'Rhode Island',
-  'South Carolina',
-  'South Dakota',
-  'Tennessee',
-  'Texas',
-  'Utah',
-  'Vermont',
-  'Virginia',
-  'Washington',
-  'West Virginia',
-  'Wisconsin',
-  'Wyoming'
-].map((e) => ({ group: 'state', label: e, value: e }));
-
-const analysisCountryPreset = [
-  {
-    group: 'country',
-    label: 'Contiguous United States (CONUS)',
-    value: 'United States (Contiguous)'
-  }
-];
-const analysisPresets = [...analysisStatesPreset, ...analysisCountryPreset];
-
-// Disabling no mutating rule since we are mutating the copy
-// eslint-disable-next-line fp/no-mutating-methods
-const sortedPresets = [...analysisStatesPreset].sort((a, b) => {
-  return a.label.localeCompare(b.label);
-});
 
 const selectorHeight = '25px';
 
@@ -145,37 +74,36 @@ const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
   animation: ${spinAnimation} 1s infinite linear;
 `;
 
+export interface PresetOption {
+  label: string;
+  value: string;
+  path: string;
+  group: 'state' | 'country';
+}
+
+export interface PresetSelectorProps {
+  selectedState: PresetOption | null;
+  setSelectedState: (state: PresetOption | null) => void;
+  resetPreset: () => void;
+  isLoading: boolean;
+  presets: PresetOption[];
+}
+
 export default function PresetSelector({
   selectedState,
   setSelectedState,
-  onConfirm,
-  resetPreset
-}: {
-  selectedState: string;
-  setSelectedState: (state: string) => void;
-  onConfirm: (features: Feature<Polygon>[]) => void;
-  resetPreset: () => void;
-}) {
-  const { features, isLoading } = usePresetAOI(selectedState);
-
-  useEffect(() => {
-    if (features?.length) onConfirm(features);
-
-    // Excluding onConfirm from the dependencies array to prevent an infinite loop:
-    // onConfirm depends on the Map instance, and invoking it modifies the Map,
-    // which can re-trigger this effect if included as a dependency.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [features]);
-
-  const currentlySelected = analysisPresets.find(
-    (e) => e.value === selectedState
-  );
+  resetPreset,
+  isLoading,
+  presets
+}: PresetSelectorProps) {
+  const countryPresets = presets.filter(p => p.group === 'country');
+  const statePresets = presets.filter(p => p.group === 'state').sort((a, b) => a.label.localeCompare(b.label));
 
   return (
     <SelectorWrapper>
       <OptionValueDisplay>
         <span>
-          {currentlySelected ? currentlySelected.label : 'Analyze an area'}{' '}
+          {selectedState ? selectedState.label : 'Analyze an area'}{' '}
         </span>
         <CollecticonChevronDownSmall />
       </OptionValueDisplay>
@@ -183,12 +111,15 @@ export default function PresetSelector({
       <PresetSelect
         id='preset-selector'
         name='Select a new area of interest'
-        value={selectedState}
-        onChange={(e) => setSelectedState(e.target.value)}
+        value={selectedState?.value || ''}
+        onChange={(e) => {
+          const selectedPreset = presets.find(p => p.value === e.target.value);
+          setSelectedState(selectedPreset || null);
+        }}
       >
         <option> Analyze an area </option>
         <optgroup label='Country' />
-        {analysisCountryPreset.map((e) => {
+        {countryPresets.map((e) => {
           return (
             <option key={`${e.value}-option-analysis`} value={e.value}>
               {e.label}
@@ -196,7 +127,7 @@ export default function PresetSelector({
           );
         })}
         <optgroup label='State' />
-        {sortedPresets.map((e) => {
+        {statePresets.map((e) => {
           return (
             <option key={`${e.value}-option-analysis`} value={e.value}>
               {e.label}
