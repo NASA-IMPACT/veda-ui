@@ -10,6 +10,19 @@ export default defineConfig(({ mode }) => {
     envDir: rootEnvDir,
     publicDir: path.resolve(__dirname, '../static'),
     plugins: [react()],
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: 'legacy',
+          includePaths: [
+            // USWDS from node_modules
+            path.resolve(__dirname, 'node_modules/@uswds/uswds'),
+            path.resolve(__dirname, 'node_modules/@uswds/uswds/dist'),
+            path.resolve(__dirname, 'node_modules/@uswds/uswds/packages')
+          ]
+        }
+      }
+    },
     resolve: {
       alias: {
         // Application path aliases

@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 import { CollecticonDrop } from '@devseed-ui/collecticons';
+import './colormap-options.scss';
+import { ColorRangeSlider } from './color-range-slider';
 import {
   sequentialColorMaps,
   divergingColorMaps,
   restColorMaps
-} from './colorMaps';
+} from './color-maps';
 
-import './colormap-options.scss';
-import { ColorRangeSlider } from './colorRangeSlider/index';
 import { colorMapScale } from '$components/exploration/types.d.ts';
+
 export const DEFAULT_COLORMAP = 'viridis';
 
 const CURATED_SEQUENTIAL_COLORMAPS = [
@@ -52,6 +53,7 @@ interface ColormapOptionsProps {
   max: number;
   setColorMapScale: (colorMapScale: colorMapScale) => void;
   colorMapScale: colorMapScale | undefined;
+  toggleColormap?: (toggle: boolean) => void;
 }
 
 export const getColormapColors = (
@@ -82,6 +84,7 @@ export function ColormapOptions({
   max,
   setColorMap,
   setColorMapScale,
+  toggleColormap,
   colorMapScale
 }: ColormapOptionsProps) {
   const initialIsReversed = colorMap.endsWith('_r');
@@ -148,6 +151,7 @@ export function ColormapOptions({
     const baseColorMap = normalizeColorMap(colorMap);
     setSelectedColorMap(baseColorMap);
     setColorMap(isReversed ? `${baseColorMap}_r` : baseColorMap);
+    if (toggleColormap) toggleColormap(false);
   };
 
   return (
