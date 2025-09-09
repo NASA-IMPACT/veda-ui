@@ -88,6 +88,7 @@ export interface PresetSelectorProps {
   resetPreset: () => void;
   presets: PresetOption[];
   onConfirm: (features: Feature<Polygon>[]) => void;
+  placeholderText?: string;
 }
 
 export default function PresetSelector({
@@ -95,7 +96,8 @@ export default function PresetSelector({
   setSelectedState,
   resetPreset,
   presets,
-  onConfirm
+  onConfirm,
+  placeholderText = 'Analyze an area'
 }: PresetSelectorProps) {
   const { features, isLoading } = usePresetAOI(selectedState?.path);
 
@@ -121,7 +123,7 @@ export default function PresetSelector({
   return (
     <SelectorWrapper>
       <OptionValueDisplay>
-        <span>{selectedState ? selectedState.label : 'Analyze an area'} </span>
+        <span>{selectedState ? selectedState.label : placeholderText} </span>
         <CollecticonChevronDownSmall />
       </OptionValueDisplay>
 
@@ -136,7 +138,7 @@ export default function PresetSelector({
           setSelectedState(selectedPreset || null);
         }}
       >
-        <option> Analyze an area </option>
+        <option> {placeholderText} </option>
         {groups.map((groupName) => {
           const groupPresets = groupedPresets[groupName];
           return (
