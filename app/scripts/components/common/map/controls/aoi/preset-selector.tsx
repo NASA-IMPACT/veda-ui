@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import { Button } from '@devseed-ui/button';
@@ -8,6 +8,7 @@ import {
   CollecticonArrowSpinCcw
 } from '@devseed-ui/collecticons';
 import { glsp, truncated } from '@devseed-ui/theme-provider';
+import usePresetAOI from '../hooks/use-preset-aoi';
 
 const selectorHeight = '25px';
 
@@ -78,33 +79,49 @@ export interface PresetOption {
   label: string;
   value: string;
   path: string;
-  group: 'state' | 'country';
+  group?: string;
 }
 
 export interface PresetSelectorProps {
   selectedState: PresetOption | null;
   setSelectedState: (state: PresetOption | null) => void;
   resetPreset: () => void;
-  isLoading: boolean;
   presets: PresetOption[];
+  onConfirm: (features: Feature<Polygon>[]) => void;
 }
 
 export default function PresetSelector({
   selectedState,
   setSelectedState,
   resetPreset,
-  isLoading,
-  presets
+  presets,
+  onConfirm
 }: PresetSelectorProps) {
-  const countryPresets = presets.filter(p => p.group === 'country');
-  const statePresets = presets.filter(p => p.group === 'state').sort((a, b) => a.label.localeCompare(b.label));
+  const { features, isLoading } = usePresetAOI(selectedState?.path);
+
+  useEffect(() => {
+    if (features?.length && onConfirm) onConfirm(features);
+
+    // Excluding onConfirm from the dependencies array to prevent an infinite loop:
+    // onConfirm depends on the Map instance, and invoking it modifies the Map,
+    // which can re-trigger this effect if included as a dependency.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [features]);
+
+  const groupedPresets = presets.reduce((acc, preset) => {
+    const group = preset.group || 'default';
+    if (!acc[group]) acc[group] = [];
+    acc[group] = [...acc[group], preset];
+    return acc;
+  }, {} as Record<string, PresetOption[]>);
+
+  const groups = Object.keys(groupedPresets);
+  const showGroups = groups.length > 1;
 
   return (
     <SelectorWrapper>
       <OptionValueDisplay>
-        <span>
-          {selectedState ? selectedState.label : 'Analyze an area'}{' '}
-        </span>
+        <span>{selectedState ? selectedState.label : 'Analyze an area'} </span>
         <CollecticonChevronDownSmall />
       </OptionValueDisplay>
 
@@ -113,25 +130,31 @@ export default function PresetSelector({
         name='Select a new area of interest'
         value={selectedState?.value || ''}
         onChange={(e) => {
-          const selectedPreset = presets.find(p => p.value === e.target.value);
+          const selectedPreset = presets.find(
+            (p) => p.value === e.target.value
+          );
           setSelectedState(selectedPreset || null);
         }}
       >
         <option> Analyze an area </option>
-        <optgroup label='Country' />
-        {countryPresets.map((e) => {
+        {groups.map((groupName) => {
+          const groupPresets = groupedPresets[groupName];
           return (
-            <option key={`${e.value}-option-analysis`} value={e.value}>
-              {e.label}
-            </option>
-          );
-        })}
-        <optgroup label='State' />
-        {statePresets.map((e) => {
-          return (
-            <option key={`${e.value}-option-analysis`} value={e.value}>
-              {e.label}
-            </option>
+            <React.Fragment key={groupName}>
+              {showGroups && groupName !== 'default' && (
+                <optgroup
+                  label={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
+                />
+              )}
+              {groupPresets.map((preset) => (
+                <option
+                  key={`${preset.value}-option-analysis`}
+                  value={preset.value}
+                >
+                  {preset.label}
+                </option>
+              ))}
+            </React.Fragment>
           );
         })}
       </PresetSelect>

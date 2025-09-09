@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Feature, Polygon } from 'geojson';
-import usePresetAOI from '../hooks/use-preset-aoi';
 import PresetSelector, { PresetOption } from './preset-selector';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -76,12 +75,16 @@ export default function PresetSelectorContainer({
   const presets: PresetOption[] = useMemo(() => {
     const baseUrl = geoDataPath ? geoDataPath.replace(/\/$/, '') : '';
 
-    const statePresets: PresetOption[] = stateNames.map((name) => ({
-      group: 'state' as const,
-      label: name,
-      value: name,
-      path: `${baseUrl}/states/${name}.geojson`
-    }));
+    // map returns the new array which is safe to mutate
+    // eslint-disable-next-line fp/no-mutating-methods
+    const statePresets: PresetOption[] = stateNames
+      .map((name) => ({
+        group: 'state' as const,
+        label: name,
+        value: name,
+        path: `${baseUrl}/states/${name}.geojson`
+      }))
+      .sort((a, b) => a.label.localeCompare(b.label));
 
     const countryPresets: PresetOption[] = [
       {
@@ -95,24 +98,13 @@ export default function PresetSelectorContainer({
     return [...statePresets, ...countryPresets];
   }, [geoDataPath]);
 
-  const { features, isLoading } = usePresetAOI(selectedState?.path);
-
-  useEffect(() => {
-    if (features?.length) onConfirm(features);
-
-    // Excluding onConfirm from the dependencies array to prevent an infinite loop:
-    // onConfirm depends on the Map instance, and invoking it modifies the Map,
-    // which can re-trigger this effect if included as a dependency.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [features]);
-
   return (
     <PresetSelector
       selectedState={selectedState}
       setSelectedState={setSelectedState}
       resetPreset={resetPreset}
-      isLoading={isLoading}
       presets={presets}
+      onConfirm={onConfirm}
     />
   );
 }
