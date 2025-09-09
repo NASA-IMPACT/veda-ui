@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
+import { CollecticonXmarkSmall } from '$components/common/icons-legacy';
 import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
-import { Close } from '$components/common/icons';
 // @DEPRECATED: This component is deprecated and will be removed in the future.
 interface FilterTagProps {
   item: OptionItem;
@@ -63,7 +63,7 @@ export function FilterTagLegacyMigrated(props: FilterTagProps) {
     <Tag>
       {item.name}
       <button type='button' onClick={handleClick}>
-        <Close />
+        <Icon.Close />
       </button>
     </Tag>
   );

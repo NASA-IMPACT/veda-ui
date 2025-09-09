@@ -1,30 +1,12 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Icon } from '@trussworks/react-uswds';
+// Import custom icons from custom-icon folder
 import {
-  ArrowForward,
-  Assessment,
-  Autorenew,
-  CalendarMinus,
-  CalendarPlus,
-  Check,
-  Close,
-  ContactPage,
-  Drop,
-  EmojiEvents,
-  ExpandMore,
-  HelpOutline,
-  HighlightOff,
-  Info,
-  Launch,
-  Map,
-  Menu,
-  NavigateNext,
-  NearMe,
-  Science,
-  ZoomIn,
-  ZoomOut
-} from '$components/common/icons';
+  CalendarMinusIcon,
+  CalendarPlusIcon,
+  DropIcon
+} from '$components/common/custom-icon';
 
 // Import all collecticons from icons-legacy
 import {
@@ -50,7 +32,16 @@ import {
   CollecticonCalendarPlus,
   CollecticonCalendarMinus,
   CollecticonFlask,
-  CollecticonMedal
+  CollecticonMedal,
+  // Missing collecticons that need replacements
+  CollecticonEllipsisVertical,
+  CollecticonArrowDown,
+  CollecticonArrowUp,
+  CollecticonShare,
+  CollecticonEyeDisabled,
+  CollecticonEye,
+  CollecticonChevronDown,
+  CollecticonChevronUp
 } from '$components/common/icons-legacy';
 
 // Clean table styles
@@ -109,7 +100,7 @@ const IconRenderer = ({
   iconName,
   size = 3
 }: {
-  icon?: React.ComponentType<any> | null;
+  icon?: React.ComponentType<Record<string, unknown>> | null;
   iconName: string;
   size?: number;
 }) => (
@@ -128,11 +119,11 @@ const IconRenderer = ({
 const IconMigrationGuide: React.FC = () => {
   // Icon mapping data
   const iconMappings: Array<{
-    collecticon: React.ComponentType<any>;
+    collecticon: React.ComponentType<Record<string, unknown>>;
     collecticonName: string;
-    uswdsIcon: React.ComponentType<any> | null;
+    uswdsIcon: React.ComponentType<Record<string, unknown>> | null;
     uswdsIconName: string;
-    customIcon?: React.ComponentType<any>;
+    customIcon?: React.ComponentType<Record<string, unknown>> | null;
     customIconName?: string;
   }> = [
     {
@@ -140,184 +131,249 @@ const IconMigrationGuide: React.FC = () => {
       collecticonName: 'CollecticonArrowRight',
       uswdsIcon: Icon.ArrowForward,
       uswdsIconName: 'Icon.ArrowForward',
-      customIcon: ArrowForward,
-      customIconName: 'ArrowForward'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonArrowLoop,
       collecticonName: 'CollecticonArrowLoop',
       uswdsIcon: Icon.Autorenew,
       uswdsIconName: 'Icon.Autorenew',
-      customIcon: Autorenew,
-      customIconName: 'Autorenew'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonChartLine,
       collecticonName: 'CollecticonChartLine',
       uswdsIcon: Icon.Assessment,
       uswdsIconName: 'Icon.Assessment',
-      customIcon: Assessment,
-      customIconName: 'Assessment'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonChevronRightSmall,
       collecticonName: 'CollecticonChevronRightSmall',
       uswdsIcon: Icon.NavigateNext,
       uswdsIconName: 'Icon.NavigateNext',
-      customIcon: NavigateNext,
-      customIconName: 'NavigateNext'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonChevronDownSmall,
       collecticonName: 'CollecticonChevronDownSmall',
       uswdsIcon: Icon.ExpandMore,
       uswdsIconName: 'Icon.ExpandMore',
-      customIcon: ExpandMore,
-      customIconName: 'ExpandMore'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonCircleQuestion,
       collecticonName: 'CollecticonCircleQuestion',
       uswdsIcon: Icon.HelpOutline,
       uswdsIconName: 'Icon.HelpOutline',
-      customIcon: HelpOutline,
-      customIconName: 'HelpOutline'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonCircleXmark,
       collecticonName: 'CollecticonCircleXmark',
       uswdsIcon: Icon.HighlightOff,
       uswdsIconName: 'Icon.HighlightOff',
-      customIcon: HighlightOff,
-      customIconName: 'HighlightOff'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonCircleInformation,
       collecticonName: 'CollecticonCircleInformation',
       uswdsIcon: Icon.Info,
       uswdsIconName: 'Icon.Info',
-      customIcon: Info,
-      customIconName: 'Info'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonCompass,
       collecticonName: 'CollecticonCompass',
       uswdsIcon: Icon.NearMe,
       uswdsIconName: 'Icon.NearMe',
-      customIcon: NearMe,
-      customIconName: 'NearMe'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonExpandTopRight,
       collecticonName: 'CollecticonExpandTopRight',
       uswdsIcon: Icon.Launch,
       uswdsIconName: 'Icon.Launch',
-      customIcon: Launch,
-      customIconName: 'Launch'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonHamburgerMenu,
       collecticonName: 'CollecticonHamburgerMenu',
       uswdsIcon: Icon.Menu,
       uswdsIconName: 'Icon.Menu',
-      customIcon: Menu,
-      customIconName: 'Menu'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonMap,
       collecticonName: 'CollecticonMap',
       uswdsIcon: Icon.Map,
       uswdsIconName: 'Icon.Map',
-      customIcon: Map,
-      customIconName: 'Map'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonPage,
       collecticonName: 'CollecticonPage',
       uswdsIcon: Icon.ContactPage,
       uswdsIconName: 'Icon.ContactPage',
-      customIcon: ContactPage,
-      customIconName: 'ContactPage'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonTick,
       collecticonName: 'CollecticonTick',
       uswdsIcon: Icon.Check,
       uswdsIconName: 'Icon.Check',
-      customIcon: Check,
-      customIconName: 'Check'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonXmark,
       collecticonName: 'CollecticonXmark',
       uswdsIcon: Icon.Close,
       uswdsIconName: 'Icon.Close',
-      customIcon: Close,
-      customIconName: 'Close'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonXmarkSmall,
       collecticonName: 'CollecticonXmarkSmall',
       uswdsIcon: Icon.Close,
       uswdsIconName: 'Icon.Close',
-      customIcon: Close,
-      customIconName: 'Close'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonMagnifierPlus,
       collecticonName: 'CollecticonMagnifierPlus',
       uswdsIcon: Icon.ZoomIn,
       uswdsIconName: 'Icon.ZoomIn',
-      customIcon: ZoomIn,
-      customIconName: 'ZoomIn'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonMagnifierMinus,
       collecticonName: 'CollecticonMagnifierMinus',
       uswdsIcon: Icon.ZoomOut,
       uswdsIconName: 'Icon.ZoomOut',
-      customIcon: ZoomOut,
-      customIconName: 'ZoomOut'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonDrop,
       collecticonName: 'CollecticonDrop',
       uswdsIcon: null,
       uswdsIconName: '-',
-      customIcon: Drop,
-      customIconName: 'Drop'
+      customIcon: DropIcon,
+      customIconName: 'DropIcon'
     },
     {
       collecticon: CollecticonCalendarPlus,
       collecticonName: 'CollecticonCalendarPlus',
       uswdsIcon: null,
       uswdsIconName: '-',
-      customIcon: CalendarPlus,
-      customIconName: 'CalendarPlus'
+      customIcon: CalendarPlusIcon,
+      customIconName: 'CalendarPlusIcon'
     },
     {
       collecticon: CollecticonCalendarMinus,
       collecticonName: 'CollecticonCalendarMinus',
       uswdsIcon: null,
       uswdsIconName: '-',
-      customIcon: CalendarMinus,
-      customIconName: 'CalendarMinus'
+      customIcon: CalendarMinusIcon,
+      customIconName: 'CalendarMinusIcon'
     },
     {
       collecticon: CollecticonFlask,
       collecticonName: 'CollecticonFlask',
       uswdsIcon: Icon.Science,
       uswdsIconName: 'Icon.Science',
-      customIcon: Science,
-      customIconName: 'Science'
+      customIcon: null,
+      customIconName: '-'
     },
     {
       collecticon: CollecticonMedal,
       collecticonName: 'CollecticonMedal',
       uswdsIcon: Icon.EmojiEvents,
       uswdsIconName: 'Icon.EmojiEvents',
-      customIcon: EmojiEvents,
-      customIconName: 'EmojiEvents'
+      customIcon: null,
+      customIconName: '-'
+    },
+    // Missing collecticons with USWDS alternatives
+    {
+      collecticon: CollecticonEllipsisVertical,
+      collecticonName: 'CollecticonEllipsisVertical',
+      uswdsIcon: Icon.MoreVert,
+      uswdsIconName: 'Icon.MoreVert',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonArrowDown,
+      collecticonName: 'CollecticonArrowDown',
+      uswdsIcon: Icon.ArrowDownward,
+      uswdsIconName: 'Icon.ArrowDownward',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonArrowUp,
+      collecticonName: 'CollecticonArrowUp',
+      uswdsIcon: Icon.ArrowUpward,
+      uswdsIconName: 'Icon.ArrowUpward',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonShare,
+      collecticonName: 'CollecticonShare',
+      uswdsIcon: Icon.Share,
+      uswdsIconName: 'Icon.Share',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonEyeDisabled,
+      collecticonName: 'CollecticonEyeDisabled',
+      uswdsIcon: Icon.VisibilityOff,
+      uswdsIconName: 'Icon.VisibilityOff',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonEye,
+      collecticonName: 'CollecticonEye',
+      uswdsIcon: Icon.Visibility,
+      uswdsIconName: 'Icon.Visibility',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonChevronDown,
+      collecticonName: 'CollecticonChevronDown',
+      uswdsIcon: Icon.ExpandMore,
+      uswdsIconName: 'Icon.ExpandMore',
+      customIcon: null,
+      customIconName: '-'
+    },
+    {
+      collecticon: CollecticonChevronUp,
+      collecticonName: 'CollecticonChevronUp',
+      uswdsIcon: Icon.ExpandLess,
+      uswdsIconName: 'Icon.ExpandLess',
+      customIcon: null,
+      customIconName: '-'
     }
   ];
 
@@ -337,7 +393,7 @@ const IconMigrationGuide: React.FC = () => {
           <tr>
             <th style={tableStyles.headerCell}>Collecticon</th>
             <th style={tableStyles.headerCell}>USWDS Icon</th>
-            <th style={tableStyles.headerCell}>Veda UI Icon</th>
+            <th style={tableStyles.headerCell}>Custom Icon</th>
           </tr>
         </thead>
         <tbody>

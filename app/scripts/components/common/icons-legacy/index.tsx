@@ -16,7 +16,15 @@ import {
   CollecticonPage,
   CollecticonTick,
   CollecticonXmark,
-  CollecticonXmarkSmall
+  CollecticonXmarkSmall,
+  CollecticonEllipsisVertical,
+  CollecticonArrowDown,
+  CollecticonArrowUp,
+  CollecticonShare,
+  CollecticonEyeDisabled,
+  CollecticonEye,
+  CollecticonChevronDown,
+  CollecticonChevronUp
 } from '@devseed-ui/collecticons';
 
 // Import custom collecticons from icons-legacy
@@ -60,5 +68,14 @@ export {
   CollecticonMagnifierPlus,
   CollecticonMagnifierMinus,
   CollecticonFlask,
-  CollecticonMedal
+  CollecticonMedal,
+  // Missing collecticons
+  CollecticonEllipsisVertical,
+  CollecticonArrowDown,
+  CollecticonArrowUp,
+  CollecticonShare,
+  CollecticonEyeDisabled,
+  CollecticonEye,
+  CollecticonChevronDown,
+  CollecticonChevronUp
 };

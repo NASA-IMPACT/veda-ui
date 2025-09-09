@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeUSWDSIcon } from '../utils';
+import { makeUSWDSIcon } from './utils';
 
-const DropIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const DropIconComponent = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     width='24'
     height='24'
@@ -14,6 +14,6 @@ const DropIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-DropIcon.displayName = 'DropIcon';
+DropIconComponent.displayName = 'DropIcon';
 
-export const Drop = makeUSWDSIcon(DropIcon);
+export const DropIcon = makeUSWDSIcon(DropIconComponent);

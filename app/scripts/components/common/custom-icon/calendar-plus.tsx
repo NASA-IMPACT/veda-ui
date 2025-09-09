@@ -1,7 +1,7 @@
 import React from 'react';
-import { makeUSWDSIcon } from '../utils';
+import { makeUSWDSIcon } from './utils';
 
-const CalendarPlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const CalendarPlusIconComponent = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     width='24'
     height='24'
@@ -13,6 +13,6 @@ const CalendarPlusIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-CalendarPlusIcon.displayName = 'CalendarPlusIcon';
+CalendarPlusIconComponent.displayName = 'CalendarPlusIcon';
 
-export const CalendarPlus = makeUSWDSIcon(CalendarPlusIcon);
+export const CalendarPlusIcon = makeUSWDSIcon(CalendarPlusIconComponent);
