@@ -50,7 +50,7 @@ const SandboxTimelineAnalysis = () => {
             </Grid>
             <Grid col={12}>
               <h4>External Layer Cards</h4>
-              {timelineDatasets &&
+              {timelineDatasets.length > 0 &&
                 timelineDatasets.map((dataset) => (
                   <ExternalLayerCardExample
                     key={dataset.data.id}
