@@ -249,8 +249,8 @@ const IconMigrationGuide: React.FC = () => {
     {
       collecticon: CollecticonXmarkSmall,
       collecticonName: 'CollecticonXmarkSmall',
-      uswdsIcon: Icon.Close,
-      uswdsIconName: 'Icon.Close',
+      uswdsIcon: null,
+      uswdsIconName: '-',
       customIcon: null,
       customIconName: '-'
     },

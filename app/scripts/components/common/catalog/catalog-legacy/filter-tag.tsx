@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Icon } from '@trussworks/react-uswds';
 import { CollecticonXmarkSmall } from '$components/common/icons-legacy';
 import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
@@ -47,23 +46,6 @@ export default function FilterTagLegacy(props: FilterTagProps) {
       {item.name}
       <button type='button' onClick={handleClick}>
         <CollecticonXmarkSmall />
-      </button>
-    </Tag>
-  );
-}
-
-export function FilterTagLegacyMigrated(props: FilterTagProps) {
-  const { item, onClick } = props;
-
-  const handleClick = () => {
-    onClick(item);
-  };
-
-  return (
-    <Tag>
-      {item.name}
-      <button type='button' onClick={handleClick}>
-        <Icon.Close />
       </button>
     </Tag>
   );

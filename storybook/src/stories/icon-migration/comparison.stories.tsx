@@ -2,9 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import styled from 'styled-components';
 
-import FilterTagLegacy, {
-  FilterTagLegacyMigrated
-} from '$components/common/catalog/catalog-legacy/filter-tag';
+import FilterTagLegacy from '$components/common/catalog/catalog-legacy/filter-tag';
 
 const ComparisonContainer = styled.div`
   display: grid;
@@ -63,9 +61,24 @@ const ComponentExamples: React.FC = () => {
 
         <ExampleColumn>
           <h4 className='new'>After</h4>
-          <FilterTagLegacyMigrated item={sampleItem} onClick={handleTagClick} />
-          <div style={{ marginTop: '8px', fontSize: '12px', color: '#6b7280' }}>
-            <code>FilterTagLegacyMigrated</code>
+          <div
+            style={{
+              padding: '16px',
+              backgroundColor: '#f9fafb',
+              borderRadius: '4px',
+              textAlign: 'center'
+            }}
+          >
+            <p style={{ margin: 0, color: '#6b7280' }}>Migration pending</p>
+            <p
+              style={{
+                margin: '4px 0 0 0',
+                fontSize: '12px',
+                color: '#9ca3af'
+              }}
+            >
+              Custom close icon to be defined
+            </p>
           </div>
         </ExampleColumn>
       </ComparisonContainer>
