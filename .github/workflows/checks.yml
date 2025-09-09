@@ -40,12 +40,10 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-verdaccio-fix
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
 
       - name: Install
         run: yarn
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org
 
   lint:
     needs: prep
@@ -65,17 +63,13 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-verdaccio-fix
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
 
       - name: Install
-        run: yarn
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org install
+        run: yarn install
 
       - name: Install Storybook Dependencies
         run: cd storybook && yarn install
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org
 
       - name: Lint JS and CSS
         run: yarn lint
@@ -98,17 +92,13 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-verdaccio-fix
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
 
       - name: Install
-        run: yarn
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org install
+        run: yarn install
 
       - name: Install Storybook Dependencies
         run: cd storybook && yarn install
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org
 
       - name: Check TS errors
         run: yarn ts-check
@@ -131,17 +121,13 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-verdaccio-fix
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
 
       - name: Install
-        run: yarn
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org install
+        run: yarn install
 
       - name: Install Storybook Dependencies
         run: cd storybook && yarn install
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org
 
       - name: Test
         run: yarn test
@@ -165,17 +151,13 @@ jobs:
         id: cache-node-modules
         with:
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-verdaccio-fix
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
 
       - name: Install
-        run: yarn
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org install
+        run: yarn install
 
       - name: Install Storybook Dependencies
         run: cd storybook && yarn install
-        env:
-          YARN_REGISTRY: https://registry.npmjs.org
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
