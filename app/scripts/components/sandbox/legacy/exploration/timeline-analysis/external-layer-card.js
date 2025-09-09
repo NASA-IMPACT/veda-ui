@@ -1,15 +1,11 @@
-import React, { useState, useMemo, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import Tippy from '@tippyjs/react';
-import { themeVal } from '@devseed-ui/theme-provider';
-import { useAtomValue, useAtom } from 'jotai';
-import { CollecticonExpandCollapse } from '@devseed-ui/collecticons';
+import { useAtom } from 'jotai';
 import add from 'date-fns/add';
 import isAfter from 'date-fns/isAfter';
 import isBefore from 'date-fns/isBefore';
-import max from 'date-fns/max';
 import sub from 'date-fns/sub';
-import { mockSelectedDay } from '../mock-data';
 import {
   useTimelineDatasetVisibility,
   useTimelineDatasetColormap,
@@ -23,21 +19,15 @@ import { TipButton } from '$components/common/tip-button';
 import { USWDSIcon } from '$uswds';
 import { LayerGradientColormapGraphic } from '$components/common/map/layer-legend';
 import { ColormapOptions } from '$components/exploration/components/datasets/colormap-options';
-import { DatasetChart } from '$components/exploration/components/datasets/dataset-chart';
 import {
   useAnalysisController,
   useAnalysisDataRequest
 } from '$components/exploration/hooks/use-analysis-data-request';
 import {
-  // useScaleFacstors,
+  useScaleFactors,
   useScales
 } from '$components/exploration/hooks/scales-hooks';
-import {
-  timelineSizesAtom
-  // timelineWidthAtom,
-  // zoomTransformAtom
-} from '$components/exploration/atoms/timeline';
-// import { getInteractionDataPoint } from '$components/exploration/components/chart-popover';
+import TimelineSingle from '$components/exploration/components/timeline-single/timeline';
 import { selectedIntervalAtom } from '$components/exploration/atoms/dates';
 
 const DatasetHeadline = styled.div`
@@ -63,18 +53,6 @@ const TimelineWrapper = styled.div`
   }
 `;
 
-const InteractionRect = styled.div`
-  position: absolute;
-  left: 20rem;
-  top: 3.5rem;
-  bottom: 0;
-  right: ${96}px;
-  /* background-color: rgba(255, 0, 0, 0.08); */
-  box-shadow: 1px 0 0 0 ${themeVal('color.base-200')},
-    inset 1px 0 0 0 ${themeVal('color.base-200')};
-  z-index: 100;
-`;
-
 const getIntervalFromDate = (selectedDay, dataDomain) => {
   const startDate = sub(selectedDay, { months: 2 });
   const endDate = add(selectedDay, { months: 2 });
@@ -94,34 +72,14 @@ export default function ExternalLayerCardExample(props) {
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
-  const { scaled: xScaled } = useScales();
-  // const { contentWidth: width } = useAtomValue(timelineSizesAtom);
   const dataDomain = useTimelineDatasetsDomain();
-  const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
-  const interactionRef = useRef < HTMLDivElement > null;
 
-  // setSelectedInterval(getIntervalFromDate(selectedDay, dataDomain));
   useEffect(() => {
     if (dataDomain) {
       const intervalFromDate = getIntervalFromDate(selectedDay, dataDomain);
-      console.log(`intervalFromDate`, intervalFromDate);
       setSelectedInterval(intervalFromDate);
     }
   }, [selectedDay, dataDomain]);
-
-  const { isAnalyzing, runAnalysis } = useAnalysisController();
-
-  useAnalysisDataRequest({ datasetAtom });
-  const isAnalysisAndSuccess =
-    isAnalyzing && dataset.analysis.status == 'success';
-
-  // const dataPoint = getInteractionDataPoint({
-  //   isHovering,
-  //   xScaled,
-  //   containerWidth: width,
-  //   layerX,
-  //   data: timeSeriesData
-  // });
 
   const { parentDataset } = useParentDataset({
     datasetId: dataset.data.parentDataset.id
@@ -157,10 +115,20 @@ export default function ExternalLayerCardExample(props) {
   };
 
   ///////////// ANALYSIS /////////////
-  const analysisMetrics = useMemo(
-    () => dataset.settings.analysisMetrics ?? [],
-    [dataset]
-  );
+  const [selectedInterval, setSelectedInterval] = useAtom(selectedIntervalAtom);
+
+  const { setObsolete, isAnalyzing } = useAnalysisController();
+
+  useAnalysisDataRequest({ datasetAtom });
+
+  const isAnalysisAndSuccess =
+    isAnalyzing && dataset.analysis.status == 'success';
+
+  const isDatasetSuccess = dataset.status === 'success';
+
+  const scaleFactors = useScaleFactors();
+  const { scaled: xScaled, main: xMain } = useScales();
+
   const cardHeader = {
     element: (
       <h6 className='usa-card__heading font-code-sm'>{parentDataset?.name}</h6>
@@ -189,8 +157,6 @@ export default function ExternalLayerCardExample(props) {
       </DatasetHeadline>
     )
   };
-
-  const shouldRenderTimeline = xScaled && dataDomain;
 
   const cardFooter = {
     element: (
@@ -237,25 +203,22 @@ export default function ExternalLayerCardExample(props) {
             colorMap={colorMap}
           />
         )}
-        {isAnalysisAndSuccess && (
+        {isDatasetSuccess && isAnalysisAndSuccess && (
           <TimelineWrapper>
-            {/* <InteractionRect
-              ref={interactionRef}
-              style={
-                !shouldRenderTimeline ? { pointerEvents: 'none' } : undefined
-              }
-              data-tour='timeline-interaction-rect'
-            /> */}
-            {/* // @TODO-SANDRA: chart is not working and this is what seems to
-            display the line but currently when uncommented, it breaks */}
-            <DatasetChart
-              xScaled={xScaled}
-              width={800}
-              isVisible={!!isVisible}
+            <TimelineSingle
               dataset={dataset}
-              activeMetrics={analysisMetrics}
-              highlightDate={mockSelectedDay}
-              onUpdateSettings={() => {}}
+              selectedDay={selectedDay}
+              setSelectedDay={() => true}
+              selectedCompareDay={null}
+              setSelectedCompareDay={() => true}
+              panelHeight={100}
+              selectedInterval={selectedInterval}
+              setSelectedInterval={setSelectedInterval}
+              dataDomain={dataDomain}
+              setObsolete={setObsolete}
+              scaleFactors={scaleFactors}
+              xScaled={xScaled}
+              xMain={xMain}
             />
           </TimelineWrapper>
         )}
