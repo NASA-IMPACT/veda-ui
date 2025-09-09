@@ -6,8 +6,7 @@ import {
   mockDatasets,
   mockRawData,
   mockSelectedDay,
-  mockSelectedCompareDay,
-  mockSetDatasets
+  mockSelectedCompareDay
 } from '../mock-data';
 import ExternalLayerCardExample from './external-layer-card';
 import { PageMainContent } from '$styles/page';

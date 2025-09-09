@@ -18,7 +18,7 @@ import useParentDataset from '$components/exploration/hooks/use-parent-data';
 import { TipButton } from '$components/common/tip-button';
 import { USWDSIcon } from '$uswds';
 import { LayerGradientColormapGraphic } from '$components/common/map/layer-legend';
-import { ColormapOptions } from '$components/exploration/components/datasets/colormap-options';
+import { ColormapOptions } from '$components/common/dataset-layer-card/colormap-options';
 import {
   useAnalysisController,
   useAnalysisDataRequest
