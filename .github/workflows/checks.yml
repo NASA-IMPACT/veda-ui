@@ -42,10 +42,8 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}-verdaccio-fix
 
-      - name: Configure registry and install
-        run: |
-          yarn config set registry https://registry.npmjs.org
-          yarn install
+      - name: Install
+        run: yarn
         env:
           YARN_REGISTRY: https://registry.npmjs.org
 
