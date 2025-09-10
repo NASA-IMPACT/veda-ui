@@ -3,6 +3,29 @@ import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { getAoiAppropriateFeatures } from './use-custom-aoi';
 
+/**
+ * Hook for loading and managing preset Area of Interest (AOI) data from GeoJSON files.
+ *
+ * This hook fetches GeoJSON data from a given URL, processes it to get appropriate features
+ * for AOI use, and provides loading states and error handling. It automatically cancels
+ * requests if the component unmounts or the preset path changes.
+ *
+ * @param presetPath -  URL path to the GeoJSON file to load
+ * @returns Object containing the hook's state and utilities
+ * @returns returns.features - Array of processed polygon features from the GeoJSON, or null if not loaded
+ * @returns returns.isLoading - Boolean indicating if a request is currently in progress
+ * @returns returns.error - Error message string if an error occurred while loading, or null if no error
+ * @returns returns.reset - Function to clear the current features and error state
+ *
+ * @example
+ * ```tsx
+ * const { features, isLoading, error, reset } = usePresetAOI('/path/to/preset.geojson');
+ *
+ * if (isLoading) return <div>Loading...</div>;
+ * if (error) return <div>Error: {error}</div>;
+ * if (features) return <div>Loaded {features.length} features</div>;
+ * ```
+ */
 function usePresetAOI(presetPath?: string) {
   const [error, setError] = useState<string | null>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);

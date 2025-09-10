@@ -75,22 +75,66 @@ const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
   animation: ${spinAnimation} 1s infinite linear;
 `;
 
+/**
+ * Configuration object for a preset option in the selector
+ */
 export interface PresetOption {
+  /** Display name shown to the user */
   label: string;
+  /** Unique identifier for the preset */
   value: string;
+  /** Path to the GeoJSON file containing the preset data */
   path: string;
+  /** Optional group name for organizing presets. If not provided, preset will be ungrouped */
   group?: string;
 }
 
+/**
+ * Props for the PresetSelector component
+ */
 export interface PresetSelectorProps {
+  /** Currently selected preset option */
   selectedState: PresetOption | null;
+  /** Function to update the selected preset */
   setSelectedState: (state: PresetOption | null) => void;
+  /** Function to clear the current selection */
   resetPreset: () => void;
+  /** Array of available preset options to display */
   presets: PresetOption[];
+  /** Callback function called when preset data is loaded and confirmed, return features of selected option as return value */
   onConfirm: (features: Feature<Polygon>[]) => void;
+  /** Custom placeholder text to show when no option is selected. Defaults to 'Analyze an area' */
   placeholderText?: string;
 }
 
+/**
+ * A flexible dropdown selector component for choosing preset areas of interest (AOI).
+ *
+ * This component automatically groups presets by their `group` property and only shows
+ * group labels when there are multiple groups. It loads GeoJSON data for selected presets
+ * using the usePresetAOI hook and provides loading states and error handling.
+ *
+ * @param props - The component props
+ * @param props.selectedState - Currently selected preset option
+ * @param props.setSelectedState - Function to update the selected preset
+ * @param props.resetPreset - Function to clear the current selection
+ * @param props.presets - Array of available preset options to display
+ * @param props.onConfirm - Callback function called when preset data is loaded and confirmed, return features of selected option as return value
+ * @param props.placeholderText - Custom placeholder text to show when no option is selected
+ * @returns JSX element containing the preset selector interface
+ *
+ * @example
+ * ```tsx
+ * <PresetSelector
+ *   selectedState={selectedPreset}
+ *   setSelectedState={setSelectedPreset}
+ *   resetPreset={() => setSelectedPreset(null)}
+ *   presets={availablePresets}
+ *   onConfirm={(features) => handleConfirm(features)}
+ *   placeholderText="Choose a region"
+ * />
+ * ```
+ */
 export default function PresetSelector({
   selectedState,
   setSelectedState,
