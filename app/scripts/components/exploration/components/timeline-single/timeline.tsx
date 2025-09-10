@@ -123,6 +123,25 @@ export interface TimelineHead {
   outDirection?: 'left' | 'right' | undefined;
 }
 
+/**
+ * TimelineSingle component
+ *
+ * @param {TimelineDatasetSuccess} dataset - dataset item of TimelineDatasetSuccess type
+ * @param {Date | null} selectedDay - selected day
+ * @param {Function} setSelectedDay - function to set selected day
+ * @param {Date | null} selectedCompareDay - selected compare day
+ * @param {Function} setSelectedCompareDay - function to set selected compare day
+ * @param {number} panelHeight - height of the panel
+ * @param {Object} selectedInterval - selected interval
+ * @param {Function} setSelectedInterval - function to set selected interval
+ * @param {Array} dataDomain - array of 2 dates, the start and end of the data domain
+ * @param {Function} setObsolete - function to set obsolete
+ * @param {Object} scaleFactors - scale factors {k0: number, k1: number}
+ * @param {Function} xScaled - function to scale x
+ * @param {Function} xMain - function to scale x main
+ * @returns {JSX.Element} - TimelineSingle component
+ */
+
 export default function TimelineSingle(props: TimelineProps) {
   const {
     dataset,
