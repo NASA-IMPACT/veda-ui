@@ -41,6 +41,15 @@ interface DatasetListItemProps {
   xScaled?: ScaleTime<number, number>;
 }
 
+/**
+ * DatasetTimelineItem component
+ *
+ * @param {TimelineDatasetSuccess} dataset - dataset item of TimelineDatasetSuccess type
+ * @param {number} width - width of the chart
+ * @param {Function} xScaled - function to scale x
+ * @returns {JSX.Element} - DatasetTimelineItem component
+ */
+
 export function DatasetTimelineItem(props: DatasetListItemProps) {
   const { dataset, width, xScaled } = props;
 
