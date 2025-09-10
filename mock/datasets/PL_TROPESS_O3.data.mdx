@@ -56,7 +56,7 @@ layers:
       maxzoom: 12
       tile_scale: 3
       sel:
-        - lev=500
+        - lev={lev}
         - time={start_datetime}
       sel_method: nearest
     compare:
@@ -153,6 +153,9 @@ layers:
       </p>
       <p style={{ marginBottom: '0.4em' }}>
       The TROPESS Chemical Reanalysis Ozone Monthly 3D Product provides global, monthly gridded estimates of ozone concentration (in ppb) from 2005 to 2021 at multiple pressure levels between 1000 and 60 hPa. Developed using advanced data assimilation techniques, this dataset integrates satellite observations and chemical transport models to produce reliable ozone concentration estimates.
+      </p>
+      <p>
+      Use the <strong>“Pressure Level (hPa)”</strong> selector in the interface to explore ozone concentration across different vertical levels in the atmosphere.
       </p>
     </p>
   </Prose>
