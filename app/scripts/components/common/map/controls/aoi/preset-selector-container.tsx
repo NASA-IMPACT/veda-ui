@@ -91,7 +91,7 @@ export default function PresetSelectorContainer({
         group: 'country' as const,
         label: 'Contiguous United States (CONUS)',
         value: 'United States (Contiguous)',
-        path: `${baseUrl}/countries/United States (Contiguous).geojson`
+        path: `${baseUrl}/states/United States (Contiguous).geojson`
       }
     ];
 
