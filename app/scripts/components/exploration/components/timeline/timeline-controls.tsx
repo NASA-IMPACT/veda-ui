@@ -73,10 +73,6 @@ const EmptyDateAxisWrapper = styled.div`
   padding-top: ${glsp(3)};
 `;
 
-const ToolbarFullWidth = styled(Toolbar)`
-  width: 100%;
-`;
-
 interface TimelineControlsProps {
   xScaled?: ScaleTime<number, number>;
   width: number;
@@ -85,6 +81,7 @@ interface TimelineControlsProps {
   timeDensity: TimeDensity;
   timelineLabelsFormat: string;
   minMaxTemporalExtent: TemporalExtent;
+  fullWidth?: boolean;
 }
 
 export function getInitialScale(width) {
@@ -313,7 +310,8 @@ export function TimelineControls(props: TimelineControlsProps) {
     onZoom,
     timeDensity,
     timelineLabelsFormat,
-    minMaxTemporalExtent
+    minMaxTemporalExtent,
+    fullWidth = true
   } = props;
 
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
@@ -438,7 +436,7 @@ export function TimelineControls(props: TimelineControlsProps) {
   return (
     <TimelineControlsSelf>
       <ControlsToolbar>
-        {outOfViewHeads && outOfViewHeads.length > 0 && (
+        {outOfViewHeads && outOfViewHeads.length > 0 && fullWidth && (
           <TimelineHeadIndicatorsWrapper>
             <TimelineHeadIndicators
               outOfViewHeads={outOfViewHeads}
@@ -446,7 +444,7 @@ export function TimelineControls(props: TimelineControlsProps) {
             />
           </TimelineHeadIndicatorsWrapper>
         )}
-        <ToolbarFullWidth>
+        <Toolbar style={{ width: fullWidth ? '100%' : 'none' }}>
           <ToolbarGroup>
             {!selectedInterval && (
               <>
@@ -619,7 +617,7 @@ export function TimelineControls(props: TimelineControlsProps) {
             )}
             <TimelineZoomControls onZoom={onZoom} />
           </ToolbarGroup>
-        </ToolbarFullWidth>
+        </Toolbar>
       </ControlsToolbar>
 
       <DateAxis xScaled={xScaled ?? initialScale} width={width} />

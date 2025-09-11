@@ -29,7 +29,7 @@ interface DatasetChartProps {
   activeMetrics: DataMetric[];
   highlightDate?: Date;
   setSelectedVariable?: (variable: string) => void;
-  onUpdateSettings: (type: string, m: DataMetric[]) => void;
+  onUpdateSettings?: (type: string, m: DataMetric[]) => void;
 }
 
 const ChartAnalysisMenu = styled.div<{ axisWidth: number }>`
@@ -122,15 +122,17 @@ export function DatasetChart(props: DatasetChartProps) {
           There are no active metrics to visualize.
         </DatasetTrackMessage>
       )}
-      <ChartAnalysisMenu axisWidth={RIGHT_AXIS_SPACE}>
-        <LayerChartAnalysisMenu
-          activeMetrics={activeMetrics}
-          variablesList={variablesList}
-          onChange={onUpdateSettings}
-          setSelectedVariable={setSelectedVariable}
-          triggerIcon={chartAnalysisIconTrigger}
-        />
-      </ChartAnalysisMenu>
+      {onUpdateSettings && (
+        <ChartAnalysisMenu axisWidth={RIGHT_AXIS_SPACE}>
+          <LayerChartAnalysisMenu
+            activeMetrics={activeMetrics}
+            variablesList={variablesList}
+            onChange={onUpdateSettings}
+            setSelectedVariable={setSelectedVariable}
+            triggerIcon={chartAnalysisIconTrigger}
+          />
+        </ChartAnalysisMenu>
+      )}
       <AxisBackground axisWidth={RIGHT_AXIS_SPACE} />
 
       <svg width={width + RIGHT_AXIS_SPACE} height={height}>

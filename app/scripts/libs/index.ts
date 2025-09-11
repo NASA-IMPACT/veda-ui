@@ -31,7 +31,9 @@ export {
   VedaUIProvider,
   ReactQueryProvider,
   useTimelineDatasetAtom,
-  useFiltersWithQS
+  useFiltersWithQS,
+  useAnalysisDataRequest,
+  useAnalysisController
 } from './hooks';
 
 export {
@@ -69,7 +71,8 @@ export {
 export {
   ColormapSection as VEDALayerColormap,
   LayerMenuOptions as VEDALayerMenuOptions,
-  DatasetLayerCard as VEDADatasetLayerCard
+  DatasetLayerCard as VEDADatasetLayerCard,
+  TimelineSingle as VEDADatasetTimeline
 } from './components';
 
 export { PageHero, LegacyGlobalStyles };
