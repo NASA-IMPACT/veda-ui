@@ -10,76 +10,6 @@ import {
 import { glsp, truncated } from '@devseed-ui/theme-provider';
 import usePresetAOI from '../hooks/use-preset-aoi';
 
-const analysisStatesPreset = [
-  'Alabama',
-  'Alaska',
-  'Arizona',
-  'Arkansas',
-  'California',
-  'Colorado',
-  'Connecticut',
-  'Delaware',
-  'District of Columbia',
-  'Florida',
-  'Georgia',
-  'Hawaii',
-  'Idaho',
-  'Illinois',
-  'Indiana',
-  'Iowa',
-  'Kansas',
-  'Kentucky',
-  'Louisiana',
-  'Maine',
-  'Maryland',
-  'Massachusetts',
-  'Michigan',
-  'Minnesota',
-  'Mississippi',
-  'Missouri',
-  'Montana',
-  'Nebraska',
-  'Nevada',
-  'New Hampshire',
-  'New Jersey',
-  'New Mexico',
-  'New York',
-  'North Carolina',
-  'North Dakota',
-  'Ohio',
-  'Oklahoma',
-  'Oregon',
-  'Pennsylvania',
-  'Puerto Rico',
-  'Rhode Island',
-  'South Carolina',
-  'South Dakota',
-  'Tennessee',
-  'Texas',
-  'Utah',
-  'Vermont',
-  'Virginia',
-  'Washington',
-  'West Virginia',
-  'Wisconsin',
-  'Wyoming'
-].map((e) => ({ group: 'state', label: e, value: e }));
-
-const analysisCountryPreset = [
-  {
-    group: 'country',
-    label: 'Contiguous United States (CONUS)',
-    value: 'United States (Contiguous)'
-  }
-];
-const analysisPresets = [...analysisStatesPreset, ...analysisCountryPreset];
-
-// Disabling no mutating rule since we are mutating the copy
-// eslint-disable-next-line fp/no-mutating-methods
-const sortedPresets = [...analysisStatesPreset].sort((a, b) => {
-  return a.label.localeCompare(b.label);
-});
-
 const selectorHeight = '25px';
 
 const SelectorWrapper = styled.div`
@@ -145,21 +75,78 @@ const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
   animation: ${spinAnimation} 1s infinite linear;
 `;
 
-export default function PresetSelector({
-  selectedState,
-  setSelectedState,
-  onConfirm,
-  resetPreset
-}: {
-  selectedState: string;
-  setSelectedState: (state: string) => void;
-  onConfirm: (features: Feature<Polygon>[]) => void;
+/**
+ * Configuration object for a preset option in the selector
+ */
+export interface PresetOption {
+  /** Display name shown to the user */
+  label: string;
+  /** Unique identifier for the preset */
+  value: string;
+  /** Path to the GeoJSON file containing the preset data */
+  path: string;
+  /** Optional group name for organizing presets. If not provided, preset will be ungrouped */
+  group?: string;
+}
+
+/**
+ * Props for the PresetSelector component
+ */
+export interface PresetSelectorProps {
+  /** Currently selected preset option */
+  selectedPreset: PresetOption | null;
+  /** Function to update the selected preset */
+  setSelectedPreset: (state: PresetOption | null) => void;
+  /** Function to clear the current selection */
   resetPreset: () => void;
-}) {
-  const { features, isLoading } = usePresetAOI(selectedState);
+  /** Array of available preset options to display */
+  presets: PresetOption[];
+  /** Callback function called when preset data is loaded and confirmed, return features of selected option as return value */
+  onConfirm: (features: Feature<Polygon>[]) => void;
+  /** Custom placeholder text to show when no option is selected. Defaults to 'Analyze an area' */
+  placeholderText?: string;
+}
+
+/**
+ * A flexible dropdown selector component for choosing preset areas of interest (AOI).
+ *
+ * This component automatically groups presets by their `group` property and only shows
+ * group labels when there are multiple groups. It loads GeoJSON data for selected presets
+ * using the usePresetAOI hook and provides loading states and error handling.
+ *
+ * @param props - The component props
+ * @param props.selectedPreset - Currently selected preset option
+ * @param props.setSelectedPreset - Function to update the selected preset
+ * @param props.resetPreset - Function to clear the current selection
+ * @param props.presets - Array of available preset options to display
+ * @param props.onConfirm - Callback function called when preset data is loaded and confirmed, return features of selected option as return value
+ * @param props.placeholderText - Custom placeholder text to show when no option is selected
+ * @returns JSX element containing the preset selector interface
+ *
+ * @example
+ * ```tsx
+ * <PresetSelector
+ *   selectedPreset={selectedPreset}
+ *   setSelectedPreset={setSelectedPreset}
+ *   resetPreset={() => setSelectedPreset(null)}
+ *   presets={availablePresets}
+ *   onConfirm={(features) => handleConfirm(features)}
+ *   placeholderText="Choose a region"
+ * />
+ * ```
+ */
+export default function PresetSelector({
+  selectedPreset,
+  setSelectedPreset,
+  resetPreset,
+  presets,
+  onConfirm,
+  placeholderText = 'Analyze an area'
+}: PresetSelectorProps) {
+  const { features, isLoading } = usePresetAOI(selectedPreset?.path);
 
   useEffect(() => {
-    if (features?.length) onConfirm(features);
+    if (features?.length && onConfirm) onConfirm(features);
 
     // Excluding onConfirm from the dependencies array to prevent an infinite loop:
     // onConfirm depends on the Map instance, and invoking it modifies the Map,
@@ -167,44 +154,57 @@ export default function PresetSelector({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [features]);
 
-  const currentlySelected = analysisPresets.find(
-    (e) => e.value === selectedState
-  );
+  const groupedPresets = presets.reduce((acc, preset) => {
+    const group = preset.group || 'default';
+    if (!acc[group]) acc[group] = [];
+    acc[group] = [...acc[group], preset];
+    return acc;
+  }, {} as Record<string, PresetOption[]>);
+
+  const groups = Object.keys(groupedPresets);
+  const showGroups = groups.length > 1;
 
   return (
     <SelectorWrapper>
       <OptionValueDisplay>
-        <span>
-          {currentlySelected ? currentlySelected.label : 'Analyze an area'}{' '}
-        </span>
+        <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
         <CollecticonChevronDownSmall />
       </OptionValueDisplay>
 
       <PresetSelect
         id='preset-selector'
         name='Select a new area of interest'
-        value={selectedState}
-        onChange={(e) => setSelectedState(e.target.value)}
-      >
-        <option> Analyze an area </option>
-        <optgroup label='Country' />
-        {analysisCountryPreset.map((e) => {
-          return (
-            <option key={`${e.value}-option-analysis`} value={e.value}>
-              {e.label}
-            </option>
+        value={selectedPreset?.value || ''}
+        onChange={(e) => {
+          const selectedPreset = presets.find(
+            (p) => p.value === e.target.value
           );
-        })}
-        <optgroup label='State' />
-        {sortedPresets.map((e) => {
+          setSelectedPreset(selectedPreset || null);
+        }}
+      >
+        <option> {placeholderText} </option>
+        {groups.map((groupName) => {
+          const groupPresets = groupedPresets[groupName];
           return (
-            <option key={`${e.value}-option-analysis`} value={e.value}>
-              {e.label}
-            </option>
+            <React.Fragment key={groupName}>
+              {showGroups && groupName !== 'default' && (
+                <optgroup
+                  label={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
+                />
+              )}
+              {groupPresets.map((preset) => (
+                <option
+                  key={`${preset.value}-option-analysis`}
+                  value={preset.value}
+                >
+                  {preset.label}
+                </option>
+              ))}
+            </React.Fragment>
           );
         })}
       </PresetSelect>
-      {selectedState && !isLoading && (
+      {selectedPreset && !isLoading && (
         <CancelButton
           fitting='skinny'
           onClick={() => {

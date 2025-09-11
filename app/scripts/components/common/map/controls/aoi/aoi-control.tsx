@@ -16,7 +16,8 @@ import useAois from '../hooks/use-aois';
 import useThemedControl from '../hooks/use-themed-control';
 import { useDrawControl } from '../hooks/use-draw-control';
 import CustomAoIModal from './custom-aoi-modal';
-import PresetSelector from './preset-selector';
+import PresetSelectorContainer from './preset-selector-container';
+import { PresetOption } from './preset-selector';
 
 import { computeDrawStyles } from './style';
 import { DrawTools } from './draw-tools';
@@ -58,11 +59,11 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
   const { isDrawing, setIsDrawing, aoi, updateAoi, aoiDeleteAll } = useAois();
 
   const [aoiModalRevealed, setAoIModalRevealed] = useState(false);
-  const [selectedState, setSelectedState] = useState('');
+  const [selectedState, setSelectedState] = useState<PresetOption | null>(null);
 
   const resetAoi = () => {
     aoiDeleteAll();
-    setSelectedState('');
+    setSelectedState(null);
   };
 
   const onUploadConfirm = (features: Feature<Polygon>[]) => {
@@ -125,7 +126,7 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
               <DrawTools {...{ drawingActions, drawingIsValid }} />
             ) : (
               <>
-                <PresetSelector
+                <PresetSelectorContainer
                   selectedState={selectedState}
                   setSelectedState={setSelectedState}
                   onConfirm={onPresetConfirm}
