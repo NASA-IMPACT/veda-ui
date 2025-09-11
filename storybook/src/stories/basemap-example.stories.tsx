@@ -40,7 +40,8 @@ const meta: Meta<typeof BaseMapExample> = {
   title: 'Components/BaseMapExample',
   component: BaseMapExample,
   parameters: {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
+    withProviders: true
   },
   tags: ['autodocs']
 };

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import T from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import nl2br from 'react-nl2br';
-import { CollecticonArrowRight } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import UhOh from '.';
 import LayoutRoot, { LayoutProps } from '$components/common/layout-root';
@@ -109,7 +109,7 @@ function Child(props) {
             <p>
               <strong>
                 <a href={makeAbsUrl('/')} title='Go back to homepage'>
-                  <CollecticonArrowRight size='small' />
+                  <Icon.ArrowForward />
                   <span>&nbsp;Go back to homepage</span>
                 </a>
               </strong>
