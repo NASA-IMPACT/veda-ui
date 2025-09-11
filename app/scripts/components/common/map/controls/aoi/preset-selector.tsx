@@ -94,9 +94,9 @@ export interface PresetOption {
  */
 export interface PresetSelectorProps {
   /** Currently selected preset option */
-  selectedState: PresetOption | null;
+  selectedPreset: PresetOption | null;
   /** Function to update the selected preset */
-  setSelectedState: (state: PresetOption | null) => void;
+  setSelectedPreset: (state: PresetOption | null) => void;
   /** Function to clear the current selection */
   resetPreset: () => void;
   /** Array of available preset options to display */
@@ -115,8 +115,8 @@ export interface PresetSelectorProps {
  * using the usePresetAOI hook and provides loading states and error handling.
  *
  * @param props - The component props
- * @param props.selectedState - Currently selected preset option
- * @param props.setSelectedState - Function to update the selected preset
+ * @param props.selectedPreset - Currently selected preset option
+ * @param props.setSelectedPreset - Function to update the selected preset
  * @param props.resetPreset - Function to clear the current selection
  * @param props.presets - Array of available preset options to display
  * @param props.onConfirm - Callback function called when preset data is loaded and confirmed, return features of selected option as return value
@@ -126,8 +126,8 @@ export interface PresetSelectorProps {
  * @example
  * ```tsx
  * <PresetSelector
- *   selectedState={selectedPreset}
- *   setSelectedState={setSelectedPreset}
+ *   selectedPreset={selectedPreset}
+ *   setSelectedPreset={setSelectedPreset}
  *   resetPreset={() => setSelectedPreset(null)}
  *   presets={availablePresets}
  *   onConfirm={(features) => handleConfirm(features)}
@@ -136,14 +136,14 @@ export interface PresetSelectorProps {
  * ```
  */
 export default function PresetSelector({
-  selectedState,
-  setSelectedState,
+  selectedPreset,
+  setSelectedPreset,
   resetPreset,
   presets,
   onConfirm,
   placeholderText = 'Analyze an area'
 }: PresetSelectorProps) {
-  const { features, isLoading } = usePresetAOI(selectedState?.path);
+  const { features, isLoading } = usePresetAOI(selectedPreset?.path);
 
   useEffect(() => {
     if (features?.length && onConfirm) onConfirm(features);
@@ -167,19 +167,19 @@ export default function PresetSelector({
   return (
     <SelectorWrapper>
       <OptionValueDisplay>
-        <span>{selectedState ? selectedState.label : placeholderText} </span>
+        <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
         <CollecticonChevronDownSmall />
       </OptionValueDisplay>
 
       <PresetSelect
         id='preset-selector'
         name='Select a new area of interest'
-        value={selectedState?.value || ''}
+        value={selectedPreset?.value || ''}
         onChange={(e) => {
           const selectedPreset = presets.find(
             (p) => p.value === e.target.value
           );
-          setSelectedState(selectedPreset || null);
+          setSelectedPreset(selectedPreset || null);
         }}
       >
         <option> {placeholderText} </option>
@@ -204,7 +204,7 @@ export default function PresetSelector({
           );
         })}
       </PresetSelect>
-      {selectedState && !isLoading && (
+      {selectedPreset && !isLoading && (
         <CancelButton
           fitting='skinny'
           onClick={() => {

@@ -100,8 +100,8 @@ export default function PresetSelectorContainer({
 
   return (
     <PresetSelector
-      selectedState={selectedState}
-      setSelectedState={setSelectedState}
+      selectedPreset={selectedState}
+      setSelectedPreset={setSelectedState}
       resetPreset={resetPreset}
       presets={presets}
       onConfirm={onConfirm}

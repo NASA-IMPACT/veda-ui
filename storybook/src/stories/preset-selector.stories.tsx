@@ -64,8 +64,8 @@ const PresetSelectorExample: React.FC<{
   return (
     <>
       <PresetSelector
-        selectedState={selectedOption}
-        setSelectedState={setSelectedOption}
+        selectedPreset={selectedOption}
+        setSelectedPreset={setSelectedOption}
         resetPreset={() => {
           setSelectedOption(null);
           setSelectedFeature(null);
