@@ -62,26 +62,27 @@ const PresetSelectorExample: React.FC<{
   );
 
   return (
-    <>
-      <PresetSelector
-        selectedPreset={selectedOption}
-        setSelectedPreset={setSelectedOption}
-        resetPreset={() => {
-          setSelectedOption(null);
-          setSelectedFeature(null);
-        }}
-        presets={presets}
-        placeholderText={placeholderText}
-        onConfirm={(features) => {
-          setSelectedFeature(features);
-        }}
-      />
-
-      <div>
+    <div className='width-full height-full'>
+      <div className='width-card-lg height-5'>
+        <PresetSelector
+          selectedPreset={selectedOption}
+          setSelectedPreset={setSelectedOption}
+          resetPreset={() => {
+            setSelectedOption(null);
+            setSelectedFeature(null);
+          }}
+          presets={presets}
+          placeholderText={placeholderText}
+          onConfirm={(features) => {
+            setSelectedFeature(features);
+          }}
+        />
+      </div>
+      <div className='width-full'>
         <strong>selected features:</strong>
         <p>{JSON.stringify(selectedFeature)}</p>
       </div>
-    </>
+    </div>
   );
 };
 
