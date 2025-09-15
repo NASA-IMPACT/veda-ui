@@ -126,6 +126,132 @@ export interface PresetSelectorProps {
  * />
  * ```
  */
+interface PresetSelectorRootProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+// Individual component parts for composition
+// User can choose either to compose their own components or use a default built-in.
+export const PresetSelectorRoot: React.FC<PresetSelectorRootProps> = (
+  props
+) => {
+  return (
+    <div
+      className={`position-relative width-full height-full ${
+        props.className || ''
+      }`}
+      {...props}
+    >
+      {props.children}
+    </div>
+  );
+};
+
+export const PresetSelectorTrigger = ({
+  selectedPreset,
+  placeholderText = 'Analyze an area'
+}: {
+  selectedPreset: PresetOption | null;
+  placeholderText?: string;
+}) => (
+  <OptionValueDisplay>
+    <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
+    <USWDSIcon.ExpandMore />
+  </OptionValueDisplay>
+);
+
+interface PresetSelectorSelectProps {
+  selectedPreset: PresetOption | null;
+  setSelectedPreset: (state: PresetOption | null) => void;
+  presets: PresetOption[];
+  placeholderText?: string;
+}
+
+export const PresetSelectorSelect = ({
+  selectedPreset,
+  setSelectedPreset,
+  presets,
+  placeholderText = 'Analyze an area'
+}: PresetSelectorSelectProps) => {
+  const groupedPresets = presets.reduce((acc, preset) => {
+    const group = preset.group || 'default';
+    if (!acc[group]) acc[group] = [];
+    acc[group] = [...acc[group], preset];
+    return acc;
+  }, {} as Record<string, PresetOption[]>);
+
+  const groups = Object.keys(groupedPresets);
+  const showGroups = groups.length > 1;
+
+  return (
+    <PresetSelect
+      id='preset-selector'
+      name='Select a new area of interest'
+      value={selectedPreset?.value || ''}
+      onChange={(e) => {
+        const selectedPreset = presets.find((p) => p.value === e.target.value);
+        setSelectedPreset(selectedPreset || null);
+      }}
+    >
+      <option> {placeholderText} </option>
+      {groups.map((groupName) => {
+        const groupPresets = groupedPresets[groupName];
+        return (
+          <React.Fragment key={groupName}>
+            {showGroups && groupName !== 'default' && (
+              <optgroup
+                label={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
+              />
+            )}
+            {groupPresets.map((preset) => (
+              <option
+                key={`${preset.value}-option-analysis`}
+                value={preset.value}
+              >
+                {preset.label}
+              </option>
+            ))}
+          </React.Fragment>
+        );
+      })}
+    </PresetSelect>
+  );
+};
+
+export const PresetSelectorClearButton = ({
+  selectedPreset,
+  resetPreset,
+  isLoading
+}: {
+  selectedPreset: PresetOption | null;
+  resetPreset: () => void;
+  isLoading: boolean;
+}) =>
+  selectedPreset && !isLoading ? (
+    <CancelButton
+      type='button'
+      unstyled
+      onClick={() => {
+        resetPreset();
+      }}
+    >
+      <USWDSIcon.Close size={3} role='img' aria-label='Clear preset' />
+    </CancelButton>
+  ) : null;
+
+export const PresetSelectorLoadingIndicator = ({
+  isLoading
+}: {
+  isLoading: boolean;
+}) =>
+  isLoading ? (
+    <LoadingWrapper>
+      <AnimatingUSWDSIconAutorenew size={3} role='img' aria-label='Loading' />
+    </LoadingWrapper>
+  ) : null;
+
+// Composed default component
 export default function PresetSelector({
   selectedPreset,
   setSelectedPreset,
@@ -145,76 +271,24 @@ export default function PresetSelector({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [features]);
 
-  const groupedPresets = presets.reduce((acc, preset) => {
-    const group = preset.group || 'default';
-    if (!acc[group]) acc[group] = [];
-    acc[group] = [...acc[group], preset];
-    return acc;
-  }, {} as Record<string, PresetOption[]>);
-
-  const groups = Object.keys(groupedPresets);
-  const showGroups = groups.length > 1;
-
   return (
-    <div className='position-relative width-full height-full'>
-      <OptionValueDisplay>
-        <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
-        <USWDSIcon.ExpandMore />
-      </OptionValueDisplay>
-
-      <PresetSelect
-        id='preset-selector'
-        name='Select a new area of interest'
-        value={selectedPreset?.value || ''}
-        onChange={(e) => {
-          const selectedPreset = presets.find(
-            (p) => p.value === e.target.value
-          );
-          setSelectedPreset(selectedPreset || null);
-        }}
-      >
-        <option> {placeholderText} </option>
-        {groups.map((groupName) => {
-          const groupPresets = groupedPresets[groupName];
-          return (
-            <React.Fragment key={groupName}>
-              {showGroups && groupName !== 'default' && (
-                <optgroup
-                  label={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
-                />
-              )}
-              {groupPresets.map((preset) => (
-                <option
-                  key={`${preset.value}-option-analysis`}
-                  value={preset.value}
-                >
-                  {preset.label}
-                </option>
-              ))}
-            </React.Fragment>
-          );
-        })}
-      </PresetSelect>
-      {selectedPreset && !isLoading && (
-        <CancelButton
-          type='button'
-          unstyled
-          onClick={() => {
-            resetPreset();
-          }}
-        >
-          <USWDSIcon.Close size={3} role='img' aria-label='Clear preset' />
-        </CancelButton>
-      )}
-      {isLoading && (
-        <LoadingWrapper>
-          <AnimatingUSWDSIconAutorenew
-            size={3}
-            role='img'
-            aria-label='Loading'
-          />
-        </LoadingWrapper>
-      )}
-    </div>
+    <PresetSelectorRoot>
+      <PresetSelectorTrigger
+        selectedPreset={selectedPreset}
+        placeholderText={placeholderText}
+      />
+      <PresetSelectorSelect
+        selectedPreset={selectedPreset}
+        setSelectedPreset={setSelectedPreset}
+        presets={presets}
+        placeholderText={placeholderText}
+      />
+      <PresetSelectorClearButton
+        selectedPreset={selectedPreset}
+        resetPreset={resetPreset}
+        isLoading={isLoading}
+      />
+      <PresetSelectorLoadingIndicator isLoading={isLoading} />
+    </PresetSelectorRoot>
   );
 }
