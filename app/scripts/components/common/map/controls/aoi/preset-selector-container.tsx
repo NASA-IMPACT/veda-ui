@@ -100,7 +100,7 @@ export default function PresetSelectorContainer({
       }
     ];
 
-    return [...statePresets, ...countryPresets];
+    return [...countryPresets, ...statePresets];
   }, [geoDataPath]);
 
   return (
