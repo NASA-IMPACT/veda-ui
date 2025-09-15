@@ -252,14 +252,14 @@ export const PresetSelectorLoadingIndicator = ({
   ) : null;
 
 // Composed default component
-export default function PresetSelector({
+const PresetSelectorComponent = ({
   selectedPreset,
   setSelectedPreset,
   resetPreset,
   presets,
   onConfirm,
   placeholderText = 'Analyze an area'
-}: PresetSelectorProps) {
+}: PresetSelectorProps) => {
   const { features, isLoading } = usePresetAOI(selectedPreset?.path);
 
   useEffect(() => {
@@ -291,4 +291,15 @@ export default function PresetSelector({
       <PresetSelectorLoadingIndicator isLoading={isLoading} />
     </PresetSelectorRoot>
   );
-}
+};
+
+// Create namespace pattern exports
+const PresetSelector = Object.assign(PresetSelectorComponent, {
+  Root: PresetSelectorRoot,
+  Trigger: PresetSelectorTrigger,
+  Select: PresetSelectorSelect,
+  ClearButton: PresetSelectorClearButton,
+  LoadingIndicator: PresetSelectorLoadingIndicator
+});
+
+export default PresetSelector;

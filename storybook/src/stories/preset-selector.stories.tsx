@@ -2,12 +2,7 @@ import React, { useState, useEffect } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Feature } from 'geojson';
 import PresetSelector, {
-  PresetOption,
-  PresetSelectorRoot,
-  PresetSelectorTrigger,
-  PresetSelectorSelect,
-  PresetSelectorClearButton,
-  PresetSelectorLoadingIndicator
+  PresetOption
 } from '$components/common/map/controls/aoi/preset-selector';
 import usePresetAOI from '$components/common/map/controls/hooks/use-preset-aoi';
 
@@ -166,12 +161,12 @@ const CustomComposedPresetSelector: React.FC<{
   return (
     <div className='width-full height-full'>
       <h4> Custom composition with custom clear button</h4>
-      <PresetSelectorRoot>
-        <PresetSelectorTrigger
+      <PresetSelector.Root>
+        <PresetSelector.Trigger
           selectedPreset={selectedPreset}
           placeholderText={placeholderText}
         />
-        <PresetSelectorSelect
+        <PresetSelector.Select
           selectedPreset={selectedPreset}
           setSelectedPreset={setSelectedPreset}
           presets={presets}
@@ -202,8 +197,8 @@ const CustomComposedPresetSelector: React.FC<{
             ✕
           </div>
         )}
-        <PresetSelectorLoadingIndicator isLoading={isLoading} />
-      </PresetSelectorRoot>
+        <PresetSelector.LoadingIndicator isLoading={isLoading} />
+      </PresetSelector.Root>
 
       <div className='width-full' style={{ marginTop: '16px' }}>
         <strong>Selected features:</strong>
@@ -242,7 +237,7 @@ const IndividualPartsShowcase: React.FC = () => {
         <div
           style={{ width: '250px', height: '25px', border: '1px dashed #ccc' }}
         >
-          <PresetSelectorRoot>Container</PresetSelectorRoot>
+          <PresetSelector.Root>Container</PresetSelector.Root>
         </div>
       </div>
 
@@ -258,7 +253,7 @@ const IndividualPartsShowcase: React.FC = () => {
           Displays selected value and dropdown arrow
         </p>
         <div style={{ width: '200px', height: '25px', position: 'relative' }}>
-          <PresetSelectorTrigger
+          <PresetSelector.Trigger
             selectedPreset={selectedPreset}
             placeholderText='Choose an option'
           />
@@ -277,7 +272,7 @@ const IndividualPartsShowcase: React.FC = () => {
           The actual select dropdown with options
         </p>
         <div style={{ width: '200px', height: '25px', position: 'relative' }}>
-          <PresetSelectorSelect
+          <PresetSelector.Select
             selectedPreset={selectedPreset}
             setSelectedPreset={setSelectedPreset}
             presets={statesAndCountriesPresets.slice(0, 3)}
@@ -308,7 +303,7 @@ const IndividualPartsShowcase: React.FC = () => {
               border: '1px dashed #ccc'
             }}
           >
-            <PresetSelectorClearButton
+            <PresetSelector.ClearButton
               selectedPreset={statesAndCountriesPresets[0]}
               resetPreset={() => setSelectedPreset(null)}
               isLoading={false}
@@ -322,7 +317,7 @@ const IndividualPartsShowcase: React.FC = () => {
               border: '1px dashed #ccc'
             }}
           >
-            <PresetSelectorLoadingIndicator isLoading={true} />
+            <PresetSelector.LoadingIndicator isLoading={true} />
           </div>
         </div>
       </div>
@@ -354,6 +349,108 @@ export const IndividualParts: StoryObj = {
       description: {
         story:
           'Showcase of individual component parts that can be used for custom compositions.'
+      }
+    }
+  }
+};
+
+// Namespace pattern example
+const NamespacePatternExample: React.FC = () => {
+  const [selectedPreset, setSelectedPreset] = useState<PresetOption | null>(
+    null
+  );
+  const [selectedFeatures, setSelectedFeatures] = useState<Feature[] | null>(
+    null
+  );
+  const { features, isLoading } = usePresetAOI(selectedPreset?.path);
+
+  useEffect(() => {
+    if (features?.length) {
+      setSelectedFeatures(features);
+    }
+  }, [features]);
+
+  const resetPreset = () => {
+    setSelectedPreset(null);
+    setSelectedFeatures(null);
+  };
+
+  return (
+    <div style={{ maxWidth: '600px' }}>
+      <h3>Namespace Pattern Usage</h3>
+      <p style={{ marginBottom: '20px', color: '#666' }}>
+        Import and use components with the namespace pattern:{' '}
+        <code>PresetSelector.Root</code>, <code>PresetSelector.Trigger</code>,
+        etc.
+      </p>
+
+      <div
+        style={{
+          marginBottom: '20px',
+          padding: '16px',
+          border: '1px solid #e5e7eb',
+          borderRadius: '4px'
+        }}
+      >
+        <h4>Import Pattern:</h4>
+        <pre
+          style={{
+            background: '#f8f9fa',
+            padding: '12px',
+            borderRadius: '4px',
+            fontSize: '14px'
+          }}
+        >
+          {`import PresetSelector from './preset-selector';
+
+// Use as complete component
+<PresetSelector {...props} />
+
+// Or compose with individual parts
+<PresetSelector.Root>
+  <PresetSelector.Trigger />
+  <PresetSelector.Select />
+  <PresetSelector.ClearButton />
+  <PresetSelector.LoadingIndicator />
+</PresetSelector.Root>`}
+        </pre>
+      </div>
+
+      <div style={{ width: '250px', height: '25px', marginBottom: '16px' }}>
+        <PresetSelector.Root>
+          <PresetSelector.Trigger
+            selectedPreset={selectedPreset}
+            placeholderText='Select with namespace pattern'
+          />
+          <PresetSelector.Select
+            selectedPreset={selectedPreset}
+            setSelectedPreset={setSelectedPreset}
+            presets={statesAndCountriesPresets.slice(0, 4)}
+            placeholderText='Select with namespace pattern'
+          />
+          <PresetSelector.ClearButton
+            selectedPreset={selectedPreset}
+            resetPreset={resetPreset}
+            isLoading={isLoading}
+          />
+          <PresetSelector.LoadingIndicator isLoading={isLoading} />
+        </PresetSelector.Root>
+      </div>
+
+      <div style={{ fontSize: '14px', color: '#666' }}>
+        <strong>Selected:</strong> {selectedPreset?.label || 'None'}
+      </div>
+    </div>
+  );
+};
+
+export const NamespacePattern: StoryObj = {
+  render: () => <NamespacePatternExample />,
+  parameters: {
+    docs: {
+      description: {
+        story:
+          'Example showing the namespace pattern usage: PresetSelector.Root, PresetSelector.Trigger, etc. This pattern is common in modern component libraries like Radix UI and Ark UI.'
       }
     }
   }
