@@ -1,54 +1,45 @@
 import React, { useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { Feature, Polygon } from 'geojson';
-import { Button } from '@devseed-ui/button';
-import {
-  CollecticonChevronDownSmall,
-  CollecticonDiscXmark,
-  CollecticonArrowSpinCcw
-} from '@devseed-ui/collecticons';
-import { glsp, truncated } from '@devseed-ui/theme-provider';
 import usePresetAOI from '../hooks/use-preset-aoi';
-
-const selectorHeight = '25px';
-
-const SelectorWrapper = styled.div`
-  position: relative;
-`;
+import { USWDSButton, USWDSIcon } from '$uswds';
 
 const PresetSelect = styled.select.attrs({
   'data-testid': 'preset-selector'
 })`
-  max-width: 200px;
-  height: ${selectorHeight};
+  width: 100%;
+  height: 100%;
   color: transparent;
   background: none;
   option {
     color: black;
   }
 `;
-// This div is just to display the value with trucnated texts
+
+// This div is to display the value with trucnated texts
 const OptionValueDisplay = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 1;
-  padding: ${glsp(0.125)} ${glsp(0.5)};
+  padding: 0.125rem 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   pointer-events: none;
   span {
     width: 85%;
-    ${truncated()}
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 
 const SelectorSubAction = css`
   position: absolute;
   top: 0;
-  right: ${glsp(1.25)};
-  height: ${selectorHeight};
+  right: 1.25rem;
+  height: 100%;
 `;
 
 const spinAnimation = keyframes`
@@ -60,7 +51,7 @@ const spinAnimation = keyframes`
   }
 `;
 
-const CancelButton = styled(Button)`
+const CancelButton = styled(USWDSButton)`
   ${SelectorSubAction}
 `;
 
@@ -68,10 +59,10 @@ const LoadingWrapper = styled.div`
   ${SelectorSubAction}
   display: flex;
   align-items: center;
-  right: ${glsp(2)};
+  right: 2rem;
 `;
 
-const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
+const AnimatingUSWDSIconAutorenew = styled(USWDSIcon.Autorenew)`
   animation: ${spinAnimation} 1s infinite linear;
 `;
 
@@ -165,10 +156,10 @@ export default function PresetSelector({
   const showGroups = groups.length > 1;
 
   return (
-    <SelectorWrapper>
+    <div className='position-relative width-full height-full'>
       <OptionValueDisplay>
         <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
-        <CollecticonChevronDownSmall />
+        <USWDSIcon.ExpandMore />
       </OptionValueDisplay>
 
       <PresetSelect
@@ -206,29 +197,24 @@ export default function PresetSelector({
       </PresetSelect>
       {selectedPreset && !isLoading && (
         <CancelButton
-          fitting='skinny'
+          type='button'
+          unstyled
           onClick={() => {
             resetPreset();
           }}
         >
-          <CollecticonDiscXmark
-            meaningful
-            width='12px'
-            height='12px'
-            title='Clear preset'
-          />
+          <USWDSIcon.Close size={3} role='img' aria-label='Clear preset' />
         </CancelButton>
       )}
       {isLoading && (
         <LoadingWrapper>
-          <AnimatingCollecticonArrowSpinCcw
-            meaningful
-            width='12px'
-            height='12px'
-            title='Loading'
+          <AnimatingUSWDSIconAutorenew
+            size={3}
+            role='img'
+            aria-label='Loading'
           />
         </LoadingWrapper>
       )}
-    </SelectorWrapper>
+    </div>
   );
 }

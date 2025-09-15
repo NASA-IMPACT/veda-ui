@@ -1,8 +1,13 @@
 import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import PresetSelector, { PresetOption } from './preset-selector';
 import { useVedaUI } from '$context/veda-ui-provider';
 
+const PresetSelectorContainerDiv = styled.div`
+  max-width: 200px;
+  height: 25px;
+`;
 export interface PresetSelectorContainerProps {
   selectedState: PresetOption | null;
   setSelectedState: (state: PresetOption | null) => void;
@@ -99,12 +104,14 @@ export default function PresetSelectorContainer({
   }, [geoDataPath]);
 
   return (
-    <PresetSelector
-      selectedPreset={selectedState}
-      setSelectedPreset={setSelectedState}
-      resetPreset={resetPreset}
-      presets={presets}
-      onConfirm={onConfirm}
-    />
+    <PresetSelectorContainerDiv>
+      <PresetSelector
+        selectedPreset={selectedState}
+        setSelectedPreset={setSelectedState}
+        resetPreset={resetPreset}
+        presets={presets}
+        onConfirm={onConfirm}
+      />
+    </PresetSelectorContainerDiv>
   );
 }
