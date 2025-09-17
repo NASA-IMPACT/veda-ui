@@ -4,10 +4,6 @@ import { Feature, Polygon } from 'geojson';
 import PresetSelector, { PresetOption } from './preset-selector';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-const PresetSelectorContainerDiv = styled.div`
-  max-width: 200px;
-  height: 25px;
-`;
 export interface PresetSelectorContainerProps {
   selectedState: PresetOption | null;
   setSelectedState: (state: PresetOption | null) => void;
@@ -104,7 +100,7 @@ export default function PresetSelectorContainer({
   }, [geoDataPath]);
 
   return (
-    <PresetSelectorContainerDiv>
+    <div className='maxw-card-lg height-3'>
       <PresetSelector
         selectedPreset={selectedState}
         setSelectedPreset={setSelectedState}
@@ -112,6 +108,6 @@ export default function PresetSelectorContainer({
         presets={presets}
         onConfirm={onConfirm}
       />
-    </PresetSelectorContainerDiv>
+    </div>
   );
 }
