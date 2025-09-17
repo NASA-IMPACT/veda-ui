@@ -220,36 +220,26 @@ export const PresetSelectorSelect = ({
 };
 
 export const PresetSelectorClearButton = ({
-  selectedPreset,
-  resetPreset,
-  isLoading
+  resetPreset
 }: {
-  selectedPreset: PresetOption | null;
   resetPreset: () => void;
-  isLoading: boolean;
-}) =>
-  selectedPreset && !isLoading ? (
-    <CancelButton
-      type='button'
-      unstyled
-      onClick={() => {
-        resetPreset();
-      }}
-    >
-      <USWDSIcon.Close size={3} role='img' aria-label='Clear preset' />
-    </CancelButton>
-  ) : null;
+}) => (
+  <CancelButton
+    type='button'
+    unstyled
+    onClick={() => {
+      resetPreset();
+    }}
+  >
+    <USWDSIcon.Close role='img' aria-label='Clear preset' />
+  </CancelButton>
+);
 
-export const PresetSelectorLoadingIndicator = ({
-  isLoading
-}: {
-  isLoading: boolean;
-}) =>
-  isLoading ? (
-    <LoadingWrapper>
-      <AnimatingUSWDSIconAutorenew size={3} role='img' aria-label='Loading' />
-    </LoadingWrapper>
-  ) : null;
+export const PresetSelectorLoadingIndicator = () => (
+  <LoadingWrapper>
+    <AnimatingUSWDSIconAutorenew role='img' aria-label='Loading' />
+  </LoadingWrapper>
+);
 
 // Composed default component
 const PresetSelectorComponent = ({
@@ -283,12 +273,10 @@ const PresetSelectorComponent = ({
         presets={presets}
         placeholderText={placeholderText}
       />
-      <PresetSelectorClearButton
-        selectedPreset={selectedPreset}
-        resetPreset={resetPreset}
-        isLoading={isLoading}
-      />
-      <PresetSelectorLoadingIndicator isLoading={isLoading} />
+      {selectedPreset && !isLoading && (
+        <PresetSelectorClearButton resetPreset={resetPreset} />
+      )}
+      {isLoading && <PresetSelectorLoadingIndicator />}
     </PresetSelectorRoot>
   );
 };
