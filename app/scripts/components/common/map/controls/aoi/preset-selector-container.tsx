@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { Feature, Polygon } from 'geojson';
 import PresetSelector, { PresetOption } from './preset-selector';
 import { useVedaUI } from '$context/veda-ui-provider';
@@ -95,16 +96,18 @@ export default function PresetSelectorContainer({
       }
     ];
 
-    return [...statePresets, ...countryPresets];
+    return [...countryPresets, ...statePresets];
   }, [geoDataPath]);
 
   return (
-    <PresetSelector
-      selectedPreset={selectedState}
-      setSelectedPreset={setSelectedState}
-      resetPreset={resetPreset}
-      presets={presets}
-      onConfirm={onConfirm}
-    />
+    <div className='maxw-card-lg height-3'>
+      <PresetSelector
+        selectedPreset={selectedState}
+        setSelectedPreset={setSelectedState}
+        resetPreset={resetPreset}
+        presets={presets}
+        onConfirm={onConfirm}
+      />
+    </div>
   );
 }

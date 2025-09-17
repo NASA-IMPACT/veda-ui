@@ -1,54 +1,45 @@
 import React, { useEffect } from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import { Feature, Polygon } from 'geojson';
-import { Button } from '@devseed-ui/button';
-import {
-  CollecticonChevronDownSmall,
-  CollecticonDiscXmark,
-  CollecticonArrowSpinCcw
-} from '@devseed-ui/collecticons';
-import { glsp, truncated } from '@devseed-ui/theme-provider';
 import usePresetAOI from '../hooks/use-preset-aoi';
-
-const selectorHeight = '25px';
-
-const SelectorWrapper = styled.div`
-  position: relative;
-`;
+import { USWDSButton, USWDSIcon } from '$uswds';
 
 const PresetSelect = styled.select.attrs({
   'data-testid': 'preset-selector'
 })`
-  max-width: 200px;
-  height: ${selectorHeight};
+  width: 100%;
+  height: 100%;
   color: transparent;
   background: none;
   option {
     color: black;
   }
 `;
-// This div is just to display the value with trucnated texts
+
+// This div is to display the value with trucnated texts
 const OptionValueDisplay = styled.div`
   position: absolute;
   width: 100%;
   height: 100%;
   z-index: 1;
-  padding: ${glsp(0.125)} ${glsp(0.5)};
+  padding: 0.125rem 0.5rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   pointer-events: none;
   span {
     width: 85%;
-    ${truncated()}
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 
 const SelectorSubAction = css`
   position: absolute;
   top: 0;
-  right: ${glsp(1.25)};
-  height: ${selectorHeight};
+  right: 1.25rem;
+  height: 100%;
 `;
 
 const spinAnimation = keyframes`
@@ -60,7 +51,7 @@ const spinAnimation = keyframes`
   }
 `;
 
-const CancelButton = styled(Button)`
+const CancelButton = styled(USWDSButton)`
   ${SelectorSubAction}
 `;
 
@@ -68,10 +59,10 @@ const LoadingWrapper = styled.div`
   ${SelectorSubAction}
   display: flex;
   align-items: center;
-  right: ${glsp(2)};
+  right: 2rem;
 `;
 
-const AnimatingCollecticonArrowSpinCcw = styled(CollecticonArrowSpinCcw)`
+const AnimatingUSWDSIconAutorenew = styled(USWDSIcon.Autorenew)`
   animation: ${spinAnimation} 1s infinite linear;
 `;
 
@@ -135,25 +126,54 @@ export interface PresetSelectorProps {
  * />
  * ```
  */
-export default function PresetSelector({
+interface PresetSelectorRootProps {
+  children: React.ReactNode;
+  className?: string;
+}
+
+// Individual component parts for composition
+// User can choose either to compose their own components or use a default built-in.
+export const PresetSelectorRoot: React.FC<PresetSelectorRootProps> = (
+  props
+) => {
+  return (
+    <div
+      className={`position-relative width-full height-full ${
+        props.className || ''
+      }`}
+      {...props}
+    >
+      {props.children}
+    </div>
+  );
+};
+
+export const PresetSelectorTrigger = ({
+  selectedPreset,
+  placeholderText = 'Analyze an area'
+}: {
+  selectedPreset: PresetOption | null;
+  placeholderText?: string;
+}) => (
+  <OptionValueDisplay>
+    <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
+    <USWDSIcon.ExpandMore />
+  </OptionValueDisplay>
+);
+
+interface PresetSelectorSelectProps {
+  selectedPreset: PresetOption | null;
+  setSelectedPreset: (state: PresetOption | null) => void;
+  presets: PresetOption[];
+  placeholderText?: string;
+}
+
+export const PresetSelectorSelect = ({
   selectedPreset,
   setSelectedPreset,
-  resetPreset,
   presets,
-  onConfirm,
   placeholderText = 'Analyze an area'
-}: PresetSelectorProps) {
-  const { features, isLoading } = usePresetAOI(selectedPreset?.path);
-
-  useEffect(() => {
-    if (features?.length && onConfirm) onConfirm(features);
-
-    // Excluding onConfirm from the dependencies array to prevent an infinite loop:
-    // onConfirm depends on the Map instance, and invoking it modifies the Map,
-    // which can re-trigger this effect if included as a dependency.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [features]);
-
+}: PresetSelectorSelectProps) => {
   const groupedPresets = presets.reduce((acc, preset) => {
     const group = preset.group || 'default';
     if (!acc[group]) acc[group] = [];
@@ -165,70 +185,109 @@ export default function PresetSelector({
   const showGroups = groups.length > 1;
 
   return (
-    <SelectorWrapper>
-      <OptionValueDisplay>
-        <span>{selectedPreset ? selectedPreset.label : placeholderText} </span>
-        <CollecticonChevronDownSmall />
-      </OptionValueDisplay>
-
-      <PresetSelect
-        id='preset-selector'
-        name='Select a new area of interest'
-        value={selectedPreset?.value || ''}
-        onChange={(e) => {
-          const selectedPreset = presets.find(
-            (p) => p.value === e.target.value
-          );
-          setSelectedPreset(selectedPreset || null);
-        }}
-      >
-        <option> {placeholderText} </option>
-        {groups.map((groupName) => {
-          const groupPresets = groupedPresets[groupName];
-          return (
-            <React.Fragment key={groupName}>
-              {showGroups && groupName !== 'default' && (
-                <optgroup
-                  label={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
-                />
-              )}
-              {groupPresets.map((preset) => (
-                <option
-                  key={`${preset.value}-option-analysis`}
-                  value={preset.value}
-                >
-                  {preset.label}
-                </option>
-              ))}
-            </React.Fragment>
-          );
-        })}
-      </PresetSelect>
-      {selectedPreset && !isLoading && (
-        <CancelButton
-          fitting='skinny'
-          onClick={() => {
-            resetPreset();
-          }}
-        >
-          <CollecticonDiscXmark
-            meaningful
-            width='12px'
-            height='12px'
-            title='Clear preset'
-          />
-        </CancelButton>
-      )}
-      {isLoading && (
-        <LoadingWrapper>
-          <AnimatingCollecticonArrowSpinCcw
-            meaningful
-            width='12px'
-            height='12px'
-            title='Loading'
-          />
-        </LoadingWrapper>
-      )}
-    </SelectorWrapper>
+    <PresetSelect
+      id='preset-selector'
+      name='Select a new area of interest'
+      value={selectedPreset?.value || ''}
+      onChange={(e) => {
+        const selectedPreset = presets.find((p) => p.value === e.target.value);
+        setSelectedPreset(selectedPreset || null);
+      }}
+    >
+      <option> {placeholderText} </option>
+      {groups.map((groupName) => {
+        const groupPresets = groupedPresets[groupName];
+        return (
+          <React.Fragment key={groupName}>
+            {showGroups && groupName !== 'default' && (
+              <optgroup
+                label={groupName.charAt(0).toUpperCase() + groupName.slice(1)}
+              />
+            )}
+            {groupPresets.map((preset) => (
+              <option
+                key={`${preset.value}-option-analysis`}
+                value={preset.value}
+              >
+                {preset.label}
+              </option>
+            ))}
+          </React.Fragment>
+        );
+      })}
+    </PresetSelect>
   );
-}
+};
+
+export const PresetSelectorClearButton = ({
+  resetPreset
+}: {
+  resetPreset: () => void;
+}) => (
+  <CancelButton
+    type='button'
+    unstyled
+    onClick={() => {
+      resetPreset();
+    }}
+  >
+    <USWDSIcon.Close role='img' aria-label='Clear preset' />
+  </CancelButton>
+);
+
+export const PresetSelectorLoadingIndicator = () => (
+  <LoadingWrapper>
+    <AnimatingUSWDSIconAutorenew role='img' aria-label='Loading' />
+  </LoadingWrapper>
+);
+
+// Composed default component
+const PresetSelectorComponent = ({
+  selectedPreset,
+  setSelectedPreset,
+  resetPreset,
+  presets,
+  onConfirm,
+  placeholderText = 'Analyze an area'
+}: PresetSelectorProps) => {
+  const { features, isLoading } = usePresetAOI(selectedPreset?.path);
+
+  useEffect(() => {
+    if (features?.length && onConfirm) onConfirm(features);
+
+    // Excluding onConfirm from the dependencies array to prevent an infinite loop:
+    // onConfirm depends on the Map instance, and invoking it modifies the Map,
+    // which can re-trigger this effect if included as a dependency.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [features]);
+
+  return (
+    <PresetSelectorRoot>
+      <PresetSelectorTrigger
+        selectedPreset={selectedPreset}
+        placeholderText={placeholderText}
+      />
+      <PresetSelectorSelect
+        selectedPreset={selectedPreset}
+        setSelectedPreset={setSelectedPreset}
+        presets={presets}
+        placeholderText={placeholderText}
+      />
+      {selectedPreset && !isLoading && (
+        <PresetSelectorClearButton resetPreset={resetPreset} />
+      )}
+      {isLoading && <PresetSelectorLoadingIndicator />}
+    </PresetSelectorRoot>
+  );
+};
+
+// Create namespace pattern exports
+const PresetSelector = Object.assign(PresetSelectorComponent, {
+  Root: PresetSelectorRoot,
+  Trigger: PresetSelectorTrigger,
+  Select: PresetSelectorSelect,
+  ClearButton: PresetSelectorClearButton,
+  LoadingIndicator: PresetSelectorLoadingIndicator
+});
+
+export default PresetSelector;
