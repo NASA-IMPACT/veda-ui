@@ -224,11 +224,16 @@ export async function requestCMRTimeseriesData({
     }
   });
   try {
+    // for the time series endpoint we let titiler-cmr handle any sel=time logic
+    const sourceParams = datasetData.sourceParams ?? {};
+    const { time, ...selWithoutTime } = sourceParams.sel ?? {};
+
     const paramsRaw = {
       datetime: `${userTzDate2utcString(start)}/${userTzDate2utcString(end)}`,
       step: datasetData.timeInterval,
       // temporal_mode: 'interval',
-      ...datasetData.sourceParams
+      ...sourceParams,
+      sel: selWithoutTime
     };
     const formattedParamString = formatTitilerParameter(paramsRaw);
 
