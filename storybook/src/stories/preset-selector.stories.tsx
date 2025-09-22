@@ -197,7 +197,7 @@ const CustomComposedPresetSelector: React.FC<{
             ✕
           </div>
         )}
-        <PresetSelector.LoadingIndicator isLoading={isLoading} />
+        {isLoading && <PresetSelector.LoadingIndicator />}
       </PresetSelector.Root>
 
       <div className='width-full' style={{ marginTop: '16px' }}>
@@ -304,9 +304,7 @@ const IndividualPartsShowcase: React.FC = () => {
             }}
           >
             <PresetSelector.ClearButton
-              selectedPreset={statesAndCountriesPresets[0]}
               resetPreset={() => setSelectedPreset(null)}
-              isLoading={false}
             />
           </div>
           <div
@@ -317,7 +315,7 @@ const IndividualPartsShowcase: React.FC = () => {
               border: '1px dashed #ccc'
             }}
           >
-            <PresetSelector.LoadingIndicator isLoading={true} />
+            <PresetSelector.LoadingIndicator />
           </div>
         </div>
       </div>
@@ -428,12 +426,10 @@ const NamespacePatternExample: React.FC = () => {
             presets={statesAndCountriesPresets.slice(0, 4)}
             placeholderText='Select with namespace pattern'
           />
-          <PresetSelector.ClearButton
-            selectedPreset={selectedPreset}
-            resetPreset={resetPreset}
-            isLoading={isLoading}
-          />
-          <PresetSelector.LoadingIndicator isLoading={isLoading} />
+          {selectedFeatures && (
+            <PresetSelector.ClearButton resetPreset={resetPreset} />
+          )}
+          <PresetSelector.LoadingIndicator />
         </PresetSelector.Root>
       </div>
 
