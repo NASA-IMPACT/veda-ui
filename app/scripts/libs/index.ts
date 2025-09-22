@@ -72,7 +72,10 @@ export {
   ColormapSection as VEDALayerColormap,
   LayerMenuOptions as VEDALayerMenuOptions,
   DatasetLayerCard as VEDADatasetLayerCard,
-  TimelineSingle as VEDADatasetTimeline
+  TimelineSingle as VEDADatasetTimeline,
+  VEDABasemap,
+  VEDAMap,
+  VEDAMapControls
 } from './components';
 
 export { PageHero, LegacyGlobalStyles };
