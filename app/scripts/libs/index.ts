@@ -77,7 +77,8 @@ export {
   VEDAMap,
   VEDAMapControls,
   VEDALayer,
-  VEDACompare
+  VEDACompare,
+  VEDAPresetSelectorAoi
 } from './components';
 
 export { PageHero, LegacyGlobalStyles };

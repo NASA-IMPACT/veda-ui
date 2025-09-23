@@ -9,3 +9,4 @@ export {
   MapControls as VEDAMapControls
 } from '$components/common/map';
 export { Layer as VEDALayer } from '$components/exploration/components/map/layer';
+export { default as VEDAPresetSelectorAoi } from '$components/common/map/controls/aoi/preset-selector';
