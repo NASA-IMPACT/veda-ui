@@ -5,6 +5,7 @@ export { default as TimelineSingle } from '$components/exploration/components/ti
 export { Basemap as VEDABasemap } from '$components/common/map/style-generators/basemap';
 export {
   default as VEDAMap,
-  Compare,
+  Compare as VEDACompare,
   MapControls as VEDAMapControls
 } from '$components/common/map';
+export { Layer as VEDALayer } from '$components/exploration/components/map/layer';

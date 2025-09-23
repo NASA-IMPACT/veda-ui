@@ -75,7 +75,9 @@ export {
   TimelineSingle as VEDADatasetTimeline,
   VEDABasemap,
   VEDAMap,
-  VEDAMapControls
+  VEDAMapControls,
+  VEDALayer,
+  VEDACompare
 } from './components';
 
 export { PageHero, LegacyGlobalStyles };
