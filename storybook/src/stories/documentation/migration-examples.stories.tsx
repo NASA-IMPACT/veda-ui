@@ -4,6 +4,8 @@ import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 import { TimelineZoomControls } from '$components/exploration/components/timeline/timeline-zoom-controls';
 import { TimelineZoomControlsDeprecated } from '$components/exploration/components/timeline/timeline-zoom-controls.deprecated';
+import EmptyHub from '$components/common/empty-hub';
+import EmptyHubDeprecated from '$components/common/empty-hub.deprecated';
 
 // Styled Components
 const Container = styled.div`
@@ -191,6 +193,8 @@ const ZoomControlsPair = createComponentPair(
   TimelineZoomControls
 );
 
+const EmptyHubPair = createComponentPair(EmptyHubDeprecated, EmptyHub);
+
 // Migration examples data
 interface MigrationExampleData {
   title: string;
@@ -212,6 +216,19 @@ const MIGRATION_EXAMPLES: MigrationExampleData[] = [
       'Icons: CollecticonMagnifierPlus, CollecticonMagnifierMinus (from timeline-zoom-controls.deprecated.tsx)',
     migratedIcons:
       'Icons: Icon.ZoomIn, Icon.ZoomOut (from timeline-zoom-controls.tsx)'
+  },
+  {
+    title: 'Empty Hub Migration',
+    description:
+      'Migration of empty state component with document icon. Demonstrates simple icon replacement and theme integration.',
+    legacyComponent: (
+      <EmptyHubPair.Legacy>No content available</EmptyHubPair.Legacy>
+    ),
+    migratedComponent: (
+      <EmptyHubPair.Migrated>No content available</EmptyHubPair.Migrated>
+    ),
+    legacyIcons: 'Icons: CollecticonPage (from empty-hub.deprecated.tsx)',
+    migratedIcons: 'Icons: Icon.ContactPage (from empty-hub.tsx)'
   }
   // Add more examples here as needed
 ];
