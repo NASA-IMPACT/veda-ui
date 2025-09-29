@@ -78,7 +78,7 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
         onClick={handleZoomOut}
         visuallyDisabled={currentZoom <= 0}
       >
-        <Icon.ZoomOut size={3} />
+        <Icon.ZoomOut size={3} role='img' aria-label='Zoom out timeline' />
       </TipButton>
       <SliderInput
         min={0}
@@ -99,7 +99,7 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
         onClick={handleZoomIn}
         visuallyDisabled={currentZoom >= 100}
       >
-        <Icon.ZoomIn size={3} />
+        <Icon.ZoomIn size={3} role='img' aria-label='Zoom in timeline' />
       </TipButton>
     </TimelineControlsSelf>
   );
