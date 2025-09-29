@@ -12,11 +12,11 @@ import styled, { css } from 'styled-components';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import scrollama from 'scrollama';
 import { CSSTransition, SwitchTransition } from 'react-transition-group';
-import { CollecticonCircleXmark } from '@devseed-ui/collecticons';
 
 import { MapRef } from 'react-map-gl';
 import { BlockErrorBoundary } from '..';
 import { ChapterProps, ScrollyChapter, validateChapter } from './chapter';
+import MapErrorMessage from './map-error-message';
 import { ProjectionOptions, VedaData } from '$types/veda';
 import { projectionDefault } from '$components/common/map/controls/map-options/projections';
 import { userTzDate2utcString, utcString2userTzDate } from '$utils/date';
@@ -358,9 +358,7 @@ function Scrollytelling(props) {
     activeChapterLayerData ?? {};
 
   return (
-
     <div>
-
       <ScrollyMapContainer topOffset={topOffset || 0}>
         {areLayersLoading && <MapLoading />}
 
@@ -368,14 +366,10 @@ function Scrollytelling(props) {
           Map overlay element
           Map message for loading error
         */}
-        <MapMessage
+        <MapErrorMessage
           id='scrolly-map-message'
           active={didFailLayerLoading}
-          isInvalid
-        >
-          <CollecticonCircleXmark /> There was a problem loading the map data.
-          Refresh the page and try again.
-        </MapMessage>
+        />
 
         {/*
           Map overlay element
