@@ -12,7 +12,7 @@ function EmptyHub(props: { children: ReactNode }) {
 
   return (
     <div {...rest}>
-      <Icon.ContactPage size={6} color={theme.color!['base-400']} />
+      <Icon.ContactPage size={7} color={theme.color?.['base-400']} />
       {children}
     </div>
   );
