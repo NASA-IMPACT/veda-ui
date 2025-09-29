@@ -1,12 +1,9 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
-import { Icon } from '@trussworks/react-uswds';
 import styled from 'styled-components';
-import {
-  CollecticonMagnifierMinus,
-  CollecticonMagnifierPlus
-} from '$components/common/icons-legacy';
-import { TipButton } from '$components/common/tip-button';
+import { ThemeProvider } from 'styled-components';
+import { TimelineZoomControls } from '$components/exploration/components/timeline/timeline-zoom-controls';
+import { TimelineZoomControlsDeprecated } from '$components/exploration/components/timeline/timeline-zoom-controls.deprecated';
 
 // Styled Components
 const Container = styled.div`
@@ -95,19 +92,48 @@ const PlaceholderCode = styled.div`
   display: inline-block;
 `;
 
-const ZoomControlsContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-
-const RangeSlider = styled.input`
-  width: 100px;
-`;
-
 const SectionWrapper = styled.div`
   margin-bottom: 48px;
 `;
+
+// Mock providers for components
+const mockTheme = {
+  color: {
+    'base-400': '#6b7280',
+    'base-300': '#d1d5db'
+  }
+};
+
+/**
+ * Generic higher-order component that wraps components with mock providers
+ * needed for Storybook rendering (ThemeProvider, etc.)
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const withMockProviders = <T extends Record<string, any>>(
+  Component: React.ComponentType<T>
+) => {
+  const WrappedComponent = (props: T) => (
+    <ThemeProvider theme={mockTheme}>
+      <Component {...props} />
+    </ThemeProvider>
+  );
+  WrappedComponent.displayName = `withMockProviders(${
+    Component.displayName || Component.name
+  })`;
+  return WrappedComponent;
+};
+
+/**
+ * Helper function to create component comparison pairs for migration examples
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const createComponentPair = <T extends Record<string, any>>(
+  LegacyComponent: React.ComponentType<T>,
+  MigratedComponent: React.ComponentType<T>
+) => ({
+  Legacy: withMockProviders(LegacyComponent),
+  Migrated: withMockProviders(MigratedComponent)
+});
 
 // Reusable Components
 interface InfoSectionProps {
@@ -159,54 +185,59 @@ const ComparisonExample: React.FC<ComparisonExampleProps> = ({
   </SectionWrapper>
 );
 
-// Example components for migration demo
-const LegacyZoomControls: React.FC = () => (
-  <ZoomControlsContainer>
-    <TipButton
-      tipContent='Zoom out'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom out */
-      }}
-    >
-      <CollecticonMagnifierMinus meaningful title='Zoom out' />
-    </TipButton>
-    <RangeSlider type='range' min='0' max='100' defaultValue='50' />
-    <TipButton
-      tipContent='Zoom in'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom in */
-      }}
-    >
-      <CollecticonMagnifierPlus meaningful title='Zoom in' />
-    </TipButton>
-  </ZoomControlsContainer>
+// Component pairs for migration demo
+const ZoomControlsPair = createComponentPair(
+  TimelineZoomControlsDeprecated,
+  TimelineZoomControls
 );
 
-const MigratedZoomControls: React.FC = () => (
-  <ZoomControlsContainer>
-    <TipButton
-      tipContent='Zoom out'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom out */
-      }}
-    >
-      <Icon.ZoomOut size={3} />
-    </TipButton>
-    <RangeSlider type='range' min='0' max='100' defaultValue='50' />
-    <TipButton
-      tipContent='Zoom in'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom in */
-      }}
-    >
-      <Icon.ZoomIn size={3} />
-    </TipButton>
-  </ZoomControlsContainer>
-);
+// Migration examples data
+interface MigrationExampleData {
+  title: string;
+  description: string;
+  legacyComponent: React.ReactNode;
+  migratedComponent: React.ReactNode;
+  legacyIcons: string;
+  migratedIcons: string;
+}
+
+const MIGRATION_EXAMPLES: MigrationExampleData[] = [
+  {
+    title: 'Zoom Controls Migration',
+    description:
+      'Migration of interactive zoom controls with range slider and action buttons. Demonstrates proper icon sizing and button integration.',
+    legacyComponent: <ZoomControlsPair.Legacy onZoom={() => {}} />,
+    migratedComponent: <ZoomControlsPair.Migrated onZoom={() => {}} />,
+    legacyIcons:
+      'Icons: CollecticonMagnifierPlus, CollecticonMagnifierMinus (from timeline-zoom-controls.deprecated.tsx)',
+    migratedIcons:
+      'Icons: Icon.ZoomIn, Icon.ZoomOut (from timeline-zoom-controls.tsx)'
+  }
+  // Add more examples here as needed
+];
+
+// Constants
+const MIGRATION_STEPS = [
+  'Copy your existing component and create a migrated version',
+  'Replace collecticons with USWDS icons using the Icon Reference table',
+  'Add both versions to the comparison grid below',
+  'Test functionality and visual consistency',
+  'Create PR with both versions for team review'
+];
+
+const PLACEHOLDER_CONTENT = {
+  title: '📝 Your Component Comparison',
+  subtitle:
+    'Copy the grid structure above and replace this placeholder with your before/after components',
+  code: '<YourLegacyComponent /> → <YourMigratedComponent />'
+};
+
+// Example: To add a new component comparison, use:
+// const ButtonGroupPair = createComponentPair(
+//   ButtonGroupDeprecated,
+//   ButtonGroup
+// );
+// Then use <ButtonGroupPair.Legacy {...props} /> and <ButtonGroupPair.Migrated {...props} />
 
 // Migration Examples Component
 const MigrationExamplesComponent: React.FC = () => {
@@ -222,24 +253,23 @@ const MigrationExamplesComponent: React.FC = () => {
 
       <InfoSection title='🔧 How to Use This Section'>
         <ol>
-          <li>Copy your existing component and create a migrated version</li>
-          <li>
-            Replace collecticons with USWDS icons using the Icon Reference table
-          </li>
-          <li>Add both versions to the comparison grid below</li>
-          <li>Test functionality and visual consistency</li>
-          <li>Create PR with both versions for team review</li>
+          {MIGRATION_STEPS.map((step) => (
+            <li key={step}>{step}</li>
+          ))}
         </ol>
       </InfoSection>
 
-      <ComparisonExample
-        title='Zoom Controls Migration'
-        description='Migration of interactive zoom controls with range slider and action buttons. Demonstrates proper icon sizing and button integration.'
-        legacyComponent={<LegacyZoomControls />}
-        migratedComponent={<MigratedZoomControls />}
-        legacyIcons='Icons: CollecticonMagnifierPlus, CollecticonMagnifierMinus'
-        migratedIcons='Icons: Icon.ZoomIn, Icon.ZoomOut'
-      />
+      {MIGRATION_EXAMPLES.map((example) => (
+        <ComparisonExample
+          key={example.title}
+          title={example.title}
+          description={example.description}
+          legacyComponent={example.legacyComponent}
+          migratedComponent={example.migratedComponent}
+          legacyIcons={example.legacyIcons}
+          migratedIcons={example.migratedIcons}
+        />
+      ))}
 
       {/* Add Your Component Section */}
       <SectionWrapper>
@@ -250,14 +280,11 @@ const MigrationExamplesComponent: React.FC = () => {
         </p>
 
         <PlaceholderBox>
-          <PlaceholderTitle>📝 Your Component Comparison</PlaceholderTitle>
+          <PlaceholderTitle>{PLACEHOLDER_CONTENT.title}</PlaceholderTitle>
           <PlaceholderSubtitle>
-            Copy the grid structure above and replace this placeholder with your
-            before/after components
+            {PLACEHOLDER_CONTENT.subtitle}
           </PlaceholderSubtitle>
-          <PlaceholderCode>
-            &lt;YourLegacyComponent /&gt; → &lt;YourMigratedComponent /&gt;
-          </PlaceholderCode>
+          <PlaceholderCode>{PLACEHOLDER_CONTENT.code}</PlaceholderCode>
         </PlaceholderBox>
       </SectionWrapper>
     </Container>

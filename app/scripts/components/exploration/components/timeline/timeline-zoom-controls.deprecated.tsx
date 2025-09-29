@@ -4,10 +4,10 @@ import styled from 'styled-components';
 import { useAtomValue } from 'jotai';
 import { scaleLog } from 'd3';
 
-import { Icon } from '@trussworks/react-uswds';
-
 import { clamp } from './timeline-utils';
 
+import { CollecticonMagnifierMinus } from '$components/common/icons-legacy/magnifier-minus';
+import { CollecticonMagnifierPlus } from '$components/common/icons-legacy/magnifier-plus';
 import { TipButton } from '$components/common/tip-button';
 import { SliderInput } from '$styles/range-slider';
 import {
@@ -32,7 +32,13 @@ interface TimelineZoomControlsProps {
   onZoom: (zoom: number) => void;
 }
 
-export function TimelineZoomControls(props: TimelineZoomControlsProps) {
+/**
+ * @deprecated This component uses collecticons. Use the main TimelineZoomControls component instead.
+ * This file is kept for migration comparison purposes.
+ */
+export function TimelineZoomControlsDeprecated(
+  props: TimelineZoomControlsProps
+) {
   const { onZoom } = props;
   const { k } = useAtomValue(zoomTransformAtom);
   const { k0, k1 } = useScaleFactors();
@@ -78,7 +84,7 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
         onClick={handleZoomOut}
         visuallyDisabled={currentZoom <= 0}
       >
-        <Icon.ZoomOut size={3} />
+        <CollecticonMagnifierMinus meaningful title='Zoom out timeline' />
       </TipButton>
       <SliderInput
         min={0}
@@ -99,7 +105,7 @@ export function TimelineZoomControls(props: TimelineZoomControlsProps) {
         onClick={handleZoomIn}
         visuallyDisabled={currentZoom >= 100}
       >
-        <Icon.ZoomIn size={3} />
+        <CollecticonMagnifierPlus meaningful title='Zoom in timeline' />
       </TipButton>
     </TimelineControlsSelf>
   );
