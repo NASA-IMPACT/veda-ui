@@ -52,6 +52,7 @@ const ComponentPreview = styled.div<{ variant: 'legacy' | 'migrated' }>`
   border: 1px solid
     ${(props) => (props.variant === 'legacy' ? '#fecaca' : '#bbf7d0')};
   position: relative;
+  min-height: 120px;
 `;
 
 const IconInfo = styled.div<{ variant: 'legacy' | 'migrated' }>`
