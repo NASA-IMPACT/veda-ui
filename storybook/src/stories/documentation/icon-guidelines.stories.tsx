@@ -35,74 +35,12 @@ import {
   CalendarMinusIcon,
   DropIcon
 } from '$components/common/custom-icon';
-import { TipButton } from '$components/common/tip-button';
 
-// Example components for migration demo
-const LegacyZoomControls: React.FC = () => (
-  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-    <TipButton
-      tipContent='Zoom out'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom out */
-      }}
-    >
-      <CollecticonMagnifierMinus meaningful title='Zoom out' />
-    </TipButton>
-    <input
-      type='range'
-      min='0'
-      max='100'
-      defaultValue='50'
-      style={{ width: '100px' }}
-    />
-    <TipButton
-      tipContent='Zoom in'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom in */
-      }}
-    >
-      <CollecticonMagnifierPlus meaningful title='Zoom in' />
-    </TipButton>
-  </div>
-);
-
-const MigratedZoomControls: React.FC = () => (
-  <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-    <TipButton
-      tipContent='Zoom out'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom out */
-      }}
-    >
-      <Icon.ZoomOut size={3} />
-    </TipButton>
-    <input
-      type='range'
-      min='0'
-      max='100'
-      defaultValue='50'
-      style={{ width: '100px' }}
-    />
-    <TipButton
-      tipContent='Zoom in'
-      fitting='skinny'
-      onClick={() => {
-        /* zoom in */
-      }}
-    >
-      <Icon.ZoomIn size={3} />
-    </TipButton>
-  </div>
-);
-
-// Component 1: Migration Guidance
-const MigrationGuidance: React.FC = () => {
+// Icon Guidelines Component
+const IconGuidelines: React.FC = () => {
   return (
     <div style={{ padding: '20px', maxWidth: '800px' }}>
-      <h1>Icons Guide</h1>
+      <h1>Icon Guidelines</h1>
 
       <div
         style={{
@@ -207,7 +145,7 @@ import { DropIcon } from '$components/common/custom-icon';
       <ul>
         <li>
           Create both legacy and migrated versions in the{' '}
-          <strong>Component Examples</strong>
+          <strong>Migration Examples</strong> story
         </li>
         <li>Compare side-by-side for visual consistency</li>
         <li>Create PR with comparison for team review</li>
@@ -297,7 +235,7 @@ import { DropIcon } from '$components/common/custom-icon';
             In the copy, replace collecticons with USWDS icons using the Icon
             Reference
           </li>
-          <li>Add both versions to the Component Examples for comparison</li>
+          <li>Add both versions to the Migration Examples for comparison</li>
           <li>Create PR with both versions side-by-side</li>
           <li>Get visual approval from team</li>
           <li>Replace original component and cleanup</li>
@@ -307,7 +245,7 @@ import { DropIcon } from '$components/common/custom-icon';
   );
 };
 
-// Component 2: Icon Mapping Table
+// Icon Mapping Table Component
 const IconMappingTable: React.FC = () => {
   return (
     <div style={{ padding: '20px' }}>
@@ -720,154 +658,14 @@ const IconMappingTable: React.FC = () => {
   );
 };
 
-// Component 3: Component Sandbox
-const MigrationSandbox: React.FC = () => {
-  return (
-    <div style={{ padding: '20px' }}>
-      <h1>Component Examples</h1>
-      <p>
-        Test components with migrated icons side-by-side before creating PRs.
-        This tool helps ensure visual consistency and proper functionality
-        during the migration process.
-      </p>
-
-      <div
-        style={{
-          border: '1px solid #ccc',
-          padding: '16px',
-          marginBottom: '24px',
-          backgroundColor: '#f9f9f9'
-        }}
-      >
-        <h3>🔧 How to Use This Section</h3>
-        <ol>
-          <li>Copy your existing component and create a migrated version</li>
-          <li>
-            Replace collecticons with USWDS icons using the Icon Reference table
-          </li>
-          <li>Add both versions to the comparison grid below</li>
-          <li>Test functionality and visual consistency</li>
-          <li>Create PR with both versions for team review</li>
-        </ol>
-      </div>
-
-      <h2>Example: Zoom Controls Migration</h2>
-      <p>
-        This example shows the migration of TimelineZoomControls component from
-        exploration/timeline, demonstrating the before/after comparison process.
-      </p>
-
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '24px',
-          margin: '24px 0'
-        }}
-      >
-        <div
-          style={{
-            padding: '20px',
-            border: '2px solid #ef4444',
-            borderRadius: '8px',
-            backgroundColor: '#fef2f2'
-          }}
-        >
-          <h3 style={{ margin: '0 0 16px 0', color: '#991b1b' }}>
-            Before (Legacy)
-          </h3>
-          <div
-            style={{
-              marginBottom: '16px',
-              padding: '16px',
-              backgroundColor: '#ffffff',
-              borderRadius: '4px'
-            }}
-          >
-            <LegacyZoomControls />
-          </div>
-          <div
-            style={{
-              fontSize: '12px',
-              color: '#991b1b',
-              fontFamily: 'monospace'
-            }}
-          >
-            Uses CollecticonMagnifierPlus/Minus
-          </div>
-        </div>
-
-        <div
-          style={{
-            padding: '20px',
-            border: '2px solid #22c55e',
-            borderRadius: '8px',
-            backgroundColor: '#f0fdf4'
-          }}
-        >
-          <h3 style={{ margin: '0 0 16px 0', color: '#166534' }}>
-            After (Migrated)
-          </h3>
-          <div
-            style={{
-              marginBottom: '16px',
-              padding: '16px',
-              backgroundColor: '#ffffff',
-              borderRadius: '4px'
-            }}
-          >
-            <MigratedZoomControls />
-          </div>
-          <div
-            style={{
-              fontSize: '12px',
-              color: '#166534',
-              fontFamily: 'monospace'
-            }}
-          >
-            Uses Icon.ZoomIn/ZoomOut
-          </div>
-        </div>
-      </div>
-
-      <h2>Add Your Component Comparison</h2>
-      <p>
-        Copy the grid structure above to compare your before/after components.
-        Replace the placeholder content with your actual components.
-      </p>
-
-      <div
-        style={{
-          border: '2px dashed #d1d5db',
-          padding: '32px',
-          margin: '24px 0',
-          textAlign: 'center',
-          borderRadius: '8px',
-          backgroundColor: '#f9fafb'
-        }}
-      >
-        <div
-          style={{ color: '#6b7280', fontSize: '16px', marginBottom: '8px' }}
-        >
-          📝 Your Component Comparison
-        </div>
-        <div style={{ color: '#9ca3af', fontSize: '14px' }}>
-          Copy the grid structure above and replace this placeholder with your
-          before/after components
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const meta: Meta = {
-  title: 'Documentation/Icons',
+  title: 'Documentation/Icon Guidelines',
   parameters: {
     docs: {
       description: {
         component:
-          'Guide for using icons in VEDA UI. Currently migrating from @devseed-ui/collecticons to USWDS icons. ' +
-          'Includes migration strategy, comprehensive icon mapping reference, component examples, and best practices.'
+          'Guidelines and reference for using icons in VEDA UI. Includes migration strategy from @devseed-ui/collecticons to USWDS icons, ' +
+          'comprehensive icon mapping reference, and best practices for icon usage.'
       }
     }
   }
@@ -876,13 +674,9 @@ const meta: Meta = {
 export default meta;
 
 export const Guidelines: StoryObj = {
-  render: () => <MigrationGuidance />
+  render: () => <IconGuidelines />
 };
 
 export const IconReference: StoryObj = {
   render: () => <IconMappingTable />
-};
-
-export const ComponentExamples: StoryObj = {
-  render: () => <MigrationSandbox />
 };

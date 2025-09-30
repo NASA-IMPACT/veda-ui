@@ -1,24 +1,28 @@
 import React, { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Icon } from '@trussworks/react-uswds';
+import { CollecticonPage } from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { variableGlsp } from '$styles/variable-utils';
 
-function EmptyHub(props: { children: ReactNode }) {
+/**
+ * @deprecated This component uses collecticons. Use the main EmptyHub component instead.
+ * This file is kept for migration comparison purposes.
+ */
+function EmptyHubDeprecated(props: { children: ReactNode }) {
   const theme = useTheme();
 
   const { children, ...rest } = props;
 
   return (
     <div {...rest}>
-      <Icon.ContactPage size={7} color={theme.color?.['base-400']} />
+      <CollecticonPage size='xxlarge' color={theme.color!['base-400']} />
       {children}
     </div>
   );
 }
 
-export default styled(EmptyHub)`
+export default styled(EmptyHubDeprecated)`
   max-width: 100%;
   grid-column: 1/-1;
   display: flex;
