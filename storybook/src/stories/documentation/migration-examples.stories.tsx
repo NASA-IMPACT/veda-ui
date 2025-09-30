@@ -6,6 +6,8 @@ import { TimelineZoomControls } from '$components/exploration/components/timelin
 import { TimelineZoomControlsDeprecated } from '$components/exploration/components/timeline/timeline-zoom-controls.deprecated';
 import EmptyHub from '$components/common/empty-hub';
 import EmptyHubDeprecated from '$components/common/empty-hub.deprecated';
+import MapErrorMessage from '$components/common/blocks/scrollytelling/map-error-message';
+import MapErrorMessageDeprecated from '$components/common/blocks/scrollytelling/map-error-message.deprecated';
 
 // Styled Components
 const Container = styled.div`
@@ -49,6 +51,8 @@ const ComponentPreview = styled.div<{ variant: 'legacy' | 'migrated' }>`
   border-radius: 8px;
   border: 1px solid
     ${(props) => (props.variant === 'legacy' ? '#fecaca' : '#bbf7d0')};
+  position: relative;
+  min-height: 120px;
 `;
 
 const IconInfo = styled.div<{ variant: 'legacy' | 'migrated' }>`
@@ -194,6 +198,10 @@ const ZoomControlsPair = createComponentPair(
 );
 
 const EmptyHubPair = createComponentPair(EmptyHubDeprecated, EmptyHub);
+const MapErrorMessagePair = createComponentPair(
+  MapErrorMessageDeprecated,
+  MapErrorMessage
+);
 
 // Migration examples data
 interface MigrationExampleData {
@@ -229,6 +237,20 @@ const MIGRATION_EXAMPLES: MigrationExampleData[] = [
     ),
     legacyIcons: 'Icons: CollecticonPage (from empty-hub.deprecated.tsx)',
     migratedIcons: 'Icons: Icon.ContactPage (from empty-hub.tsx)'
+  },
+  {
+    title: 'Map Error Message Migration',
+    description:
+      'Migration of map error message component with error icon. Demonstrates icon replacement in error states.',
+    legacyComponent: (
+      <MapErrorMessagePair.Legacy id='test-error' active={true} />
+    ),
+    migratedComponent: (
+      <MapErrorMessagePair.Migrated id='test-error' active={true} />
+    ),
+    legacyIcons:
+      'Icons: CollecticonCircleXmark (from map-error-message.deprecated.tsx)',
+    migratedIcons: 'Icons: Icon.HighlightOff (from map-error-message.tsx)'
   }
   // Add more examples here as needed
 ];
