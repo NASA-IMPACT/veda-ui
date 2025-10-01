@@ -37,7 +37,7 @@ const BaseMapExample: React.FC = () => {
 };
 
 const meta: Meta<typeof BaseMapExample> = {
-  title: 'Components/BaseMapExample',
+  title: 'Examples/BaseMap',
   component: BaseMapExample,
   parameters: {
     layout: 'fullscreen',

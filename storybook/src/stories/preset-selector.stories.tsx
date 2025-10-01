@@ -88,7 +88,7 @@ const PresetSelectorExample: React.FC<{
 };
 
 const meta: Meta<typeof PresetSelectorExample> = {
-  title: 'Components/Map Controls/PresetSelector',
+  title: 'Library Components/Map Controls/Preset Selector',
   component: PresetSelectorExample,
   parameters: {
     layout: 'centered',

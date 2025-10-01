@@ -34,7 +34,7 @@ const SingleTimelineExample = () => {
 };
 
 const meta: Meta<typeof SingleTimelineExample> = {
-  title: 'Components/SingleTimelineExample',
+  title: 'Library Components/Map Controls/Single Timeline',
   component: SingleTimelineExample,
   parameters: {
     layout: 'fullscreen'
