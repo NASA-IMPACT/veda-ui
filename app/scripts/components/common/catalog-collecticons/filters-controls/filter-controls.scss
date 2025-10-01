@@ -1,0 +1,17 @@
+@use '$styles/veda-ui-theme-vars.scss' as themeVars;
+
+.usa-search [data-testid='searchField'] {
+  flex: 1;
+}
+
+#dataset__search.isVisible {
+  animation: 0.3s ease-in-out slidein-left;
+}
+
+.usa-search .usa-input, .usa-search .usa-button{
+  height: themeVars.$veda-uswds-spacing-5;
+}
+
+.usa-accordion .usa-checkbox__label{
+  font-size: themeVars.$veda-uswds-fontsize-2xs;
+}
