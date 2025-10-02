@@ -37,7 +37,8 @@ const meta: Meta<typeof SingleTimelineExample> = {
   title: 'Library Components/Map Controls/Single Timeline',
   component: SingleTimelineExample,
   parameters: {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
+    withProviders: true
   },
   tags: ['autodocs']
 };

@@ -228,7 +228,8 @@ const meta: Meta<typeof DataLayerCardOptionMenuExample> = {
   title: 'Library Components/Data Layers/Card Options Menu',
   component: DataLayerCardOptionMenuExample,
   parameters: {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
+    withProviders: true
   },
   tags: ['autodocs']
 };
