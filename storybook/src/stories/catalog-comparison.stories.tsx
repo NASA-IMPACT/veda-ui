@@ -1,37 +1,11 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
+import { mockCatalogDatasets } from './mock-catalog-datasets';
 import CatalogView from '$components/common/catalog';
 import CatalogViewCollecticons from '$components/common/catalog-collecticons';
 import { PageMainContent } from '$styles/page';
 import { DatasetData } from '$types/veda';
-
-// Simple mock datasets for comparison
-const mockDatasets: Partial<DatasetData>[] = [
-  {
-    id: 'air-quality',
-    name: 'Air Quality Dataset',
-    description: 'Sample air quality monitoring data for testing filter tags',
-    taxonomy: [
-      {
-        name: 'Topics',
-        values: [{ id: 'air-quality', name: 'Air Quality' }]
-      },
-      { name: 'Source', values: [{ id: 'nasa', name: 'NASA' }] }
-    ],
-    layers: []
-  },
-  {
-    id: 'water-quality',
-    name: 'Water Quality Dataset',
-    description: 'Sample water quality data for testing filter tags',
-    taxonomy: [
-      { name: 'Topics', values: [{ id: 'water', name: 'Water' }] },
-      { name: 'Source', values: [{ id: 'noaa', name: 'NOAA' }] }
-    ],
-    layers: []
-  }
-];
 
 const meta: Meta<typeof CatalogView> = {
   title: 'Library Components/Catalog/Legacy Catalog',
@@ -61,7 +35,7 @@ export const Current: StoryObj<typeof CatalogView> = {
     </PageMainContent>
   ),
   args: {
-    datasets: mockDatasets as DatasetData[],
+    datasets: mockCatalogDatasets as DatasetData[],
     enableUSWDSDataCatalog: false,
     onFilterChanges: () => ({
       search: '',
@@ -80,7 +54,7 @@ export const Deprecated: StoryObj<typeof CatalogViewCollecticons> = {
     </PageMainContent>
   ),
   args: {
-    datasets: mockDatasets as DatasetData[],
+    datasets: mockCatalogDatasets as DatasetData[],
     enableUSWDSDataCatalog: false,
     onFilterChanges: () => ({
       search: '',
