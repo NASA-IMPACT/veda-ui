@@ -2,6 +2,7 @@
 // Replicates configuration from app/scripts/styles/_uswds-theme.scss
 
 @use '@uswds/uswds/scss/uswds' as * with (
+  $theme-image-path: '/node_modules/@uswds/uswds/dist/img',
   $utilities-use-important: true,
   $theme-show-notifications: false,
   $theme-font-weight-semibold: '600',
