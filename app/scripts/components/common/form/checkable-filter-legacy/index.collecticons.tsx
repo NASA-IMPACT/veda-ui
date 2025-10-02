@@ -5,14 +5,18 @@ import {
   FormCheckableGroup,
   FormCheckable
 } from '@devseed-ui/form';
-import { Icon } from '@trussworks/react-uswds';
+import {
+  CollecticonChevronDown,
+  CollecticonChevronUp
+} from '@devseed-ui/collecticons';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 import { CardTitle } from '$components/common/card/styles';
 
 /**
- * @deprecated This component is used only in the legacy catalog (enableUSWDSDataCatalog: false)
+ * @deprecated This is a baseline version with collecticons for comparison purposes.
+ * This component is used only in the legacy catalog (enableUSWDSDataCatalog: false)
  * and will be removed in v7.0.0. Use the modern catalog filter components instead.
  */
 
@@ -171,7 +175,7 @@ export default function CheckableFiltersLegacy(props: CheckableFiltersProps) {
         </div>
         <Toggle size='small'>
           <ToggleIconButton active={show}>
-            {show ? <Icon.ExpandLess size={4} /> : <Icon.ExpandMore size={4} />}
+            {show ? <CollecticonChevronUp /> : <CollecticonChevronDown />}
           </ToggleIconButton>
         </Toggle>
       </FilterTitle>
