@@ -18,7 +18,11 @@ const preview: Preview = {
               envApiStacEndpoint: import.meta.env.API_STAC_ENDPOINT ?? '',
               envApiRasterEndpoint: import.meta.env.API_RASTER_ENDPOINT ?? '',
               envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? '',
-              geoDataPath: `${import.meta.env.PUBLIC_URL ?? ''}/public/geo-data`
+              geoDataPath: `${import.meta.env.PUBLIC_URL ?? ''}/public/geo-data`,
+              routes: {
+                dataCatalogPath: '/data-catalog',
+                storiesCatalogPath: '/stories'
+              }
             }}
           >
             <DevseedUiThemeProvider>
