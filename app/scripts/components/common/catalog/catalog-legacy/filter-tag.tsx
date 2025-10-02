@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonXmarkSmall } from '$components/common/icons-legacy';
+import { Icon } from '@trussworks/react-uswds';
 import { variableBaseType } from '$styles/variable-utils';
 import { OptionItem } from '$components/common/form/checkable-filter';
 // @DEPRECATED: This component is deprecated and will be removed in the future.
@@ -45,7 +45,7 @@ export default function FilterTagLegacy(props: FilterTagProps) {
     <Tag>
       {item.name}
       <button type='button' onClick={handleClick}>
-        <CollecticonXmarkSmall />
+        <Icon.Close />
       </button>
     </Tag>
   );
