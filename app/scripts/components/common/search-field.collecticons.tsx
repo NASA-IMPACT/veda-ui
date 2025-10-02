@@ -6,8 +6,16 @@ import {
   formSkinStylesProps
 } from '@devseed-ui/form';
 import { Button } from '@devseed-ui/button';
-import { Icon } from '@trussworks/react-uswds';
+import {
+  CollecticonDiscXmark,
+  CollecticonMagnifierLeft
+} from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
+
+/**
+ * @deprecated This is a baseline version with collecticons for comparison purposes.
+ * Use search-field.tsx which uses USWDS icons instead.
+ */
 
 const SearchFieldWrapper = styled.div`
   display: flex;
@@ -114,13 +122,12 @@ function SearchField(props: SearchFieldProps) {
         <Button
           size={size}
           fitting='skinny'
-          title='Open search'
           onClick={() => {
             fieldRef.current?.focus();
             setFocused(true);
           }}
         >
-          <Icon.Search size={3} role='img' aria-label='Open search' />
+          <CollecticonMagnifierLeft meaningful title='Open search' />
         </Button>
         <SearchFieldClearable isOpen={isOpen}>
           <FormInputSearch
@@ -141,12 +148,11 @@ function SearchField(props: SearchFieldProps) {
             <Button
               size={size}
               fitting='skinny'
-              title='Clear search'
               onClick={() => {
                 onChange('');
               }}
             >
-              <Icon.Close size={3} role='img' aria-label='Clear search' />
+              <CollecticonDiscXmark meaningful title='Clear search' />
             </Button>
           )}
         </SearchFieldClearable>
