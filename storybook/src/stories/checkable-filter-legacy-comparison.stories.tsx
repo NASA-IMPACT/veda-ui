@@ -6,7 +6,7 @@ import CheckableFiltersLegacyCollecticons from '$components/common/form/checkabl
 import { OptionItem } from '$components/common/form/checkable-filter';
 
 const meta: Meta<typeof CheckableFiltersLegacy> = {
-  title: 'Library Components/Filters/Checkable Filter Legacy',
+  title: 'Library Components/Catalog/Components/Checkable Filter Legacy',
   component: CheckableFiltersLegacy,
   parameters: {
     layout: 'centered',

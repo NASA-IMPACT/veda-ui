@@ -5,7 +5,7 @@ import SearchField from '$components/common/search-field';
 import SearchFieldCollecticons from '$components/common/search-field.collecticons';
 
 const meta: Meta<typeof SearchField> = {
-  title: 'Library Components/Search/Search Field',
+  title: 'Library Components/Catalog/Components/Search Field',
   component: SearchField,
   parameters: {
     layout: 'centered',
