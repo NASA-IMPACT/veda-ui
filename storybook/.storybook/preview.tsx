@@ -4,8 +4,8 @@ import { VedaUIProvider } from '$context/veda-ui-provider';
 import DevseedUiThemeProvider from '$context/theme-provider';
 import ReactQueryProvider from '$context/react-query';
 
-// Import USWDS core styles globally for all stories
-import '@uswds/uswds/css/uswds.css';
+// Import USWDS compiled from SCSS with custom theme configuration
+import '../src/styles/uswds.scss';
 
 const preview: Preview = {
   decorators: [

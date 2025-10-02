@@ -290,7 +290,7 @@ export default function CatalogContent({
   const totalPages = Math.ceil(datasetsToDisplay.length / itemsPerPage);
 
   return (
-    <div className=' margin-bottom-15 grid-row grip-gap-sm '>
+    <div className='margin-bottom-15 grid-row grid-gap-sm'>
       <div className='tablet:grid-col-3'>
         <FiltersControl
           search={search}

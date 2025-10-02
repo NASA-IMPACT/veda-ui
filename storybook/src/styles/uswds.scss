@@ -1,0 +1,49 @@
+// Storybook USWDS compilation with same theme config as main app
+// Replicates configuration from app/scripts/styles/_uswds-theme.scss
+
+@use '@uswds/uswds/scss/uswds' as * with (
+  $utilities-use-important: true,
+  $theme-show-notifications: false,
+  $theme-font-weight-semibold: '600',
+  $theme-typeface-tokens: (
+    baseFontFamily: (
+      'display-name': var(--base-font-family),
+      'cap-height': 364px
+    )
+  ),
+  $theme-type-scale-md: 8,
+  $theme-utility-breakpoints: (
+    'mobile-lg': true,
+    'desktop': true
+  ),
+  $theme-font-type-serif: 'public-sans',
+  $theme-font-type-sans: 'public-sans',
+  $theme-color-base-darkest: 'gray-cool-80',
+  $theme-color-base-ink: 'gray-cool-90',
+  $theme-color-primary-vivid: 'blue-40v',
+  $theme-color-base-lightest: 'gray-cool-4',
+  $overflow-settings: (
+    responsive: true
+  ),
+  $position-settings: (
+    responsive: true
+  ),
+  $top-settings: (
+    responsive: true
+  ),
+  $right-settings: (
+    responsive: true
+  ),
+  $left-settings: (
+    responsive: true
+  ),
+  $bottom-settings: (
+    responsive: true
+  ),
+  $z-index-settings: (
+    responsive: true
+  ),
+  $background-color-settings: (
+    responsive: true
+  )
+);
