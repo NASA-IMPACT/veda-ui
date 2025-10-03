@@ -4,8 +4,8 @@ import { VedaUIProvider } from '$context/veda-ui-provider';
 import DevseedUiThemeProvider from '$context/theme-provider';
 import ReactQueryProvider from '$context/react-query';
 
-// Import USWDS core styles globally for all stories
-import '@uswds/uswds/css/uswds.css';
+// Import USWDS compiled from SCSS with custom theme configuration
+import '../src/styles/uswds.scss';
 
 const preview: Preview = {
   decorators: [
@@ -18,7 +18,11 @@ const preview: Preview = {
               envApiStacEndpoint: import.meta.env.API_STAC_ENDPOINT ?? '',
               envApiRasterEndpoint: import.meta.env.API_RASTER_ENDPOINT ?? '',
               envApiCMREndpoint: import.meta.env.API_CMR_ENDPOINT ?? '',
-              geoDataPath: `${import.meta.env.PUBLIC_URL ?? ''}/public/geo-data`
+              geoDataPath: `${import.meta.env.PUBLIC_URL ?? ''}/public/geo-data`,
+              routes: {
+                dataCatalogPath: '/data-catalog',
+                storiesCatalogPath: '/stories'
+              }
             }}
           >
             <DevseedUiThemeProvider>
@@ -37,6 +41,16 @@ const preview: Preview = {
       matchers: {
         color: /(background|color)$/i,
         date: /Date$/i
+      }
+    },
+    options: {
+      storySort: {
+        order: [
+          'Getting Started',
+          'Library Components',
+          'Examples',
+          'Guidelines'
+        ]
       }
     }
   }

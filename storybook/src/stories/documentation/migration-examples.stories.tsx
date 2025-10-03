@@ -331,7 +331,7 @@ const MigrationExamplesComponent: React.FC = () => {
 };
 
 const meta: Meta = {
-  title: 'Documentation/Migration Examples',
+  title: 'Guidelines/Migration Examples',
   parameters: {
     docs: {
       description: {

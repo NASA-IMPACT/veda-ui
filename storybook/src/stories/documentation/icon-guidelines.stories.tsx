@@ -659,7 +659,7 @@ const IconMappingTable: React.FC = () => {
 };
 
 const meta: Meta = {
-  title: 'Documentation/Icon Guidelines',
+  title: 'Guidelines/Icon Guidelines',
   parameters: {
     docs: {
       description: {
