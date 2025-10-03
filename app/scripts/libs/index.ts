@@ -1,4 +1,5 @@
 import { PageHero } from '$components/common/page-hero';
+import { ExternalLinkFlag } from '$components/common/external-link-flag';
 import { GlobalStyles } from '$styles/legacy-global-styles';
 
 const LegacyGlobalStyles = GlobalStyles;
@@ -81,4 +82,4 @@ export {
   VEDAPresetSelectorAoi
 } from './components';
 
-export { PageHero, LegacyGlobalStyles };
+export { PageHero, LegacyGlobalStyles, ExternalLinkFlag };

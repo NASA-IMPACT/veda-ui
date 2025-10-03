@@ -1,18 +1,13 @@
 import React, { MouseEventHandler } from 'react';
-import {
-  listReset,
-  media,
-  multiply,
-  themeVal
-} from '@devseed-ui/theme-provider';
+import { listReset, media } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
-import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
 import HorizontalInfoCard, { HorizontalInfoCardItem } from './horizontal-info';
 import FlagCard from './uswds-cards/flag-card';
 import { LabelType } from './uswds-cards/types';
+import ExternalLinkFlagNew from '$components/common/external-link-flag';
 import { LinkProperties } from '$types/veda';
 import * as utils from '$utils/utils';
 import { ElementInteractive } from '$components/common/element-interactive';
@@ -253,38 +248,29 @@ export const Card = styled(CardComponent)`
   /* Convert to styled-component: https://styled-components.com/docs/advanced#caveat */
 `;
 
-const ExternalLinkMark = styled.div`
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: ${variableGlsp(0.25)};
-  right: ${variableGlsp(0.25)};
-  padding: ${variableGlsp(0.125)} ${variableGlsp(0.25)};
-  background-color: ${themeVal('color.primary')};
-  color: ${themeVal('color.surface')};
-  text-transform: none;
-  border-radius: calc(
-    ${multiply(themeVal('shape.rounded'), 2)} - ${variableGlsp(0.125)}
-  );
-  z-index: 1;
-`;
-
-const FlagText = styled.div`
-  display: inline;
-  font-weight: bold;
-  font-size: 0.825rem;
-  margin-right: ${variableGlsp(0.25)};
-`;
-
-// @NOTE: ExternalLinkFlag should be broken out but currently GHG instance directly imports this from here
-
+/**
+ * @deprecated This re-export from card/ will be removed in v7.
+ * Import `ExternalLinkFlag` from `@teamimpact/veda-ui` or from
+ * `$components/common/external-link-flag` instead.
+ *
+ * @example
+ * ```tsx
+ * // New (preferred)
+ * import { ExternalLinkFlag } from '@teamimpact/veda-ui';
+ * // Or
+ * import { ExternalLinkFlag } from '$components/common/external-link-flag';
+ * ```
+ */
+let hasWarnedExternalLinkFlag = false;
 export function ExternalLinkFlag() {
-  return (
-    <ExternalLinkMark>
-      <FlagText>External Link</FlagText>
-      <CollecticonExpandTopRight size='small' meaningful={false} />
-    </ExternalLinkMark>
-  );
+  if (process.env.NODE_ENV !== 'production' && !hasWarnedExternalLinkFlag) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '[veda-ui] ExternalLinkFlag import from card/ is deprecated and will be removed in v7. Import from @teamimpact/veda-ui or $components/common/external-link-flag. Migrated to USWDS Icon.Launch; expect a slightly larger icon.'
+    );
+    hasWarnedExternalLinkFlag = true;
+  }
+  return <ExternalLinkFlagNew />;
 }
 
 function CardLinkWrapper({
