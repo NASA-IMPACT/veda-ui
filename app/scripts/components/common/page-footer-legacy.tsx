@@ -11,10 +11,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonBrandGithub,
-  CollecticonEnvelope
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
 import { variableGlsp } from '../../styles/variable-utils';
@@ -136,7 +133,7 @@ function PageFooterLegacy(props: PageFooterLegacyProps) {
               size='small'
               fitting='skinny'
             >
-              <CollecticonEnvelope title='Get in touch' meaningful />
+              <Icon.Mail />
               Manil Maskey
             </Button>
           </dd>
@@ -151,7 +148,7 @@ function PageFooterLegacy(props: PageFooterLegacyProps) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              <CollecticonBrandGithub title='Explore the code' meaningful />
+              <Icon.Github />
               GitHub
             </Button>
           </dd>
