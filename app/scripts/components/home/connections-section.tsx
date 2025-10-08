@@ -6,24 +6,16 @@ import { Heading } from '@devseed-ui/typography';
 import { Icon } from '@trussworks/react-uswds';
 
 import Hug from '$styles/hug';
+import { useDeprecationWarning } from '$utils/deprecation-warning';
 
 /**
  * Legacy Connections section component for the home page.
  *
- * This component provides navigation links and feedback functionality that would
- * normally be handled by the modern USWDS footer. It is conditionally rendered
- * when the USWDS footer is disabled (ENABLE_USWDS_PAGE_FOOTER=false).
+ * @deprecated This component is deprecated and will be removed in version 7.
+ *             See {@link https://github.com/NASA-IMPACT/veda-ui/issues/1889} for details.
  *
- * The content includes:
- * - "Learn more" link to the about page
- * - "Give feedback" link that opens the feedback modal
- *
- * This section was moved behind the ENABLE_USWDS_PAGE_FOOTER feature flag
- * because the new USWDS footer component includes similar navigation and
- * feedback functionality. When the USWDS footer is enabled, this section
- * is hidden to avoid duplication.
- *
- * @see {@link https://github.com/NASA-IMPACT/veda-ui/commit/f838337c4a31f09a1c40ab395911038c56eaf272} - Original commit that moved this behind the feature flag
+ * Provides navigation links and feedback functionality that would normally be handled
+ * by the modern USWDS footer. Hidden when `ENABLE_USWDS_PAGE_FOOTER` is enabled.
  *
  * @param showFeedbackModal - Function to show the feedback modal
  */
@@ -104,6 +96,13 @@ const ConnectionsList = styled.ul`
 export default function ConnectionsSection({
   showFeedbackModal
 }: ConnectionsSectionProps) {
+  useDeprecationWarning({
+    name: 'ConnectionsSection',
+    removalVersion: '7.0.0',
+    issueUrl: 'https://github.com/NASA-IMPACT/veda-ui/issues/1889',
+    alternative: 'Use the modern USWDS footer component instead'
+  });
+
   return (
     <Connections>
       <ConnectionsBlock>
