@@ -1,5 +1,4 @@
 import React from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 import format from 'date-fns/format';
 
@@ -150,7 +149,7 @@ function PageFooterLegacy(props: PageFooterLegacyProps) {
               size='small'
               fitting='skinny'
             >
-              <Icon.Mail />
+              <Icon.Mail aria-hidden='true' />
               Manil Maskey
             </Button>
           </dd>
@@ -165,7 +164,7 @@ function PageFooterLegacy(props: PageFooterLegacyProps) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              <Icon.Github />
+              <Icon.Github aria-hidden='true' />
               GitHub
             </Button>
           </dd>

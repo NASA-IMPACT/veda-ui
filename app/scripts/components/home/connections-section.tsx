@@ -110,7 +110,7 @@ export default function ConnectionsSection({
         <ConnectionsList>
           <li>
             <Link to='/about'>
-              <Icon.ArrowForward /> Learn more
+              <Icon.ArrowForward aria-hidden='true' /> Learn more
             </Link>
           </li>
           <li>
@@ -121,7 +121,7 @@ export default function ConnectionsSection({
                 showFeedbackModal();
               }}
             >
-              <Icon.ArrowForward /> Give feedback
+              <Icon.ArrowForward aria-hidden='true' /> Give feedback
             </a>
           </li>
         </ConnectionsList>
