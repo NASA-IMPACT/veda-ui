@@ -6,7 +6,8 @@ import { ColormapOptions as ColormapOptionsCollecticons } from '$components/comm
 import { colorMapScale } from '$components/exploration/types.d.ts';
 
 const meta: Meta<typeof ColormapOptions> = {
-  title: 'Library Components/Exploration & Analysis/Colormap Options',
+  title:
+    'Library Components/Exploration & Analysis/Dataset Layer Card/Colormap Options',
   component: ColormapOptions,
   parameters: {
     layout: 'centered',
@@ -14,7 +15,7 @@ const meta: Meta<typeof ColormapOptions> = {
     docs: {
       description: {
         component:
-          'Colormap options component with icon comparison. ' +
+          'Colormap options substory of the Dataset Layer Card component with icon comparison. ' +
           'Current uses USWDS icons (Icon.ToggleOn, Icon.ToggleOff) and DropIcon, ' +
           'Baseline uses Collecticons (CollecticonDrop). ' +
           'Test the colormap selection, range slider, and reverse toggle to see the icons in action.'
