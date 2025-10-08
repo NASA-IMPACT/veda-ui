@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import styled from 'styled-components';
-import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import Tippy from '@tippyjs/react';
 import { ColormapOptions } from './colormap-options';
 import { LayerGradientColormapGraphic } from '$components/common/map/layer-legend';
@@ -130,7 +130,7 @@ export function ColormapSection({
               className='display-flex flex-align-center flex-justify bg-base-lightest margin-left-1 padding-05'
               onClick={handleColorMapTriggerClick}
             >
-              <CollecticonChevronDownSmall />
+              <Icon.ExpandMore size={3} />
             </LegendColorMapTrigger>
           </Tippy>
         </div>

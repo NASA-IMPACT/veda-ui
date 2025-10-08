@@ -1,13 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import {
-  CollecticonCircleInformation,
-  CollecticonEyeDisabled,
-  CollecticonEye,
-  CollecticonChevronDown,
-  CollecticonChevronUp
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import { ColormapSection } from './colormap-section';
@@ -166,10 +160,7 @@ export default function DataLayerCard(props: DataLayerCardProps) {
                 onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={onClickLayerInfo}
               >
-                <CollecticonCircleInformation
-                  meaningful
-                  title='View dataset page'
-                />
+                <Icon.Info aria-label='View dataset page' />
               </TipButton>
               <TipButton
                 tipContent={isVisible ? 'Hide layer' : 'Show layer'}
@@ -179,15 +170,9 @@ export default function DataLayerCard(props: DataLayerCardProps) {
                 onClick={() => setVisible((v) => !v)}
               >
                 {isVisible ? (
-                  <CollecticonEye
-                    meaningful
-                    title='Toggle dataset visibility'
-                  />
+                  <Icon.Visibility aria-label='Toggle dataset visibility' />
                 ) : (
-                  <CollecticonEyeDisabled
-                    meaningful
-                    title='Toggle dataset visibility'
-                  />
+                  <Icon.VisibilityOff aria-label='Toggle dataset visibility' />
                 )}
               </TipButton>
               {datasetLegend?.type === 'categorical' && (
@@ -200,9 +185,9 @@ export default function DataLayerCard(props: DataLayerCardProps) {
                   onClick={chevToggleExpanded}
                 >
                   {isChevToggleExpanded ? (
-                    <CollecticonChevronDown title='Expand Legend' meaningful />
+                    <Icon.ExpandMore aria-label='Expand Legend' />
                   ) : (
-                    <CollecticonChevronUp title='Collapse Legend' meaningful />
+                    <Icon.ExpandLess aria-label='Collapse Legend' />
                   )}
                 </TipButton>
               )}
