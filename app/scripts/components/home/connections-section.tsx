@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import { glsp, listReset, media, themeVal } from '@devseed-ui/theme-provider';
 import { Heading } from '@devseed-ui/typography';
-import { CollecticonChevronRightSmall } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import Hug from '$styles/hug';
 
@@ -111,7 +111,7 @@ export default function ConnectionsSection({
         <ConnectionsList>
           <li>
             <Link to='/about'>
-              <CollecticonChevronRightSmall /> Learn more
+              <Icon.ArrowForward /> Learn more
             </Link>
           </li>
           <li>
@@ -122,7 +122,7 @@ export default function ConnectionsSection({
                 showFeedbackModal();
               }}
             >
-              <CollecticonChevronRightSmall /> Give feedback
+              <Icon.ArrowForward /> Give feedback
             </a>
           </li>
         </ConnectionsList>
