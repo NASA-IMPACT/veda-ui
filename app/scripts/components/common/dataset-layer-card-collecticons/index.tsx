@@ -11,11 +11,11 @@ import {
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import { ColormapSection } from './colormap-section';
+import LayerMenuOptions from './layer-options-menu';
 import LayerInfoModal, {
   LayerInfoModalData
 } from '$components/exploration/components/layer-info-modal';
 import { LayerInfoLiner } from '$components/exploration/components/layer-info-modal';
-import LayerMenuOptions from '$components/common/dataset-layer-card/layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 
 import {
