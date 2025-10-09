@@ -1,5 +1,4 @@
 import React from 'react';
-import T from 'prop-types';
 import styled from 'styled-components';
 import format from 'date-fns/format';
 
@@ -11,10 +10,7 @@ import {
 } from '@devseed-ui/theme-provider';
 import { reveal } from '@devseed-ui/animation';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonBrandGithub,
-  CollecticonEnvelope
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { createSubtitleStyles } from '@devseed-ui/typography';
 
 import { variableGlsp } from '../../styles/variable-utils';
@@ -22,8 +18,19 @@ import { Tip } from '$components/common/tip';
 import { ComponentOverride } from '$components/common/page-overrides';
 
 import SmartLink from '$components/common/smart-link';
+import { useDeprecationWarning } from '$utils/deprecation-warning';
 
-// @DEPRECATED: This component is deprecated and will be removed in the future.
+/**
+ * Legacy page footer component for VEDA applications.
+ *
+ * @deprecated This component is deprecated and will be removed in version 7.
+ *             See {@link https://github.com/NASA-IMPACT/veda-ui/issues/1889} for details.
+ *
+ * Provides contact info, GitHub link, NASA branding, and version info.
+ * Hidden when `ENABLE_USWDS_PAGE_FOOTER` is enabled in favor of modern USWDS footer.
+ *
+ * @param hideFooter - Boolean flag to hide the footer completely
+ */
 
 const PageFooterSelf = styled.footer<{ isHidden: boolean }>`
   padding: ${variableGlsp(0.75, 1)};
@@ -114,8 +121,14 @@ const InfoList = styled.dl`
 interface PageFooterLegacyProps {
   hideFooter: boolean;
 }
-
 function PageFooterLegacy(props: PageFooterLegacyProps) {
+  useDeprecationWarning({
+    name: 'PageFooterLegacy',
+    removalVersion: '7.0.0',
+    issueUrl: 'https://github.com/NASA-IMPACT/veda-ui/issues/1889',
+    alternative: 'Use the modern USWDS footer component instead'
+  });
+
   const nowDate = new Date();
 
   return (
@@ -136,7 +149,7 @@ function PageFooterLegacy(props: PageFooterLegacyProps) {
               size='small'
               fitting='skinny'
             >
-              <CollecticonEnvelope title='Get in touch' meaningful />
+              <Icon.Mail aria-hidden='true' />
               Manil Maskey
             </Button>
           </dd>
@@ -151,7 +164,7 @@ function PageFooterLegacy(props: PageFooterLegacyProps) {
               target='_blank'
               rel='noopener noreferrer'
             >
-              <CollecticonBrandGithub title='Explore the code' meaningful />
+              <Icon.Github aria-hidden='true' />
               GitHub
             </Button>
           </dd>
