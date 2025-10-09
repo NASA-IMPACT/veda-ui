@@ -1,12 +1,11 @@
 import React from 'react';
-import { makeUSWDSIcon, IconProps as USWDSIconProps } from './utils';
+import type { IconProps } from '@trussworks/react-uswds/lib/components/Icon/Icon';
+import { makeUSWDSIcon } from './utils';
 
-const DropIconComponent = (props: USWDSIconProps) => (
+const DropIconComponent = (props: IconProps) => (
   <svg
-    width='24'
-    height='24'
     viewBox='0 0 24 24'
-    fill='none'
+    fill='currentColor'
     xmlns='http://www.w3.org/2000/svg'
     {...props}
   >

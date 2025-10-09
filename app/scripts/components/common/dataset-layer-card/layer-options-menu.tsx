@@ -94,7 +94,7 @@ export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
         <DropMenu>
           <li className={`${classNamePrefix}-opacity`}>
             <div className={`${classNamePrefix}-opacity-title`}>
-              <DropIcon aria-hidden='true' />
+              <DropIcon size={3} aria-hidden='true' />
               Layer opacity
             </div>
             <OpacityControl value={opacity} onInput={onOpacityChange} />

@@ -158,7 +158,7 @@ export function ColormapOptions({
     <div className='colormap-options__container bg-white shadow-1 maxh-mobile-lg'>
       <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'>
         <span className='margin-right-1 display-flex flex-align-center'>
-          <DropIcon />
+          <DropIcon size={3} aria-hidden='true' />
         </span>
         Colormap options
       </div>

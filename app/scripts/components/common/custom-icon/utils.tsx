@@ -1,19 +1,11 @@
 import React from 'react';
 import classnames from 'classnames';
-
-interface USWDSIconProps {
-  focusable?: boolean;
-  role?: string;
-  size?: 3 | 4 | 5 | 6 | 7 | 8 | 9;
-  className?: string;
-}
-
-export type IconProps = USWDSIconProps & JSX.IntrinsicElements['svg'];
+import type { IconProps } from '@trussworks/react-uswds/lib/components/Icon/Icon';
 
 export const makeUSWDSIcon = (
   Component: React.ComponentType<IconProps>
-): React.FunctionComponent => {
-  const IconFunctionalComponent = (props: IconProps): JSX.Element => {
+): React.FunctionComponent<IconProps> => {
+  const IconComponent = (props: IconProps): JSX.Element => {
     const {
       size,
       className,
@@ -30,26 +22,23 @@ export const makeUSWDSIcon = (
       className
     );
 
-    const finalProps = {
-      className: classes,
-      focusable,
-      role,
-      ...iconProps
-    };
+    // Default to aria-hidden=true unless explicitly labeled for assistive tech
+    const hasAccessibleLabel = Boolean(
+      iconProps['aria-label'] ||
+        iconProps['aria-labelledby'] ||
+        iconProps['title']
+    );
 
-    if (
-      'img' === role &&
-      !iconProps['aria-hidden'] &&
-      !iconProps['aria-label'] &&
-      !iconProps['aria-labelledby']
-    ) {
-      // eslint-disable-next-line no-console
-      console.warn(
-        `Icon with img role is missing an accessible label. https://developer.mozilla.org/en-US/docs/Web/Accessibility/ARIA/Roles/Img_role#associated_wai-aria_roles_states_and_properties`
-      );
-    }
-    return <Component {...finalProps} />;
+    return (
+      <Component
+        {...iconProps}
+        className={classes}
+        focusable={focusable}
+        role={role}
+        aria-hidden={iconProps['aria-hidden'] ?? !hasAccessibleLabel}
+      />
+    );
   };
-  IconFunctionalComponent.displayName = Component.displayName;
-  return IconFunctionalComponent;
+  IconComponent.displayName = Component.displayName;
+  return IconComponent;
 };
