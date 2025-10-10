@@ -466,8 +466,8 @@ const IconMappingTable: React.FC = () => {
               {
                 collecticon: CollecticonMedal,
                 collecticonName: 'CollecticonMedal',
-                uswds: Icon.EmojiEvents,
-                uswdsName: 'Icon.EmojiEvents',
+                uswds: Icon.Verified,
+                uswdsName: 'Icon.Verified',
                 custom: null,
                 customName: '-'
               },

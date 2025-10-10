@@ -16,7 +16,6 @@ import {
   CollecticonProgressTickMedium,
   CollecticonProgressTickLow
 } from '$components/common/icons-legacy/progress-tick';
-import { CollecticonMedal } from '$components/common/icons-legacy/medal';
 
 const IntroFold = styled.div`
   position: relative;
@@ -201,7 +200,7 @@ function SandboxType() {
               <CollecticonProgressTickLow /> High
             </p>
             <p>
-              <CollecticonMedal /> Agency standard/regulatory <br />
+              <Icon.Verified /> Agency standard/regulatory <br />
               <Icon.Science /> Research
             </p>
           </Wrapper>

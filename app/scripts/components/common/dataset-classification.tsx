@@ -9,7 +9,6 @@ import {
   CollecticonProgressTickLow,
   CollecticonProgressTickMedium
 } from './icons-legacy/progress-tick';
-import { CollecticonMedal } from './icons-legacy/medal';
 import { DatasetData } from '$types/veda';
 
 import { variableGlsp } from '$styles/variable-utils';
@@ -27,7 +26,7 @@ const DATA_UNCERTAINTY = {
 
 const DATA_GRADE = {
   Research: Icon.Science,
-  'Agency standard/regulatory': CollecticonMedal
+  'Agency standard/regulatory': Icon.Verified
 };
 
 const DatasetClassificationWrapper = styled.div`
@@ -66,7 +65,7 @@ export function DatasetClassification(props: { dataset: DatasetData }) {
       )}
       {IconGrade && grade && (
         <Tip content={`Grade: ${grade.name}`}>
-          <IconGrade meaningful title={`Grade: ${grade.name}`} />
+          <IconGrade meaningful title={`Grade: ${grade.name}`} size={3} />
         </Tip>
       )}
     </DatasetClassificationWrapper>
