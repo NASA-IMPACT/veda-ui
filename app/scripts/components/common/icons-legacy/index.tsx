@@ -28,12 +28,12 @@ import {
 } from '@devseed-ui/collecticons';
 
 // Import custom collecticons from icons-legacy
+import { CollecticonDatasetLayers } from '../custom-icon/dataset-layers';
 import {
   CollecticonProgressTickHigh,
   CollecticonProgressTickMedium,
   CollecticonProgressTickLow
 } from './progress-tick';
-import { CollecticonDatasetLayers } from './dataset-layers';
 import { CollecticonCalendarMinus } from './calendar-minus';
 import { CollecticonCalendarPlus } from './calendar-plus';
 import { CollecticonMagnifierPlus } from './magnifier-plus';

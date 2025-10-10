@@ -23,7 +23,7 @@ import {
   colorMapScale
 } from '$components/exploration/types.d.ts';
 import { DatasetData } from '$types/veda';
-import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
+import { CollecticonDatasetLayers } from '$components/common/custom-icon/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 
 import 'tippy.js/dist/tippy.css';
