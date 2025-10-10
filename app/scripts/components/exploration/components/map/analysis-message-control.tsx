@@ -6,7 +6,6 @@ import { Icon } from '@trussworks/react-uswds';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button, createButtonStyles } from '@devseed-ui/button';
 import bbox from '@turf/bbox';
-import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
 import { timelineDatasetsAtom } from '../../atoms/datasets';
 import { selectedIntervalAtom } from '../../atoms/dates';
 
@@ -374,7 +373,7 @@ function StatusIconPreAnalyzing() {
 function StatusIconInfo() {
   return (
     <MessageStatusIndicator status='info'>
-      <CollecticonCircleInformation />
+      <Icon.Info size={3} />
     </MessageStatusIndicator>
   );
 }
