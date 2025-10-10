@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
+import { Icon } from '@trussworks/react-uswds';
 
 import Constrainer from '$styles/constrainer';
 import {
@@ -16,7 +17,6 @@ import {
   CollecticonProgressTickLow
 } from '$components/common/icons-legacy/progress-tick';
 import { CollecticonMedal } from '$components/common/icons-legacy/medal';
-import { CollecticonFlask } from '$components/common/icons-legacy/flask';
 
 const IntroFold = styled.div`
   position: relative;
@@ -202,7 +202,7 @@ function SandboxType() {
             </p>
             <p>
               <CollecticonMedal /> Agency standard/regulatory <br />
-              <CollecticonFlask /> Research
+              <Icon.Science /> Research
             </p>
           </Wrapper>
         </IntroFoldCopy>

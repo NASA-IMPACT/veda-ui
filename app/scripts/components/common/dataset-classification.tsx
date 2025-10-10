@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Icon } from '@trussworks/react-uswds';
 
 import { Tip } from './tip';
 import {
@@ -8,7 +9,6 @@ import {
   CollecticonProgressTickLow,
   CollecticonProgressTickMedium
 } from './icons-legacy/progress-tick';
-import { CollecticonFlask } from './icons-legacy/flask';
 import { CollecticonMedal } from './icons-legacy/medal';
 import { DatasetData } from '$types/veda';
 
@@ -26,7 +26,7 @@ const DATA_UNCERTAINTY = {
 };
 
 const DATA_GRADE = {
-  Research: CollecticonFlask,
+  Research: Icon.Science,
   'Agency standard/regulatory': CollecticonMedal
 };
 
