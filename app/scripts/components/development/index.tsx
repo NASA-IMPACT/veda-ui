@@ -2,10 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import { getOverride } from 'veda';
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonSpeechBalloon,
-  CollecticonBrandGithub
-} from '@devseed-ui/collecticons';
+import { CollecticonSpeechBalloon } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import { LayoutProps } from '$components/common/layout-root';
 import { useFeedbackModal } from '$components/common/layout-root';
@@ -81,7 +79,7 @@ function Development() {
               href='https://github.com/NASA-IMPACT/veda-config/releases'
               variation='primary-fill'
             >
-              <CollecticonBrandGithub /> Releases
+              <Icon.Github size={3} /> Releases
             </Button>
           </ContributeCta>
         </FoldProse>
