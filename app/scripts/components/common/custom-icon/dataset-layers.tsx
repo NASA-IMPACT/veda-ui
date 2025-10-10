@@ -2,7 +2,7 @@ import React from 'react';
 import { createCollecticon } from '@devseed-ui/collecticons';
 import styled from 'styled-components';
 
-export const CollecticonDatasetLayers = styled(
+export const DatasetLayersIconComponent = styled(
   createCollecticon(() => (
     <svg
       width='20'

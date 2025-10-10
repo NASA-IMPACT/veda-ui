@@ -28,7 +28,7 @@ import {
 } from '@devseed-ui/collecticons';
 
 // Import custom collecticons from icons-legacy
-import { CollecticonDatasetLayers } from '../custom-icon/dataset-layers';
+import { DatasetLayersIconComponent } from '../custom-icon/dataset-layers';
 import {
   CollecticonProgressTickHigh,
   CollecticonProgressTickMedium,
@@ -62,7 +62,7 @@ export {
   CollecticonProgressTickHigh,
   CollecticonProgressTickMedium,
   CollecticonProgressTickLow,
-  CollecticonDatasetLayers,
+  DatasetLayersIconComponent,
   CollecticonCalendarMinus,
   CollecticonCalendarPlus,
   CollecticonMagnifierPlus,
