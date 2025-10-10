@@ -6,7 +6,7 @@ import {
   themeVal
 } from '@devseed-ui/theme-provider';
 import styled from 'styled-components';
-import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import ClassicCard, { ClassicCardItem } from './classic';
 import CoverCard, { CoverCardItem } from './cover';
 import FeaturedCard, { FeaturedCardItem } from './featured';
@@ -282,7 +282,7 @@ export function ExternalLinkFlag() {
   return (
     <ExternalLinkMark>
       <FlagText>External Link</FlagText>
-      <CollecticonExpandTopRight size='small' meaningful={false} />
+      <Icon.Launch size={3} />
     </ExternalLinkMark>
   );
 }
