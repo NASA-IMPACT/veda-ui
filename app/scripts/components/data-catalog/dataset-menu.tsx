@@ -10,8 +10,7 @@ import {
 } from '@devseed-ui/dropdown';
 import {
   CollecticonCode,
-  CollecticonEllipsisVertical,
-  CollecticonPage
+  CollecticonEllipsisVertical
 } from '@devseed-ui/collecticons';
 import { Icon } from '@trussworks/react-uswds';
 import { DatasetData } from '$types/veda';
@@ -72,7 +71,7 @@ function DatasetMenu(props: DatasetMenuProps) {
               data-dropdown='click.close'
               to={getDatasetPath(dataset)}
             >
-              <CollecticonPage /> Learn more
+              <Icon.ContactPage size={3} /> Learn more
             </DropMenuItem>
           </li>
           <li>
