@@ -10,10 +10,10 @@ import {
 } from '@devseed-ui/dropdown';
 import {
   CollecticonCode,
-  CollecticonCompass,
   CollecticonEllipsisVertical,
   CollecticonPage
 } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { DatasetData } from '$types/veda';
 
 import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
@@ -81,7 +81,7 @@ function DatasetMenu(props: DatasetMenuProps) {
               data-dropdown='click.close'
               to={getDatasetExplorePath(dataset)}
             >
-              <CollecticonCompass /> Explore data
+              <Icon.NearMe size={3} /> Explore data
             </DropMenuItem>
           </li>
           <li>

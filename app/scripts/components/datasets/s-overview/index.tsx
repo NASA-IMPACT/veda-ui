@@ -1,7 +1,7 @@
 import React, { lazy } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@devseed-ui/button';
-import { CollecticonCompass } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import { resourceNotFound } from '$components/uhoh';
 import { LayoutProps } from '$components/common/layout-root';
@@ -52,7 +52,7 @@ function DatasetsOverview() {
                   size='large'
                   variation='achromic-outline'
                 >
-                  <CollecticonCompass />
+                  <Icon.NearMe size={3} />
                   Explore data
                 </Button>
               )}
