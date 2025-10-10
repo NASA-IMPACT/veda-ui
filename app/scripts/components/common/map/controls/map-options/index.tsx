@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonMap } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import {
   Dropdown,
   DropMenu,
@@ -124,7 +124,7 @@ function MapOptions(props: MapOptionsProps) {
           tipContent='Map options'
           tipProps={{ placement: 'left' }}
         >
-          <CollecticonMap meaningful title='Configure map options' />
+          <Icon.Map size={3} />
         </SelectorButton>
       )}
       direction='down'
