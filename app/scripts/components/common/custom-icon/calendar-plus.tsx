@@ -1,11 +1,11 @@
 import React from 'react';
+import type { IconProps } from '@trussworks/react-uswds/lib/components/Icon/Icon';
 import { makeUSWDSIcon } from './utils';
 
-const CalendarPlusIconComponent = (props: React.SVGProps<SVGSVGElement>) => (
+const CalendarPlusIconComponent = (props: IconProps) => (
   <svg
-    width='24'
-    height='24'
     viewBox='0 0 24 24'
+    fill='currentColor'
     xmlns='http://www.w3.org/2000/svg'
     {...props}
   >

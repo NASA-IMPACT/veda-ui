@@ -28,7 +28,10 @@ import {
   CollecticonEyeDisabled,
   CollecticonEye,
   CollecticonChevronDown,
-  CollecticonChevronUp
+  CollecticonChevronUp,
+  CollecticonDrop,
+  CollecticonCalendarPlus,
+  CollecticonCalendarMinus
 } from '$components/common/icons-legacy';
 import {
   CalendarPlusIcon,
@@ -534,7 +537,7 @@ const IconMappingTable: React.FC = () => {
               },
               // Custom icons
               {
-                collecticon: null,
+                collecticon: CollecticonDrop,
                 collecticonName: 'CollecticonDrop',
                 uswds: null,
                 uswdsName: '-',
@@ -542,7 +545,7 @@ const IconMappingTable: React.FC = () => {
                 customName: 'DropIcon'
               },
               {
-                collecticon: null,
+                collecticon: CollecticonCalendarPlus,
                 collecticonName: 'CollecticonCalendarPlus',
                 uswds: null,
                 uswdsName: '-',
@@ -550,7 +553,7 @@ const IconMappingTable: React.FC = () => {
                 customName: 'CalendarPlusIcon'
               },
               {
-                collecticon: null,
+                collecticon: CollecticonCalendarMinus,
                 collecticonName: 'CollecticonCalendarMinus',
                 uswds: null,
                 uswdsName: '-',

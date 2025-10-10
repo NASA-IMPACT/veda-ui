@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Icon } from '@trussworks/react-uswds';
+import { CollecticonDrop } from '@devseed-ui/collecticons';
 import './colormap-options.scss';
 import { ColorRangeSlider } from './color-range-slider';
 import {
@@ -7,7 +8,6 @@ import {
   divergingColorMaps,
   restColorMaps
 } from './color-maps';
-import { DropIcon } from '$components/common/custom-icon';
 
 import { colorMapScale } from '$components/exploration/types.d.ts';
 
@@ -157,10 +157,7 @@ export function ColormapOptions({
   return (
     <div className='colormap-options__container bg-white shadow-1 maxh-mobile-lg'>
       <div className='display-flex flex-align-center text-gray-90 padding-2 font-heading-xs text-bold'>
-        <span className='margin-right-1 display-flex flex-align-center'>
-          <DropIcon size={3} aria-hidden='true' />
-        </span>
-        Colormap options
+        <CollecticonDrop className='margin-right-1' /> Colormap options
       </div>
 
       <div className='display-flex flex-align-center flex-column flex-justify border-top-1px border-bottom-1px border-base-lightest bg-base-lightest padding-2'>

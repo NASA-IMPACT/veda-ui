@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Dropdown, DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Icon } from '@trussworks/react-uswds';
+import {
+  CollecticonEllipsisVertical,
+  CollecticonDrop,
+  CollecticonXmarkSmall,
+  CollecticonArrowDown,
+  CollecticonArrowUp,
+  CollecticonShare
+} from '@devseed-ui/collecticons';
 import { TileUrlModal } from '../../exploration/components/datasets/tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
 import { VizDataset } from '$components/exploration/types.d.ts';
-import { DropIcon } from '$components/common/custom-icon';
 
 interface LayerMenuOptionsProps {
   dataset: VizDataset;
@@ -87,14 +93,14 @@ export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
             fitting='skinny'
             {...props}
           >
-            <Icon.MoreVert size={3} aria-hidden='true' />
+            <CollecticonEllipsisVertical />
           </TipButton>
         )}
       >
         <DropMenu>
           <li className={`${classNamePrefix}-opacity`}>
             <div className={`${classNamePrefix}-opacity-title`}>
-              <DropIcon size={3} aria-hidden='true' />
+              <CollecticonDrop />
               Layer opacity
             </div>
             <OpacityControl value={opacity} onInput={onOpacityChange} />
@@ -106,7 +112,7 @@ export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
               onClick={onMoveUp}
               data-dropdown='click.close'
             >
-              <Icon.ArrowUpward size={3} aria-hidden='true' />
+              <CollecticonArrowUp />
               Move up
             </DropMenuItem>
           </li>
@@ -117,19 +123,19 @@ export default function LayerMenuOptions(props: LayerMenuOptionsProps) {
               onClick={onMoveDown}
               data-dropdown='click.close'
             >
-              <Icon.ArrowDownward size={3} aria-hidden='true' />
+              <CollecticonArrowDown />
               Move down
             </DropMenuItem>
           </li>
           <li>
             <DropMenuItem onClick={handleLoadIntoGIS}>
-              <Icon.Share size={3} aria-hidden='true' />
+              <CollecticonShare />
               Load into GIS
             </DropMenuItem>
           </li>
           <li className={`${classNamePrefix}-remove-layer`}>
             <DropMenuItem onClick={onRemoveLayer}>
-              <Icon.Close size={3} aria-hidden='true' />
+              <CollecticonXmarkSmall />
               Remove layer
             </DropMenuItem>
           </li>

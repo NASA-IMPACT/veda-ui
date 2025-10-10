@@ -132,6 +132,9 @@ jobs:
       - name: Test
         run: yarn test
 
+      - name: Build library
+        run: yarn buildlib
+
   playwright:
     timeout-minutes: 60
     needs: prep

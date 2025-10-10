@@ -1,15 +1,21 @@
 import React, { useState, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
-import { Icon } from '@trussworks/react-uswds';
+import {
+  CollecticonCircleInformation,
+  CollecticonEyeDisabled,
+  CollecticonEye,
+  CollecticonChevronDown,
+  CollecticonChevronUp
+} from '@devseed-ui/collecticons';
 import { Toolbar } from '@devseed-ui/toolbar';
 import { Heading } from '@devseed-ui/typography';
 import { ColormapSection } from './colormap-section';
+import LayerMenuOptions from './layer-options-menu';
 import LayerInfoModal, {
   LayerInfoModalData
 } from '$components/exploration/components/layer-info-modal';
 import { LayerInfoLiner } from '$components/exploration/components/layer-info-modal';
-import LayerMenuOptions from '$components/common/dataset-layer-card/layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 
 import {
@@ -99,7 +105,11 @@ const DatasetMetricInfo = styled.div`
   color: ${themeVal('color.base-500')};
 `;
 
-export default function DataLayerCard(props: DataLayerCardProps) {
+/**
+ * @deprecated This component uses collecticons. Use the main DataLayerCard component instead.
+ * This file is kept for migration comparison purposes.
+ */
+export default function DataLayerCardCollecticons(props: DataLayerCardProps) {
   const {
     dataset,
     isVisible,
@@ -160,7 +170,10 @@ export default function DataLayerCard(props: DataLayerCardProps) {
                 onPointerDownCapture={(e) => e.stopPropagation()}
                 onClick={onClickLayerInfo}
               >
-                <Icon.Info aria-label='View dataset page' />
+                <CollecticonCircleInformation
+                  meaningful
+                  title='View dataset page'
+                />
               </TipButton>
               <TipButton
                 tipContent={isVisible ? 'Hide layer' : 'Show layer'}
@@ -170,9 +183,15 @@ export default function DataLayerCard(props: DataLayerCardProps) {
                 onClick={() => setVisible((v) => !v)}
               >
                 {isVisible ? (
-                  <Icon.Visibility aria-label='Toggle dataset visibility' />
+                  <CollecticonEye
+                    meaningful
+                    title='Toggle dataset visibility'
+                  />
                 ) : (
-                  <Icon.VisibilityOff aria-label='Toggle dataset visibility' />
+                  <CollecticonEyeDisabled
+                    meaningful
+                    title='Toggle dataset visibility'
+                  />
                 )}
               </TipButton>
               {datasetLegend?.type === 'categorical' && (
@@ -185,9 +204,9 @@ export default function DataLayerCard(props: DataLayerCardProps) {
                   onClick={chevToggleExpanded}
                 >
                   {isChevToggleExpanded ? (
-                    <Icon.ExpandMore aria-label='Expand Legend' />
+                    <CollecticonChevronDown title='Expand Legend' meaningful />
                   ) : (
-                    <Icon.ExpandLess aria-label='Collapse Legend' />
+                    <CollecticonChevronUp title='Collapse Legend' meaningful />
                   )}
                 </TipButton>
               )}
