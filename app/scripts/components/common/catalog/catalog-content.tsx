@@ -348,7 +348,8 @@ export default function CatalogContent({
                         <div>
                           <Headline>
                             <ParentDatasetTitle>
-                              <DatasetLayersIcon size={4} /> {currentDataset.name}
+                              <DatasetLayersIcon size={4} />{' '}
+                              {currentDataset.name}
                               {getSelectedLayerCount(currentDataset) > 0 && (
                                 <SelectedCard>
                                   <span>
