@@ -7,11 +7,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
 import { Heading } from '@devseed-ui/typography';
 
-import {
-  CollecticonChevronLeftSmall,
-  CollecticonChevronRightSmall,
-  CollecticonXmark
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import tourComparisonUrl from '../../../graphics/content/tour-comparison.gif';
 import tourAnalysisUrl from '../../../graphics/content/tour-analysis.gif';
@@ -159,7 +155,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
         fitting='skinny'
         onClick={closeTour}
       >
-        <CollecticonXmark size='small' meaningful title='Close feature tour' />
+        <Icon.Close size={3} aria-label='Close feature tour' />
       </CloseButton>
       <Heading as='strong' size='xsmall'>
         {title}
@@ -180,7 +176,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
             setCurrentStep((s) => s - 1);
           }}
         >
-          <CollecticonChevronLeftSmall meaningful title='Previous feature' />
+          <Icon.NavigateBefore size={3} aria-label='Previous feature' />
         </Button>
         <small>
           {currentStep + 1} / {steps.length}
@@ -194,7 +190,7 @@ export function PopoverTourComponent(props: ExtendedPopoverContentProps) {
             setCurrentStep((s) => s + 1);
           }}
         >
-          <CollecticonChevronRightSmall meaningful title='Next feature' />
+          <Icon.NavigateNext size={3} aria-label='Next feature' />
         </Button>
       </PopoverFooter>
       {/* {(currentStep === 0 || isLastStep) && (
