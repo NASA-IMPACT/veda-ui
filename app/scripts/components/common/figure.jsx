@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 import { glsp, themeVal, truncated } from '@devseed-ui/theme-provider';
 import { Subtitle } from '@devseed-ui/typography';
-import { CollecticonCircleInformation } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import { variableBaseType, variableGlsp } from '$styles/variable-utils';
 
@@ -144,7 +144,7 @@ function FigureAttributionCmp(props) {
   return (
     <FigureAttributionSelf position={position} {...rest}>
       <FigureAttributionInner {...innerProps}>
-        <CollecticonCircleInformation />
+        <Icon.Info size={3} />
         <strong>Figure by {author}</strong>
       </FigureAttributionInner>
     </FigureAttributionSelf>
