@@ -1,7 +1,11 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Icon } from '@trussworks/react-uswds';
-import { CollecticonSpeechBalloon } from '@devseed-ui/collecticons';
+import {
+  CollecticonSpeechBalloon,
+  CollecticonClipboard,
+  CollecticonClipboardTick
+} from '@devseed-ui/collecticons';
 import {
   CollecticonMagnifierMinus,
   CollecticonMagnifierPlus,
@@ -509,6 +513,22 @@ const IconMappingTable: React.FC = () => {
                 collecticonName: 'CollecticonSpeechBalloon',
                 uswds: Icon.Chat,
                 uswdsName: 'Icon.Chat',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonClipboard,
+                collecticonName: 'CollecticonClipboard',
+                uswds: Icon.ContentCopy,
+                uswdsName: 'Icon.ContentCopy',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonClipboardTick,
+                collecticonName: 'CollecticonClipboardTick',
+                uswds: Icon.Check,
+                uswdsName: 'Icon.Check',
                 custom: null,
                 customName: '-'
               },
