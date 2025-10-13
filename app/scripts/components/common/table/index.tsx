@@ -11,11 +11,7 @@ import {
 } from '@tanstack/react-table';
 import { useVirtual } from 'react-virtual';
 import { Sheet2JSONOpts } from 'xlsx';
-import {
-  CollecticonSortAsc,
-  CollecticonSortDesc,
-  CollecticonSortNone
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { Table } from '@devseed-ui/typography';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
@@ -235,21 +231,18 @@ function SortableTh(props: SortableThProps) {
         >
           <span>{children}</span>
           {sortDirection === 'asc' && (
-            <CollecticonSortAsc
-              meaningful={true}
-              title='Sorted in ascending order'
-            />
+            <Icon.ArrowUpward size={3} aria-label='Sorted in ascending order' />
           )}
           {sortDirection === 'desc' && (
-            <CollecticonSortDesc
-              meaningful={true}
-              title='Sorted in descending order'
+            <Icon.ArrowDownward
+              size={3}
+              aria-label='Sorted in descending order'
             />
           )}
           {!sortDirection && (
-            <CollecticonSortNone
-              meaningful={true}
-              title={`Sort the rows with this column's value`}
+            <Icon.UnfoldMore
+              size={3}
+              aria-label={`Sort the rows with this column's value`}
             />
           )}
         </SortableLink>
