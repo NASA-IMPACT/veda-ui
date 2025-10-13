@@ -1,6 +1,7 @@
 import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Icon } from '@trussworks/react-uswds';
+import { CollecticonSpeechBalloon } from '@devseed-ui/collecticons';
 import {
   CollecticonMagnifierMinus,
   CollecticonMagnifierPlus,
@@ -500,6 +501,14 @@ const IconMappingTable: React.FC = () => {
                 collecticonName: 'CollecticonShare',
                 uswds: Icon.Share,
                 uswdsName: 'Icon.Share',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonSpeechBalloon,
+                collecticonName: 'CollecticonSpeechBalloon',
+                uswds: Icon.Chat,
+                uswdsName: 'Icon.Chat',
                 custom: null,
                 customName: '-'
               },

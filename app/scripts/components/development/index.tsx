@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { getOverride } from 'veda';
 import { Button } from '@devseed-ui/button';
-import { CollecticonSpeechBalloon } from '@devseed-ui/collecticons';
 import { Icon } from '@trussworks/react-uswds';
 
 import { LayoutProps } from '$components/common/layout-root';
@@ -70,7 +69,7 @@ function Development() {
                 showFeedbackModal();
               }}
             >
-              <CollecticonSpeechBalloon /> Feedback
+              <Icon.Chat size={3} /> Feedback
             </Button>
             <Button
               size='large'
