@@ -4,7 +4,10 @@ import { Icon } from '@trussworks/react-uswds';
 import {
   CollecticonSpeechBalloon,
   CollecticonClipboard,
-  CollecticonClipboardTick
+  CollecticonClipboardTick,
+  CollecticonPencil,
+  CollecticonTrashBin,
+  CollecticonUpload2
 } from '@devseed-ui/collecticons';
 import {
   CollecticonMagnifierMinus,
@@ -529,6 +532,30 @@ const IconMappingTable: React.FC = () => {
                 collecticonName: 'CollecticonClipboardTick',
                 uswds: Icon.Check,
                 uswdsName: 'Icon.Check',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonPencil,
+                collecticonName: 'CollecticonPencil',
+                uswds: Icon.Edit,
+                uswdsName: 'Icon.Edit',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonTrashBin,
+                collecticonName: 'CollecticonTrashBin',
+                uswds: Icon.Delete,
+                uswdsName: 'Icon.Delete',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonUpload2,
+                collecticonName: 'CollecticonUpload2',
+                uswds: Icon.FileUpload,
+                uswdsName: 'Icon.FileUpload',
                 custom: null,
                 customName: '-'
               },
