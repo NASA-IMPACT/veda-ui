@@ -11,8 +11,11 @@ import {
   CollecticonBook,
   CollecticonCode,
   CollecticonCog,
-  CollecticonDownload2
+  CollecticonDownload2,
+  CollecticonPlusSmall,
+  CollecticonIsoStack
 } from '@devseed-ui/collecticons';
+import { DatasetLayersIcon } from '$components/common/custom-icon';
 import {
   CollecticonMagnifierMinus,
   CollecticonMagnifierPlus,
@@ -594,6 +597,22 @@ const IconMappingTable: React.FC = () => {
                 uswdsName: 'Icon.FileDownload',
                 custom: null,
                 customName: '-'
+              },
+              {
+                collecticon: CollecticonPlusSmall,
+                collecticonName: 'CollecticonPlusSmall',
+                uswds: Icon.Add,
+                uswdsName: 'Icon.Add',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonIsoStack,
+                collecticonName: 'CollecticonIsoStack',
+                uswds: null,
+                uswdsName: '-',
+                custom: DatasetLayersIcon,
+                customName: 'DatasetLayersIcon'
               },
               {
                 collecticon: CollecticonEyeDisabled,

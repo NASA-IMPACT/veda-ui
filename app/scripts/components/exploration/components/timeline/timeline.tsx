@@ -1,9 +1,6 @@
 import { Button } from '@devseed-ui/button';
-import {
-  CollecticonIsoStack,
-  CollecticonPlusSmall
-} from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { Icon } from '@trussworks/react-uswds';
 import { Heading } from '@devseed-ui/typography';
 import { select, zoom } from 'd3';
 import add from 'date-fns/add';
@@ -47,6 +44,7 @@ import {
 } from './timeline-head';
 import { DateGrid } from './date-axis';
 
+import { DatasetLayersIcon } from '$components/common/custom-icon';
 import { selectedIntervalAtom } from '$components/exploration/atoms/dates';
 import {
   timelineSizesAtom,
@@ -633,7 +631,7 @@ export default function Timeline(props: TimelineProps) {
             size='small'
             onClick={onDatasetAddClick}
           >
-            <CollecticonPlusSmall title='Add layer' /> Add layer
+            <Icon.Add size={3} aria-label='Add layer' /> Add layer
           </Button>
         )}
       </Headline>
@@ -688,7 +686,7 @@ export default function Timeline(props: TimelineProps) {
             <DateGrid width={width} xScaled={initialScale} />
             <LayerActionBox>
               <div>
-                <CollecticonIsoStack size='xxlarge' />
+                <DatasetLayersIcon size={6} />
                 <p>No data layer added to the map!</p>
                 {onDatasetAddClick && (
                   <Button
