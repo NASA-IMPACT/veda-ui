@@ -2,7 +2,7 @@ import React, { ComponentType } from 'react';
 import styled from 'styled-components';
 import { glsp, media, rgba, themeVal } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { CollecticonChevronDownSmall } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { DropMenu, DropMenuItem } from '@devseed-ui/dropdown';
 
 import DropdownScrollable from '../dropdown-scrollable';
@@ -240,7 +240,7 @@ export default function NavMenuItem({
                 variation='achromic-text'
                 fitting='skinny'
               >
-                {title} <CollecticonChevronDownSmall size='small' />
+                {title} <Icon.ExpandMore size={3} />
               </GlobalMenuButton>
             )}
           >
