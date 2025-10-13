@@ -2,12 +2,7 @@ import React, { ReactNode, useCallback, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { media, multiply, themeVal } from '@devseed-ui/theme-provider';
 import { Button, ButtonProps } from '@devseed-ui/button';
-import {
-  CollecticonBook,
-  CollecticonCode,
-  CollecticonCog,
-  CollecticonDownload2
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { Modal } from '@devseed-ui/modal';
 import { datasets } from 'veda';
 import { DatasetData } from '$types/veda';
@@ -82,10 +77,10 @@ const DatasetUsageLabel = styled.div`
 type DatasetUsageType = 'jupyter' | 'github' | 'download' | 'unknown';
 
 const IconByType: Record<DatasetUsageType, any> = {
-  jupyter: <CollecticonCog />,
-  github: <CollecticonBook />,
-  download: <CollecticonDownload2 />,
-  unknown: <CollecticonCog />
+  jupyter: <Icon.Settings size={3} />,
+  github: <Icon.Science size={3} />,
+  download: <Icon.FileDownload size={3} />,
+  unknown: <Icon.Settings size={3} />
 };
 
 export function NotebookConnectModal(props: {
@@ -193,7 +188,7 @@ function NotebookConnectButtonSelf(props: NotebookConnectButtonProps) {
         onClick={() => setRevealed(true)}
         size={size}
       >
-        <CollecticonCode meaningful={compact} title='Open data usage options' />
+        <Icon.Code size={3} aria-label='Open data usage options' />
         {compact ? '' : 'Access Data'}
       </Button>
       <NotebookConnectModal

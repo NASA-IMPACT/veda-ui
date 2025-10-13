@@ -7,7 +7,11 @@ import {
   CollecticonClipboardTick,
   CollecticonPencil,
   CollecticonTrashBin,
-  CollecticonUpload2
+  CollecticonUpload2,
+  CollecticonBook,
+  CollecticonCode,
+  CollecticonCog,
+  CollecticonDownload2
 } from '@devseed-ui/collecticons';
 import {
   CollecticonMagnifierMinus,
@@ -556,6 +560,38 @@ const IconMappingTable: React.FC = () => {
                 collecticonName: 'CollecticonUpload2',
                 uswds: Icon.FileUpload,
                 uswdsName: 'Icon.FileUpload',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonBook,
+                collecticonName: 'CollecticonBook',
+                uswds: Icon.Science,
+                uswdsName: 'Icon.Science',
+                custom: null,
+                customName: 'Used for scientific documentation/notebooks'
+              },
+              {
+                collecticon: CollecticonCode,
+                collecticonName: 'CollecticonCode',
+                uswds: Icon.Code,
+                uswdsName: 'Icon.Code',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonCog,
+                collecticonName: 'CollecticonCog',
+                uswds: Icon.Settings,
+                uswdsName: 'Icon.Settings',
+                custom: null,
+                customName: '-'
+              },
+              {
+                collecticon: CollecticonDownload2,
+                collecticonName: 'CollecticonDownload2',
+                uswds: Icon.FileDownload,
+                uswdsName: 'Icon.FileDownload',
                 custom: null,
                 customName: '-'
               },
