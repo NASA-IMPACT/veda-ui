@@ -3,14 +3,8 @@ import {
   createButtonGroupStyles,
   createButtonStyles
 } from '@devseed-ui/button';
-import {
-  iconDataURI,
-  CollecticonPlusSmall,
-  CollecticonMinusSmall,
-  CollecticonMagnifierLeft,
-  CollecticonXmarkSmall
-} from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
+import { COLLECTICON_DATA_URIS } from '$styles/icon-data-uris';
 import { variableGlsp } from '$styles/variable-utils';
 import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
@@ -170,17 +164,11 @@ const MapboxStyleOverride = css`
   }
 
   .mapboxgl-ctrl-zoom-in.mapboxgl-ctrl-zoom-in::before {
-    background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonPlusSmall, {
-        color: theme.color?.base
-      })});
+    background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_PLUS_SMALL_BASE}');
   }
 
   .mapboxgl-ctrl-zoom-out.mapboxgl-ctrl-zoom-out::before {
-    background-image: url(${({ theme }) =>
-      iconDataURI(CollecticonMinusSmall, {
-        color: theme.color?.base
-      })});
+    background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_MINUS_SMALL_BASE}');
   }
 
   .mapboxgl-marker:hover {
@@ -208,10 +196,7 @@ const MapboxStyleOverride = css`
       content: '';
       width: 1rem;
       height: 1rem;
-      background-image: url(${({ theme }) =>
-        iconDataURI(CollecticonMagnifierLeft, {
-          color: theme.color?.base
-        })});
+      background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_MAGNIFIER_LEFT_BASE}');
       background-repeat: no-repeat;
     }
 
@@ -221,10 +206,7 @@ const MapboxStyleOverride = css`
       background-color: ${themeVal('color.surface')};
 
       &::before {
-        background-image: url(${({ theme }) =>
-          iconDataURI(CollecticonMagnifierLeft, {
-            color: theme.color?.base
-          })});
+        background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_MAGNIFIER_LEFT_BASE}');
       }
     }
 
@@ -258,10 +240,7 @@ const MapboxStyleOverride = css`
         content: '';
         width: 1rem;
         height: 1rem;
-        background-image: url(${({ theme }) =>
-          iconDataURI(CollecticonXmarkSmall, {
-            color: theme.color?.['base-300']
-          })});
+        background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_XMARK_SMALL_BASE300}');
       }
     }
 

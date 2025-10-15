@@ -9,11 +9,6 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
-import {
-  CollecticonChevronLeftSmall,
-  CollecticonChevronRightSmall,
-  iconDataURI
-} from '@devseed-ui/collecticons';
 import { themeVal } from '@devseed-ui/theme-provider';
 import useDimensions from 'react-cool-dimensions';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -26,16 +21,12 @@ import MapComponent from './map-component';
 import useMaps, { useMapsContext } from './hooks/use-maps';
 import { COMPARE_CONTAINER_NAME, CONTROLS_CONTAINER_NAME } from '.';
 import { ProjectionOptions } from '$types/veda';
+import { COLLECTICON_DATA_URIS } from '$styles/icon-data-uris';
 
-const chevronRightURI = () =>
-  iconDataURI(CollecticonChevronRightSmall, {
-    color: 'white'
-  });
-
-const chevronLeftURI = () =>
-  iconDataURI(CollecticonChevronLeftSmall, {
-    color: 'white'
-  });
+const chevronRightURI =
+  COLLECTICON_DATA_URIS.COLLECTICON_CHEVRON_RIGHT_SMALL_WHITE;
+const chevronLeftURI =
+  COLLECTICON_DATA_URIS.COLLECTICON_CHEVRON_LEFT_SMALL_WHITE;
 
 const MapsContainer = styled.div`
   ${MapboxStyleOverride}
@@ -80,10 +71,10 @@ const MapsContainer = styled.div`
     }
 
     &::before {
-      background-image: url('${chevronLeftURI()}');
+      background-image: url('${chevronLeftURI}');
     }
     &::after {
-      background-image: url('${chevronRightURI()}');
+      background-image: url('${chevronRightURI}');
     }
   }
 `;
