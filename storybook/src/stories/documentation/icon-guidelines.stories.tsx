@@ -7,7 +7,9 @@ import {
   DropIcon,
   ProgressTickHighIcon,
   ProgressTickMediumIcon,
-  ProgressTickLowIcon
+  ProgressTickLowIcon,
+  HandPanIcon,
+  HandSwipeHorizontalIcon
 } from '$components/common/custom-icon';
 
 // Custom Icons Guidelines Component
@@ -245,6 +247,20 @@ const CustomIconsReference: React.FC = () => {
       description: 'Low uncertainty indicator for data quality',
       usage: '<ProgressTickLowIcon size={3} aria-label="Low uncertainty" />',
       category: 'Data Quality'
+    },
+    {
+      icon: HandPanIcon,
+      name: 'HandPanIcon',
+      description: 'Hand pan gesture for drag/scroll interactions',
+      usage: '<HandPanIcon size={3} aria-label="Pan gesture" />',
+      category: 'Interaction'
+    },
+    {
+      icon: HandSwipeHorizontalIcon,
+      name: 'HandSwipeHorizontalIcon',
+      description: 'Hand swipe gesture for horizontal scrolling',
+      usage: '<HandSwipeHorizontalIcon size={3} aria-label="Swipe gesture" />',
+      category: 'Interaction'
     }
   ];
 

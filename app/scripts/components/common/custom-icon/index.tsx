@@ -8,3 +8,5 @@ export { DropIcon } from './drop';
 export { ProgressTickHighIcon } from './progress-tick-high';
 export { ProgressTickMediumIcon } from './progress-tick-medium';
 export { ProgressTickLowIcon } from './progress-tick-low';
+export { HandPanIcon } from './hand-pan';
+export { HandSwipeHorizontalIcon } from './hand-swipe-horizontal';

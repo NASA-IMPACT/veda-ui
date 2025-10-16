@@ -7,9 +7,9 @@ import {
   visuallyHidden
 } from '@devseed-ui/theme-provider';
 import {
-  CollecticonHandPan,
-  CollecticonHandSwipeHorizontal
-} from '@devseed-ui/collecticons';
+  HandPanIcon,
+  HandSwipeHorizontalIcon
+} from '$components/common/custom-icon';
 
 // // // // // // // // // // // // // // // // // // // // // // // // // // //
 // ContinuumScrollIndicator                                                   //
@@ -64,8 +64,8 @@ function ContinuumScrollIndicatorSelf({ className }: { className?: string }) {
   return (
     <div className={className}>
       <div>
-        <CollecticonHandSwipeHorizontal size='xxlarge' />
-        <CollecticonHandPan size='xxlarge' />
+        <HandSwipeHorizontalIcon size={6} />
+        <HandPanIcon size={6} />
         <span>Scroll to see content</span>
       </div>
     </div>
@@ -101,17 +101,17 @@ export const ContinuumScrollIndicator = styled(ContinuumScrollIndicatorSelf)`
     padding: ${glsp()};
   }
 
-  ${CollecticonHandSwipeHorizontal}, ${CollecticonHandPan} {
+  .usa-icon {
     animation-duration: 4s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
   }
 
-  ${CollecticonHandSwipeHorizontal} {
+  .usa-icon:first-child {
     animation-name: ${fade};
   }
 
-  ${CollecticonHandPan} {
+  .usa-icon:last-child {
     animation-name: ${fade2};
     position: absolute;
     top: 50%;
