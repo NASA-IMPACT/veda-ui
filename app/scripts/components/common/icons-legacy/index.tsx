@@ -35,10 +35,6 @@ import {
 } from './progress-tick';
 import { CollecticonCalendarMinus } from './calendar-minus';
 import { CollecticonCalendarPlus } from './calendar-plus';
-import { CollecticonMagnifierPlus } from './magnifier-plus';
-import { CollecticonMagnifierMinus } from './magnifier-minus';
-import { CollecticonFlask } from './flask';
-import { CollecticonMedal } from './medal';
 
 export {
   CollecticonArrowRight,
@@ -63,10 +59,6 @@ export {
   CollecticonProgressTickLow,
   CollecticonCalendarMinus,
   CollecticonCalendarPlus,
-  CollecticonMagnifierPlus,
-  CollecticonMagnifierMinus,
-  CollecticonFlask,
-  CollecticonMedal,
   // Missing collecticons
   CollecticonEllipsisVertical,
   CollecticonArrowDown,

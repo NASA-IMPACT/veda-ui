@@ -17,8 +17,6 @@ import {
 } from '@devseed-ui/collecticons';
 import { DatasetLayersIcon } from '$components/common/custom-icon';
 import {
-  CollecticonMagnifierMinus,
-  CollecticonMagnifierPlus,
   CollecticonArrowRight,
   CollecticonArrowLoop,
   CollecticonChartLine,
@@ -34,8 +32,6 @@ import {
   CollecticonPage,
   CollecticonTick,
   CollecticonXmark,
-  CollecticonFlask,
-  CollecticonMedal,
   CollecticonEllipsisVertical,
   CollecticonArrowDown,
   CollecticonArrowUp,
@@ -451,38 +447,6 @@ const IconMappingTable: React.FC = () => {
                 collecticonName: 'CollecticonXmark',
                 uswds: Icon.Close,
                 uswdsName: 'Icon.Close',
-                custom: null,
-                customName: '-'
-              },
-              {
-                collecticon: CollecticonMagnifierPlus,
-                collecticonName: 'CollecticonMagnifierPlus',
-                uswds: Icon.ZoomIn,
-                uswdsName: 'Icon.ZoomIn',
-                custom: null,
-                customName: '-'
-              },
-              {
-                collecticon: CollecticonMagnifierMinus,
-                collecticonName: 'CollecticonMagnifierMinus',
-                uswds: Icon.ZoomOut,
-                uswdsName: 'Icon.ZoomOut',
-                custom: null,
-                customName: '-'
-              },
-              {
-                collecticon: CollecticonFlask,
-                collecticonName: 'CollecticonFlask',
-                uswds: Icon.Science,
-                uswdsName: 'Icon.Science',
-                custom: null,
-                customName: '-'
-              },
-              {
-                collecticon: CollecticonMedal,
-                collecticonName: 'CollecticonMedal',
-                uswds: Icon.Verified,
-                uswdsName: 'Icon.Verified',
                 custom: null,
                 customName: '-'
               },
