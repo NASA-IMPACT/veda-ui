@@ -8,6 +8,8 @@ import EmptyHub from '$components/common/empty-hub';
 import EmptyHubDeprecated from '$components/common/empty-hub.deprecated';
 import MapErrorMessage from '$components/common/blocks/scrollytelling/map-error-message';
 import MapErrorMessageDeprecated from '$components/common/blocks/scrollytelling/map-error-message.deprecated';
+import { ExternalLinkFlag } from '$components/common/external-link-flag';
+import ExternalLinkFlagDeprecated from '$components/common/external-link-flag.deprecated';
 
 // Styled Components
 const Container = styled.div`
@@ -203,6 +205,11 @@ const MapErrorMessagePair = createComponentPair(
   MapErrorMessage
 );
 
+const ExternalLinkFlagPair = createComponentPair(
+  ExternalLinkFlagDeprecated,
+  ExternalLinkFlag
+);
+
 // Migration examples data
 interface MigrationExampleData {
   title: string;
@@ -251,6 +258,16 @@ const MIGRATION_EXAMPLES: MigrationExampleData[] = [
     legacyIcons:
       'Icons: CollecticonCircleXmark (from map-error-message.deprecated.tsx)',
     migratedIcons: 'Icons: Icon.HighlightOff (from map-error-message.tsx)'
+  },
+  {
+    title: 'External Link Flag Migration',
+    description:
+      'The USWDS launch icon does not have a smaller size option, so the migrated version is expected to appear slightly larger.',
+    legacyComponent: <ExternalLinkFlagPair.Legacy />,
+    migratedComponent: <ExternalLinkFlagPair.Migrated />,
+    legacyIcons:
+      'Icons: CollecticonExpandTopRight size="small" (from external-link-flag.deprecated.tsx)',
+    migratedIcons: 'Icons: Icon.Launch size={3} (from external-link-flag.tsx)'
   }
   // Add more examples here as needed
 ];
