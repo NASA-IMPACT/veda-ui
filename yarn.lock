@@ -1424,7 +1424,7 @@
     "@devseed-ui/collecticons" "^4.1.0"
     "@devseed-ui/theme-provider" "^4.1.0"
 
-"@devseed-ui/collecticons@4.1.0", "@devseed-ui/collecticons@^4.1.0":
+"@devseed-ui/collecticons@^4.1.0":
   version "4.1.0"
   resolved "https://registry.npmjs.org/@devseed-ui%2fcollecticons/-/collecticons-4.1.0.tgz#d0d5237f1c03ce59d0d3a44cfd019d613761aba6"
   integrity sha512-hJWfflJZe6tjRtjgyk+zs/2UuLugGy+Kbs2nNULREAAjBp1Kt4stcrwKkAtbev/dbC+u0hGXPP8gCd5sG5c4Ag==
