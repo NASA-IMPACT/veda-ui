@@ -47,7 +47,10 @@ import {
 import {
   CalendarPlusIcon,
   CalendarMinusIcon,
-  DropIcon
+  DropIcon,
+  ProgressTickHighIcon,
+  ProgressTickMediumIcon,
+  ProgressTickLowIcon
 } from '$components/common/custom-icon';
 
 // Icon Guidelines Component
@@ -634,6 +637,31 @@ const IconMappingTable: React.FC = () => {
                 uswdsName: '-',
                 custom: CalendarMinusIcon,
                 customName: 'CalendarMinusIcon'
+              },
+              // Progress tick icons (migrated from icons-legacy)
+              {
+                collecticon: null,
+                collecticonName: '-',
+                uswds: null,
+                uswdsName: '-',
+                custom: ProgressTickHighIcon,
+                customName: 'ProgressTickHighIcon'
+              },
+              {
+                collecticon: null,
+                collecticonName: '-',
+                uswds: null,
+                uswdsName: '-',
+                custom: ProgressTickMediumIcon,
+                customName: 'ProgressTickMediumIcon'
+              },
+              {
+                collecticon: null,
+                collecticonName: '-',
+                uswds: null,
+                uswdsName: '-',
+                custom: ProgressTickLowIcon,
+                customName: 'ProgressTickLowIcon'
               }
             ].map((mapping, index) => (
               <tr

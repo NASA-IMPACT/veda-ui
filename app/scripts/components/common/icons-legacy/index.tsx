@@ -28,11 +28,6 @@ import {
 } from '@devseed-ui/collecticons';
 
 // Import custom collecticons from icons-legacy
-import {
-  CollecticonProgressTickHigh,
-  CollecticonProgressTickMedium,
-  CollecticonProgressTickLow
-} from './progress-tick';
 import { CollecticonCalendarMinus } from './calendar-minus';
 import { CollecticonCalendarPlus } from './calendar-plus';
 
@@ -54,9 +49,6 @@ export {
   CollecticonTick,
   CollecticonXmark,
   CollecticonXmarkSmall,
-  CollecticonProgressTickHigh,
-  CollecticonProgressTickMedium,
-  CollecticonProgressTickLow,
   CollecticonCalendarMinus,
   CollecticonCalendarPlus,
   // Missing collecticons

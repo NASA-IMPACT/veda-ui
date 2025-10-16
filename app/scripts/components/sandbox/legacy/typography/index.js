@@ -12,10 +12,10 @@ import {
 } from '$styles/variable-utils';
 import { VarHeading, VarLead, VarProse } from '$styles/variable-components';
 import {
-  CollecticonProgressTickHigh,
-  CollecticonProgressTickMedium,
-  CollecticonProgressTickLow
-} from '$components/common/icons-legacy/progress-tick';
+  ProgressTickHighIcon,
+  ProgressTickMediumIcon,
+  ProgressTickLowIcon
+} from '$components/common/custom-icon';
 
 const IntroFold = styled.div`
   position: relative;
@@ -195,9 +195,9 @@ function SandboxType() {
 
           <Wrapper>
             <p>
-              <CollecticonProgressTickHigh /> Low <br />
-              <CollecticonProgressTickMedium /> Medium <br />
-              <CollecticonProgressTickLow /> High
+              <ProgressTickHighIcon size={3} /> Low <br />
+              <ProgressTickMediumIcon size={3} /> Medium <br />
+              <ProgressTickLowIcon size={3} /> High
             </p>
             <p>
               <Icon.Verified /> Agency standard/regulatory <br />
