@@ -48,6 +48,13 @@ const preview: Preview = {
         order: [
           'Getting Started',
           'Library Components',
+          [
+            'Library Components/Catalog',
+            'Library Components/Content Blocks',
+            'Library Components/Data Layers',
+            'Library Components/Icons',
+            'Library Components/Map Controls'
+          ],
           'Examples',
           'Guidelines'
         ]
