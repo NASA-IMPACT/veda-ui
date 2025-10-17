@@ -17,7 +17,7 @@ import {
   colorMapScale
 } from '$components/exploration/types.d.ts';
 import { DatasetData } from '$types/veda';
-import { CollecticonDatasetLayers } from '$components/common/icons-legacy/dataset-layers';
+import { DatasetLayersIcon } from '$components/common/custom-icon/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';
 
 import 'tippy.js/dist/tippy.css';
@@ -145,7 +145,7 @@ export default function DataLayerCard(props: DataLayerCardProps) {
         <DatasetCardInfo>
           <Header>
             <ParentDatasetTitle size='small'>
-              <CollecticonDatasetLayers /> <p>{parentDataset?.name}</p>
+              <DatasetLayersIcon size={3} /> <p>{parentDataset?.name}</p>
             </ParentDatasetTitle>
           </Header>
           <DatasetHeadline>

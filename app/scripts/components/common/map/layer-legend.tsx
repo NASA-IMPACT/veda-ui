@@ -7,11 +7,7 @@ import {
   truncated,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
-import {
-  CollecticonCircleInformation,
-  CollecticonChevronDown,
-  CollecticonChevronUp
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { Toolbar, ToolbarIconButton } from '@devseed-ui/toolbar';
 import { followCursor } from 'tippy.js';
 import { scaleLinear } from 'd3';
@@ -301,10 +297,7 @@ export function LayerLegend(
                 active={isExpanded}
                 onClick={toggleExpanded}
               >
-                <CollecticonCircleInformation
-                  title='Information about layer'
-                  meaningful
-                />
+                <Icon.Info size={3} />
               </ToolbarIconButton>
               {type === 'categorical' && (
                 <ToolbarIconButton
@@ -313,12 +306,9 @@ export function LayerLegend(
                   onClick={chevToggleExpanded}
                 >
                   {isChevToggleExpanded ? (
-                    <CollecticonChevronUp title='Expand Legend' meaningful />
+                    <Icon.ExpandLess size={3} />
                   ) : (
-                    <CollecticonChevronDown
-                      title='Collapse Legend'
-                      meaningful
-                    />
+                    <Icon.ExpandMore size={3} />
                   )}
                 </ToolbarIconButton>
               )}

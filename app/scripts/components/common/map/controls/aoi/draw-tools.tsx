@@ -1,5 +1,5 @@
 import React from 'react';
-import { CollecticonTick, CollecticonXmark } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { USWDSButton, USWDSButtonGroup } from '$uswds';
 
 export const DrawTools = ({
@@ -23,7 +23,7 @@ export const DrawTools = ({
       size='small'
       className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
     >
-      <CollecticonTick aria-hidden='true' />
+      <Icon.Check aria-hidden='true' size={3} />
       Confirm Area
     </USWDSButton>
     <USWDSButton
@@ -33,7 +33,7 @@ export const DrawTools = ({
       size='small'
       className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
     >
-      <CollecticonXmark aria-hidden='true' />
+      <Icon.Close aria-hidden='true' size={3} />
       Cancel
     </USWDSButton>
   </USWDSButtonGroup>

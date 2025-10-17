@@ -4,10 +4,7 @@ import { themeVal } from '@devseed-ui/theme-provider';
 import { FormInput, FormGroupStructure, Form } from '@devseed-ui/form';
 import { Button } from '@devseed-ui/button';
 import { Heading, Overline } from '@devseed-ui/typography';
-import {
-  CollecticonClipboard,
-  CollecticonClipboardTick
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { Modal, ModalHeadline } from '@devseed-ui/modal';
 import { CopyField } from '$components/common/copy-field';
 
@@ -74,14 +71,14 @@ export function TileUrlModal(props: {
                           variation='primary-fill'
                         >
                           {showCopiedMsg ? (
-                            <CollecticonClipboardTick
-                              meaningful
-                              title={`${tileUrl.label} was copied`}
+                            <Icon.Check
+                              size={3}
+                              aria-label={`${tileUrl.label} was copied`}
                             />
                           ) : (
-                            <CollecticonClipboard
-                              meaningful
-                              title={`Copy ${tileUrl.label}`}
+                            <Icon.ContentCopy
+                              size={3}
+                              aria-label={`Copy ${tileUrl.label}`}
                             />
                           )}
                         </Button>

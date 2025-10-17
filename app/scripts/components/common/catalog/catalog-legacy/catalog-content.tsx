@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import styled from 'styled-components';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import TextHighlight from '../../text-highlight';
-import { CollecticonDatasetLayers } from '../../icons-legacy/dataset-layers';
+import { DatasetLayersIcon } from '../../custom-icon/dataset-layers';
 import { prepareDatasets } from '../prepare-datasets';
 import { CatalogCard } from '../catalog-card';
 import { FilterActions } from '../utils';
@@ -269,7 +269,7 @@ function CatalogContent({
                   <div>
                     <Headline>
                       <ParentDatasetTitle>
-                        <CollecticonDatasetLayers /> {currentDataset.name}
+                        <DatasetLayersIcon size={4} /> {currentDataset.name}
                         {getSelectedLayerCount(currentDataset) > 0 && (
                           <SelectedCard>
                             <span>

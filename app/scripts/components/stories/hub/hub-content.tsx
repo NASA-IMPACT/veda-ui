@@ -3,7 +3,7 @@ import React, { useRef, useMemo } from 'react';
 import styled from 'styled-components';
 import { glsp } from '@devseed-ui/theme-provider';
 import { Button } from '@devseed-ui/button';
-import { CollecticonXmarkSmall } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { VerticalDivider } from '@devseed-ui/toolbar';
 import { Subtitle } from '@devseed-ui/typography';
 import PublishedDate from '$components/common/pub-date';
@@ -143,7 +143,7 @@ export default function HubContent(props: HubContentProps) {
             size='small'
             onClick={() => onAction(FilterActions.CLEAR)}
           >
-            Clear filters <CollecticonXmarkSmall />
+            Clear filters <Icon.Close size={3} />
           </Button>
         )}
       </StoryCount>

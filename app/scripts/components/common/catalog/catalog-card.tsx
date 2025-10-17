@@ -1,15 +1,11 @@
 import React from 'react';
 import styled, { css } from 'styled-components';
-import {
-  CollecticonPlus,
-  CollecticonTickSmall,
-  iconDataURI
-} from '@devseed-ui/collecticons';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Card, CardType } from '../card';
 import { CardTopicsList } from '../card/styles';
 import TextHighlight from '../text-highlight';
 import { getDatasetDescription, getMediaProperty } from './utils';
+import { COLLECTICON_DATA_URIS } from '$styles/icon-data-uris';
 import { DatasetData, DatasetLayer } from '$types/veda';
 import {
   TAXONOMY_TOPICS,
@@ -58,11 +54,7 @@ const CardSelectable = styled(Card)<{
         border-radius: ${themeVal('shape.ellipsoid')};
         font-weight: ${themeVal('type.base.bold')};
         line-height: 1rem;
-        background-image: url(${({ theme }) =>
-          iconDataURI(CollecticonPlus, {
-            color: theme.color?.surface,
-            size: 'large'
-          })});
+        background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_PLUS_WHITE}');
         background-repeat: no-repeat;
         background-position: 0.75rem center;
         pointer-events: none;
@@ -84,11 +76,7 @@ const CardSelectable = styled(Card)<{
         content: 'Selected';
         color: ${themeVal('color.surface')};
         padding-left: 2.75rem;
-        background-image: url(${({ theme }) =>
-          iconDataURI(CollecticonTickSmall, {
-            color: theme.color?.surface,
-            size: 'large'
-          })});
+        background-image: url('${COLLECTICON_DATA_URIS.COLLECTICON_TICK_SMALL_WHITE}');
         background-color: ${themeVal('color.base')};
       }
       &:hover ::before {

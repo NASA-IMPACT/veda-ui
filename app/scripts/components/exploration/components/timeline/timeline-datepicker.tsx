@@ -1,6 +1,6 @@
 import format from 'date-fns/format';
 import React from "react";
-import { CollecticonChevronDownSmall } from "@devseed-ui/collecticons";
+import { Icon } from '@trussworks/react-uswds';
 import { glsp, themeVal } from "@devseed-ui/theme-provider";
 import styled from "styled-components";
 import { View } from 'react-calendar/dist/cjs/shared/types';
@@ -62,7 +62,7 @@ export const TimelineDatePicker = ({
         >
           <span className='head-reference'>{triggerHeadReference}</span>
           <span>{format(selectedDay ?? new Date(), (triggerLabelFormat))}</span>
-          <CollecticonChevronDownSmall />
+          <Icon.ExpandMore size={3} />
         </DatePickerTrigger>
       )}
     />

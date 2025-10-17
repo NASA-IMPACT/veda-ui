@@ -3,11 +3,7 @@ import { createPortal } from 'react-dom';
 import { Feature, Polygon } from 'geojson';
 import styled, { css, useTheme } from 'styled-components';
 
-import {
-  CollecticonPencil,
-  CollecticonTrashBin,
-  CollecticonUpload2
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { Toolbar, ToolbarLabel, VerticalDivider } from '@devseed-ui/toolbar';
 import { themeVal, glsp, disabled } from '@devseed-ui/theme-provider';
 
@@ -138,14 +134,14 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
                   tipProps={{ placement: 'bottom' }}
                   onClick={drawingActions.start}
                 >
-                  <CollecticonPencil meaningful title='Draw new AOI' />
+                  <Icon.Edit size={3} aria-label='Draw new AOI' />
                 </TipToolbarIconButton>
                 <TipToolbarIconButton
                   tipContent='Upload a new area of interest'
                   tipProps={{ placement: 'bottom' }}
                   onClick={() => setAoIModalRevealed(true)}
                 >
-                  <CollecticonUpload2 meaningful title='Upload geoJSON' />
+                  <Icon.FileUpload size={3} aria-label='Upload geoJSON' />
                 </TipToolbarIconButton>
               </>
             )}
@@ -162,7 +158,7 @@ const AoiControl = ({ disableReason }: { disableReason?: React.ReactNode }) => {
             size='small'
             className='padding-top-05 padding-right-105 padding-bottom-05 padding-left-105'
           >
-            <CollecticonTrashBin title='Delete area' />
+            <Icon.Delete size={3} aria-label='Delete area' />
             Delete area
           </USWDSButton>
         </FloatingBar>

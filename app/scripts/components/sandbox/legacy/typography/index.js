@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { add, glsp, media, themeVal } from '@devseed-ui/theme-provider';
+import { Icon } from '@trussworks/react-uswds';
 
 import Constrainer from '$styles/constrainer';
 import {
@@ -11,12 +12,10 @@ import {
 } from '$styles/variable-utils';
 import { VarHeading, VarLead, VarProse } from '$styles/variable-components';
 import {
-  CollecticonProgressTickHigh,
-  CollecticonProgressTickMedium,
-  CollecticonProgressTickLow
-} from '$components/common/icons-legacy/progress-tick';
-import { CollecticonMedal } from '$components/common/icons-legacy/medal';
-import { CollecticonFlask } from '$components/common/icons-legacy/flask';
+  ProgressTickHighIcon,
+  ProgressTickMediumIcon,
+  ProgressTickLowIcon
+} from '$components/common/custom-icon';
 
 const IntroFold = styled.div`
   position: relative;
@@ -196,13 +195,13 @@ function SandboxType() {
 
           <Wrapper>
             <p>
-              <CollecticonProgressTickHigh /> Low <br />
-              <CollecticonProgressTickMedium /> Medium <br />
-              <CollecticonProgressTickLow /> High
+              <ProgressTickHighIcon size={3} /> Low <br />
+              <ProgressTickMediumIcon size={3} /> Medium <br />
+              <ProgressTickLowIcon size={3} /> High
             </p>
             <p>
-              <CollecticonMedal /> Agency standard/regulatory <br />
-              <CollecticonFlask /> Research
+              <Icon.Verified /> Agency standard/regulatory <br />
+              <Icon.Science /> Research
             </p>
           </Wrapper>
         </IntroFoldCopy>

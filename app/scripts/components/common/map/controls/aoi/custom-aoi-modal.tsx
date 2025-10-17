@@ -11,14 +11,7 @@ import {
   themeVal,
   visuallyHidden
 } from '@devseed-ui/theme-provider';
-import {
-  CollecticonArrowUp,
-  CollecticonTickSmall,
-  CollecticonXmarkSmall,
-  CollecticonCircleExclamation,
-  CollecticonCircleTick,
-  CollecticonCircleInformation
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import useCustomAoI, { acceptExtensions } from '../hooks/use-custom-aoi';
 import { variableGlsp, variableProseVSpace } from '$styles/variable-utils';
 
@@ -155,7 +148,7 @@ export default function CustomAoIModal({
             </p>
             <FileUpload>
               <Button variation='base-outline' onClick={onUploadClick}>
-                <CollecticonArrowUp />
+                <Icon.ArrowUpward size={3} />
                 Upload file...
               </Button>
               {fileInfo && (
@@ -179,19 +172,19 @@ export default function CustomAoIModal({
               <UploadListInfo>
                 {uploadFileWarnings.map((w) => (
                   <UploadInfoItemWarnings key={w}>
-                    <CollecticonCircleInformation />
+                    <Icon.Info size={3} />
                     <span>{w}</span>
                   </UploadInfoItemWarnings>
                 ))}
                 {features && (
                   <UploadInfoItemSuccess>
-                    <CollecticonCircleTick />
+                    <Icon.CheckCircle size={3} />
                     <span>File uploaded successfully.</span>
                   </UploadInfoItemSuccess>
                 )}
                 {uploadFileError && (
                   <UploadInfoItemError>
-                    <CollecticonCircleExclamation /> {uploadFileError}
+                    <Icon.Error size={3} /> {uploadFileError}
                   </UploadInfoItemError>
                 )}
               </UploadListInfo>
@@ -202,7 +195,7 @@ export default function CustomAoIModal({
       renderFooter={() => (
         <UploadFileModalFooter>
           <Button variation='base-text' onClick={onCloseClick}>
-            <CollecticonXmarkSmall />
+            <Icon.Close size={3} />
             Cancel
           </Button>
           <Button
@@ -210,7 +203,7 @@ export default function CustomAoIModal({
             disabled={!features}
             onClick={onConfirmClick}
           >
-            <CollecticonTickSmall />
+            <Icon.Check size={3} />
             Add area
           </Button>
         </UploadFileModalFooter>

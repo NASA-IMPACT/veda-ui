@@ -8,12 +8,7 @@ import {
   DropMenuItem,
   DropTitle
 } from '@devseed-ui/dropdown';
-import {
-  CollecticonCode,
-  CollecticonCompass,
-  CollecticonEllipsisVertical,
-  CollecticonPage
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { DatasetData } from '$types/veda';
 
 import { getDatasetPath, getDatasetExplorePath } from '$utils/routes';
@@ -59,7 +54,7 @@ function DatasetMenu(props: DatasetMenuProps) {
               className={className}
               {...rest}
             >
-              <CollecticonEllipsisVertical color='white' />
+              <Icon.MoreVert size={3} color='white' />
             </USWDSButton>
           </div>
         )}
@@ -72,7 +67,7 @@ function DatasetMenu(props: DatasetMenuProps) {
               data-dropdown='click.close'
               to={getDatasetPath(dataset)}
             >
-              <CollecticonPage /> Learn more
+              <Icon.ContactPage size={3} /> Learn more
             </DropMenuItem>
           </li>
           <li>
@@ -81,7 +76,7 @@ function DatasetMenu(props: DatasetMenuProps) {
               data-dropdown='click.close'
               to={getDatasetExplorePath(dataset)}
             >
-              <CollecticonCompass /> Explore data
+              <Icon.NearMe size={3} /> Explore data
             </DropMenuItem>
           </li>
           <li>
@@ -93,7 +88,7 @@ function DatasetMenu(props: DatasetMenuProps) {
                 onClick={() => setRevealed(true)}
                 visuallyDisabled={!hasUsage}
               >
-                <CollecticonCode />
+                <Icon.Code size={3} />
                 Access data
               </DropMenuItemButtonDisable>
             </Tip>

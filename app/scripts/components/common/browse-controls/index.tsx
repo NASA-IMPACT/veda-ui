@@ -2,10 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Overline } from '@devseed-ui/typography';
 import { Button, ButtonProps } from '@devseed-ui/button';
-import {
-  CollecticonChevronDownSmall,
-  CollecticonChevronUpSmall
-} from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 import { glsp, truncated } from '@devseed-ui/theme-provider';
 import { DropMenu, DropTitle } from '@devseed-ui/dropdown';
 
@@ -154,11 +151,7 @@ function DropdownOptions(props: DropdownOptionsProps) {
         >
           <ButtonPrefix>{prefix}</ButtonPrefix>
           <span>{currentItem?.name}</span>{' '}
-          {active ? (
-            <CollecticonChevronUpSmall />
-          ) : (
-            <CollecticonChevronDownSmall />
-          )}
+          {active ? <Icon.ExpandLess size={3} /> : <Icon.ExpandMore size={3} />}
         </MainDropButton>
       )}
     >

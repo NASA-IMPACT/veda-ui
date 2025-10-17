@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useAtomValue } from 'jotai';
 import { useTour } from '@reactour/tour';
-import { CollecticonCircleQuestion } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import { SelectorButton } from '$components/common/map/style/button';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
@@ -22,7 +22,7 @@ export function TourButtonComponent({
       disabled={disabled}
       onClick={onClick}
     >
-      <CollecticonCircleQuestion />
+      <Icon.HelpOutline size={3} />
     </SelectorButton>
   );
 }

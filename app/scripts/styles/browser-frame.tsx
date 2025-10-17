@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
-import { CollecticonExpandTopRight } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 function BrowserFrameComponent(props: { children: ReactNode; link?: string }) {
   const { children, link, ...rest } = props;
@@ -17,7 +17,7 @@ function BrowserFrameComponent(props: { children: ReactNode; link?: string }) {
           <div className='link'>
             <a target='_blank' rel='noreferrer' href={link}>
               Open in a new browser tab {' '}
-              <CollecticonExpandTopRight size='small' />
+              <Icon.Launch size={3} />
             </a>
           </div>
         )}

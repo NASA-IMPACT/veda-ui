@@ -4,7 +4,7 @@ import { glsp, themeVal } from '@devseed-ui/theme-provider';
 import { Icon } from '@trussworks/react-uswds';
 
 import TextHighlight from '../text-highlight';
-import { CollecticonDatasetLayers } from '../icons-legacy/dataset-layers';
+import { DatasetLayersIcon } from '../custom-icon/dataset-layers';
 import { Card, CardType } from '../card';
 import { Tags } from '../tags';
 import { prepareDatasets } from './prepare-datasets';
@@ -348,7 +348,8 @@ export default function CatalogContent({
                         <div>
                           <Headline>
                             <ParentDatasetTitle>
-                              <CollecticonDatasetLayers /> {currentDataset.name}
+                              <DatasetLayersIcon size={4} />{' '}
+                              {currentDataset.name}
                               {getSelectedLayerCount(currentDataset) > 0 && (
                                 <SelectedCard>
                                   <span>

@@ -16,7 +16,7 @@ import {
 import { reveal } from '@devseed-ui/animation';
 import { Heading, Overline } from '@devseed-ui/typography';
 import { Button } from '@devseed-ui/button';
-import { CollecticonHamburgerMenu } from '@devseed-ui/collecticons';
+import { Icon } from '@trussworks/react-uswds';
 
 import UnscrollableBody from '../unscrollable-body';
 import { NavItem } from '../page-header/types';
@@ -296,7 +296,7 @@ function PageHeaderLegacy(props: PageHeaderLegacyProps) {
               onClick={() => setGlobalNavRevealed((v) => !v)}
               active={globalNavRevealed}
             >
-              <CollecticonHamburgerMenu />
+              <Icon.Menu size={3} />
             </GlobalNavToggle>
           </GlobalNavActions>
         )}
