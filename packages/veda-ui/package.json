@@ -1,0 +1,21 @@
+{
+  "name": "@teamimpact/veda-ui",
+  "description": "VEDA UI Component Library",
+  "version": "6.19.0",
+  "author": {
+    "name": "Development Seed",
+    "url": "https://developmentseed.org/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NASA-IMPACT/veda-ui.git"
+  },
+  "license": "Apache-2.0",
+  "main": "lib/main.js",
+  "module": "lib/module.js",
+  "types": "lib/index.d.ts",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "files": [
+    "lib"
+  ]
+}
