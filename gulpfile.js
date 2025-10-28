@@ -52,7 +52,7 @@ function watcher() {
 
 function clean() {
   // Remove build cache and dist.
-  return del(['dist', 'lib', '.parcel-cache']);
+  return del(['dist', 'packages/veda-ui/lib', '.parcel-cache']);
 }
 
 // Simple task to copy the static files to the dist directory. The static
@@ -90,7 +90,7 @@ function parcelBuildLib(cb) {
   const args = [
     'build',
     'packages/veda-ui/src/libs/index.ts',
-    '--dist-dir=lib',
+    '--dist-dir=packages/veda-ui/lib',
     '--config',
     parcelLibConfig
   ];
