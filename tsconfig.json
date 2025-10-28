@@ -9,13 +9,13 @@
     "baseUrl": "./",
     "jsx": "react",
     "paths": {
-      "$components/*": ["app/scripts/components/*"],
-      "$styles/*": ["app/scripts/styles/*"],
-      "$utils/*": ["app/scripts/utils/*"],
-      "$types/*": ["app/scripts/types/*"],
-      "$context/*": ["app/scripts/context/*"],
-      "$data-layer/*": ["app/scripts/data-layer/*"],
-      "$uswds": ["app/scripts/uswds/"],
+      "$components/*": ["packages/veda-ui/src/components/*"],
+      "$styles/*": ["packages/veda-ui/src/styles/*"],
+      "$utils/*": ["packages/veda-ui/src/utils/*"],
+      "$types/*": ["packages/veda-ui/src/types/*"],
+      "$context/*": ["packages/veda-ui/src/context/*"],
+      "$data-layer/*": ["packages/veda-ui/src/data-layer/*"],
+      "$uswds": ["packages/veda-ui/src/uswds/"],
       "$storybook": ["storybook/*"]
     }
   },
