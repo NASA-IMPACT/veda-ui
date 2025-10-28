@@ -110,12 +110,29 @@ export default function FiltersControl(props: FiltersMenuProps) {
             <Icon.Close size={3} />
           </USWDSButton>
         </div>
-        <USWDSSearch
+        {/*<USWDSSearch
           placeholder='Search by title, description'
           value={search ?? ''}
           onChange={(v) => onAction(FilterActions.SEARCH, v.target.value)}
           className='margin-bottom-3'
+        />*/}
+        <USWDSSearch
+          placeholder='Search by title, description'
+          value={search || ''} // keep the text visible even after rerender
+          onChange={(e) => {
+            const value = e.target.value;
+            onAction(FilterActions.SEARCH, value);
+          }}
+          onKeyDown={(e) => {
+            // optional: pressing Enter explicitly commits search and resets pagination
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              onAction(FilterActions.SEARCH, search);
+            }
+          }}
+          className='margin-bottom-3'
         />
+
         {taxonomiesItems.map(({ title, items }) => (
           <CheckableFilters
             key={title}

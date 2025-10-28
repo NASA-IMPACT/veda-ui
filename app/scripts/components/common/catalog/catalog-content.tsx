@@ -280,7 +280,7 @@ export default function CatalogContent({
     });
     setDatasetsToDisplay(updated);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFilters, taxonomies, search]);
+  }, [selectedFilters, taxonomies, search, datasets]);
 
   const getSelectedLayerCount = (dataset) => {
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
@@ -288,6 +288,18 @@ export default function CatalogContent({
   };
 
   const totalPages = Math.ceil(datasetsToDisplay.length / itemsPerPage);
+  // Reset to page 1 whenever the search term changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, taxonomies]);
+
+  // Guard against empty results on higher pages
+  useEffect(() => {
+    const totalPages = Math.ceil(datasetsToDisplay.length / itemsPerPage);
+    if (currentPage > totalPages && totalPages > 0) {
+      setCurrentPage(1);
+    }
+  }, [datasetsToDisplay, currentPage, itemsPerPage]);
 
   return (
     <div className='margin-bottom-15 grid-row grid-gap-sm'>
