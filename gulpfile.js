@@ -89,7 +89,7 @@ function copyUswdsImages() {
 function parcelBuildLib(cb) {
   const args = [
     'build',
-    'app/scripts/libs/index.ts',
+    'packages/veda-ui/src/libs/index.ts',
     '--dist-dir=lib',
     '--config',
     parcelLibConfig
