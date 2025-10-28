@@ -26,7 +26,7 @@
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
-    "buildlib": "gulp buildlib && cp README-lib.md lib/README.md",
+    "buildlib": "gulp buildlib && cp README-lib.md packages/veda-ui/lib/README.md",
     "stage": "yarn buildlib && NODE_ENV=staging gulp",
     "clean": "gulp clean",
     "lint": "yarn lint:storybook && yarn lint:scripts && yarn lint:css",
