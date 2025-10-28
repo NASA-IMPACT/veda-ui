@@ -280,7 +280,12 @@ export default function CatalogContent({
     });
     setDatasetsToDisplay(updated);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFilters, taxonomies, search]);
+  }, [selectedFilters, taxonomies, search, datasets]);
+
+  // when the filter changes, go to first page of the results
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, taxonomies]);
 
   const getSelectedLayerCount = (dataset) => {
     return dataset.layers.filter((layer) => selectedIds?.includes(layer.id))
