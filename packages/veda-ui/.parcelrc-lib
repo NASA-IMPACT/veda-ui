@@ -1,4 +1,4 @@
 {
-  "extends": ["./.parcelrc"],
+  "extends": ["../../.parcelrc"],
   "resolvers": ["parcel-resolver-alias", "..."]
 }
