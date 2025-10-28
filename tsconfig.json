@@ -17,6 +17,8 @@
       "$data-layer/*": ["packages/veda-ui/src/data-layer/*"],
       "$uswds": ["packages/veda-ui/src/uswds/"],
       "$graphics/*": ["app/graphics/*"],
+      "$test/*": ["test/*"],
+      "$mock/*": ["mock/*"],
       "$storybook": ["storybook/*"]
     }
   },

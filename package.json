@@ -31,8 +31,8 @@
     "clean": "gulp clean",
     "lint": "yarn lint:storybook && yarn lint:scripts && yarn lint:css",
     "lint:storybook": "eslint storybook/src/",
-    "lint:scripts": "eslint app/scripts/",
-    "lint:css": "stylelint 'app/styles/**/**' 'app/scripts/**/*.(js|ts|tsx|jsx)'",
+    "lint:scripts": "eslint packages/veda-ui/src/",
+    "lint:css": "stylelint 'packages/veda-ui/src/styles/**/**' 'packages/veda-ui/src/**/*.(js|ts|tsx|jsx)'",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "TZ=UTC jest",
     "pretest:e2e": "node test/playwright/generateTestData.js",
@@ -274,6 +274,7 @@
     "$libs": "~/packages/veda-ui/src/libs",
     "$graphics": "~/app/graphics",
     "$test": "~/test",
+    "$mock": "~/mock",
     "$static": "~/static"
   },
   "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"

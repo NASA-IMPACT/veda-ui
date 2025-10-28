@@ -3,11 +3,11 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { BrowserRouter } from 'react-router-dom';
-import { navItems } from '../../../../../mock/veda.config.js';
 import NasaLogoColor from '../nasa-logo-color';
-import { VedaUIConfigProvider } from '../../../../../test/utils.js';
 import { NavItem } from './types';
 import PageHeader from './index';
+import { VedaUIConfigProvider } from '$test/utils.js';
+import { navItems } from '$mock/veda.config.js';
 
 // @NOTE: Possible Test cases
 // config & create dynamic nav menu list fn - different scenerios, happy vs unhappy path

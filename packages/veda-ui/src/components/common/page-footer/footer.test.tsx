@@ -1,12 +1,12 @@
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { render, screen } from '@testing-library/react';
-import { navItems } from '../../../../../mock/veda.config.js';
-import { VedaUIConfigProvider } from '../../../../../test/utils.js';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem } from '../page-header/types.js';
 
 import PageFooter from './index';
+import { VedaUIConfigProvider } from '$test/utils.js';
+import { navItems } from '$mock/veda.config.js';
 
 const defaultFooterSetting = {
   secondarySection: {
