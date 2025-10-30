@@ -112,7 +112,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
         </div>
         <USWDSSearch
           placeholder='Search by title, description'
-          value={search ?? ''}
+          value={search || ''}
           onChange={(e) => onAction(FilterActions.SEARCH, e.target.value)}
           className='margin-bottom-3'
         />
