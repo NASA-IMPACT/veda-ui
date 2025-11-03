@@ -280,7 +280,7 @@ export default function CatalogContent({
     });
     setDatasetsToDisplay(updated);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedFilters, taxonomies, search, datasets]);
+  }, [selectedFilters, taxonomies, search]);
 
   // when the filter changes, go to first page of the results
   useEffect(() => {
