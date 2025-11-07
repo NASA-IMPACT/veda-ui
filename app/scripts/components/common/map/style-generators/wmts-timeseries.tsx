@@ -69,7 +69,7 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
         return {
           wmtsTileUrl: `${primaryUrl}?${tileParamsForWMTS}`,
           xyzTileUrl: `${primaryUrl}?${tileParamsAsString}&TileCol={x}&TileRow={y}&TileMatrix={z}`
-        }
+        };
       }}
       sourceParamFormatter={(url) => {
         const wmtsParams = (url as string).split('wmts.cgi?')[1];
