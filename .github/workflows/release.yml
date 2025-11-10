@@ -9,13 +9,13 @@ on:
 permissions:
   contents: write
 
-# This action requires a GitHub app with content write access installed 
+# This action requires a GitHub app with content write access installed
 # to bypass the main branch  protection rule and dispatch the event to a different repo
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    outputs: 
+    outputs:
       no_commit: ${{ steps.git-release.outputs.NO_COMMIT }}
     steps:
       - name: Generate a token
@@ -53,6 +53,27 @@ jobs:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
       - run: yarn
+      # Clean up any stale version tags left from failed release runs.
+      # Context:
+      # - Each release run uses release-it to bump package.json, create a new Git tag (e.g., v7.0.0),
+      #   and then publish to NPM. If the run fails after the tag is created but before publish,
+      #   that tag remains both locally in the local repo (inside the GitHub Actions runner) and remotely on GitHub.
+      # - "Locally" refers to the temporary clone created by actions/checkout@v4 inside the workflow runner.
+      # - "Remotely" refers to the GitHub repository itself ("origin" on GitHub.com).
+      #   The command `git push origin :refs/tags/v7.0.0` deletes the remote tag.
+      # - On the next run, if that stale tag still exists, release-it detects no version change
+      #   and fails with “Version not changed”.
+      # This step checks whether the tag for the current package.json version already exists,
+      # and deletes it locally and remotely so release-it can safely recreate it during this run.
+      - name: Clean stale tags from failed releases
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Checking for existing tag v$CURRENT_VERSION..."
+          if git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
+            echo "Removing stale tag v$CURRENT_VERSION"
+            git tag -d "v$CURRENT_VERSION" || true
+            git push origin ":refs/tags/v$CURRENT_VERSION" || true
+          fi
       - name: Release through Git
         id: git-release
         run: yarn release  --ci --verbose
@@ -83,7 +104,7 @@ jobs:
           client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": ${{ env.VERSION }}}'
   notify:
     # If any of job fails
-    if: failure() 
+    if: failure()
     runs-on: ubuntu-latest
     needs:
       - release
