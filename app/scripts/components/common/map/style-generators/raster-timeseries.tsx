@@ -255,7 +255,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     stacApiEndpoint,
     tileApiEndpoint,
     colorMap,
-    reScale,
     envApiStacEndpoint,
     envApiRasterEndpoint
   } = props;
@@ -328,7 +327,6 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
           opacity={opacity}
           colorMap={colorMap}
           generatorOrder={generatorOrder}
-          reScale={reScale}
           generatorPrefix='raster-timeseries'
           onStatusChange={changeStatus}
           metadataFormatter={(tilejsonData, tileParamsAsString) => {

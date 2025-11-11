@@ -55,7 +55,6 @@ export interface BaseTimeseriesProps extends BaseGeneratorParams {
   zoomExtent?: number[];
   onStatusChange?: (result: { status: ActionStatus; id: string }) => void;
   colorMap?: string;
-  reScale?: { min: number; max: number };
   envApiStacEndpoint: string;
   envApiRasterEndpoint: string;
 }
