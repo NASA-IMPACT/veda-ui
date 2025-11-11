@@ -67,12 +67,17 @@ jobs:
       # and deletes it locally and remotely so release-it can safely recreate it during this run.
       - name: Clean stale tags from failed releases
         run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 || echo "")
           CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Checking for existing tag v$CURRENT_VERSION..."
-          if git rev-parse "v$CURRENT_VERSION" >/dev/null 2>&1; then
-            echo "Removing stale tag v$CURRENT_VERSION"
-            git tag -d "v$CURRENT_VERSION" || true
-            git push origin ":refs/tags/v$CURRENT_VERSION" || true
+          if [ "$LAST_TAG" = "v$CURRENT_VERSION" ]; then
+            echo "Skipping cleanup: tag v$CURRENT_VERSION already valid."
+          else
+            STALE_TAG="v$CURRENT_VERSION"
+            if git rev-parse "$STALE_TAG" >/dev/null 2>&1; then
+              echo "Removing stale tag $STALE_TAG"
+              git tag -d "$STALE_TAG" || true
+              git push origin ":refs/tags/$STALE_TAG" || true
+            fi
           fi
       - name: Release through Git
         id: git-release
