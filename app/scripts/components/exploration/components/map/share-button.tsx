@@ -48,13 +48,13 @@ export function ShareButton({
       const shortenedUrl = data.short_url;
 
       // Copy to clipboard
-      await navigator.clipboard.writeText(shortenedUrl);
+      navigator.clipboard.writeText(shortenedUrl);
       setLinkCopied(true);
       // TODO: Consider adding a toast notification for success feedback
     } catch {
       // Fallback: copy current URL if shortening fails
       try {
-        await navigator.clipboard.writeText(window.location.href);
+        navigator.clipboard.writeText(window.location.href);
         setLinkCopied(true);
       } catch {
         // Silent fail - clipboard API may not be available in all contexts
