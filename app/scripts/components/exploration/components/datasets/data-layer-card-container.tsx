@@ -2,7 +2,10 @@ import React from 'react';
 import { useAtom } from 'jotai';
 import DataLayerCardPresentational from '$components/common/dataset-layer-card';
 import useParentDataset from '$components/exploration/hooks/use-parent-data';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import {
+  colorMapScale,
+  TimelineDataset
+} from '$components/exploration/types.d.ts';
 import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 import {
   useTimelineDatasetSettings,
@@ -31,6 +34,7 @@ export default function DataLayerCardContainer(props: CardProps) {
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
   const opacity = getSettings('opacity') ?? 100;
+  const effectiveReScale = colorMapScale ?? getSettings('reScale');
 
   const { parentDataset } = useParentDataset({
     datasetId: dataset.data.parentDataset.id
@@ -105,7 +109,7 @@ export default function DataLayerCardContainer(props: CardProps) {
       setVisible={setVisible}
       colorMap={colorMap}
       setColorMap={setColorMap}
-      colorMapScale={colorMapScale}
+      colorMapScale={effectiveReScale}
       setColorMapScale={setColorMapScale}
       parentDataset={parentDataset}
       onRemoveLayer={handleRemoveLayer}
