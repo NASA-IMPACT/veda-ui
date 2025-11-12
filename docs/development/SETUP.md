@@ -21,8 +21,7 @@ Install Node modules:
 
 ```
 yarn install
-cd storybook
-yarn install
+yarn storybook:install
 ```
 
 This command will install all the dependencies and devtools needed for local development.
