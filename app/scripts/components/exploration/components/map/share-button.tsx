@@ -1,19 +1,15 @@
 import React, { useCallback } from 'react';
-import { useAtomValue } from 'jotai';
 import { Icon } from '@trussworks/react-uswds';
 
 import { SelectorButton } from '$components/common/map/style/button';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
-import { timelineDatasetsAtom } from '$components/exploration/atoms/datasets';
 
 export function ShareButtonComponent({
   onClick,
-  disabled,
-  setLinkCopied
+  disabled
 }: {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled: boolean;
-  setLinkCopied: (copied: boolean) => void;
 }) {
   return (
     <SelectorButton
@@ -32,9 +28,6 @@ export function ShareButton({
 }: {
   setLinkCopied: (copied: boolean) => void;
 }) {
-  const datasets = useAtomValue(timelineDatasetsAtom);
-  const disabled = datasets.length === 0;
-
   const handleShare = useCallback(async () => {
     try {
       // Get current URL
@@ -73,8 +66,7 @@ export function ShareButton({
     () => (
       <ShareButtonComponent
         onClick={handleShare}
-        disabled={disabled}
-        setLinkCopied={setLinkCopied}
+        disabled={navigator.clipboard ? false : true}
       />
     ),
     {
