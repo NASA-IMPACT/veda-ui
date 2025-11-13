@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
+import { Alert } from '@trussworks/react-uswds';
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
 import {
   TimelineDataset,
@@ -10,6 +11,8 @@ import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
 import AoiLayer from './aoi-layer';
+
+import { ShareButton } from './share-button';
 import { ProjectionOptions } from '$types/veda';
 
 import Map, { Compare, MapControls } from '$components/common/map';
@@ -40,9 +43,20 @@ export function ExplorationMap(props: ExplorationMapProps) {
   const { envApiStacEndpoint, envMapboxToken } = useVedaUI();
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
-
+  const [linkCopied, setLinkCopied] = useState(false);
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
+
+  // Auto-reset linkCopied after 3 seconds
+  useEffect(() => {
+    if (linkCopied) {
+      const timer = setTimeout(() => {
+        setLinkCopied(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [linkCopied]);
 
   const {
     mapBasemapId,
@@ -176,6 +190,17 @@ export function ExplorationMap(props: ExplorationMapProps) {
           onOptionChange={onOptionChange}
         />
         <ScaleControl />
+        <ShareButton setLinkCopied={setLinkCopied} />
+        <div className='width-full display-flex flex-justify-center margin-top-3'>
+          <Alert
+            type='success'
+            headingLevel='h4'
+            slim
+            className={`${linkCopied ? '' : 'display-none'}  maxw-mobile`}
+          >
+            Link Copied to Clipboard.
+          </Alert>
+        </div>
         <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />

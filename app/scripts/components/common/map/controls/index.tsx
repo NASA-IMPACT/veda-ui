@@ -5,7 +5,11 @@ import {
   ControlPosition
 } from 'react-map-gl';
 
-export function NavigationControl({position='top-right'}: {position?: ControlPosition}) {
+export function NavigationControl({
+  position = 'top-right'
+}: {
+  position?: ControlPosition;
+}) {
   return <MapboxGLNavigationControl position={position} showCompass={false} />;
 }
 
