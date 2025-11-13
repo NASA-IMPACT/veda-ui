@@ -24,13 +24,13 @@ export default function DataLayerCardContainer(props: CardProps) {
   // All atom-based state management
   const [datasets, setDatasets] = useAtom(timelineDatasetsAtom);
   const datasetAtom = useTimelineDatasetAtom(dataset.data.id);
-  const datasetLegend = dataset.data.legend;
   const [getSettings, setSetting] = useTimelineDatasetSettings(datasetAtom);
   const [isVisible, setVisible] = useTimelineDatasetVisibility(datasetAtom);
   const [colorMap, setColorMap] = useTimelineDatasetColormap(datasetAtom);
   const [colorMapScale, setColorMapScale] =
     useTimelineDatasetColormapScale(datasetAtom);
   const opacity = getSettings('opacity') ?? 100;
+  const effectiveReScale = colorMapScale ?? getSettings('reScale');
 
   const { parentDataset } = useParentDataset({
     datasetId: dataset.data.parentDataset.id
@@ -105,7 +105,7 @@ export default function DataLayerCardContainer(props: CardProps) {
       setVisible={setVisible}
       colorMap={colorMap}
       setColorMap={setColorMap}
-      colorMapScale={colorMapScale}
+      colorMapScale={effectiveReScale}
       setColorMapScale={setColorMapScale}
       parentDataset={parentDataset}
       onRemoveLayer={handleRemoveLayer}
