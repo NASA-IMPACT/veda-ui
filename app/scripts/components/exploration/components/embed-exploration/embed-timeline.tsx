@@ -5,9 +5,11 @@ import { Icon } from '@trussworks/react-uswds';
 interface DateTimePickerProps {
   date: Date | null;
   setDate: (date: Date | null) => void;
+  timeDensity?: 'day' | 'month' | 'year';
 }
+
 const DateTimePicker = (props: DateTimePickerProps) => {
-  const { date, setDate } = props;
+  const { date, setDate, timeDensity = 'day' } = props;
 
   if (!date) {
     return (
@@ -25,22 +27,44 @@ const DateTimePicker = (props: DateTimePickerProps) => {
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
   const day = String(date.getDate()).padStart(2, '0');
-  const formattedDate = `${year} ${month} ${day}`;
+  let formattedDate: string;
+  switch (timeDensity) {
+    case 'year':
+      formattedDate = `${year}`;
+      break;
+    case 'month':
+      formattedDate = `${year}-${month}`;
+      break;
+    case 'day':
+    default:
+      formattedDate = `${year}-${month}-${day}`;
+      break;
+  }
 
-  const adjustDateByDays = (amount: number) => {
+  const adjustDate = (amount: number) => {
     const newDate = new Date(date.getTime());
-    newDate.setDate(newDate.getDate() + amount);
+    switch (timeDensity) {
+      case 'year':
+        newDate.setUTCFullYear(newDate.getUTCFullYear() + amount);
+        break;
+      case 'month':
+        newDate.setUTCMonth(newDate.getUTCMonth() + amount);
+        break;
+      case 'day':
+      default:
+        newDate.setUTCDate(newDate.getUTCDate() + amount);
+        break;
+    }
     setDate(newDate);
   };
-
   return (
     <div className='display-flex flex-align-center z-index-100 '>
       <Button
         type='button'
         unstyled
         className='margin-right-1 text-base-darker bg-white'
-        onClick={(e) => {
-          adjustDateByDays(1);
+        onClick={() => {
+          adjustDate(-1);
         }}
         aria-label='Go to previous day'
       >
@@ -58,8 +82,8 @@ const DateTimePicker = (props: DateTimePickerProps) => {
         type='button'
         unstyled
         className='margin-left-1 text-base-darker bg-white'
-        onClick={(e) => {
-          adjustDateByDays(1);
+        onClick={() => {
+          adjustDate(1);
         }}
         aria-label='Go to next day'
       >

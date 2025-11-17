@@ -322,12 +322,20 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
       </Map>
       <BaseTimelineContainer isCompareMode={!!comparedDay}>
         {selectedDay && (
-          <DateTimePicker date={selectedDay} setDate={setSelectedDay} />
+          <DateTimePicker
+            date={selectedDay}
+            setDate={setSelectedDay}
+            timeDensity={baseTimeDensity}
+          />
         )}
       </BaseTimelineContainer>
       <CompareTimelineContainer>
         {comparedDay && (
-          <DateTimePicker date={comparedDay} setDate={setComparedDay} />
+          <DateTimePicker
+            date={comparedDay}
+            setDate={setComparedDay}
+            timeDensity={compareTimeDensity}
+          />
         )}
       </CompareTimelineContainer>
     </Carto>
