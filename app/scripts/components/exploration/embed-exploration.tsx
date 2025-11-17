@@ -18,6 +18,8 @@ import {
 } from '../common/map/controls/map-options/basemap';
 import DateTimePicker from './components/embed-exploration/embed-timeline';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
+import { zoomAtom } from './atoms/zoom';
+import { centerAtom } from './atoms/center';
 import Map, { Compare, MapControls } from '$components/common/map';
 import {
   NavigationControl,
@@ -65,6 +67,8 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
   const { datasets } = props;
   const [selectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay] = useAtom(selectedCompareDateAtom);
+  const [zoom] = useAtom(zoomAtom);
+  const [center] = useAtom(centerAtom);
   return (
     <>
       <LayoutProps
@@ -80,8 +84,8 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
         dateTime={selectedDay}
         compareDateTime={selectedCompareDay}
         compareLabel='CO₂ Emissions (left) VS NOₓ Emissions (right) (Dec 2021)'
-        center={[-74.144488, 40.6976312]}
-        zoom={3}
+        center={center}
+        zoom={zoom}
       />
     </>
   );
