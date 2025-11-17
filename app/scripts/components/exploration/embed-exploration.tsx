@@ -86,7 +86,6 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
         datasets={datasets}
         dateTime={selectedDay}
         compareDateTime={selectedCompareDay}
-        compareLabel='CO₂ Emissions (left) VS NOₓ Emissions (right) (Dec 2021)'
         center={center}
         zoom={zoom}
       />
@@ -100,7 +99,6 @@ interface EmbeddedLayersExplorationProps {
   compareDateTime?: Date | null;
   center?: [number, number];
   zoom?: number;
-  compareLabel?: string;
   projectionId?: ProjectionOptions['id'];
   projectionCenter?: ProjectionOptions['center'];
   projectionParallels?: ProjectionOptions['parallels'];
@@ -190,7 +188,6 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
     datasets,
     dateTime,
     compareDateTime,
-    compareLabel,
     center,
     zoom,
     projectionId,
@@ -243,7 +240,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   );
   const baseTimeDensity = baseDataLayer?.data.timeDensity;
   const compareTimeDensity = compareDataLayer?.data.timeDensity;
-
+  const compareLabel = `${baseDataLayer?.data?.name} vs ${compareDataLayer?.data?.name}`;
   const mapOptions: Partial<MapboxOptions> = {
     style: DEFAULT_MAP_STYLE_URL,
     logoPosition: 'bottom-left',
@@ -278,40 +275,6 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
     setMapBasemapId(basemapId);
   }, [basemapId]);
 
-  const computedCompareLabel = useMemo(() => {
-    // Use a provided label if it exist.
-    if (compareLabel) return compareLabel as string;
-    // Use label function from originalData.Compare
-    else if (baseDataLayer?.data.compare?.mapLabel) {
-      if (typeof baseDataLayer.data.compare.mapLabel === 'string')
-        return baseDataLayer.data.compare.mapLabel;
-      const labelFn = baseDataLayer.data.compare.mapLabel as (
-        unknown
-      ) => string;
-      return labelFn({
-        dateFns,
-        datetime: selectedDay,
-        compareDatetime: comparedDay
-      });
-    }
-
-    // Default to date comparison.
-    return selectedDay && comparedDay
-      ? formatCompareDate(
-          selectedDay,
-          comparedDay,
-          baseTimeDensity,
-          compareTimeDensity
-        )
-      : null;
-  }, [
-    compareLabel,
-    baseDataLayer,
-    selectedDay,
-    comparedDay,
-    baseTimeDensity,
-    compareTimeDensity
-  ]);
   const initialPosition = useMemo(
     () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
     [center, zoom]
@@ -362,7 +325,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
               id='compare-message'
               active={!!(compareDataLayer && comparedDay)}
             >
-              {computedCompareLabel}
+              {compareLabel}
             </MapMessage>
           ) : (
             <MapMessage
