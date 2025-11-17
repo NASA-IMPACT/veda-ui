@@ -4,6 +4,7 @@ import { MapboxOptions } from 'mapbox-gl';
 import * as dateFns from 'date-fns';
 import { useAtom } from 'jotai';
 import {
+  validateProjectionBlockProps,
   convertProjectionToMapbox,
   projectionDefault
 } from '../common/map/controls/map-options/projections';
@@ -36,6 +37,8 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { LayoutProps } from '$components/common/layout-root';
+import { validateRangeNum } from '$utils/utils';
+import { HintedError } from '$utils/hinted-error';
 
 export const mapHeight = '32rem';
 const Carto = styled.div`
@@ -120,6 +123,67 @@ const getDataLayer = (
     }
   };
 };
+const lngValidator = validateRangeNum(-180, 180);
+const latValidator = validateRangeNum(-90, 90);
+
+function validateBlockProps(props: EmbeddedLayersExplorationProps) {
+  const {
+    dateTime,
+    compareDateTime,
+    center,
+    zoom,
+    projectionId,
+    projectionCenter,
+    projectionParallels
+  } = props;
+
+  const requiredProperties = ['dateTime'];
+  const missingMapProps = requiredProperties.filter(
+    (p) => props[p] === undefined
+  );
+
+  const missingError =
+    !!missingMapProps.length &&
+    `- Missing some properties: ${missingMapProps
+      .map((p) => `[${p}]`)
+      .join(', ')}`;
+
+  const dateError =
+    dateTime &&
+    isNaN(dateTime.getTime()) &&
+    '- Invalid dateTime. Use YYYY-MM-DD format';
+
+  // center is not required, but if provided must be in the correct range.
+  const centerError =
+    center &&
+    (!lngValidator(center[0]) || !latValidator(center[1])) &&
+    '- Invalid center. Use [longitude, latitude].';
+
+  // zoom is not required, but if provided must be in the correct range.
+  const zoomError =
+    zoom &&
+    (isNaN(zoom) || zoom < 0) &&
+    '- Invalid zoom. Use number greater than 0';
+
+  const compareDateError =
+    compareDateTime &&
+    isNaN(compareDateTime.getTime()) &&
+    '- Invalid compareDateTime. Use YYYY-MM-DD format';
+
+  const projectionErrors = validateProjectionBlockProps({
+    id: projectionId,
+    center: projectionCenter,
+    parallels: projectionParallels
+  });
+  return [
+    missingError,
+    dateError,
+    zoomError,
+    centerError,
+    compareDateError,
+    ...projectionErrors
+  ].filter(Boolean) as string[];
+}
 
 function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   const {
@@ -134,6 +198,13 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
     projectionParallels,
     basemapId
   } = props;
+
+  const errors = validateBlockProps(props);
+
+  if (errors.length) {
+    throw new HintedError('Malformed Map Block', errors);
+  }
+
   const [selectedDay, setSelectedDay] = useState(dateTime);
   const [comparedDay, setComparedDay] = useState(compareDateTime);
   const [layers, setLayers] = useState<VizDataset[]>(datasets);
