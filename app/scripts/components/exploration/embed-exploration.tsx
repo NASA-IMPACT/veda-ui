@@ -67,8 +67,10 @@ interface EmbeddedExplorationProps {
 }
 export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
   const { datasets } = props;
-  const [selectedDay] = useAtom(selectedDateAtom);
-  const [selectedCompareDay] = useAtom(selectedCompareDateAtom);
+  const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
+  const [selectedCompareDay, setSelectedComparedDay] = useAtom(
+    selectedCompareDateAtom
+  );
   const [zoom] = useAtom(zoomAtom);
   const [center] = useAtom(centerAtom);
   return (
@@ -83,8 +85,10 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
 
       <EmbeddedLayersExploration
         datasets={datasets}
-        dateTime={selectedDay}
-        compareDateTime={selectedCompareDay}
+        selectedDay={selectedDay}
+        setSelectedDay={setSelectedDay}
+        setSelectedComparedDay={setSelectedComparedDay}
+        selectedCompareDay={selectedCompareDay}
         center={center}
         zoom={zoom}
       />
@@ -94,8 +98,10 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
 
 interface EmbeddedLayersExplorationProps {
   datasets: TimelineDataset[];
-  dateTime?: Date | null;
-  compareDateTime?: Date | null;
+  setSelectedDay: (x: Date) => void;
+  setSelectedComparedDay: (x: Date) => void;
+  selectedDay?: Date | null;
+  selectedCompareDay?: Date | null;
   center?: [number, number];
   zoom?: number;
   projectionId?: ProjectionOptions['id'];
@@ -125,16 +131,15 @@ const latValidator = validateRangeNum(-90, 90);
 
 function validateBlockProps(props: EmbeddedLayersExplorationProps) {
   const {
-    dateTime,
-    compareDateTime,
+    selectedDay,
+    selectedCompareDay,
     center,
     zoom,
     projectionId,
     projectionCenter,
     projectionParallels
   } = props;
-
-  const requiredProperties = ['dateTime'];
+  const requiredProperties = ['selectedDay'];
   const missingMapProps = requiredProperties.filter(
     (p) => props[p] === undefined
   );
@@ -146,8 +151,8 @@ function validateBlockProps(props: EmbeddedLayersExplorationProps) {
       .join(', ')}`;
 
   const dateError =
-    dateTime &&
-    isNaN(dateTime.getTime()) &&
+    selectedDay &&
+    isNaN(selectedDay.getTime()) &&
     '- Invalid dateTime. Use YYYY-MM-DD format';
 
   // center is not required, but if provided must be in the correct range.
@@ -163,8 +168,8 @@ function validateBlockProps(props: EmbeddedLayersExplorationProps) {
     '- Invalid zoom. Use number greater than 0';
 
   const compareDateError =
-    compareDateTime &&
-    isNaN(compareDateTime.getTime()) &&
+    selectedCompareDay &&
+    isNaN(selectedCompareDay.getTime()) &&
     '- Invalid compareDateTime. Use YYYY-MM-DD format';
 
   const projectionErrors = validateProjectionBlockProps({
@@ -185,8 +190,10 @@ function validateBlockProps(props: EmbeddedLayersExplorationProps) {
 function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   const {
     datasets,
-    dateTime,
-    compareDateTime,
+    selectedDay,
+    setSelectedDay,
+    selectedCompareDay,
+    setSelectedComparedDay,
     center,
     zoom,
     projectionId,
@@ -194,16 +201,12 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
     projectionParallels,
     basemapId
   } = props;
-
+  const [layers, setLayers] = useState<VizDataset[]>(datasets);
   const errors = validateBlockProps(props);
 
   if (errors.length) {
     throw new HintedError('Malformed Map Block', errors);
   }
-
-  const [selectedDay, setSelectedDay] = useState(dateTime);
-  const [comparedDay, setComparedDay] = useState(compareDateTime);
-  const [layers, setLayers] = useState<VizDataset[]>(datasets);
 
   const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
   const { envApiStacEndpoint } = useVedaUI();
@@ -309,7 +312,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
               {...baseDataLayer.data.legend}
             />
             {compareDataLayer?.data.legend &&
-              !!comparedDay &&
+              !!selectedCompareDay &&
               baseDataLayer.data.id !== compareDataLayer.data.id && (
                 <LayerLegend
                   id={`compare-${compareDataLayer.data.id}`}
@@ -321,10 +324,10 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
           </LayerLegendContainer>
         )}
         <MapControls>
-          {selectedDay && comparedDay ? (
+          {selectedDay && selectedCompareDay ? (
             <MapMessage
               id='compare-message'
-              active={!!(compareDataLayer && comparedDay)}
+              active={!!(compareDataLayer && selectedCompareDay)}
             >
               {compareLabel}
             </MapMessage>
@@ -341,7 +344,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
           <NavigationControl position='top-left' />
           <MapCoordsControl />
         </MapControls>
-        {comparedDay && (
+        {selectedCompareDay && (
           <Compare>
             <Basemap basemapStyleId={mapBasemapId} />
             {compareDataLayer && (
@@ -349,13 +352,13 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
                 key={compareDataLayer.data.id}
                 id={`compare-${compareDataLayer.data.id}`}
                 dataset={compareDataLayer}
-                selectedDay={comparedDay}
+                selectedDay={selectedCompareDay}
               />
             )}
           </Compare>
         )}
       </Map>
-      <BaseTimelineContainer isCompareMode={!!comparedDay}>
+      <BaseTimelineContainer isCompareMode={!!selectedCompareDay}>
         {selectedDay && (
           <EmbedTimeline
             label=''
@@ -367,11 +370,11 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
         )}
       </BaseTimelineContainer>
       <CompareTimelineContainer>
-        {comparedDay && (
+        {selectedCompareDay && (
           <EmbedTimeline
             label=''
-            date={comparedDay}
-            setDate={setComparedDay}
+            date={selectedCompareDay}
+            setDate={setSelectedComparedDay}
             datasets={layers as TimelineDataset[]}
             timeDensity={compareTimeDensity}
           />
