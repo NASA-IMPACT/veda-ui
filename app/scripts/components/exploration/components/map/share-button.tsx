@@ -1,33 +1,42 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Icon } from '@trussworks/react-uswds';
 
 import { SelectorButton } from '$components/common/map/style/button';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
 
-export function ShareButtonComponent({
+function ShareButtonComponent({
   onClick,
-  disabled
+  disabled,
+  tipContent,
+  onMouseLeave
 }: {
   onClick: (event: React.MouseEvent<HTMLButtonElement>) => void;
   disabled: boolean;
+  tipContent: string;
+  onMouseLeave?: () => void;
 }) {
   return (
     <SelectorButton
-      tipContent='Share Exploration'
-      tipProps={{ placement: 'left' }}
+      tipContent={tipContent}
+      tipProps={{ placement: 'left', showOnCreate: true, hideOnClick: false }}
       disabled={disabled}
       onClick={onClick}
+      onMouseLeave={onMouseLeave}
     >
       <Icon.Share size={3} />
     </SelectorButton>
   );
 }
 
-export function ShareButton({
-  setLinkCopied
-}: {
-  setLinkCopied: (copied: boolean) => void;
-}) {
+export function ShareButton() {
+  const [linkCopied, setLinkCopied] = useState(false);
+
+  const handleMouseLeave = useCallback(() => {
+    if (linkCopied) {
+      setLinkCopied(false);
+    }
+  }, [linkCopied]);
+
   const handleShare = useCallback(async () => {
     try {
       // Get current URL
@@ -35,7 +44,7 @@ export function ShareButton({
 
       // Call the URL shortening API
       const response = await fetch(
-        `https://openveda.cloud/service/link/shorten?url=${encodeURIComponent(
+        `${process.env.API_URL_SHORTENER_ENDPOINT}?url=${encodeURIComponent(
           currentUrl
         )}`
       );
@@ -50,7 +59,6 @@ export function ShareButton({
       // Copy to clipboard
       navigator.clipboard.writeText(shortenedUrl);
       setLinkCopied(true);
-      // TODO: Consider adding a toast notification for success feedback
     } catch {
       // Fallback: copy current URL if shortening fails
       try {
@@ -66,7 +74,11 @@ export function ShareButton({
     () => (
       <ShareButtonComponent
         onClick={handleShare}
-        disabled={navigator.clipboard ? false : true}
+        disabled={!navigator.clipboard}
+        tipContent={
+          linkCopied ? 'Link successfully copied' : 'Share Exploration'
+        }
+        onMouseLeave={handleMouseLeave}
       />
     ),
     {
