@@ -42,23 +42,28 @@ export function ShareButton(): JSX.Element | null {
       // Get current URL
       const currentUrl = window.location.href;
 
-      // Call the URL shortening API
-      const response = await fetch(
-        `${process.env.API_URL_SHORTENER_ENDPOINT}?url=${encodeURIComponent(
-          currentUrl
-        )}`
-      );
+      // Call the URL shortening API if endpoint is configured
+      const urlShortenerEndpoint = process.env.API_URL_SHORTENER_ENDPOINT;
+      if (urlShortenerEndpoint) {
+        const response = await fetch(
+          `${urlShortenerEndpoint}?url=${encodeURIComponent(currentUrl)}`
+        );
 
-      if (!response.ok) {
-        throw new Error('Failed to shorten URL');
+        if (!response.ok) {
+          throw new Error('Failed to shorten URL');
+        }
+
+        const data = await response.json();
+        const shortenedUrl = data.short_url;
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(shortenedUrl);
+        setLinkCopied(true);
+      } else {
+        // No URL shortener configured, copy current URL directly
+        navigator.clipboard.writeText(currentUrl);
+        setLinkCopied(true);
       }
-
-      const data = await response.json();
-      const shortenedUrl = data.short_url;
-
-      // Copy to clipboard
-      navigator.clipboard.writeText(shortenedUrl);
-      setLinkCopied(true);
     } catch {
       // Fallback: copy current URL if shortening fails
       try {
