@@ -77,6 +77,7 @@ const composingComponents = [
         envApiStacEndpoint: process.env.API_STAC_ENDPOINT ?? '',
         envApiRasterEndpoint: process.env.API_RASTER_ENDPOINT ?? '',
         envApiCMREndpoint: process.env.API_CMR_ENDPOINT ?? '',
+        envUrlShortenerEndpoint: process.env.API_URL_SHORTENER_ENDPOINT ?? '',
         geoDataPath: `${process.env.PUBLIC_URL ?? ''}/public/geo-data`,
         navigation: {
           LinkComponent: Link,
