@@ -1,100 +1,93 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { Button } from '@trussworks/react-uswds';
-import { Icon } from '@trussworks/react-uswds';
-interface DateTimePickerProps {
+import React, { useMemo } from 'react';
+import { View } from 'react-calendar/dist/cjs/shared/types';
+import { getLabelFormat, getTemporalExtent } from '../timeline/timeline-utils';
+import { TimelineDatePicker } from '../timeline/timeline-datepicker';
+import { TimeDensity } from '../../types.d.ts';
+import { getLowestCommonTimeDensity } from '$components/exploration/data-utils';
+
+import {
+  TimelineDataset,
+  DatasetStatus,
+  TimelineDatasetSuccess
+} from '$components/exploration/types.d.ts';
+
+interface EmbedTimelineProps {
   date: Date | null;
   setDate: (date: Date | null) => void;
-  timeDensity?: 'day' | 'month' | 'year';
+  timeDensity: TimeDensity;
+  datasets: TimelineDataset[];
+  label: string;
 }
 
-const DateTimePicker = (props: DateTimePickerProps) => {
-  const { date, setDate, timeDensity = 'day' } = props;
+function EmbedTimeline(props: EmbedTimelineProps) {
+  const { date, setDate, timeDensity, datasets, label } = props;
 
-  if (!date) {
-    return (
-      <div className='display-flex flex-align-center'>
-        <div
-          className='bg-base-lighter border-2px border-base-light padding-y-05 padding-x-105 text-base-dark'
-          style={{ minWidth: '120px', textAlign: 'center' }}
-        >
-          No date
-        </div>
-      </div>
-    );
-  }
+  const lowestCommonTimeDensity = useMemo(
+    () =>
+      getLowestCommonTimeDensity(
+        // Filter the datasets to only include those with status 'SUCCESS'.
+        // The function getLowestCommonTimeDensity expects an array of TimelineDatasetSuccess objects,
+        // which have the 'data.timeDensity' property (formated as such).
+        datasets.filter(
+          (dataset): dataset is TimelineDatasetSuccess =>
+            dataset.status === DatasetStatus.SUCCESS
+        )
+      ),
+    [datasets]
+  );
 
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  let formattedDate: string;
-  switch (timeDensity) {
-    case 'year':
-      formattedDate = `${year}`;
-      break;
-    case 'month':
-      formattedDate = `${year}-${month}`;
-      break;
-    case 'day':
-    default:
-      formattedDate = `${year}-${month}-${day}`;
-      break;
-  }
+  const minMaxTemporalExtent = useMemo(
+    () =>
+      getTemporalExtent(
+        // Filter the datasets to only include those with status 'SUCCESS'.
+        datasets.filter(
+          (dataset): dataset is TimelineDatasetSuccess =>
+            dataset.status === DatasetStatus.SUCCESS
+        )
+      ),
+    [datasets]
+  );
 
-  const adjustDate = (amount: number) => {
-    const newDate = new Date(date.getTime());
+  const timelineLabelFormat = useMemo(
+    () => getLabelFormat(lowestCommonTimeDensity),
+    [lowestCommonTimeDensity]
+  );
+  const getCalendarView = (timeDensity: TimeDensity): View => {
     switch (timeDensity) {
-      case 'year':
-        newDate.setUTCFullYear(newDate.getUTCFullYear() + amount);
-        break;
-      case 'month':
-        newDate.setUTCMonth(newDate.getUTCMonth() + amount);
-        break;
-      case 'day':
+      case TimeDensity.MONTH:
+        return 'year';
+      case TimeDensity.YEAR:
+        return 'decade';
       default:
-        newDate.setUTCDate(newDate.getUTCDate() + amount);
-        break;
+        return 'month';
     }
-    setDate(newDate);
   };
+  const calendarView = useMemo(
+    () => getCalendarView(timeDensity),
+    [timeDensity]
+  );
+
   return (
-    <div className='display-flex flex-align-center z-index-100 '>
-      <Button
-        type='button'
-        unstyled
-        className='margin-right-1 text-base-darker bg-white'
-        onClick={() => {
-          adjustDate(-1);
+    <div
+      style={{ height: '5rem', width: '100%' }}
+      className='display-flex flex-align-center z-index-100'
+    >
+      <TimelineDatePicker
+        triggerHeadReference={label}
+        minDate={minMaxTemporalExtent[0]}
+        maxDate={minMaxTemporalExtent[1]}
+        selectedDay={date}
+        onConfirm={(d) => {
+          if (!d) return;
+          setDate(new Date(d));
         }}
-        aria-label='Go to previous day'
-      >
-        <Icon.ArrowBack size={3} />
-      </Button>
-
-      <div
-        className='bg-white border-2px border-base-light padding-y-05 padding-x-105 text-bold text-base-darkest'
-        style={{ minWidth: '120px', textAlign: 'center' }}
-      >
-        {formattedDate}
-      </div>
-
-      <Button
-        type='button'
-        unstyled
-        className='margin-left-1 text-base-darker bg-white'
-        onClick={() => {
-          adjustDate(1);
-        }}
-        aria-label='Go to next day'
-      >
-        <Icon.ArrowForward size={3} />
-      </Button>
+        disabled={false}
+        dataTourId={'date-picker-' + label}
+        calendarView={calendarView}
+        triggerLabelFormat={timelineLabelFormat}
+      />
     </div>
   );
-};
-DateTimePicker.propTypes = {
-  date: PropTypes.instanceOf(Date),
-  setDate: PropTypes.func.isRequired
-};
+}
 
-export default DateTimePicker;
+export default EmbedTimeline;

@@ -1,7 +1,6 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MapboxOptions } from 'mapbox-gl';
-import * as dateFns from 'date-fns';
 import { useAtom } from 'jotai';
 import {
   validateProjectionBlockProps,
@@ -12,15 +11,15 @@ import { Basemap } from '../common/map/style-generators/basemap';
 import { LayerLegend, LayerLegendContainer } from '../common/map/layer-legend';
 import MapCoordsControl from '../common/map/controls/coords';
 import MapMessage from '../common/map/map-message';
-import { formatCompareDate, formatSingleDate } from '../common/map/utils';
+import { formatSingleDate } from '../common/map/utils';
 import {
   BasemapId,
   DEFAULT_MAP_STYLE_URL
 } from '../common/map/controls/map-options/basemap';
-import DateTimePicker from './components/embed-exploration/embed-timeline';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { zoomAtom } from './atoms/zoom';
 import { centerAtom } from './atoms/center';
+import EmbedTimeline from './components/embed-exploration/embed-timeline';
 import Map, { Compare, MapControls } from '$components/common/map';
 import {
   NavigationControl,
@@ -34,7 +33,7 @@ import {
   TimelineDataset
 } from '$components/exploration/types.d.ts';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
-import { ProjectionOptions } from '$types/veda';
+import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { LayoutProps } from '$components/common/layout-root';
 import { validateRangeNum } from '$utils/utils';
@@ -238,8 +237,10 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
     () => getDataLayer(1, layers),
     [layers]
   );
-  const baseTimeDensity = baseDataLayer?.data.timeDensity;
-  const compareTimeDensity = compareDataLayer?.data.timeDensity;
+  const baseTimeDensity: TimeDensity = baseDataLayer?.data
+    .timeDensity as TimeDensity;
+  const compareTimeDensity: TimeDensity = compareDataLayer?.data
+    .timeDensity as TimeDensity;
   const compareLabel = `${baseDataLayer?.data?.name} vs ${compareDataLayer?.data?.name}`;
   const mapOptions: Partial<MapboxOptions> = {
     style: DEFAULT_MAP_STYLE_URL,
@@ -356,18 +357,22 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
       </Map>
       <BaseTimelineContainer isCompareMode={!!comparedDay}>
         {selectedDay && (
-          <DateTimePicker
+          <EmbedTimeline
+            label='base-layer'
             date={selectedDay}
             setDate={setSelectedDay}
+            datasets={layers as TimelineDataset[]}
             timeDensity={baseTimeDensity}
           />
         )}
       </BaseTimelineContainer>
       <CompareTimelineContainer>
         {comparedDay && (
-          <DateTimePicker
+          <EmbedTimeline
+            label='compare-layer'
             date={comparedDay}
             setDate={setComparedDay}
+            datasets={layers as TimelineDataset[]}
             timeDensity={compareTimeDensity}
           />
         )}
