@@ -165,7 +165,7 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
-        run: MAPBOX_TOKEN="${{secrets.MAPBOX_TOKEN}}" API_URL_SHORTENER_ENDPOINT="${{secrets.API_URL_SHORTENER_ENDPOINT}}" yarn test:e2e
+        run: MAPBOX_TOKEN="${{secrets.MAPBOX_TOKEN}}" yarn test:e2e
       - uses: actions/upload-artifact@v4
         if: always()
         with:
