@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import styled from 'styled-components';
 import { View } from 'react-calendar/dist/cjs/shared/types';
 import { getLabelFormat, getTemporalExtent } from '../timeline/timeline-utils';
 import { TimelineDatePicker } from '../timeline/timeline-datepicker';
@@ -11,6 +12,16 @@ import {
   TimelineDatasetSuccess
 } from '$components/exploration/types.d.ts';
 
+const TimelineWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  color: black;
+  background-color: white;
+  border-radius: 2px;
+`;
 interface EmbedTimelineProps {
   date: Date | null;
   setDate: (date: Date | null) => void;
@@ -68,10 +79,7 @@ function EmbedTimeline(props: EmbedTimelineProps) {
   );
 
   return (
-    <div
-      style={{ height: '5rem', width: '100%' }}
-      className='display-flex flex-align-center z-index-100'
-    >
+    <TimelineWrapper>
       <TimelineDatePicker
         triggerHeadReference={label}
         minDate={minMaxTemporalExtent[0]}
@@ -86,7 +94,7 @@ function EmbedTimeline(props: EmbedTimelineProps) {
         calendarView={calendarView}
         triggerLabelFormat={timelineLabelFormat}
       />
-    </div>
+    </TimelineWrapper>
   );
 }
 

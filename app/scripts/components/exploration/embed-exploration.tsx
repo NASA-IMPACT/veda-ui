@@ -358,7 +358,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
       <BaseTimelineContainer isCompareMode={!!comparedDay}>
         {selectedDay && (
           <EmbedTimeline
-            label='base-layer'
+            label=''
             date={selectedDay}
             setDate={setSelectedDay}
             datasets={layers as TimelineDataset[]}
@@ -369,7 +369,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
       <CompareTimelineContainer>
         {comparedDay && (
           <EmbedTimeline
-            label='compare-layer'
+            label=''
             date={comparedDay}
             setDate={setComparedDay}
             datasets={layers as TimelineDataset[]}
