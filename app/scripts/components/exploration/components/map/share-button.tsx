@@ -3,6 +3,7 @@ import { Icon } from '@trussworks/react-uswds';
 
 import { SelectorButton } from '$components/common/map/style/button';
 import useThemedControl from '$components/common/map/controls/hooks/use-themed-control';
+import { useVedaUI } from '$context/veda-ui-provider';
 
 function ShareButtonComponent({
   onClick,
@@ -30,6 +31,7 @@ function ShareButtonComponent({
 
 export function ShareButton(): JSX.Element | null {
   const [linkCopied, setLinkCopied] = useState(false);
+  const { envUrlShortenerEndpoint } = useVedaUI();
 
   const handleMouseLeave = useCallback(() => {
     if (linkCopied) {
@@ -43,7 +45,7 @@ export function ShareButton(): JSX.Element | null {
       const currentUrl = window.location.href;
 
       // Call the URL shortening API if endpoint is configured
-      const urlShortenerEndpoint = process.env.API_URL_SHORTENER_ENDPOINT;
+      const urlShortenerEndpoint = envUrlShortenerEndpoint;
       if (urlShortenerEndpoint) {
         const response = await fetch(
           `${urlShortenerEndpoint}?url=${encodeURIComponent(currentUrl)}`
@@ -73,7 +75,7 @@ export function ShareButton(): JSX.Element | null {
         // Silent fail - clipboard API may not be available in all contexts
       }
     }
-  }, []);
+  }, [envUrlShortenerEndpoint]);
 
   const control = useThemedControl(
     () => (
