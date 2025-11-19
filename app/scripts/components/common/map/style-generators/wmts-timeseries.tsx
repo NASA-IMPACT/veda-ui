@@ -61,10 +61,16 @@ export function WMTSTimeseries(props: MapLayerWMTSProps) {
       tileParams={tileParams}
       generatorPrefix='wmts'
       onStatusChange={changeStatus}
-      metadataFormatter={(_, tileParamsAsString) => ({
-        wmtsTileUrl: `${primaryUrl}?${tileParamsAsString}`,
-        xyzTileUrl: `${primaryUrl}?${tileParamsAsString}&TileCol={x}&TileRow={y}&TileMatrix={z}`
-      })}
+      metadataFormatter={(_, tileParamsAsString) => {
+        const tileParamsForWMTS = tileParamsAsString.replace(
+          'GetTile',
+          'GetCapabilities'
+        );
+        return {
+          wmtsTileUrl: `${primaryUrl}?${tileParamsForWMTS}`,
+          xyzTileUrl: `${primaryUrl}?${tileParamsAsString}&TileCol={x}&TileRow={y}&TileMatrix={z}`
+        };
+      }}
       sourceParamFormatter={(url) => {
         const wmtsParams = (url as string).split('wmts.cgi?')[1];
         return {

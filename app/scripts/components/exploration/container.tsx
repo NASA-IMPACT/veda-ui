@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { TourProvider } from '@reactour/tour';
 import { Link } from 'react-router-dom';
 import { DevTools } from 'jotai-devtools';
 import { useAtom, useSetAtom } from 'jotai';
-import { PopoverTourComponent, TourManager } from './tour-manager';
+
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
@@ -23,14 +22,6 @@ import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
  * @NOTE: This container component serves as a wrapper for the purpose of data management, this is ONLY to support current instances.
  * veda2 instances can just use the direct component, 'ExplorationAndAnalysis', and manage data directly in their page views
  */
-
-const tourProviderStyles = {
-  popover: (base) => ({
-    ...base,
-    padding: '0',
-    background: 'none'
-  })
-};
 
 export default function ExplorationAndAnalysisContainer() {
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
@@ -54,18 +45,13 @@ export default function ExplorationAndAnalysisContainer() {
   const closeModal = () => setDatasetModalRevealed(false);
 
   return (
-    <TourProvider
-      steps={[]}
-      styles={tourProviderStyles}
-      ContentComponent={PopoverTourComponent}
-    >
+    <>
       <DevTools />
       <LayoutProps
         title='Exploration'
         description='Explore and analyze datasets'
         hideFooter
       />
-      <TourManager />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
         <ExplorationAndAnalysis
@@ -92,6 +78,6 @@ export default function ExplorationAndAnalysisContainer() {
           }
         />
       </PageMainContent>
-    </TourProvider>
+    </>
   );
 }
