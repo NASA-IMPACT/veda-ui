@@ -28,7 +28,7 @@ function ShareButtonComponent({
   );
 }
 
-export function ShareButton() {
+export function ShareButton(): JSX.Element | null {
   const [linkCopied, setLinkCopied] = useState(false);
 
   const handleMouseLeave = useCallback(() => {
