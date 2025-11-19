@@ -41,26 +41,39 @@ export function ShareButton(): JSX.Element | null {
 
   const handleShare = useCallback(async () => {
     try {
-      // Get current URL
+      // get current URL
       const currentUrl = window.location.href;
-
-      // Call the URL shortening API if endpoint is configured
       const urlShortenerEndpoint = envUrlShortenerEndpoint;
+
       if (urlShortenerEndpoint) {
-        const response = await fetch(
-          `${urlShortenerEndpoint}?url=${encodeURIComponent(currentUrl)}`
-        );
+        try {
+          const response = await fetch(
+            `${urlShortenerEndpoint}?url=${encodeURIComponent(currentUrl)}`
+          );
 
-        if (!response.ok) {
-          throw new Error('Failed to shorten URL');
+          if (!response.ok) {
+            const errorText = await response
+              .text()
+              .catch(() => 'Unknown error');
+            throw new Error(
+              `Failed to shorten URL: ${response.status} ${response.statusText}. ${errorText}`
+            );
+          }
+
+          const data = await response.json();
+
+          if (!data.short_url) {
+            throw new Error('URL shortener response missing short_url');
+          }
+          const shortenedUrl = data.short_url;
+          await navigator.clipboard.writeText(shortenedUrl);
+          setLinkCopied(true);
+        } catch (error) {
+          // Log the error for debugging but fall through to fallback
+          // eslint-disable-next-line no-console
+          console.warn('URL shortening failed:', error);
+          throw error; // Re-throw to trigger the outer catch block fallback
         }
-
-        const data = await response.json();
-        const shortenedUrl = data.short_url;
-
-        // Copy to clipboard
-        navigator.clipboard.writeText(shortenedUrl);
-        setLinkCopied(true);
       } else {
         // No URL shortener configured, copy current URL directly
         navigator.clipboard.writeText(currentUrl);
