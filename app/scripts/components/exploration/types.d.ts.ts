@@ -107,6 +107,7 @@ export interface DatasetSettings {
   colorMap?: string;
   // Active colormap scale.
   scale?: colorMapScale;
+  reScale?: colorMapScale;
   // selected variables for multi variables(bands) timeseries analysis
   analysisVariable?: string;
   analysisVariableOptions?: string[];
