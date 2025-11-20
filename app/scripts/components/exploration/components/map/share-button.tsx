@@ -19,7 +19,7 @@ function ShareButtonComponent({
   return (
     <SelectorButton
       tipContent={tipContent}
-      tipProps={{ placement: 'left', showOnCreate: true, hideOnClick: false }}
+      tipProps={{ placement: 'left', showOnCreate: false, hideOnClick: false }}
       disabled={disabled}
       onClick={onClick}
       onMouseLeave={onMouseLeave}
