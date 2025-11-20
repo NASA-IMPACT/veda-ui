@@ -43,12 +43,11 @@ export function ShareButton(): JSX.Element | null {
     try {
       // get current URL
       const currentUrl = window.location.href;
-      const urlShortenerEndpoint = envUrlShortenerEndpoint;
 
-      if (urlShortenerEndpoint) {
+      if (envUrlShortenerEndpoint) {
         try {
           const response = await fetch(
-            `${urlShortenerEndpoint}?url=${encodeURIComponent(currentUrl)}`
+            `${envUrlShortenerEndpoint}?url=${encodeURIComponent(currentUrl)}`
           );
 
           if (!response.ok) {
