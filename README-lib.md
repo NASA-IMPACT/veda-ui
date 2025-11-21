@@ -17,7 +17,6 @@ The following documentation will guide you through the process of configuring th
 - Check [CONTENT](./docs/content/CONTENT.md) for how to structure the content pieces.
 - Check [PAGE_OVERRIDES](./docs/content/PAGE_OVERRIDES.md) for all the layout overrides available to you and how they work.
 
-
 ## Development documentation
 
 Check the documentation below for how to setup and develop features for `veda-ui`.
@@ -25,6 +24,8 @@ Check the documentation below for how to setup and develop features for `veda-ui
 - **Start here**: Check [SETUP.md](./docs/development/SETUP.md) for instructions on how to set up your local development environment.
 - Check [ARCHITECTURE](./docs/development/ARCHITECTURE.md) docs to read about architecture.
 - Check [PAGE_OVERRIDES](./docs/development/PAGE_OVERRIDES.md) for information about the component/content overriding feature.
+- Check [TICKET ORGANIZATION GUIDELINES](./docs/development/TICKET_ORGANIZATION_GUIDELINES.md) for issue creation and workflow standards before contributing.
 
 ## License
+
 This project is licensed under **Apache 2**, see the [LICENSE](./LICENSE) file for more details.
