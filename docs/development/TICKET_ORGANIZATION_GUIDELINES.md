@@ -1,6 +1,6 @@
 # Ticket Organization Guidelines
 
-_See [ADR 004](../adr/004-ticket-workflow-governance.md) for rationale and decision record._
+_See [ADR 005](../adr/005-ticket-workflow-governance.md) for rationale and decision record._
 
 ## Issue Types (Required)
 
