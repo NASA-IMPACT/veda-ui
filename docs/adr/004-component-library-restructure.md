@@ -1,7 +1,7 @@
 # Component Library Restructure: Consolidating Exported Components
 
 * Status: **Proposed**
-* Authors: @alice
+* Authors: @AliceR
 * Deciders: [To be updated with team decision makers]
 * As of: September 2025
 
