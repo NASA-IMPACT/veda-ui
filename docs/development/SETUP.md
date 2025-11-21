@@ -53,3 +53,9 @@ yarn serve
 Compiles the sass files, javascript, and launches the server making the site available at `http://localhost:9000/`
 The system will watch files and execute tasks whenever one of them changes.
 The site will automatically refresh since it is bundled with livereload.
+
+## Next Steps
+
+- Read [DEVELOPMENT.md](./DEVELOPMENT.md) for coding conventions and practices
+- Review [COLLABORATION.md](./COLLABORATION.md) for contribution guidelines
+- Follow [TICKET ORGANIZATION GUIDELINES](./TICKET_ORGANIZATION_GUIDELINES.md) when creating issues
