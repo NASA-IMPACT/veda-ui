@@ -1,31 +1,16 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
-import { MapboxOptions } from 'mapbox-gl';
 import { useAtom } from 'jotai';
 import {
-  validateProjectionBlockProps,
   convertProjectionToMapbox,
   projectionDefault
 } from '../common/map/controls/map-options/projections';
-import { Basemap } from '../common/map/style-generators/basemap';
-import { LayerLegend, LayerLegendContainer } from '../common/map/layer-legend';
-import MapCoordsControl from '../common/map/controls/coords';
-import MapMessage from '../common/map/map-message';
-import { formatSingleDate } from '../common/map/utils';
-import {
-  BasemapId,
-  DEFAULT_MAP_STYLE_URL
-} from '../common/map/controls/map-options/basemap';
+import { BasemapId } from '../common/map/controls/map-options/basemap';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { zoomAtom } from './atoms/zoom';
 import { centerAtom } from './atoms/center';
 import EmbedTimeline from './components/embed-exploration/embed-timeline';
-import Map, { Compare, MapControls } from '$components/common/map';
-import {
-  NavigationControl,
-  ScaleControl
-} from '$components/common/map/controls';
-import { Layer } from '$components/exploration/components/map/layer';
+import MapBlock from '$components/common/blocks/block-map';
 import {
   VizDataset,
   VizDatasetSuccess,
@@ -36,14 +21,12 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 import { LayoutProps } from '$components/common/layout-root';
-import { validateRangeNum } from '$utils/utils';
-import { HintedError } from '$utils/hinted-error';
 
-export const mapHeight = '32rem';
 const Carto = styled.div`
   position: relative;
   flex-grow: 1;
-  height: ${mapHeight};
+  height: 100vh;
+  display: flex;
 `;
 const BaseTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
   position: absolute;
@@ -60,8 +43,6 @@ const CompareTimelineContainer = styled.div`
   z-index: 10;
 `;
 
-// This global variable is used to give unique ID to mapbox container
-let mapInstanceId = 0;
 interface EmbeddedExplorationProps {
   datasets: TimelineDataset[];
 }
@@ -126,66 +107,6 @@ const getDataLayer = (
     }
   };
 };
-const lngValidator = validateRangeNum(-180, 180);
-const latValidator = validateRangeNum(-90, 90);
-
-function validateBlockProps(props: EmbeddedLayersExplorationProps) {
-  const {
-    selectedDay,
-    selectedCompareDay,
-    center,
-    zoom,
-    projectionId,
-    projectionCenter,
-    projectionParallels
-  } = props;
-  const requiredProperties = ['selectedDay'];
-  const missingMapProps = requiredProperties.filter(
-    (p) => props[p] === undefined
-  );
-
-  const missingError =
-    !!missingMapProps.length &&
-    `- Missing some properties: ${missingMapProps
-      .map((p) => `[${p}]`)
-      .join(', ')}`;
-
-  const dateError =
-    selectedDay &&
-    isNaN(selectedDay.getTime()) &&
-    '- Invalid dateTime. Use YYYY-MM-DD format';
-
-  // center is not required, but if provided must be in the correct range.
-  const centerError =
-    center &&
-    (!lngValidator(center[0]) || !latValidator(center[1])) &&
-    '- Invalid center. Use [longitude, latitude].';
-
-  // zoom is not required, but if provided must be in the correct range.
-  const zoomError =
-    zoom &&
-    (isNaN(zoom) || zoom < 0) &&
-    '- Invalid zoom. Use number greater than 0';
-
-  const compareDateError =
-    selectedCompareDay &&
-    isNaN(selectedCompareDay.getTime()) &&
-    '- Invalid compareDateTime. Use YYYY-MM-DD format';
-
-  const projectionErrors = validateProjectionBlockProps({
-    id: projectionId,
-    center: projectionCenter,
-    parallels: projectionParallels
-  });
-  return [
-    missingError,
-    dateError,
-    zoomError,
-    centerError,
-    compareDateError,
-    ...projectionErrors
-  ].filter(Boolean) as string[];
-}
 
 function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   const {
@@ -202,13 +123,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
     basemapId
   } = props;
   const [layers, setLayers] = useState<VizDataset[]>(datasets);
-  const errors = validateBlockProps(props);
 
-  if (errors.length) {
-    throw new HintedError('Malformed Map Block', errors);
-  }
-
-  const generatedId = useMemo(() => `map-${++mapInstanceId}`, []);
   const { envApiStacEndpoint } = useVedaUI();
   useReconcileWithStacMetadata(layers, setLayers, envApiStacEndpoint);
 
@@ -245,27 +160,6 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   const compareTimeDensity: TimeDensity = compareDataLayer?.data
     .timeDensity as TimeDensity;
   const compareLabel = `${baseDataLayer?.data?.name} vs ${compareDataLayer?.data?.name}`;
-  const mapOptions: Partial<MapboxOptions> = {
-    style: DEFAULT_MAP_STYLE_URL,
-    logoPosition: 'bottom-left',
-    trackResize: true,
-    pitchWithRotate: false,
-    dragRotate: false,
-    zoom: 1
-  };
-
-  const getMapPositionOptions = (position) => {
-    const opts = {} as Pick<typeof mapOptions, 'center' | 'zoom'>;
-    if (position?.lng !== undefined && position?.lat !== undefined) {
-      opts.center = [position.lng, position.lat];
-    }
-
-    if (position?.zoom) {
-      opts.zoom = position.zoom;
-    }
-
-    return opts;
-  };
 
   useEffect(() => {
     setProjection(projectionStart);
@@ -275,89 +169,27 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
 
   useEffect(() => {
     if (!basemapId) return;
-
     setMapBasemapId(basemapId);
   }, [basemapId]);
 
-  const initialPosition = useMemo(
-    () => (center ? { lng: center[0], lat: center[1], zoom } : undefined),
-    [center, zoom]
-  );
   return (
     <Carto>
-      <Map
-        id={generatedId}
-        mapOptions={{
-          ...mapOptions,
-          ...getMapPositionOptions(initialPosition)
-        }}
-      >
-        <Basemap basemapStyleId={mapBasemapId} />
-        {selectedDay && baseDataLayer && (
-          <Layer
-            key={baseDataLayer.data.id}
-            id={`base-${baseDataLayer.data.id}`}
-            dataset={baseDataLayer}
-            selectedDay={selectedDay}
-          />
-        )}
-        {baseDataLayer?.data.legend && (
-          // Map overlay element
-          // Layer legend for the active layer.
-          <LayerLegendContainer>
-            <LayerLegend
-              id={`base-${baseDataLayer.data.id}`}
-              title={baseDataLayer.data.name}
-              description={baseDataLayer.data.description}
-              {...baseDataLayer.data.legend}
-            />
-            {compareDataLayer?.data.legend &&
-              !!selectedCompareDay &&
-              baseDataLayer.data.id !== compareDataLayer.data.id && (
-                <LayerLegend
-                  id={`compare-${compareDataLayer.data.id}`}
-                  title={compareDataLayer.data.name}
-                  description={compareDataLayer.data.description}
-                  {...compareDataLayer.data.legend}
-                />
-              )}
-          </LayerLegendContainer>
-        )}
-        <MapControls>
-          {selectedDay && selectedCompareDay ? (
-            <MapMessage
-              id='compare-message'
-              active={!!(compareDataLayer && selectedCompareDay)}
-            >
-              {compareLabel}
-            </MapMessage>
-          ) : (
-            <MapMessage
-              id='single-map-message'
-              active={!!(selectedDay && baseDataLayer)}
-            >
-              {selectedDay &&
-                formatSingleDate(selectedDay, baseDataLayer?.data.timeDensity)}
-            </MapMessage>
-          )}
-          <ScaleControl />
-          <NavigationControl position='top-left' />
-          <MapCoordsControl />
-        </MapControls>
-        {selectedCompareDay && (
-          <Compare>
-            <Basemap basemapStyleId={mapBasemapId} />
-            {compareDataLayer && (
-              <Layer
-                key={compareDataLayer.data.id}
-                id={`compare-${compareDataLayer.data.id}`}
-                dataset={compareDataLayer}
-                selectedDay={selectedCompareDay}
-              />
-            )}
-          </Compare>
-        )}
-      </Map>
+      <MapBlock
+        baseDataLayer={baseDataLayer}
+        compareDataLayer={compareDataLayer}
+        dateTime={selectedDay?.toDateString()}
+        compareDateTime={selectedCompareDay?.toDateString()}
+        center={center}
+        zoom={zoom}
+        compareLabel={compareLabel}
+        projectionId={projectionId}
+        projectionCenter={projectionCenter}
+        projectionParallels={projectionParallels}
+        basemapId={mapBasemapId}
+        isMapMessageEnabled={true}
+        navigationControlPosition='top-right'
+        height='100%'
+      />
       <BaseTimelineContainer isCompareMode={!!selectedCompareDay}>
         {selectedDay && (
           <EmbedTimeline
