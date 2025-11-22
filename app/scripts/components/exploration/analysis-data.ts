@@ -167,7 +167,7 @@ export function formatCMRResponse(statResponse: CMRStatistics): TimeseriesData {
   return cmrResponse;
 }
 
-export async function requestCMRTimeseriesData({
+async function requestCMRTimeseriesData({
   start,
   end,
   aoi,
