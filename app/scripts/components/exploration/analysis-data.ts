@@ -236,7 +236,7 @@ export async function requestCMRTimeseriesData({
       ? datasetData.tileApiEndpoint.replace('WebMercatorQuad/tilejson.json', '')
       : envApiCMREndpoint;
     const statResponse = await queryClient.fetchQuery(
-      ['analysis', datasetData.id, 'cmr', aoi],
+      ['analysis', datasetData.id, 'cmr', aoi, start, end],
       async ({ signal }) => {
         const { data } = await axios.post(
           `${cmrTitilerEndpoint}/timeseries/statistics/?${formattedParamString}`,
