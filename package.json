@@ -19,6 +19,10 @@
   "files": [
     "lib"
   ],
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
   "scripts": {
     "serve": "NODE_ENV=development gulp serve",
     "build": "NODE_ENV=production gulp",
