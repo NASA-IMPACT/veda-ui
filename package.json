@@ -1,11 +1,7 @@
 {
-  "name": "veda-ui-monorepo",
-  "description": "VEDA UI Monorepo",
-  "version": "6.19.0",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "name": "@teamimpact/veda-ui",
+  "description": "Dashboard",
+  "version": "6.18.0",
   "author": {
     "name": "Development Seed",
     "url": "https://developmentseed.org/"

@@ -113,7 +113,7 @@ export default function FiltersControl(props: FiltersMenuProps) {
         <USWDSSearch
           placeholder='Search by title, description'
           value={search ?? ''}
-          onChange={(v) => onAction(FilterActions.SEARCH, v.target.value)}
+          onChange={(e) => onAction(FilterActions.SEARCH, e.target.value)}
           className='margin-bottom-3'
         />
         {taxonomiesItems.map(({ title, items }) => (

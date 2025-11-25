@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { Panel, PanelGroup, PanelResizeHandle } from 'react-resizable-panels';
 import styled from 'styled-components';
 import { themeVal } from '@devseed-ui/theme-provider';
+import { TourProvider } from '@reactour/tour';
 
 import { useAtom, useSetAtom } from 'jotai';
 import Timeline from './components/timeline/timeline';
 import { ExplorationMap } from './components/map';
 import { useAnalysisController } from './hooks/use-analysis-data-request';
+import { PopoverTourComponent, TourManager } from './tour-manager';
 import { TimelineDataset } from './types.d.ts';
 import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
 import { CLEAR_LOCATION, urlAtom } from '$utils/params-location-atom/url';
@@ -58,6 +60,14 @@ const Container = styled.div`
   }
 `;
 
+const tourProviderStyles = {
+  popover: (base) => ({
+    ...base,
+    padding: '0',
+    background: 'none'
+  })
+};
+
 interface ExplorationAndAnalysisProps {
   datasets: TimelineDataset[];
   setDatasets: (datasets: TimelineDataset[]) => void;
@@ -91,35 +101,42 @@ export default function ExplorationAndAnalysis(
   }, []);
 
   return (
-    <Container>
-      <PanelGroup direction='vertical' className='panel-wrapper'>
-        <Panel
-          maxSize={75}
-          className='panel'
-          onResize={(size: number) => {
-            setPanelHeight(size);
-          }}
-        >
-          <ExplorationMap
-            datasets={datasets}
-            setDatasets={setDatasets}
-            selectedDay={selectedDay}
-            selectedCompareDay={selectedCompareDay}
-          />
-        </Panel>
-        <PanelResizeHandle className='resize-handle' />
-        <Panel maxSize={75} className='panel panel-timeline'>
-          <Timeline
-            datasets={datasets}
-            selectedDay={selectedDay}
-            setSelectedDay={setSelectedDay}
-            selectedCompareDay={selectedCompareDay}
-            setSelectedCompareDay={setSelectedCompareDay}
-            onDatasetAddClick={openDatasetsSelectionModal}
-            panelHeight={panelHeight}
-          />
-        </Panel>
-      </PanelGroup>
-    </Container>
+    <TourProvider
+      steps={[]}
+      styles={tourProviderStyles}
+      ContentComponent={PopoverTourComponent}
+    >
+      <TourManager />
+      <Container>
+        <PanelGroup direction='vertical' className='panel-wrapper'>
+          <Panel
+            maxSize={75}
+            className='panel'
+            onResize={(size: number) => {
+              setPanelHeight(size);
+            }}
+          >
+            <ExplorationMap
+              datasets={datasets}
+              setDatasets={setDatasets}
+              selectedDay={selectedDay}
+              selectedCompareDay={selectedCompareDay}
+            />
+          </Panel>
+          <PanelResizeHandle className='resize-handle' />
+          <Panel maxSize={75} className='panel panel-timeline'>
+            <Timeline
+              datasets={datasets}
+              selectedDay={selectedDay}
+              setSelectedDay={setSelectedDay}
+              selectedCompareDay={selectedCompareDay}
+              setSelectedCompareDay={setSelectedCompareDay}
+              onDatasetAddClick={openDatasetsSelectionModal}
+              panelHeight={panelHeight}
+            />
+          </Panel>
+        </PanelGroup>
+      </Container>
+    </TourProvider>
   );
 }
