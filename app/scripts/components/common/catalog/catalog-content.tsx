@@ -352,18 +352,20 @@ export default function CatalogContent({
                       <div key={currentDataset.id}>
                         <div>
                           <Headline>
+                            <DatasetLayersIcon size={4} />{' '}
                             <ParentDatasetTitle>
-                              <DatasetLayersIcon size={4} />{' '}
                               {currentDataset.name}
-                              {getSelectedLayerCount(currentDataset) > 0 && (
+                            </ParentDatasetTitle>
+                            {getSelectedLayerCount(currentDataset) > 0 && (
+                              <div>
                                 <SelectedCard>
                                   <span>
                                     {getSelectedLayerCount(currentDataset)}{' '}
                                     selected
                                   </span>
                                 </SelectedCard>
-                              )}
-                            </ParentDatasetTitle>
+                              </div>
+                            )}
                             {currentDataset.sourceExclusive && (
                               <WarningPill variation='warning'>
                                 {EXCLUSIVE_SOURCE_WARNING}
@@ -435,8 +437,8 @@ export const ParentDatasetTitle = styled.h2<{ size?: string }>`
   ${(props) => (props.size == 'small' ? '400' : 'normal')};
   display: flex;
   min-width: 0;
+  max-width: 80%;
   justify-content: center;
-  gap: 0.1rem;
   align-items: center;
 
   p {
@@ -453,9 +455,8 @@ export const ParentDatasetTitle = styled.h2<{ size?: string }>`
 
 const Headline = styled.div`
   display: flex;
-  gap: ${glsp(1)};
-  flex-direction: column;
-  align-items: baseline;
+  flex-direction: row;
+  align-items: top;
   margin-bottom: ${glsp(1)};
 `;
 
