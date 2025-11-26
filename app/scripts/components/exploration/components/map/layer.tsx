@@ -33,18 +33,21 @@ export function Layer(props: LayerProps) {
   const { isVisible, opacity, colorMap, scale } = dataset.settings;
 
   // The date needs to match the dataset's time density.
-  const relevantDate = useMemo(
-    () =>
-      dataset.data.type === 'wms'
-        ? getRelevantDate(selectedDay, dataset.data.domain)
-        : getTimeDensityStartDate(selectedDay, dataset.data.timeDensity),
-    [
-      selectedDay,
-      dataset.data.timeDensity,
-      dataset.data.domain,
-      dataset.data.type
-    ]
-  );
+  const relevantDate = useMemo(() => {
+    if (dataset.data.type === 'wms') {
+      // Guard: if domain is not loaded yet, use selectedDay directly.
+      if (!dataset.data.domain || dataset.data.domain.length === 0) {
+        return selectedDay;
+      }
+      return getRelevantDate(selectedDay, dataset.data.domain);
+    }
+    return getTimeDensityStartDate(selectedDay, dataset.data.timeDensity);
+  }, [
+    selectedDay,
+    dataset.data.timeDensity,
+    dataset.data.domain,
+    dataset.data.type
+  ]);
 
   // Resolve config functions.
   const params = useMemo(() => {
