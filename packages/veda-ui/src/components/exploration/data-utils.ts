@@ -357,6 +357,11 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
 }
 
 export function getRelevantDate(date: Date, domain: Date[]) {
+  // Guard: if domain is not loaded yet, use the requested date directly.
+  if (!domain || domain.length === 0) {
+    return date;
+  }
+
   // Return the date that falls into the same year? Or closest one?
   // Returning the close one now, but then it is weird when timeDensity is set up as year and
   // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)

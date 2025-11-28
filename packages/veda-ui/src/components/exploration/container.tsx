@@ -6,11 +6,12 @@ import { useAtom, useSetAtom } from 'jotai';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
+import { isEmbeddedAtom } from './atoms/embed';
+import EmbeddedExploration from './embed-exploration';
 import ExplorationAndAnalysis from '.';
 import { allExploreDatasets } from '$data-layer/datasets';
 import { urlAtom } from '$utils/params-location-atom/url';
 import { PageMainContent } from '$styles/page';
-
 import { LayoutProps } from '$components/common/layout-root';
 import PageHero from '$components/common/page-hero';
 import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
@@ -29,13 +30,17 @@ export default function ExplorationAndAnalysisContainer() {
   const [datasetModalRevealed, setDatasetModalRevealed] = useState(
     !timelineDatasets.length
   );
-
   // @NOTE: When Exploration page is preloaded (ex. Linked with react-router)
   // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
   // We check if url Atom actually returns the values for exploration page here.
   const [currentUrl] = useAtom(urlAtom);
+  const [isEmbedded] = useAtom(isEmbeddedAtom);
+
   if (!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
 
+  if (isEmbedded) {
+    return <EmbeddedExploration datasets={timelineDatasets} />;
+  }
   const openModal = () => setDatasetModalRevealed(true);
   const closeModal = () => setDatasetModalRevealed(false);
 
