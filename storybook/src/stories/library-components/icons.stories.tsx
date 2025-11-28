@@ -460,7 +460,7 @@ export const YourIcon = makeUSWDSIcon(YourIconComponent);`}
             }}
           >
             Create icon file in{' '}
-            <Code>app/scripts/components/common/custom-icon/</Code>
+            <Code>packages/veda-ui/src/components/common/custom-icon/</Code>
           </li>
           <li
             style={{

@@ -12,7 +12,7 @@
     "url": "https://github.com/NASA-IMPACT/veda-ui.git"
   },
   "license": "Apache-2.0",
-  "source": "./app/scripts/index.ts",
+  "source": "./packages/veda-ui/src/index.ts",
   "main": "lib/main.js",
   "module": "lib/module.js",
   "types": "lib/index.d.ts",
@@ -40,7 +40,7 @@
     "test:e2e": "yarn playwright test",
     "test:e2e:ui": "yarn playwright test --ui",
     "release": "release-it --",
-    "watch:buildlib": "chokidar \"app/scripts/**/*\" -c \"yarn buildlib\" --initial",
+    "watch:buildlib": "chokidar \"packages/veda-ui/src/**/*\" -c \"yarn buildlib\" --initial",
     "storybook:install": "cd storybook && yarn install",
     "storybook:run": "cd storybook && yarn run storybook"
   },
@@ -273,7 +273,7 @@
     "$data-layer": "~/packages/veda-ui/src/data-layer",
     "$uswds": "~/packages/veda-ui/src/uswds",
     "$libs": "~/packages/veda-ui/src/libs",
-    "$graphics": "~/app/graphics",
+    "$graphics": "~/packages/veda-ui/graphics",
     "$test": "~/test",
     "$mock": "~/mock",
     "$static": "~/static"
