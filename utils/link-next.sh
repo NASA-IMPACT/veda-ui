@@ -76,7 +76,7 @@ rm -rf "$NEXT_DIR/.next"
 
 echo -e "${GREEN}Watching for changes in veda-ui and rebuilding...${NC}"
 cd "$VEDA_UI_DIR"
-./node_modules/.bin/chokidar "app/scripts/**/*" -c "yarn buildlib" --initial &
+./node_modules/.bin/chokidar "packages/veda-ui/src/**/*" -c "yarn buildlib" --initial &
 WATCH_PID=$!
 
 echo -e "${GREEN}Link setup complete. Verifying...${NC}"

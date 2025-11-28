@@ -81,9 +81,9 @@ module.exports = {
     // To simplify keeping the alias in sync the code below converts the aliases
     // defined in the package.json to module mappings:
     // From:
-    // "$styles": "~/app/scripts/styles"
+    // "$styles": "~/packages/veda-ui/src/styles"
     // To:
-    // '^\\$styles(.*)$': '<rootDir>/app/scripts/styles$1'
+    // '^\\$styles(.*)$': '<rootDir>/packages/veda-ui/src/styles$1'
     ...Object.entries(pkg.alias).reduce((acc, [key, value]) => {
       return value.startsWith('~/')
         ? {

@@ -26,11 +26,14 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         // Application path aliases
-        $uswds: path.resolve(__dirname, '../app/scripts/uswds'),
-        $components: path.resolve(__dirname, '../app/scripts/components'),
-        $context: path.resolve(__dirname, '../app/scripts/context'),
-        $utils: path.resolve(__dirname, '../app/scripts/utils'),
-        $styles: path.resolve(__dirname, '../app/scripts/styles')
+        $uswds: path.resolve(__dirname, '../packages/veda-ui/src/uswds'),
+        $components: path.resolve(
+          __dirname,
+          '../packages/veda-ui/src/components'
+        ),
+        $context: path.resolve(__dirname, '../packages/veda-ui/src/context'),
+        $utils: path.resolve(__dirname, '../packages/veda-ui/src/utils'),
+        $styles: path.resolve(__dirname, '../packages/veda-ui/src/styles')
       }
     },
     define: {
