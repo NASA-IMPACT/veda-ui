@@ -30,10 +30,11 @@ import { VizDatasetSuccess } from '$components/exploration/types.d.ts';
 import { ProjectionOptions } from '$types/veda';
 
 export const mapHeight = '32rem';
-const Carto = styled.div`
+const Carto = styled.div<{ height: string | number }>`
   position: relative;
   flex-grow: 1;
-  height: ${mapHeight};
+  height: ${({ height }) =>
+    typeof height === 'number' ? `${height}px` : height};
 `;
 
 // This global variable is used to give unique ID to mapbox container
@@ -121,6 +122,7 @@ interface MapBlockProps {
     | 'top-right'
     | 'bottom-left'
     | 'bottom-right';
+  height?: string | number;
 }
 
 export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
@@ -139,7 +141,8 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
     projectionParallels,
     basemapId,
     isMapMessageEnabled = true,
-    navigationControlPosition = 'top-left'
+    navigationControlPosition = 'top-left',
+    height = '32rem'
   } = props;
 
   const errors = validateBlockProps(props);
@@ -266,7 +269,7 @@ export default function MapBlock(props: PropsWithChildren<MapBlockProps>) {
   }, [baseDataLayer, props, props.onLayerDataUpdate]);
 
   return (
-    <Carto>
+    <Carto height={height}>
       <Map
         id={generatedId}
         mapOptions={{

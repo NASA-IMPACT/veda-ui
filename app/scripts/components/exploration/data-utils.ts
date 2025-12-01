@@ -16,7 +16,8 @@ import {
   DatasetStatus,
   StacDatasetData,
   TimeDensity,
-  TimelineDatasetSuccess
+  TimelineDatasetSuccess,
+  colorMapScale
 } from '$components/exploration/types.d.ts';
 import { utcString2userTzDate } from '$utils/date';
 import { DatasetLayer, DatasetLayerType, SourceParameters } from '$types/veda';
@@ -50,6 +51,15 @@ function getInitialColorMap(dataset: DatasetLayer): string | undefined {
   return dataset.sourceParams?.colormap_name;
 }
 
+function getInitialReScale(dataset: DatasetLayer): colorMapScale | undefined {
+  const { rescale } = dataset.sourceParams ?? {};
+  if (rescale && Array.isArray(rescale) && rescale.length === 2) {
+    return { min: rescale[0], max: rescale[1] };
+  }
+
+  return undefined;
+}
+
 export function reconcileDatasets(
   ids: string[],
   datasetsList: DatasetLayer[],
@@ -75,7 +85,8 @@ export function reconcileDatasets(
         isVisible: true,
         opacity: 100,
         analysisMetrics: getInitialMetrics(dataset),
-        colorMap: getInitialColorMap(dataset)
+        colorMap: getInitialColorMap(dataset),
+        reScale: getInitialReScale(dataset)
       },
       analysis: {
         status: DatasetStatus.IDLE,
@@ -346,6 +357,11 @@ export function getTimeDensityStartDate(date: Date, timeDensity: TimeDensity) {
 }
 
 export function getRelevantDate(date: Date, domain: Date[]) {
+  // Guard: if domain is not loaded yet, use the requested date directly.
+  if (!domain || domain.length === 0) {
+    return date;
+  }
+
   // Return the date that falls into the same year? Or closest one?
   // Returning the close one now, but then it is weird when timeDensity is set up as year and
   // selected date is ~ March 2020, it will send a request for 2019-12-31 (since it is the closest date)

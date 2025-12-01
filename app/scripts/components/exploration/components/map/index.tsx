@@ -10,6 +10,8 @@ import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
 import AoiLayer from './aoi-layer';
+
+import { ShareButton } from './share-button';
 import { ProjectionOptions } from '$types/veda';
 
 import Map, { Compare, MapControls } from '$components/common/map';
@@ -40,7 +42,6 @@ export function ExplorationMap(props: ExplorationMapProps) {
   const { envApiStacEndpoint, envMapboxToken } = useVedaUI();
 
   const { datasets, setDatasets, selectedDay, selectedCompareDay } = props;
-
   const [projection, setProjection] =
     useState<ProjectionOptions>(projectionDefault);
 
@@ -176,6 +177,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
           onOptionChange={onOptionChange}
         />
         <ScaleControl />
+        <ShareButton />
         <ShowTourControl />
         <MapCoordsControl />
         <NavigationControl />
