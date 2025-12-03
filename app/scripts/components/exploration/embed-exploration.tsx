@@ -5,10 +5,10 @@
  * - An interactive map with dataset visualization
  * - Timeline controls for date selection
  * - Support for comparing two datasets side by side
- * 
+ *
  * The component is designed to be embedded in external websites via iframe,
  * with URL parameters controlling zoom, center, and other view settings.
- * 
+ *
  * @module exploration/embed-exploration
  */
 
@@ -34,7 +34,6 @@ import {
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
-import { LayoutProps } from '$components/common/layout-root';
 
 /**
  * Styled container for the map and visualization area.
@@ -84,11 +83,11 @@ interface EmbeddedExplorationProps {
  * Main embedded exploration component for E&A embed mode.
  * Renders a minimal exploration interface suitable for iframe embedding.
  * Manages date selection state and renders the layers exploration with map.
- * 
+ *
  * @component
  * @param {EmbeddedExplorationProps} props - Component props
  * @returns {JSX.Element} The embedded exploration view
- * 
+ *
  * @example
  * <EmbeddedExploration datasets={timelineDatasets} />
  */
@@ -102,13 +101,6 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
   const [center] = useAtom(centerAtom);
   return (
     <>
-      <LayoutProps
-        title='Exploration'
-        description='Explore and analyze datasets'
-        hideFooter
-        hideNav
-        hideHeader
-      />
       <EmbeddedLayersExploration
         datasets={datasets}
         selectedDay={selectedDay}
@@ -155,7 +147,7 @@ interface EmbeddedLayersExplorationProps {
 /**
  * Extracts and validates a dataset layer at a given index.
  * Returns null if the layer doesn't exist or hasn't loaded successfully.
- * 
+ *
  * @param {number} layerIndex - Index of the layer to extract
  * @param {VizDataset[] | undefined} layers - Array of visualization datasets
  * @returns {VizDatasetSuccess | null} The extracted layer with default settings, or null
@@ -181,7 +173,7 @@ const getDataLayer = (
  * Inner component that handles layer visualization and map rendering.
  * Manages map projection, basemap, and layer data state.
  * Renders the MapBlock with timeline controls for date selection.
- * 
+ *
  * @component
  * @param {EmbeddedLayersExplorationProps} props - Component props
  * @returns {JSX.Element} The map and timeline interface
