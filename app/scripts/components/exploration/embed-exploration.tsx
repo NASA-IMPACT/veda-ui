@@ -20,7 +20,6 @@ import {
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
-import { LayoutProps } from '$components/common/layout-root';
 
 const Carto = styled.div`
   position: relative;
@@ -56,14 +55,6 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
   const [center] = useAtom(centerAtom);
   return (
     <>
-      <LayoutProps
-        title='Exploration'
-        description='Explore and analyze datasets'
-        hideFooter
-        hideNav
-        hideHeader
-      />
-
       <EmbeddedLayersExploration
         datasets={datasets}
         selectedDay={selectedDay}

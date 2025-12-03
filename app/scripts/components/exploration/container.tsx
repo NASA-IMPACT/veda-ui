@@ -38,9 +38,6 @@ export default function ExplorationAndAnalysisContainer() {
 
   if (!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
 
-  if (isEmbedded) {
-    return <EmbeddedExploration datasets={timelineDatasets} />;
-  }
   const openModal = () => setDatasetModalRevealed(true);
   const closeModal = () => setDatasetModalRevealed(false);
 
@@ -51,32 +48,41 @@ export default function ExplorationAndAnalysisContainer() {
         title='Exploration'
         description='Explore and analyze datasets'
         hideFooter
+        {...(isEmbedded && { hideNav: true, hideHeader: true })}
       />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
-        <ExplorationAndAnalysis
-          datasets={timelineDatasets}
-          setDatasets={setTimelineDatasets}
-          openDatasetsSelectionModal={openModal}
-        />
-        <DatasetSelectorModal
-          revealed={datasetModalRevealed}
-          close={closeModal}
-          datasets={allExploreDatasets}
-          timelineDatasets={timelineDatasets}
-          setTimelineDatasets={setTimelineDatasets}
-          emptyStateContent={
-            <>
-              <p>There are no datasets to show with the selected filters.</p>
-              <p>
-                This tool allows the exploration and analysis of time-series
-                datasets in raster format. For a comprehensive list of available
-                datasets, please visit the{' '}
-                <Link to={DATASETS_PATH}>Data Catalog</Link>.
-              </p>
-            </>
-          }
-        />
+        {isEmbedded ? (
+          <EmbeddedExploration datasets={timelineDatasets} />
+        ) : (
+          <>
+            <ExplorationAndAnalysis
+              datasets={timelineDatasets}
+              setDatasets={setTimelineDatasets}
+              openDatasetsSelectionModal={openModal}
+            />
+            <DatasetSelectorModal
+              revealed={datasetModalRevealed}
+              close={closeModal}
+              datasets={allExploreDatasets}
+              timelineDatasets={timelineDatasets}
+              setTimelineDatasets={setTimelineDatasets}
+              emptyStateContent={
+                <>
+                  <p>
+                    There are no datasets to show with the selected filters.
+                  </p>
+                  <p>
+                    This tool allows the exploration and analysis of time-series
+                    datasets in raster format. For a comprehensive list of
+                    available datasets, please visit the{' '}
+                    <Link to={DATASETS_PATH}>Data Catalog</Link>.
+                  </p>
+                </>
+              }
+            />
+          </>
+        )}
       </PageMainContent>
     </>
   );
