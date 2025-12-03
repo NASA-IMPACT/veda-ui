@@ -4,12 +4,12 @@ import { useAtom } from 'jotai';
 import {
   convertProjectionToMapbox,
   projectionDefault
-} from '../common/map/controls/map-options/projections';
-import { BasemapId } from '../common/map/controls/map-options/basemap';
-import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
-import { zoomAtom } from './atoms/zoom';
-import { centerAtom } from './atoms/center';
-import EmbedTimeline from './components/embed-exploration/embed-timeline';
+} from '../../../common/map/controls/map-options/projections';
+import { BasemapId } from '../../../common/map/controls/map-options/basemap';
+import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
+import { zoomAtom } from '../../atoms/zoom';
+import { centerAtom } from '../../atoms/center';
+import EmbedTimeline from './embed-timeline';
 import MapBlock from '$components/common/blocks/block-map';
 import {
   VizDataset,

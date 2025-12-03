@@ -7,7 +7,7 @@ import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
 import { isEmbeddedAtom } from './atoms/embed';
-import EmbeddedExploration from './embed-exploration';
+import EmbeddedExploration from './components/embed-exploration/embed-exploration';
 import ExplorationAndAnalysis from '.';
 import { allExploreDatasets } from '$data-layer/datasets';
 import { urlAtom } from '$utils/params-location-atom/url';

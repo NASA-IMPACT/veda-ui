@@ -1,6 +1,6 @@
 export { default as CatalogContent } from '$components/common/catalog/catalog-content';
 export { default as ExplorationAndAnalysis } from '$components/exploration';
-export { default as EmbeddedExploration } from '$components/exploration/embed-exploration';
+export { default as EmbeddedExploration } from '$components/exploration/components/embed-exploration/embed-exploration';
 // DataSelectorModal needs to be paried with E&A, so putting this for now.
 export { DatasetSelectorModal } from '$components/exploration/components/dataset-selector-modal';
 export { default as StoriesHubContent } from '$components/stories/hub/hub-content';
