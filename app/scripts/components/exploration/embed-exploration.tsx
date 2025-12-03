@@ -189,6 +189,11 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
             setDate={setSelectedDay}
             datasets={layers as TimelineDataset[]}
             timeDensity={baseTimeDensity}
+            tipContent={
+              selectedCompareDay
+                ? 'Date shown on left map'
+                : 'Date shown on map'
+            }
           />
         )}
       </BaseTimelineContainer>
@@ -200,6 +205,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
             setDate={setSelectedComparedDay}
             datasets={layers as TimelineDataset[]}
             timeDensity={compareTimeDensity}
+            tipContent='Date shown on right map'
           />
         )}
       </CompareTimelineContainer>

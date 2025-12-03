@@ -28,10 +28,11 @@ interface EmbedTimelineProps {
   timeDensity: TimeDensity;
   datasets: TimelineDataset[];
   label: string;
+  tipContent?: string;
 }
 
 function EmbedTimeline(props: EmbedTimelineProps) {
-  const { date, setDate, timeDensity, datasets, label } = props;
+  const { date, setDate, timeDensity, datasets, label, tipContent } = props;
 
   const lowestCommonTimeDensity = useMemo(
     () =>
@@ -85,6 +86,7 @@ function EmbedTimeline(props: EmbedTimelineProps) {
         minDate={minMaxTemporalExtent[0]}
         maxDate={minMaxTemporalExtent[1]}
         selectedDay={date}
+        tipContent={tipContent}
         onConfirm={(d) => {
           if (!d) return;
           setDate(new Date(d));
