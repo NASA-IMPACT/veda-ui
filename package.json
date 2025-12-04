@@ -212,7 +212,7 @@
     "js-yaml": "^4.1.0",
     "lodash": "^4.17.21",
     "mapbox-gl": "^3.9.3",
-    "mapbox-gl-compare": "^0.4.1",
+    "mapbox-gl-compare": "^0.4.2",
     "mapbox-gl-draw-rectangle-mode": "^1.0.4",
     "markdown-it": "^14.0.0",
     "optics-ts": "^2.4.1",
