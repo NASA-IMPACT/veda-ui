@@ -21,20 +21,20 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-const Carto = styled.div`
+const StyledDiv = styled.div`
   position: relative;
   flex-grow: 1;
   height: 100vh;
   display: flex;
 `;
-const BaseTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
+const StyledDivTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
   position: absolute;
   bottom: 2rem;
   left: ${({ isCompareMode }) => (isCompareMode ? '25%' : '50%')};
   transform: translateX(-50%);
   z-index: 10;
 `;
-const CompareTimelineContainer = styled.div`
+const StyledDivCompareTimelineContainer = styled.div`
   position: absolute;
   bottom: 2rem;
   left: 75%;
@@ -56,21 +56,20 @@ export default function ExplorationSimpleView(
   const [zoom] = useAtom(zoomAtom);
   const [center] = useAtom(centerAtom);
   return (
-    <>
-      <EmbeddedLayersExploration
-        datasets={datasets}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-        setSelectedComparedDay={setSelectedComparedDay}
-        selectedCompareDay={selectedCompareDay}
-        center={center}
-        zoom={zoom}
-      />
-    </>
+    // eslint-disable-next-line react/jsx-pascal-case
+    <ExplorationSimpleView_
+      datasets={datasets}
+      selectedDay={selectedDay}
+      setSelectedDay={setSelectedDay}
+      setSelectedComparedDay={setSelectedComparedDay}
+      selectedCompareDay={selectedCompareDay}
+      center={center}
+      zoom={zoom}
+    />
   );
 }
 
-interface EmbeddedLayersExplorationProps {
+interface ExplorationSimpleViewProps_ {
   datasets: TimelineDataset[];
   setSelectedDay: (x: Date) => void;
   setSelectedComparedDay: (x: Date) => void;
@@ -101,7 +100,7 @@ const getDataLayer = (
   };
 };
 
-function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
+function ExplorationSimpleView_(props: ExplorationSimpleViewProps_) {
   const {
     datasets,
     selectedDay,
@@ -166,7 +165,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   }, [basemapId]);
 
   return (
-    <Carto>
+    <StyledDiv>
       <MapBlock
         baseDataLayer={baseDataLayer}
         compareDataLayer={compareDataLayer}
@@ -183,7 +182,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
         navigationControlPosition='top-right'
         height='100%'
       />
-      <BaseTimelineContainer isCompareMode={!!selectedCompareDay}>
+      <StyledDivTimelineContainer isCompareMode={!!selectedCompareDay}>
         {selectedDay && (
           <TimelineSimpleView
             label=''
@@ -198,8 +197,8 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
             }
           />
         )}
-      </BaseTimelineContainer>
-      <CompareTimelineContainer>
+      </StyledDivTimelineContainer>
+      <StyledDivCompareTimelineContainer>
         {selectedCompareDay && (
           <TimelineSimpleView
             label=''
@@ -210,7 +209,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
             tipContent='Date shown on right map'
           />
         )}
-      </CompareTimelineContainer>
-    </Carto>
+      </StyledDivCompareTimelineContainer>
+    </StyledDiv>
   );
 }
