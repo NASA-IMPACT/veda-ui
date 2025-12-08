@@ -6,7 +6,7 @@ import { useAtom, useSetAtom } from 'jotai';
 import { DatasetSelectorModal } from './components/dataset-selector-modal';
 import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
-import { isEmbeddedAtom } from './atoms/embed';
+import { viewModeAtom } from './atoms/viewMode';
 import EmbeddedExploration from './components/embed-exploration/embed-exploration';
 import ExplorationAndAnalysis from '.';
 import { allExploreDatasets } from '$data-layer/datasets';
@@ -34,7 +34,7 @@ export default function ExplorationAndAnalysisContainer() {
   // atomWithLocation gets initialized outside of Exploration page and returns the previous page's value
   // We check if url Atom actually returns the values for exploration page here.
   const [currentUrl] = useAtom(urlAtom);
-  const [isEmbedded] = useAtom(isEmbeddedAtom);
+  const [viewMode] = useAtom(viewModeAtom);
 
   if (!currentUrl.pathname?.includes(EXPLORATION_PATH)) return null;
 
@@ -48,11 +48,11 @@ export default function ExplorationAndAnalysisContainer() {
         title='Exploration'
         description='Explore and analyze datasets'
         hideFooter
-        {...(isEmbedded && { hideNav: true, hideHeader: true })}
+        {...(viewMode === 'simple' && { hideNav: true, hideHeader: true })}
       />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
-        {isEmbedded ? (
+        {viewMode === 'simple' ? (
           <EmbeddedExploration datasets={timelineDatasets} />
         ) : (
           <>
