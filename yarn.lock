@@ -11419,10 +11419,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mapbox-gl-compare@^0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/mapbox-gl-compare/-/mapbox-gl-compare-0.4.1.tgz#eb4b951bba33ec254ceb1967267015775df25b9d"
-  integrity sha512-aLE1GK5oZywGwtRWjVnVz50Fudcod6d0tIxl4X5Rv/nhE8Kc64692S37F150amYvOFzzST+ylP25KgM6ApiPRA==
+mapbox-gl-compare@^0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/mapbox-gl-compare/-/mapbox-gl-compare-0.4.2.tgz#819bddb59569f73d1c78da92f999fcbbd58292e2"
+  integrity sha512-MhKUYJri3KIfeB2rsLUh2JzPutdfehU3vqdfgp2+uocKjNYQwCUvQ0T8u7fBwIJvJKdfWg3FiDq+5oZC4AtAGg==
   dependencies:
     "@mapbox/mapbox-gl-sync-move" "^0.3.1"
 
