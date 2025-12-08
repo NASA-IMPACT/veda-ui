@@ -9,7 +9,7 @@ import { BasemapId } from '../../../common/map/controls/map-options/basemap';
 import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
 import { zoomAtom } from '../../atoms/zoom';
 import { centerAtom } from '../../atoms/center';
-import EmbedTimeline from './embed-timeline';
+import TimelineSimpleView from './timeline-simple-view';
 import MapBlock from '$components/common/blocks/block-map';
 import {
   VizDataset,
@@ -42,10 +42,12 @@ const CompareTimelineContainer = styled.div`
   z-index: 10;
 `;
 
-interface EmbeddedExplorationProps {
+interface ExplorationSimpleViewProps {
   datasets: TimelineDataset[];
 }
-export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
+export default function ExplorationSimpleView(
+  props: ExplorationSimpleViewProps
+) {
   const { datasets } = props;
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedComparedDay] = useAtom(
@@ -183,7 +185,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
       />
       <BaseTimelineContainer isCompareMode={!!selectedCompareDay}>
         {selectedDay && (
-          <EmbedTimeline
+          <TimelineSimpleView
             label=''
             date={selectedDay}
             setDate={setSelectedDay}
@@ -199,7 +201,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
       </BaseTimelineContainer>
       <CompareTimelineContainer>
         {selectedCompareDay && (
-          <EmbedTimeline
+          <TimelineSimpleView
             label=''
             date={selectedCompareDay}
             setDate={setSelectedComparedDay}

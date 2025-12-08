@@ -22,7 +22,7 @@ const TimelineWrapper = styled.div`
   background-color: white;
   border-radius: 2px;
 `;
-interface EmbedTimelineProps {
+interface TimelineSimpleViewProps {
   date: Date | null;
   setDate: (date: Date | null) => void;
   timeDensity: TimeDensity;
@@ -31,7 +31,7 @@ interface EmbedTimelineProps {
   tipContent?: string;
 }
 
-function EmbedTimeline(props: EmbedTimelineProps) {
+function TimelineSimpleView(props: TimelineSimpleViewProps) {
   const { date, setDate, timeDensity, datasets, label, tipContent } = props;
 
   const lowestCommonTimeDensity = useMemo(
@@ -100,4 +100,4 @@ function EmbedTimeline(props: EmbedTimelineProps) {
   );
 }
 
-export default EmbedTimeline;
+export default TimelineSimpleView;
