@@ -32,7 +32,7 @@ interface ExplorationAndAnalysisSimpleViewProps {
  * Simplified exploration view optimized for embedding.
  *
  * Renders only the map visualization and timeline controls,
- * without navigation, header, or dataset selection UI.
+ * without navigation, header, footer, dataset selection UI and time series visualization.
  *
  * @param props.datasets - Timeline datasets to display
  *

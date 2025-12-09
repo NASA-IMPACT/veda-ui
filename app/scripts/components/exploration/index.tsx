@@ -20,7 +20,7 @@ import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
  * Container component that manages exploration view routing and data state.
  *
  * Routes between two view modes based on URL parameter:
- * - Simple view (`?viewMode=simple`): Minimal interface for embedding
+ * - Simple view (`?viewMode=simple`): Minimal interface used primarily for embedding in viewport constrained external apps
  * - Default view: Full exploration and analysis interface
  *
  * @LEGACY-SUPPORT

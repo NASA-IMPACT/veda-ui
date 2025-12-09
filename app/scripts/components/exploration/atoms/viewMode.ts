@@ -15,7 +15,7 @@ const dehydrateViewMode = (value: ViewMode) => {
 /**
  * Atom that manages the exploration view mode via URL parameter.
  *
- * - 'simple': Minimal view for embedding (no navigation/header)
+ * - 'simple': Minimal view for used primarily for embedding (no navigation/header/footer/dataset selection UI or time series visualization)
  * - 'default': Full exploration and analysis interface
  *
  * URL parameter: `?viewMode=simple` (defaults to 'default')
