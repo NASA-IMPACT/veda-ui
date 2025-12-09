@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { View } from 'react-calendar/dist/cjs/shared/types';
-import { getLabelFormat, getTemporalExtent } from '../timeline/timeline-utils';
-import { TimelineDatePicker } from '../timeline/timeline-datepicker';
-import { TimeDensity } from '../../types.d.ts';
+import { TimelineDatePicker } from '$components/exploration/components/timeline/timeline-datepicker';
+import {
+  getLabelFormat,
+  getTemporalExtent
+} from '$components/exploration/components/timeline/timeline-utils';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils';
 
 import {
+  TimeDensity,
   TimelineDataset,
   DatasetStatus,
   TimelineDatasetSuccess
@@ -22,16 +25,28 @@ const TimelineWrapper = styled.div`
   background-color: white;
   border-radius: 2px;
 `;
-interface EmbedTimelineProps {
+interface TimelineSimpleViewProps {
   date: Date | null;
   setDate: (date: Date | null) => void;
   timeDensity: TimeDensity;
   datasets: TimelineDataset[];
   label: string;
+  tipContent?: string;
 }
 
-function EmbedTimeline(props: EmbedTimelineProps) {
-  const { date, setDate, timeDensity, datasets, label } = props;
+/**
+ * Timeline date picker for the simple exploration view.
+ *
+ * Adjusts calendar view (month/year/day) based on dataset time density
+ * and calculates temporal extent from provided datasets.
+ *
+ * @param props.date - Currently selected date
+ * @param props.setDate - Callback to update the selected date
+ * @param props.timeDensity - Dataset time density (determines calendar view)
+ * @param props.datasets - Datasets used to calculate temporal extent
+ */
+function TimelineSimpleView(props: TimelineSimpleViewProps) {
+  const { date, setDate, timeDensity, datasets, label, tipContent } = props;
 
   const lowestCommonTimeDensity = useMemo(
     () =>
@@ -85,6 +100,7 @@ function EmbedTimeline(props: EmbedTimelineProps) {
         minDate={minMaxTemporalExtent[0]}
         maxDate={minMaxTemporalExtent[1]}
         selectedDay={date}
+        tipContent={tipContent}
         onConfirm={(d) => {
           if (!d) return;
           setDate(new Date(d));
@@ -98,4 +114,4 @@ function EmbedTimeline(props: EmbedTimelineProps) {
   );
 }
 
-export default EmbedTimeline;
+export default TimelineSimpleView;

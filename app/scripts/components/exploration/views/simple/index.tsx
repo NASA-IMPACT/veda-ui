@@ -2,14 +2,17 @@ import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
 import {
+  selectedCompareDateAtom,
+  selectedDateAtom
+} from '$components/exploration/atoms/dates';
+import { zoomAtom } from '$components/exploration/atoms/zoom';
+import { centerAtom } from '$components/exploration/atoms/center';
+import TimelineSimpleView from '$components/exploration/views/simple/timeline-simple-view';
+import { BasemapId } from '$components/common/map/controls/map-options/basemap';
+import {
   convertProjectionToMapbox,
   projectionDefault
-} from '../common/map/controls/map-options/projections';
-import { BasemapId } from '../common/map/controls/map-options/basemap';
-import { selectedCompareDateAtom, selectedDateAtom } from './atoms/dates';
-import { zoomAtom } from './atoms/zoom';
-import { centerAtom } from './atoms/center';
-import EmbedTimeline from './components/embed-exploration/embed-timeline';
+} from '$components/common/map/controls/map-options/projections';
 import MapBlock from '$components/common/blocks/block-map';
 import {
   VizDataset,
@@ -21,31 +24,24 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-const Carto = styled.div`
-  position: relative;
-  flex-grow: 1;
-  height: 100vh;
-  display: flex;
-`;
-const BaseTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
-  position: absolute;
-  bottom: 2rem;
-  left: ${({ isCompareMode }) => (isCompareMode ? '25%' : '50%')};
-  transform: translateX(-50%);
-  z-index: 10;
-`;
-const CompareTimelineContainer = styled.div`
-  position: absolute;
-  bottom: 2rem;
-  left: 75%;
-  transform: translateX(-50%);
-  z-index: 10;
-`;
-
-interface EmbeddedExplorationProps {
+interface ExplorationAndAnalysisSimpleViewProps {
   datasets: TimelineDataset[];
 }
-export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
+
+/**
+ * Simplified exploration view optimized for embedding.
+ *
+ * Renders only the map visualization and timeline controls,
+ * without navigation, header, footer, dataset selection UI and time series visualization.
+ *
+ * @param props.datasets - Timeline datasets to display
+ *
+ * @example
+ * <ExplorationAndAnalysisSimpleView datasets={timelineDatasets} />
+ */
+export default function ExplorationAndAnalysisSimpleView(
+  props: ExplorationAndAnalysisSimpleViewProps
+) {
   const { datasets } = props;
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
   const [selectedCompareDay, setSelectedComparedDay] = useAtom(
@@ -54,21 +50,20 @@ export default function EmbeddedExploration(props: EmbeddedExplorationProps) {
   const [zoom] = useAtom(zoomAtom);
   const [center] = useAtom(centerAtom);
   return (
-    <>
-      <EmbeddedLayersExploration
-        datasets={datasets}
-        selectedDay={selectedDay}
-        setSelectedDay={setSelectedDay}
-        setSelectedComparedDay={setSelectedComparedDay}
-        selectedCompareDay={selectedCompareDay}
-        center={center}
-        zoom={zoom}
-      />
-    </>
+    // eslint-disable-next-line react/jsx-pascal-case
+    <ExplorationAndAnalysisSimpleViewContent
+      datasets={datasets}
+      selectedDay={selectedDay}
+      setSelectedDay={setSelectedDay}
+      setSelectedComparedDay={setSelectedComparedDay}
+      selectedCompareDay={selectedCompareDay}
+      center={center}
+      zoom={zoom}
+    />
   );
 }
 
-interface EmbeddedLayersExplorationProps {
+interface ExplorationAndAnalysisSimpleViewContentProps {
   datasets: TimelineDataset[];
   setSelectedDay: (x: Date) => void;
   setSelectedComparedDay: (x: Date) => void;
@@ -99,7 +94,9 @@ const getDataLayer = (
   };
 };
 
-function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
+function ExplorationAndAnalysisSimpleViewContent(
+  props: ExplorationAndAnalysisSimpleViewContentProps
+) {
   const {
     datasets,
     selectedDay,
@@ -164,7 +161,7 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
   }, [basemapId]);
 
   return (
-    <Carto>
+    <StyledContainer>
       <MapBlock
         baseDataLayer={baseDataLayer}
         compareDataLayer={compareDataLayer}
@@ -181,28 +178,55 @@ function EmbeddedLayersExploration(props: EmbeddedLayersExplorationProps) {
         navigationControlPosition='top-right'
         height='100%'
       />
-      <BaseTimelineContainer isCompareMode={!!selectedCompareDay}>
+      <StyledTimelineContainer isCompareMode={!!selectedCompareDay}>
         {selectedDay && (
-          <EmbedTimeline
+          <TimelineSimpleView
             label=''
             date={selectedDay}
             setDate={setSelectedDay}
             datasets={layers as TimelineDataset[]}
             timeDensity={baseTimeDensity}
+            tipContent={
+              selectedCompareDay
+                ? 'Date shown on left map'
+                : 'Date shown on map'
+            }
           />
         )}
-      </BaseTimelineContainer>
-      <CompareTimelineContainer>
+      </StyledTimelineContainer>
+      <StyledCompareTimelineContainer>
         {selectedCompareDay && (
-          <EmbedTimeline
+          <TimelineSimpleView
             label=''
             date={selectedCompareDay}
             setDate={setSelectedComparedDay}
             datasets={layers as TimelineDataset[]}
             timeDensity={compareTimeDensity}
+            tipContent='Date shown on right map'
           />
         )}
-      </CompareTimelineContainer>
-    </Carto>
+      </StyledCompareTimelineContainer>
+    </StyledContainer>
   );
 }
+
+const StyledContainer = styled.div`
+  position: relative;
+  flex-grow: 1;
+  height: 100vh;
+  display: flex;
+`;
+const StyledTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
+  position: absolute;
+  bottom: 2rem;
+  left: ${({ isCompareMode }) => (isCompareMode ? '25%' : '50%')};
+  transform: translateX(-50%);
+  z-index: 10;
+`;
+const StyledCompareTimelineContainer = styled.div`
+  position: absolute;
+  bottom: 2rem;
+  left: 75%;
+  transform: translateX(-50%);
+  z-index: 10;
+`;
