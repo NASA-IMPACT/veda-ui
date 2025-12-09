@@ -31,7 +31,7 @@ import {
   zoomTransformAtom
 } from '$components/exploration/atoms/timeline';
 import { usePreviousValue } from '$utils/use-effect-previous';
-import { TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
+import { TimelineDatasetSuccess } from '$components/exploration/types';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils';
 
 const TimelineWrapper = styled.div`

@@ -5,7 +5,7 @@ import {
   TimelineDataset,
   DatasetStatus,
   TimelineDatasetSuccess
-} from '../../types.d.ts';
+} from '../../types';
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';

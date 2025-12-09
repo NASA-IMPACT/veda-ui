@@ -4,10 +4,7 @@ import { Icon } from '@trussworks/react-uswds';
 import Tippy from '@tippyjs/react';
 import { ColormapOptions } from './colormap-options';
 import { LayerGradientColormapGraphic } from '$components/common/map/layer-legend';
-import {
-  TimelineDataset,
-  colorMapScale
-} from '$components/exploration/types.d.ts';
+import { TimelineDataset, colorMapScale } from '$components/exploration/types';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 import {
   LayerCategoricalGraphic,

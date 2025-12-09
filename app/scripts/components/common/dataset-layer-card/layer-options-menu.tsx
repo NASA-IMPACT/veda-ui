@@ -6,7 +6,7 @@ import { Icon } from '@trussworks/react-uswds';
 import { TileUrlModal } from '../../exploration/components/datasets/tile-link-modal';
 import { TipButton } from '$components/common/tip-button';
 import { NativeSliderInput, SliderInputProps } from '$styles/range-slider';
-import { VizDataset } from '$components/exploration/types.d.ts';
+import { VizDataset } from '$components/exploration/types';
 import { DropIcon } from '$components/common/custom-icon';
 
 interface LayerMenuOptionsProps {

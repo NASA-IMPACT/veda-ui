@@ -11,7 +11,7 @@ import { Toolbar, ToolbarGroup, VerticalDivider } from '@devseed-ui/toolbar';
 
 import { isEqual } from 'lodash';
 import { View } from 'react-calendar/dist/cjs/shared/types';
-import { TimeDensity } from './../../types.d.ts';
+import { TimeDensity } from './../../types';
 import { DateAxis } from './date-axis';
 import { TimelineZoomControls } from './timeline-zoom-controls';
 import { TimelineDatePicker } from './timeline-datepicker';
@@ -30,7 +30,10 @@ import {
   selectedIntervalAtom
 } from '$components/exploration/atoms/dates';
 import { DAY_SIZE_MAX } from '$components/exploration/constants';
-import { CalendarMinusIcon, CalendarPlusIcon } from '$components/common/custom-icon';
+import {
+  CalendarMinusIcon,
+  CalendarPlusIcon
+} from '$components/common/custom-icon';
 import { TipToolbarIconButton } from '$components/common/tip-button';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { useOnTOIZoom } from '$components/exploration/hooks/use-toi-zoom';

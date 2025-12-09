@@ -19,7 +19,7 @@ import {
   VizDatasetSuccess,
   DatasetStatus,
   TimelineDataset
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';

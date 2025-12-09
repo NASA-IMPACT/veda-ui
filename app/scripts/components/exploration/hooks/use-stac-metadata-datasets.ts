@@ -9,7 +9,7 @@ import {
   TimelineDataset,
   DatasetStatus,
   VizDataset
-} from '../types.d.ts';
+} from '../types';
 import {
   getTimeDensityFromInterval,
   resolveLayerTemporalExtent,

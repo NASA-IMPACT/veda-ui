@@ -21,7 +21,7 @@ import { veda_faux_module_datasets } from '$data-layer/datasets';
 import { reconcileDatasets } from '$components/exploration/data-utils';
 import { getDatasetLayers } from '$utils/data-utils';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
-import { DatasetStatus } from '$components/exploration/types.d.ts';
+import { DatasetStatus } from '$components/exploration/types';
 import { useVedaUI } from '$context/veda-ui-provider';
 
 const getDataLayer = (layerIndex, layers) => {

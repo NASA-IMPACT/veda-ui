@@ -9,7 +9,7 @@ import {
   DatasetStatus,
   AnalysisTimeseriesEntry,
   TimeseriesData
-} from './types.d.ts';
+} from './types';
 
 import { MAX_QUERY_NUM } from './constants';
 import {

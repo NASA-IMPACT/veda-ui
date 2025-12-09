@@ -40,7 +40,7 @@ import {
   DatasetStatus,
   VizDataset,
   VizDatasetSuccess
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types';
 import { DatasetData } from '$types/veda';
 import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-stac-metadata-datasets';
 import {

@@ -1,4 +1,4 @@
-import { ViewMode } from '$components/exploration/types.d.ts';
+import { ViewMode } from '$components/exploration/types';
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 const initialParams = new URLSearchParams(window.location.search);

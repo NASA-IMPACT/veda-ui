@@ -11,7 +11,7 @@ import {
   tooltiptextClasses
 } from './utils';
 
-import { colorMapScale } from '$components/exploration/types.d.ts';
+import { colorMapScale } from '$components/exploration/types';
 import { USWDSTextInput } from '$uswds';
 
 interface ColorrangeRangeSlideProps {

@@ -42,7 +42,7 @@ import type {
   TimelineDatasetForUrl,
   DateRange,
   ZoomTransformPlain
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types';
 
 export type {
   // Common/UI

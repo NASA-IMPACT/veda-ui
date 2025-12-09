@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { ScaleTime } from 'd3';
 import { themeVal } from '@devseed-ui/theme-provider';
 import { DatasetChart } from '../datasets/dataset-chart';
-import { TimelineDatasetSuccess } from '$components/exploration/types.d.ts';
+import { TimelineDatasetSuccess } from '$components/exploration/types';
 
 const DatasetItem = styled.article`
   width: 100%;

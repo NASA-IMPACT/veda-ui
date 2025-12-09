@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import { TimelineDataset } from '../../types.d.ts';
+import { TimelineDataset } from '../../types';
 
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';

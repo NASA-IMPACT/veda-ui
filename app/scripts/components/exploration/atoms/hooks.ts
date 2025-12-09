@@ -12,7 +12,7 @@ import {
   TimelineDataset,
   DatasetStatus,
   TimelineDatasetSuccess
-} from '../types.d.ts';
+} from '../types';
 import { timelineSizesAtom } from './timeline';
 import { timelineDatasetsAtom } from './datasets';
 

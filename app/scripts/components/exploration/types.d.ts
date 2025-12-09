@@ -198,7 +198,7 @@ export interface ZoomTransformPlain {
 /**
  * Exploration view mode.
  *
- * - 'simple': Minimal view for embedding
+ * - 'simple': Minimal view used primarily for embedding in viewport constrained external apps
  * - 'default': Full exploration interface
  */
 export type ViewMode = 'simple' | 'default';

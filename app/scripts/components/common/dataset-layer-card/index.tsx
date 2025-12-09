@@ -12,10 +12,7 @@ import { LayerInfoLiner } from '$components/exploration/components/layer-info-mo
 import LayerMenuOptions from '$components/common/dataset-layer-card/layer-options-menu';
 import { TipButton } from '$components/common/tip-button';
 
-import {
-  TimelineDataset,
-  colorMapScale
-} from '$components/exploration/types.d.ts';
+import { TimelineDataset, colorMapScale } from '$components/exploration/types';
 import { DatasetData } from '$types/veda';
 import { DatasetLayersIcon } from '$components/common/custom-icon/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 // Avoid error: node_modules/date-fns/esm/index.js does not export 'default'
 import * as dateFns from 'date-fns';
 
-import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types.d.ts';
+import { TimelineDatasetSuccess, VizDatasetSuccess } from '../../types';
 import {
   getRelevantDate,
   getTimeDensityStartDate

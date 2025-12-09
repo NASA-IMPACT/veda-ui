@@ -1,4 +1,4 @@
-import { DateRange } from '../types.d.ts';
+import { DateRange } from '../types';
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 
 // We cannot start a date with null.

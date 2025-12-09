@@ -22,7 +22,7 @@ import {
   AnalysisTimeseriesEntry,
   TimeDensity,
   TimelineDatasetSuccess
-} from '../types.d.ts';
+} from '../types';
 import {
   FADED_TEXT_COLOR,
   TEXT_TITLE_BG_COLOR,

@@ -16,7 +16,7 @@ import {
   TimelineDataset,
   TimelineDatasetAnalysis,
   DatasetStatus
-} from '../types.d.ts';
+} from '../types';
 import { MAX_QUERY_NUM } from '../constants';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { useVedaUI } from '$context/veda-ui-provider';

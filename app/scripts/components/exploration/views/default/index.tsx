@@ -12,7 +12,7 @@ import {
   PopoverTourComponent,
   TourManager
 } from '$components/exploration/tour-manager';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { TimelineDataset } from '$components/exploration/types';
 import {
   selectedCompareDateAtom,
   selectedDateAtom
