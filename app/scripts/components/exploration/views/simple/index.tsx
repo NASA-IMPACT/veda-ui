@@ -2,14 +2,17 @@ import React, { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { useAtom } from 'jotai';
 import {
+  selectedCompareDateAtom,
+  selectedDateAtom
+} from '$components/exploration/atoms/dates';
+import { zoomAtom } from '$components/exploration/atoms/zoom';
+import { centerAtom } from '$components/exploration/atoms/center';
+import TimelineSimpleView from '$components/exploration/views/simple/timeline-simple-view';
+import { BasemapId } from '$components/common/map/controls/map-options/basemap';
+import {
   convertProjectionToMapbox,
   projectionDefault
-} from '../../../common/map/controls/map-options/projections';
-import { BasemapId } from '../../../common/map/controls/map-options/basemap';
-import { selectedCompareDateAtom, selectedDateAtom } from '../../atoms/dates';
-import { zoomAtom } from '../../atoms/zoom';
-import { centerAtom } from '../../atoms/center';
-import TimelineSimpleView from './timeline-simple-view';
+} from '$components/common/map/controls/map-options/projections';
 import MapBlock from '$components/common/blocks/block-map';
 import {
   VizDataset,

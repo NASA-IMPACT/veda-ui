@@ -1,12 +1,15 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
 import { View } from 'react-calendar/dist/cjs/shared/types';
-import { getLabelFormat, getTemporalExtent } from '../timeline/timeline-utils';
-import { TimelineDatePicker } from '../timeline/timeline-datepicker';
-import { TimeDensity } from '../../types.d.ts';
+import { TimelineDatePicker } from '$components/exploration/components/timeline/timeline-datepicker';
+import {
+  getLabelFormat,
+  getTemporalExtent
+} from '$components/exploration/components/timeline/timeline-utils';
 import { getLowestCommonTimeDensity } from '$components/exploration/data-utils';
 
 import {
+  TimeDensity,
   TimelineDataset,
   DatasetStatus,
   TimelineDatasetSuccess
