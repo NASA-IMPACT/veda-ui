@@ -21,20 +21,20 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-const StyledDiv = styled.div`
+const StyledContainer = styled.div`
   position: relative;
   flex-grow: 1;
   height: 100vh;
   display: flex;
 `;
-const StyledDivTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
+const StyledTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
   position: absolute;
   bottom: 2rem;
   left: ${({ isCompareMode }) => (isCompareMode ? '25%' : '50%')};
   transform: translateX(-50%);
   z-index: 10;
 `;
-const StyledDivCompareTimelineContainer = styled.div`
+const StyledCompareTimelineContainer = styled.div`
   position: absolute;
   bottom: 2rem;
   left: 75%;
@@ -57,7 +57,7 @@ export default function ExplorationSimpleView(
   const [center] = useAtom(centerAtom);
   return (
     // eslint-disable-next-line react/jsx-pascal-case
-    <ExplorationSimpleView_
+    <ExplorationSimpleViewContent
       datasets={datasets}
       selectedDay={selectedDay}
       setSelectedDay={setSelectedDay}
@@ -69,7 +69,7 @@ export default function ExplorationSimpleView(
   );
 }
 
-interface ExplorationSimpleViewProps_ {
+interface ExplorationSimpleViewContentProps {
   datasets: TimelineDataset[];
   setSelectedDay: (x: Date) => void;
   setSelectedComparedDay: (x: Date) => void;
@@ -100,7 +100,9 @@ const getDataLayer = (
   };
 };
 
-function ExplorationSimpleView_(props: ExplorationSimpleViewProps_) {
+function ExplorationSimpleViewContent(
+  props: ExplorationSimpleViewContentProps
+) {
   const {
     datasets,
     selectedDay,
@@ -165,7 +167,7 @@ function ExplorationSimpleView_(props: ExplorationSimpleViewProps_) {
   }, [basemapId]);
 
   return (
-    <StyledDiv>
+    <StyledContainer>
       <MapBlock
         baseDataLayer={baseDataLayer}
         compareDataLayer={compareDataLayer}
@@ -182,7 +184,7 @@ function ExplorationSimpleView_(props: ExplorationSimpleViewProps_) {
         navigationControlPosition='top-right'
         height='100%'
       />
-      <StyledDivTimelineContainer isCompareMode={!!selectedCompareDay}>
+      <StyledTimelineContainer isCompareMode={!!selectedCompareDay}>
         {selectedDay && (
           <TimelineSimpleView
             label=''
@@ -197,8 +199,8 @@ function ExplorationSimpleView_(props: ExplorationSimpleViewProps_) {
             }
           />
         )}
-      </StyledDivTimelineContainer>
-      <StyledDivCompareTimelineContainer>
+      </StyledTimelineContainer>
+      <StyledCompareTimelineContainer>
         {selectedCompareDay && (
           <TimelineSimpleView
             label=''
@@ -209,7 +211,7 @@ function ExplorationSimpleView_(props: ExplorationSimpleViewProps_) {
             tipContent='Date shown on right map'
           />
         )}
-      </StyledDivCompareTimelineContainer>
-    </StyledDiv>
+      </StyledCompareTimelineContainer>
+    </StyledContainer>
   );
 }
