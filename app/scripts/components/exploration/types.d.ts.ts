@@ -195,4 +195,10 @@ export interface ZoomTransformPlain {
   k: number;
 }
 
+/**
+ * Exploration view mode.
+ *
+ * - 'simple': Minimal view for embedding
+ * - 'default': Full exploration interface
+ */
 export type ViewMode = 'simple' | 'default';

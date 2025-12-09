@@ -12,6 +12,17 @@ const dehydrateViewMode = (value: ViewMode) => {
   return value ?? 'default';
 };
 
+/**
+ * Atom that manages the exploration view mode via URL parameter.
+ *
+ * - 'simple': Minimal view for embedding (no navigation/header)
+ * - 'default': Full exploration and analysis interface
+ *
+ * URL parameter: `?viewMode=simple` (defaults to 'default')
+ *
+ * @example
+ * const [viewMode] = useAtom(viewModeAtom);
+ */
 export const viewModeAtom = atomWithUrlValueStability<ViewMode>({
   initialValue: hydrateViewMode(initialParams.get('viewMode')),
   urlParam: 'viewMode',

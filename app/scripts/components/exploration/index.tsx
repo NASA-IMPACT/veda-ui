@@ -17,12 +17,20 @@ import PageHero from '$components/common/page-hero';
 import { DATASETS_PATH, EXPLORATION_PATH } from '$utils/routes';
 
 /**
+ * Container component that manages exploration view routing and data state.
+ *
+ * Routes between two view modes based on URL parameter:
+ * - Simple view (`?viewMode=simple`): Minimal interface for embedding
+ * - Default view: Full exploration and analysis interface
+ *
  * @LEGACY-SUPPORT
  *
- * @NOTE: This container component serves as a wrapper for the purpose of data management, this is ONLY to support current instances.
- * veda2 instances can just use the direct component, 'ExplorationAndAnalysis', and manage data directly in their page views
+ * @NOTE: This container component serves as a wrapper for the purpose of data management,
+ * this is ONLY to support current instances. veda2 instances can just use the direct
+ * component, 'ExplorationAndAnalysisDefaultView', and manage data directly in their page views
+ *
+ * @returns {JSX.Element | null} Renders the appropriate view or null if not on exploration path
  */
-
 export default function ExplorationAndAnalysisContainer() {
   const setExternalDatasets = useSetAtom(externalDatasetsAtom);
   setExternalDatasets(allExploreDatasets);

@@ -27,6 +27,18 @@ import { useVedaUI } from '$context/veda-ui-provider';
 interface ExplorationAndAnalysisSimpleViewProps {
   datasets: TimelineDataset[];
 }
+
+/**
+ * Simplified exploration view optimized for embedding.
+ *
+ * Renders only the map visualization and timeline controls,
+ * without navigation, header, or dataset selection UI.
+ *
+ * @param props.datasets - Timeline datasets to display
+ *
+ * @example
+ * <ExplorationAndAnalysisSimpleView datasets={timelineDatasets} />
+ */
 export default function ExplorationAndAnalysisSimpleView(
   props: ExplorationAndAnalysisSimpleViewProps
 ) {

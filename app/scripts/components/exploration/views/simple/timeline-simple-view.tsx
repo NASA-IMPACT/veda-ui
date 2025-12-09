@@ -34,6 +34,17 @@ interface TimelineSimpleViewProps {
   tipContent?: string;
 }
 
+/**
+ * Timeline date picker for the simple exploration view.
+ *
+ * Adjusts calendar view (month/year/day) based on dataset time density
+ * and calculates temporal extent from provided datasets.
+ *
+ * @param props.date - Currently selected date
+ * @param props.setDate - Callback to update the selected date
+ * @param props.timeDensity - Dataset time density (determines calendar view)
+ * @param props.datasets - Datasets used to calculate temporal extent
+ */
 function TimelineSimpleView(props: TimelineSimpleViewProps) {
   const { date, setDate, timeDensity, datasets, label, tipContent } = props;
 

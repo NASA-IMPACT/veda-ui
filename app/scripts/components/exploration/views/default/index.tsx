@@ -80,6 +80,16 @@ interface ExplorationAndAnalysisDefaultViewProps {
   openDatasetsSelectionModal?: () => void;
 }
 
+/**
+ * Full exploration and analysis view with all features.
+ *
+ * Includes interactive map, resizable timeline panel, dataset management,
+ * and analysis tools. Exported as `ExplorationAndAnalysis` in the public API.
+ *
+ * @param props.datasets - Timeline datasets to display and analyze
+ * @param props.setDatasets - Callback to update the dataset list
+ * @param props.openDatasetsSelectionModal - Optional callback to open dataset selector
+ */
 export default function ExplorationAndAnalysisDefaultView(
   props: ExplorationAndAnalysisDefaultViewProps
 ) {
