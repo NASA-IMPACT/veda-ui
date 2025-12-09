@@ -194,3 +194,5 @@ export interface ZoomTransformPlain {
   y: number;
   k: number;
 }
+
+export type ViewMode = 'simple' | 'default';
