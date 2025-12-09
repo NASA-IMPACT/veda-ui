@@ -56,7 +56,7 @@ export {
 
 export {
   CatalogContent,
-  ExplorationSimpleView,
+  ExplorationAndAnalysisSimpleView,
   ExplorationAndAnalysis,
   StoriesHubContent,
   DatasetSelectorModal
