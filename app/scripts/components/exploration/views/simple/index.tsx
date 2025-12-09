@@ -24,32 +24,11 @@ import { useReconcileWithStacMetadata } from '$components/exploration/hooks/use-
 import { ProjectionOptions, TimeDensity } from '$types/veda';
 import { useVedaUI } from '$context/veda-ui-provider';
 
-const StyledContainer = styled.div`
-  position: relative;
-  flex-grow: 1;
-  height: 100vh;
-  display: flex;
-`;
-const StyledTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
-  position: absolute;
-  bottom: 2rem;
-  left: ${({ isCompareMode }) => (isCompareMode ? '25%' : '50%')};
-  transform: translateX(-50%);
-  z-index: 10;
-`;
-const StyledCompareTimelineContainer = styled.div`
-  position: absolute;
-  bottom: 2rem;
-  left: 75%;
-  transform: translateX(-50%);
-  z-index: 10;
-`;
-
-interface ExplorationSimpleViewProps {
+interface ExplorationAndAnalysisSimpleViewProps {
   datasets: TimelineDataset[];
 }
-export default function ExplorationSimpleView(
-  props: ExplorationSimpleViewProps
+export default function ExplorationAndAnalysisSimpleView(
+  props: ExplorationAndAnalysisSimpleViewProps
 ) {
   const { datasets } = props;
   const [selectedDay, setSelectedDay] = useAtom(selectedDateAtom);
@@ -60,7 +39,7 @@ export default function ExplorationSimpleView(
   const [center] = useAtom(centerAtom);
   return (
     // eslint-disable-next-line react/jsx-pascal-case
-    <ExplorationSimpleViewContent
+    <ExplorationAndAnalysisSimpleViewContent
       datasets={datasets}
       selectedDay={selectedDay}
       setSelectedDay={setSelectedDay}
@@ -72,7 +51,7 @@ export default function ExplorationSimpleView(
   );
 }
 
-interface ExplorationSimpleViewContentProps {
+interface ExplorationAndAnalysisSimpleViewContentProps {
   datasets: TimelineDataset[];
   setSelectedDay: (x: Date) => void;
   setSelectedComparedDay: (x: Date) => void;
@@ -103,8 +82,8 @@ const getDataLayer = (
   };
 };
 
-function ExplorationSimpleViewContent(
-  props: ExplorationSimpleViewContentProps
+function ExplorationAndAnalysisSimpleViewContent(
+  props: ExplorationAndAnalysisSimpleViewContentProps
 ) {
   const {
     datasets,
@@ -218,3 +197,24 @@ function ExplorationSimpleViewContent(
     </StyledContainer>
   );
 }
+
+const StyledContainer = styled.div`
+  position: relative;
+  flex-grow: 1;
+  height: 100vh;
+  display: flex;
+`;
+const StyledTimelineContainer = styled.div<{ isCompareMode?: boolean }>`
+  position: absolute;
+  bottom: 2rem;
+  left: ${({ isCompareMode }) => (isCompareMode ? '25%' : '50%')};
+  transform: translateX(-50%);
+  z-index: 10;
+`;
+const StyledCompareTimelineContainer = styled.div`
+  position: absolute;
+  bottom: 2rem;
+  left: 75%;
+  transform: translateX(-50%);
+  z-index: 10;
+`;

@@ -7,7 +7,7 @@ import { DatasetSelectorModal } from '$components/exploration/components/dataset
 import useTimelineDatasetAtom from '$components/exploration/hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from '$components/exploration/atoms/datasetLayers';
 import { viewModeAtom } from '$components/exploration/atoms/viewMode';
-import ExplorationSimpleView from '$components/exploration/views/simple';
+import ExplorationAndAnalysisSimpleView from '$components/exploration/views/simple';
 import ExplorationAndAnalysisDefaultView from '$components/exploration/views/default';
 import { allExploreDatasets } from '$data-layer/datasets';
 import { urlAtom } from '$utils/params-location-atom/url';
@@ -53,7 +53,7 @@ export default function ExplorationAndAnalysisContainer() {
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
         {viewMode === 'simple' ? (
-          <ExplorationSimpleView datasets={timelineDatasets} />
+          <ExplorationAndAnalysisSimpleView datasets={timelineDatasets} />
         ) : (
           <>
             <ExplorationAndAnalysisDefaultView
