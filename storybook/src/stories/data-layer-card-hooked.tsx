@@ -11,7 +11,7 @@ import { mockDatasets } from './mock-data.js';
 import { ExplorationMap } from '$components/exploration/components/map';
 
 import DataLayerCardPresentational from '$components/common/dataset-layer-card';
-import { TimelineDataset } from '$components/exploration/types.d.ts';
+import { TimelineDataset } from '$components/exploration/types.d';
 export interface colorMapScale {
   min: number;
   max: number;

@@ -1,17 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { useReconcileWithStacMetadata } from '../../hooks/use-stac-metadata-datasets';
-import {
-  TimelineDataset,
-  DatasetStatus,
-  TimelineDatasetSuccess
-} from '../../types.d.ts';
 import { Layer } from './layer';
 import { AnalysisMessageControl } from './analysis-message-control';
 import { ShowTourControl } from './tour-control';
 import AoiLayer from './aoi-layer';
 
 import { ShareButton } from './share-button';
+import {
+  TimelineDataset,
+  DatasetStatus,
+  TimelineDatasetSuccess
+} from '$components/exploration/types.d';
 import { ProjectionOptions } from '$types/veda';
 
 import Map, { Compare, MapControls } from '$components/common/map';

@@ -7,7 +7,7 @@ import { LayerGradientColormapGraphic } from '$components/common/map/layer-legen
 import {
   TimelineDataset,
   colorMapScale
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import { LoadingSkeleton } from '$components/common/loading-skeleton';
 import {
   LayerCategoricalGraphic,

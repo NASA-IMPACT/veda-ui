@@ -7,7 +7,7 @@ import {
   SourceParametersWithLayerId
 } from './data-utils';
 import { RENDER_KEY } from '$components/exploration/constants';
-import { TimeDensity } from '$components/exploration/types.d.ts';
+import { TimeDensity } from '$components/exploration/types.d';
 
 const LAYER_KEY = 'layer-1';
 const renderExtensionData = {

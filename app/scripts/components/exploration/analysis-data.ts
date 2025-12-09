@@ -2,6 +2,7 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { QueryClient } from '@tanstack/react-query';
 import { FeatureCollection, Polygon } from 'geojson';
 import { ConcurrencyManagerInstance } from './concurrency';
+import { MAX_QUERY_NUM } from './constants';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
@@ -9,9 +10,8 @@ import {
   DatasetStatus,
   AnalysisTimeseriesEntry,
   TimeseriesData
-} from './types.d.ts';
+} from '$components/exploration/types.d';
 
-import { MAX_QUERY_NUM } from './constants';
 import {
   ExtendedError,
   generateDates
@@ -100,7 +100,10 @@ interface TimeseriesRequesterParams {
   envApiCMREndpoint?: string;
 }
 
-type TimeseriesCMRRequesterParams = Omit<TimeseriesRequesterParams, 'envApiRasterEndpoint'| 'concurrencyManager'| 'envApiStacEndpoint'>
+type TimeseriesCMRRequesterParams = Omit<
+  TimeseriesRequesterParams,
+  'envApiRasterEndpoint' | 'concurrencyManager' | 'envApiStacEndpoint'
+>;
 
 export function formatCMRResponse(statResponse: CMRStatistics): TimeseriesData {
   const cmrResponse = {};

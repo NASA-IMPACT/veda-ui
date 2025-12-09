@@ -1,5 +1,8 @@
-import { TimelineDataset, TimelineDatasetForUrl } from '../types.d.ts';
 import { datasetLayersAtom } from './datasetLayers';
+import {
+  TimelineDataset,
+  TimelineDatasetForUrl
+} from '$components/exploration/types.d';
 import { reconcileDatasets } from '$components/exploration/data-utils';
 import { atomWithUrlValueStability } from '$utils/params-location-atom/atom-with-url-value-stability';
 

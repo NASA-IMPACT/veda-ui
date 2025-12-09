@@ -1,6 +1,6 @@
 import { useAtom } from 'jotai';
 import { timelineDatasetsAtom } from '../atoms/datasets';
-import { TimelineDataset } from '../types.d.ts';
+import { TimelineDataset } from '$components/exploration/types.d';
 
 export default function useTimelineDatasetAtom(): [
   TimelineDataset[],

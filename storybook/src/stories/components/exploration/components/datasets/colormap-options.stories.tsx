@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Meta, StoryObj } from '@storybook/react-vite';
 import { ColormapOptions } from '$components/common/dataset-layer-card/colormap-options';
-import { colorMapScale } from '$components/exploration/types.d.ts';
+import { colorMapScale } from '$components/exploration/types.d';
 
 const meta: Meta<typeof ColormapOptions> = {
   title: 'Library Components/Data Layers/Colormap Options',

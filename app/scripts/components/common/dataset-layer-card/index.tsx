@@ -15,7 +15,7 @@ import { TipButton } from '$components/common/tip-button';
 import {
   TimelineDataset,
   colorMapScale
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import { DatasetData } from '$types/veda';
 import { DatasetLayersIcon } from '$components/common/custom-icon/dataset-layers';
 import { ParentDatasetTitle } from '$components/common/catalog/catalog-legacy/catalog-content';

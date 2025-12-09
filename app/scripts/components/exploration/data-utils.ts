@@ -18,7 +18,7 @@ import {
   TimeDensity,
   TimelineDatasetSuccess,
   colorMapScale
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 import { utcString2userTzDate } from '$utils/date';
 import { DatasetLayer, DatasetLayerType, SourceParameters } from '$types/veda';
 

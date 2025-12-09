@@ -3,10 +3,9 @@ import styled from 'styled-components';
 import { Modal, ModalBody, ModalFooter, ModalHeader } from '@devseed-ui/modal';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import { TimelineDataset } from '../../types.d.ts';
-
 import RenderModalHeader from './header';
 import ModalFooterRender from './footer';
+import { TimelineDataset } from '$components/exploration/types.d';
 import { reconcileDatasets } from '$components/exploration/data-utils';
 import { getLayersFromDatasetLayers } from '$utils/data-utils';
 import CatalogContent from '$components/common/catalog/catalog-content';

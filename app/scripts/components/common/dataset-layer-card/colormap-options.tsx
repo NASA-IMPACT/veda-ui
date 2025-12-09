@@ -9,7 +9,7 @@ import {
 } from './color-maps';
 import { DropIcon } from '$components/common/custom-icon';
 
-import { colorMapScale } from '$components/exploration/types.d.ts';
+import { colorMapScale } from '$components/exploration/types.d';
 
 export const DEFAULT_COLORMAP = 'viridis';
 

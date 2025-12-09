@@ -13,7 +13,7 @@ import {
   USWDSInputGroup as InputGroup
 } from '$uswds';
 import type { ProjectionOptions } from '$types/veda';
-import type { VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import type { VizDatasetSuccess } from '$components/exploration/types.d';
 import type { DatasetLayer } from '$types/veda';
 
 import 'react-calendar/dist/Calendar.css';

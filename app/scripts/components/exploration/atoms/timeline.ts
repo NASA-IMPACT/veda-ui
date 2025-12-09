@@ -1,7 +1,7 @@
 import { atom } from 'jotai';
 
 import { HEADER_COLUMN_WIDTH, RIGHT_AXIS_SPACE } from '../constants';
-import { ZoomTransformPlain } from '../types.d.ts';
+import { ZoomTransformPlain } from '$components/exploration/types.d';
 
 // Zoom transform for the timeline. Values as object instead of d3.ZoomTransform
 export const zoomTransformAtom = atom<ZoomTransformPlain>({

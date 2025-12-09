@@ -13,7 +13,7 @@ import {
   TimelineDataset,
   DatasetStatus,
   TimelineDatasetSuccess
-} from '$components/exploration/types.d.ts';
+} from '$components/exploration/types.d';
 
 const TimelineWrapper = styled.div`
   width: 100%;

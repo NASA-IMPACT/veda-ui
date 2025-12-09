@@ -7,14 +7,14 @@ import add from 'date-fns/add';
 import max from 'date-fns/max';
 
 import { DAY_SIZE_MAX } from '../constants';
+import { timelineSizesAtom } from './timeline';
+import { timelineDatasetsAtom } from './datasets';
 import {
   TimeDensity,
   TimelineDataset,
   DatasetStatus,
   TimelineDatasetSuccess
-} from '../types.d.ts';
-import { timelineSizesAtom } from './timeline';
-import { timelineDatasetsAtom } from './datasets';
+} from '$components/exploration/types.d';
 
 function addDurationToDate(date, timeDensity: TimeDensity) {
   const duration = {

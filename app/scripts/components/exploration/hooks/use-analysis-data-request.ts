@@ -12,12 +12,12 @@ import {
   useAnalysisOptions
 } from '../atoms/hooks';
 import { analysisConcurrencyManager } from '../concurrency';
+import { MAX_QUERY_NUM } from '../constants';
 import {
   TimelineDataset,
   TimelineDatasetAnalysis,
   DatasetStatus
-} from '../types.d.ts';
-import { MAX_QUERY_NUM } from '../constants';
+} from '$components/exploration/types.d';
 import useAois from '$components/common/map/controls/hooks/use-aois';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -76,7 +76,8 @@ export function useAnalysisDataRequest({
 }) {
   const queryClient = useQueryClient();
 
-  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } = useVedaUI();
+  const { envApiRasterEndpoint, envApiStacEndpoint, envApiCMREndpoint } =
+    useVedaUI();
 
   const selectedInterval = useAtomValue(selectedIntervalAtom);
 

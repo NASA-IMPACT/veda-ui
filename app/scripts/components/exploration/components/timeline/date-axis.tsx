@@ -7,7 +7,7 @@ import startOfYear from 'date-fns/startOfYear';
 import { themeVal } from '@devseed-ui/theme-provider';
 
 import { RIGHT_AXIS_SPACE } from '$components/exploration/constants';
-import { TimeDensity } from '$components/exploration/types.d.ts';
+import { TimeDensity } from '$components/exploration/types.d';
 
 const GridLine = styled.line`
   stroke: ${themeVal('color.base-200')};
@@ -76,7 +76,11 @@ function getTicks(scale: ScaleTime<number, number>) {
  * @param {TimeDensity} timeDensity - The density of the timeline aka the level of detail (e.g., year, month, day).
  * @returns {Date[]} - An array of minor tick dates.
  */
-function getMinorTicks(scale: ScaleTime<number, number>, majorTicks: Date[], timeDensity: TimeDensity): Date[] {
+function getMinorTicks(
+  scale: ScaleTime<number, number>,
+  majorTicks: Date[],
+  timeDensity: TimeDensity
+): Date[] {
   if (timeDensity === TimeDensity.DAY || majorTicks.length < 2) {
     return [];
   }
@@ -90,7 +94,8 @@ function getMinorTicks(scale: ScaleTime<number, number>, majorTicks: Date[], tim
   const segments = 10;
 
   // Calculate the interval between minor ticks based on the first two major ticks
-  const minorTickInterval = (majorTicks[1].getTime() - majorTicks[0].getTime()) / segments;
+  const minorTickInterval =
+    (majorTicks[1].getTime() - majorTicks[0].getTime()) / segments;
 
   // Initialize minorTicks as an array of Date objects
   let minorTicks: Date[] = [];
@@ -137,7 +142,10 @@ export function DateAxis(props: DateAxisProps) {
 
   const majorTicks = useMemo(() => getTicks(xScaled), [xScaled]);
   const axisDensity = useMemo(() => getTimeDensity(majorTicks), [majorTicks]);
-  const minorTicks = useMemo(() => getMinorTicks(xScaled, majorTicks, axisDensity), [xScaled, majorTicks, axisDensity]);
+  const minorTicks = useMemo(
+    () => getMinorTicks(xScaled, majorTicks, axisDensity),
+    [xScaled, majorTicks, axisDensity]
+  );
 
   return (
     <DateAxisSVG className='date-axis' width={width} height={32}>

@@ -19,16 +19,16 @@ import format from 'date-fns/format';
 import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import {
-  AnalysisTimeseriesEntry,
-  TimeDensity,
-  TimelineDatasetSuccess
-} from '../types.d.ts';
-import {
   FADED_TEXT_COLOR,
   TEXT_TITLE_BG_COLOR,
   HEADER_COLUMN_WIDTH
 } from '../constants';
 import { DataMetric } from './datasets/analysis-metrics';
+import {
+  AnalysisTimeseriesEntry,
+  TimeDensity,
+  TimelineDatasetSuccess
+} from '$components/exploration/types.d';
 
 import { getNumForChart } from '$components/common/chart/utils';
 

@@ -26,7 +26,7 @@ import {
   ScaleControl
 } from '$components/common/map/controls';
 import { Layer } from '$components/exploration/components/map/layer';
-import { VizDatasetSuccess } from '$components/exploration/types.d.ts';
+import { VizDatasetSuccess } from '$components/exploration/types.d';
 import { ProjectionOptions } from '$types/veda';
 
 export const mapHeight = '32rem';
