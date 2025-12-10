@@ -1,7 +1,7 @@
 
-# ADR 004: Ticket Workflow Governance
+# ADR 005: Ticket Workflow Governance
 
-- **Status:** Draft
+- **Status:** Rejected
 - **Date:** 2025-11-21
 - **Authors:** @vgeorge
 
@@ -18,35 +18,21 @@ A clear workflow is needed so contributors and automation can rely on predictabl
 
 ## Decision
 
-Adopt the workflow in `docs/development/ticket-organization-guidelines.md` and enforce it through templates and automation.
+**Rejected** - Following discussion on December 9, 2025 with Anthony Boyd, it was clarified that labels are not actually used to determine workflows in this project. Workflows are handled by the GitHub project board, not through label-based automation.
 
-1. **Issue Types (required)**
-   - Every issue must specify GitHub Issue Type (`Bug`, `Feature`, `Task`).
-   - **Bug**: Unexpected problem or broken behavior
-   - **Feature**: New functionality or user-facing capability
-   - **Task**: Refactors, tech debt, improvements to existing code, or non-user-facing work
-   - For epics: Use **Task** for refactors/improvements (e.g., "USWDS Migration"), **Feature** for new capabilities (e.g., "Add CMS Integration")
-   - Templates set defaults; reviewers reject issues without a type.
-2. **Label Taxonomy**
-   - Priority for Bugs: `P1–P3` (optionally `good first issue`).
-   - Domain/type labels describe the nature of work (`documentation`, `ui`, `tech debt`, etc.).
-   - Lifecycle tracking handled by project board, not labels.
-3. **Epics as Parent Issues**
-   - Large efforts (Version 7, USWDS) use a parent issue.
-   - Sub-issues capture individual work items.
-   - Thematic and long-running initiatives rely on epics + labels, not milestones.
-4. **Milestones**
-   - Previously used inconsistently and often mixed themes with releases.
-   - Epics + sub-issues provide clearer structure and better visibility in Projects.
-   - Milestones may be used only for explicit, date-bound work (e.g., timed releases).
-   - Work without time commitments should avoid milestones to reduce overhead.
-5. **Triage Checklist**
-   - During triage: confirm issue type, assign priority, add domain labels, link to parent epic if applicable, and move to appropriate project board column.
+The proposed workflow governance in this ADR was based on incorrect assumptions about how the project manages its workflow processes. The original proposal included:
+
+- Required issue types (Bug/Feature/Task) with templates and enforcement
+- Label taxonomy for priorities and domain categorization
+- Epic/sub-issue structure using parent issues
+- Elimination of milestones in favor of project board tracking
+- Triage checklist for consistent metadata application
+
+However, this label-driven approach doesn't align with the actual project workflow where the GitHub project board handles workflow determination.
 
 ## Consequences
 
-- Contributors gain predictable metadata and more reliable filtering.
-- Dashboards and automation become useful instead of guesswork.
-- Triage becomes a repeatable process.
-- Removing milestones from general planning simplifies structure.
-- Templates and docs must be updated to prevent regressions.
+- This ADR is rejected and will not be implemented.
+- The existing workflow (GitHub project board driven) remains in place.
+- Future workflow documentation should focus on the actual project board processes rather than label-driven automation.
+- A new ADR may be created in the future to document the current workflow when there is clarity on the project board processes.
