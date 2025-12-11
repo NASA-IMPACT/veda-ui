@@ -80,8 +80,10 @@ All issues (epics, sub-issues, bugs) should live in their relevant corresponding
 
 **Project is used to mean a body of work. Clarifying as project is a reserved github word that can mean something else.
 
-## Helpful Github Links on using Issues
+## Helpful Github links on using Issues to manage projects including views to track progress
 * https://docs.github.com/en/issues
+* https://docs.github.com/en/issues/planning-and-tracking-with-projects/customizing-views-in-your-project/changing-the-layout-of-a-view
+* https://docs.github.com/en/issues/planning-and-tracking-with-projects/viewing-insights-from-your-project/about-insights-for-projects
 
 
 
