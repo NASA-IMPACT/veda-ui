@@ -7,11 +7,11 @@
 ## Context and Problem Statement
 
 ### Current Needs
-- To have a living body of centralized documentation for any project* that can be referenced during the project* and after
-- Simplify project* progress tracking by PMs, stakeholders and contributors
+- To have a living body of centralized documentation for any project** that can be referenced during the project and after
+- Simplify project progress tracking by PMs, stakeholders and contributors
 - Simplify contributor task tracking (especially for ad-hoc contributors)
-- Simplify onboarding/rebuilding context on projects* as contributors hop around from project to project
-- Simplify scanning issues in the Issues view (or any aggregated view) to identify what is relevant to project* 
+- Simplify onboarding/rebuilding context on projects as contributors hop around from project to project
+- Simplify scanning issues in the Issues view (or any aggregated view) to identify what is relevant to project 
 - Prevent orphan tickets / orphaned work / missed issues
 - Help folks better understand how an issue should be defined. (Creating guidelines could help folks better understand how to breakdown a body of work)
 
@@ -76,7 +76,7 @@ All issues (epics, sub-issues, bugs) should live in their relevant corresponding
 ### Pull Requests
 - Should be linked to an issue. You can use [GH keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) like 'closes' or the `#` to bring up issue numbers to link without automations.
 
-* Project is used to mean a body of work. Clarifying as project is a reserved github word that can mean something else.
+**Project is used to mean a body of work. Clarifying as project is a reserved github word that can mean something else.
 
 
 
