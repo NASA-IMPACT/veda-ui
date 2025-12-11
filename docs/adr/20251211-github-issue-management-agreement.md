@@ -15,7 +15,7 @@
 - Prevent orphan tickets / orphaned work / missed issues
 - Help folks better understand how an issue should be defined. (Creating guidelines could help folks better understand how to breakdown a body of work)
 
-These needs can be accomplished by agreeing to a structure of organizing information, using issue templates and just trying it out to see how it goes knowing it won't be perfect.
+These needs can be accomplished by agreeing to a structure of organizing information, using issue templates and just trying it out to see how it goes knowing it won't be perfect. Hopefully this can be a stepping stone to defining some project processes to facilitate better team alignment on work.
 
 ### Is this broadly desired?
 Currently I've seen different individuals put effort into implementing and suggesting (Thank you @vitor) systems for managing github issues and a strong desire to have all project work logged. That leads me to believe we need it, and there's appetite to align on one! So hopefully the buy-in is there.
@@ -43,13 +43,19 @@ The epic/objective issue should have
 - if there's an ongoing meeting, when it happens (so users can easily find the invite, gemini notes, and recordings)
 - an issue type of epic (with owner org access it would be easy [to add 'epic' as a ticket type](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/managing-issue-types-in-an-organization))
 - an estimated start date and estimated delivery date
+- scope of work / what we have agreed to do and not to do (TBD - when this shows up in our project workflow,  but it must be included)
 <img width="1269" height="471" alt="Screenshot 2025-12-11 at 12 22 02 PM" src="https://github.com/user-attachments/assets/2accce9b-d2da-4b35-87f4-9bfc1872ba56" />
 - all related milestones (if relevant) where milestone fields have 
   - title 
-  - summary
+  - description / scope of work
   - due date
 - deployed urls
-- a resources sections which includes relevant document links (especially those not on GH) like product briefs, repos, adrs, infrastructure docs, weekly sync notes, external google docs, etc.
+- a resources sections which includes relevant document links (especially those not on GH) 
+  - our contract,
+  - product briefs, 
+  - repos, adrs, infrastructure docs, 
+  - weekly sync notes, 
+  - external google docs, etc.
 
 Keep in mind, this is a living document, so as new documents are created, they should be linked here and as high level project definition changes, that should be reflected here as well.
 
@@ -77,6 +83,8 @@ All issues (epics, sub-issues, bugs) should live in their relevant corresponding
 
 ### Pull Requests
 - Should be linked to an issue. You can use [GH keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) like 'closes' or the `#` to bring up issue numbers to link without automations.
+- TBD agreement on PR requirements and turnaround time
+
 
 **Project is used to mean a body of work. Clarifying as project is a reserved github word that can mean something else.
 
