@@ -42,6 +42,8 @@ The epic/objective issue should have
 - the expected stakeholders of the work
 - if there's an ongoing meeting, when it happens (so users can easily find the invite, gemini notes, and recordings)
 - an issue type of epic (with owner org access it would be easy [to add 'epic' as a ticket type](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/managing-issue-types-in-an-organization))
+- an estimated start date and estimated delivery date
+<img width="1269" height="471" alt="Screenshot 2025-12-11 at 12 22 02 PM" src="https://github.com/user-attachments/assets/2accce9b-d2da-4b35-87f4-9bfc1872ba56" />
 - all related milestones (if relevant) where milestone fields have 
   - title 
   - summary
@@ -77,6 +79,10 @@ All issues (epics, sub-issues, bugs) should live in their relevant corresponding
 - Should be linked to an issue. You can use [GH keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) like 'closes' or the `#` to bring up issue numbers to link without automations.
 
 **Project is used to mean a body of work. Clarifying as project is a reserved github word that can mean something else.
+
+## Helpful Github Links on using Issues
+* https://docs.github.com/en/issues
+
 
 
 
