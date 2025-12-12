@@ -1,7 +1,7 @@
 # Component Library Restructure: Consolidating Exported Components
 
-* Status: **Proposed**
-* Authors: @AliceR
+* Status: **In Progress**
+* Authors: @AliceR, @vgeorge, @ifsimicoded
 * Deciders: [To be updated with team decision makers]
 * As of: September 2025
 
@@ -18,7 +18,7 @@ While the split architecture successfully addressed the original technical chall
 * **Scattered component organization**: Library components are mixed within the application structure rather than being clearly separated
 * **Unclear library boundaries**: It's not immediately apparent which components are part of the exportable library vs. application-specific to the legacy dashboard setup
 
-Currently, the library exports are managed through `/app/scripts/libs/index.ts` which imports components from various locations throughout the application:
+Previously, the library exports were managed through `/app/scripts/libs/index.ts` which imported components from various locations throughout the application. This has been moved to `packages/veda-ui/src/libs/index.ts` in PR #1898.
 
 ```ts
 // Current scattered structure
@@ -28,11 +28,32 @@ export { PageHeader, PageFooter } from './uswds-components';
 // ... many more scattered imports
 ```
 
+## Primary Goal: Defining Clear Boundaries
+
+The primary goal of this restructure is to **define clear boundaries** between library packages and applications. This separation of concerns is essential for:
+
+* **Maintainability**: Clear understanding of what belongs to the library vs. application-specific code
+* **Build system modernization**: Better organization facilitates the planned build system updates outlined in the [v7 roadmap](#references)
+* **Scalability**: Enables the codebase to grow with clear separation between reusable components and application code
+* **Developer experience**: Obvious location for new components and clear import patterns
+
+This goal was agreed upon by the team as the foundation for the restructure work.
+
+**Note**: This ADR represents **Phase 1** of a larger refactor effort. While this phase focuses on establishing clear boundaries and organizing the codebase structure, it sets the foundation for addressing broader developer experience concerns tracked in the [v7 roadmap](#references):
+
+* Uniform design system and style approach (USWDS, devseed-ui)
+* Consistent style customization patterns (styled components, SCSS, USWDS patterns)
+* Component modularity and decoupling (components currently entangled with logic and other components)
+* Improved developer experience (deeply nested props, intermixed logic/view code)
+* Build system reliability (mysterious build failures, swallowed errors)
+
 ## Decision Drivers
 
 * **Developer experience**: Clear separation between library components and application code
 * **Library evolution**: Clear path toward a standalone component library
 * **Migration clarity**: Obvious location for new library components
+* **Build system modernization**: Better organization supports planned build system updates (see [v7 roadmap](#references))
+* **Monorepo boundaries**: Define clear boundaries between packages and applications
 
 ## Considered Options
 
@@ -68,7 +89,7 @@ Immediately relocate all library components to the Storybook directory and switc
 * Potential breaking changes for existing applications
 * Significant coordination required across team
 
-### Option C: Gradual Migration with Renamed `/core` Directory (Recommended)
+### Option C: Gradual Migration with Renamed `/core` Directory (Original Proposal)
 
 Rename `/storybook` to `/core` and establish it as the primary location for library components, with gradual migration of existing components.
 
@@ -84,140 +105,106 @@ Rename `/storybook` to `/core` and establish it as the primary location for libr
 
 * Temporary complexity during migration period
 * Requires coordination for new component placement
+* Doesn't establish broader monorepo structure
+
+### Option D: Monorepo Structure with `/packages` and `/apps`
+
+Establish a monorepo structure with `/packages` for reusable libraries and `/apps` for runnable applications.
+
+**Pros:**
+
+* Clear separation between reusable packages and runnable apps
+* Proper decoupling between the library and its consumers
+* Standard, scalable setup that matches VEDA's growth needs
+* Supports build system modernization plans
+* Future-proof architecture aligned with v7 roadmap
+* Team consensus achieved without opposition
+
+**Cons:**
+
+* Requires more initial setup work
+* Temporary complexity during migration period
 
 ## Decision
 
-**We choose Option C: Gradual Migration with Renamed `/core` Directory**
+**We choose Option D: Monorepo Structure with `/packages` and `/apps`**
+
+During team discussion on [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871), the proposal evolved from Option C to a monorepo structure. @ifsimicoded expressed skepticism about moving files around without addressing broader developer concerns, but did not oppose moving files around. @vgeorge moved forward with [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898), which was merged and established the monorepo structure (`packages/veda-ui/`).
+
+### Action Items
+
+From [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) discussion, the proposed scope includes:
+
+* [x] Move the library to a dedicated folder (completed in [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898))
+* [ ] Move the SPA to `apps/legacy-spa`
+* [ ] Move Storybook to `apps/storybook`
+* [x] Update this ADR with the results of these changes
+
+**Out of scope** (tracked separately):
+
+* Build tool changes (tracked in [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900); higher complexity)
+* Component refactors (tracked in [#1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889))
 
 ### Implementation Plan
 
-#### Phase 1: Directory Restructure
+#### Phase 1: Monorepo Structure
 
-1. **Rename `/storybook` → `/core`**
-   * Update all references in scripts, documentation, and CI/CD
-   * Update package.json scripts (e.g., `core:install`, `core:storybook`)
-
-2. **Establish `/core` as Library Package Root**
-   * Configure `/core` as the primary build target for library distribution
-   * Set up Vite configuration for library building (in addition to Storybook)
-   * Create clear export structure in `/core/src/index.ts`
+* [x] Move library code to `packages/veda-ui/` (completed in PR #1898)
+* [ ] Move Storybook to `apps/storybook/`
+* [ ] Move SPA to `apps/legacy-spa/`
 
 #### Phase 2: Component Migration Strategy
 
-1. **New components**: All new library components must be created in `/core/src/components/`
+1. **New components**: All new library components must be created in `packages/veda-ui/src/components/`
 2. **Existing components**: Gradual migration based on:
    * Components undergoing major updates
    * Components with high reusability
    * Components needed for new library features
 
 3. **Migration process per component**:
-   * Move component to `/core/src/components/[category]/[component-name]/`
-   * Update imports in main application to reference `/core`
-   * Add Storybook stories in `/core/src/stories/`
-   * Update library exports in `/core/src/index.ts`
-   * Maintain backward compatibility exports in `/app/scripts/libs/index.ts` (temporary)
+   * Move component to `packages/veda-ui/src/components/[category]/[component-name]/`
+   * Update imports in applications to reference `packages/veda-ui/`
+   * Add Storybook stories
+   * Update library exports in `packages/veda-ui/src/index.ts`
 
 #### Phase 3: Build System Integration
 
 **Current Library Build Process:**
 
-* Entry: `/app/scripts/libs/index.ts`
+* Entry: `packages/veda-ui/src/libs/index.ts` (moved from `/app/scripts/libs/index.ts` in PR #1898)
 * Build: Gulp + Parcel → `/lib/` directory
 * Output: `main.js` (CommonJS), `module.js` (ES modules), `index.d.ts`, CSS, assets
 
-**Transition Strategy Options:**
+**Build System Modernization:**
 
-##### Option A: Re-export Strategy
-
-```ts
-// /core/src/index.ts (new entry point)
-// Re-export from legacy locations during transition
-export { PageHero } from '../../app/scripts/components/common/page-hero';
-export { CatalogContent } from '../../app/scripts/libs/page-components';
-
-// As components migrate to /core, update to:
-export { PageHero } from './components/page-hero'; // migrated
-export { CatalogContent } from '../../app/scripts/libs/page-components'; // still legacy
-```
-
-##### Option B: Dual Build Strategy
-
-* Maintain current Parcel build from `/app/scripts/libs/index.ts`
-* Add parallel Vite build from `/core/src/index.ts`
-* Eventually shift package.json to point to Vite output
-
-**Build System Migration:**
-
-1. **Phase 3a**: Set up Vite build alongside Parcel (dual outputs)
-2. **Phase 3b**: Update package.json to point to Vite output (when ready!)
-3. **Phase 3c**: Deprecate Parcel build once all components migrated
-
-#### Phase 4: Future State
-
-Once all legacy dashboard instances are migrated:
-
-1. **Replace project root** with `/core` directory structure
-2. **Deprecate** `/app` directory and Gulp/Parcel build system
-3. **Standalone package**: `/core` becomes the complete `@teamimpact/veda-ui` package
+Build system updates are planned as part of the [v7 roadmap](#references). The monorepo structure facilitates this work by creating clear package boundaries. Build tool changes are tracked separately in [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900).
 
 ### Updated Directory Structure (Target State)
 
 ```text
-/core/
-├── package.json                 # Library dependencies and scripts
-├── vite.config.ts              # Unified build configuration
-├── .storybook/                 # Storybook configuration
-└── src/
-    ├── index.ts                # Main library exports
-    ├── components/             # All library components
-    │   ├── map/
-    │   ├── timeline/
-    │   ├── mdx/
-    │   └── ...
-    ├── hooks/                  # Exported hooks
-    ├── styles/                 # Component styles (SCSS)
-    ├── types/                  # TypeScript definitions
-    └── stories/                # Storybook stories
+/
+├── packages/
+│   └── veda-ui/                # Main component library package
+│       └── src/
+│           ├── index.ts        # Main library exports
+│           ├── components/     # All library components
+│           ├── hooks/          # Exported hooks
+│           ├── styles/         # Component styles
+│           └── libs/           # Legacy exports (during transition)
+└── apps/
+    ├── storybook/              # Storybook documentation app
+    └── legacy-spa/             # Legacy dashboard application
 ```
-
-### Benefits of This Approach
-
-1. **Clear Component Library Identity**: `/core` clearly indicates the foundational library components
-2. **Modern Development Environment**: Vite provides faster builds, better HMR, and modern tooling
-3. **Unified Documentation**: Storybook and component development in the same environment
-4. **Gradual Migration**: Low-risk transition that can happen incrementally
-5. **Future-Proof Architecture**: Clear path toward standalone component library
-6. **Improved Developer Experience**: Single location for all library development
 
 ### Migration Guidelines
 
-#### For New Components
+**New components**: Create in `packages/veda-ui/src/components/`
 
-```ts
-// ❌ Old way - Don't do this
-/app/scripts/components/new-feature/my-component.tsx
+**Component updates**: Migrate to `packages/veda-ui/src/components/` when:
 
-// ✅ New way - Do this
-/core/src/components/new-feature/my-component.tsx
-```
-
-#### For Component Updates
-
-When updating existing components, prefer migrating them to `/core` if:
-
-* The component is part of the public API
-* The component is used across multiple instances
-* The update is substantial (major refactor/redesign)
-
-#### Import Strategy During Transition
-
-```ts
-// In application code, prefer core imports
-import { MyComponent } from '../../../core/src/components/my-component';
-
-// In library exports, re-export from core
-export { MyComponent } from '../../core/src/components/my-component';
-```
+* Component is part of the public API
+* Component is used across multiple instances
+* Update is substantial (major refactor/redesign)
 
 ## Consequences
 
@@ -228,6 +215,7 @@ export { MyComponent } from '../../core/src/components/my-component';
 * **Simplified maintenance** with unified build system
 * **Future flexibility** for standalone library distribution
 * **Improved component discoverability** for library consumers
+* **Build system modernization** facilitated by better organization
 
 ### Negative
 
@@ -245,8 +233,17 @@ export { MyComponent } from '../../core/src/components/my-component';
 * **Risk**: Build system complexity during transition
   * **Mitigation**: Maintain both systems until migration complete, clear deprecation timeline
 
+## Related Issues and Tickets
+
+* [Issue #1290](https://github.com/NASA-IMPACT/veda-ui/issues/1290) - Fix build issues
+* [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap
+* [Issue #1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900) - Build tool changes
+
 ## References
 
+* [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) - Original ADR proposal by @AliceR
+* [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898) - Monorepo structure implementation (merged; moved `app/scripts/` → `packages/veda-ui/src/`)
+* [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap (includes folder reorganization and build system updates)
 * [ADR 002: Application Architecture for Configurability](./002-application-architecture-for-configurability.md)
 * [ADR 003: Design System Change](./003-design-system-change.md)
 * [VEDA UI Development Documentation](../development/DEVELOPMENT.md)
