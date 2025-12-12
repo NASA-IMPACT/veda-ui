@@ -13,9 +13,9 @@
     ]
   },
   "ignoreFiles": [
-    "app/scripts/styles/variable-utils.ts",
-    "app/scripts/styles/hug/index.ts",
-    "app/scripts/styles/continuum/utils.ts",
+    "packages/veda-ui/src/styles/variable-utils.ts",
+    "packages/veda-ui/src/styles/hug/index.ts",
+    "packages/veda-ui/src/styles/continuum/utils.ts",
     "**/*.d.ts"
   ]
 }

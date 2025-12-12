@@ -83,10 +83,10 @@ To simplify file access we use aliases for the most common paths so that they ca
 For example, to access file inside the `styles` folder you'd use `$styles/filename` instead of having to use a relative path. This get's very handy when we have several nested folders.
 
 Currently the following aliases exist:
-- `$components/<file>` => `app/scripts/components`
-- `$styles/<file>` => `app/scripts/styles`
-- `$utils/<file>` => `app/scripts/utils`
-- `$context/<file>` => `app/scripts/context`
+- `$components/<file>` => `packages/veda-ui/src/components`
+- `$styles/<file>` => `packages/veda-ui/src/styles`
+- `$utils/<file>` => `packages/veda-ui/src/utils`
+- `$context/<file>` => `packages/veda-ui/src/context`
 
 To add a new alias, add the respecting naming and path under `alias` in the `package.json`.  
 The test runner (Jest) also has to be made aware of the mapping, and this is done through some code in `jest.config.js` under `moduleNameMapper`. You shouldn't need to do anything there, but if things break it is a place to look at.

@@ -17,7 +17,7 @@
 # to fit your needs!
 ################################################
 
-app/scripts/time.json
+packages/veda-ui/src/time.json
 
 node_modules
 bower_components

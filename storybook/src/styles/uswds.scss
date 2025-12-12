@@ -1,5 +1,5 @@
 // Storybook USWDS compilation with same theme config as main app
-// Replicates configuration from app/scripts/styles/_uswds-theme.scss
+// Replicates configuration from packages/veda-ui/src/styles/_uswds-theme.scss
 
 @use '@uswds/uswds/scss/uswds' as * with (
   $theme-image-path: '/node_modules/@uswds/uswds/dist/img',
