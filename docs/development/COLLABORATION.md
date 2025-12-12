@@ -23,3 +23,5 @@ This style guide is an evolving document and will be updated as the VEDA UI proj
 ### Changes to Open PRs
 
 - When another developer introduces changes to an already open PR, it can go directly to the same branch unless it is an experimental or critical change for which a separate branch might be better.
+
+
