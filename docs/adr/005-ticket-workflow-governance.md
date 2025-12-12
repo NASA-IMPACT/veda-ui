@@ -3,7 +3,8 @@
 
 - **Status:** Rejected
 - **Date:** 2025-11-21
-- **Authors:** @vgeorge
+- **Authors:** @vgeorge, @ifsimicoded
+- **Superseded by:** [ADR - GitHub project organization and issue management](https://github.com/NASA-IMPACT/veda-ui/pull/1954)
 
 ## Context
 
@@ -30,9 +31,19 @@ The proposed workflow governance in this ADR was based on incorrect assumptions 
 
 However, this label-driven approach doesn't align with the actual project workflow where the GitHub project board handles workflow determination.
 
+## Evolution and New Direction
+
+After this ADR was rejected, the team shifted to a broader approach that acknowledges the project board-driven workflow. See [PR #1927 comments](https://github.com/NASA-IMPACT/veda-ui/pull/1927) (especially from @ifsimicoded) and the new ADR in [PR #1954](https://github.com/NASA-IMPACT/veda-ui/pull/1954) for the updated approach focusing on:
+
+- Epic-driven organization with project fields (not repo-level metadata)
+- Cross-repo and cross-org consistency
+- Issue templates and formalized guidelines
+- GitHub project board integration
+
+The new ADR addresses the original concerns while working within the constraints of the actual project board-driven workflow.
+
 ## Consequences
 
 - This ADR is rejected and will not be implemented.
 - The existing workflow (GitHub project board driven) remains in place.
-- Future workflow documentation should focus on the actual project board processes rather than label-driven automation.
-- A new ADR may be created in the future to document the current workflow when there is clarity on the project board processes.
+- See [PR #1954](https://github.com/NASA-IMPACT/veda-ui/pull/1954) for the new ADR documenting the broader approach to GitHub project organization and issue management.
