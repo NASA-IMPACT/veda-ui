@@ -47,9 +47,7 @@ const DataCatalog = lazy(() => import('$components/data-catalog/container'));
 
 const DatasetsOverview = lazy(() => import('$components/datasets/s-overview'));
 
-const ExplorationAndAnalysis = lazy(
-  () => import('$components/exploration/container')
-);
+const ExplorationAndAnalysis = lazy(() => import('$components/exploration'));
 
 const Sandbox = lazy(() => import('$components/sandbox'));
 

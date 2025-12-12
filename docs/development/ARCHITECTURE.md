@@ -2,6 +2,7 @@
 
 - [Veda Dev Notes](#veda-dev-notes)
   - [Configuration](#configuration)
+  - [VEDA2 Architecture Refactor](#veda2-architecture-refactor)
   - [Veda modules](#veda-modules)
     - [parcel-resolver-veda](#parcel-resolver-veda)
     - [parcel-transformer-mdx-front](#parcel-transformer-mdx-front)
@@ -9,8 +10,13 @@
   - [Path aliases](#path-aliases)
 
 
-The base idea behind Veda architecture is the separation of concerns between ui code and configuration.  
+The base idea behind Veda architecture is the separation of concerns between ui code and configuration.
 That is why the ui repo (`veda-ui`) is used as a submodule of `veda-config`.
+
+## VEDA2 Architecture Refactor
+
+**Note:** In 2024, the team initiated a major architecture refactor (VEDA2) to modernize VEDA UI. See [ADR: VEDA2 Architecture Refactor](../adr/006-veda2-architecture-refactor.md) for details on the ongoing transition to a library-based approach.
+
 A user wishing to setup a new Veda instance, only has to fork `veda-config`, change the configuration variables and the content, and you are ready to launch your own instance.
 
 For development purposes, the ui repo can be run directly without the need to have the `veda-config` code around.  

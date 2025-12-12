@@ -230,3 +230,4 @@ const StyledCompareTimelineContainer = styled.div`
   transform: translateX(-50%);
   z-index: 10;
 `;
+

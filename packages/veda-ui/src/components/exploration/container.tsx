@@ -8,7 +8,7 @@ import useTimelineDatasetAtom from './hooks/use-timeline-dataset-atom';
 import { externalDatasetsAtom } from './atoms/datasetLayers';
 import { isEmbeddedAtom } from './atoms/embed';
 import EmbeddedExploration from './embed-exploration';
-import ExplorationAndAnalysis from '.';
+import ExplorationAndAnalysisDefaultView from './views/default';
 import { allExploreDatasets } from '$data-layer/datasets';
 import { urlAtom } from '$utils/params-location-atom/url';
 import { PageMainContent } from '$styles/page';
@@ -54,7 +54,7 @@ export default function ExplorationAndAnalysisContainer() {
       />
       <PageMainContent>
         <PageHero title='Exploration' isHidden />
-        <ExplorationAndAnalysis
+        <ExplorationAndAnalysisDefaultView
           datasets={timelineDatasets}
           setDatasets={setTimelineDatasets}
           openDatasetsSelectionModal={openModal}
