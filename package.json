@@ -41,7 +41,7 @@
   },
   "targets": {
     "veda-app": {
-      "source": "./app/index.html",
+      "source": "./apps/dashboard-parcel/index.html",
       "context": "browser"
     }
   },
