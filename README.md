@@ -1,4 +1,4 @@
-# VEDA Dashboard - Component Library
+# VEDA Dashboard
 
 ![VEDA logo](./docs/media/nasa-veda-logo-pos.svg)
 
