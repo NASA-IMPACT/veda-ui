@@ -211,5 +211,5 @@ module.exports = {
   // Whether to use watchman for file crawling
   // watchman: true,
 
-  modulePathIgnorePatterns: ['/test/playwright/']
+  modulePathIgnorePatterns: ['/apps/dashboard-parcel/test/playwright/']
 };

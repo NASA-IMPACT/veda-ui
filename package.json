@@ -31,7 +31,7 @@
     "lint:css": "stylelint 'packages/veda-ui/src/styles/**/**' 'packages/veda-ui/src/**/*.(js|ts|tsx|jsx)'",
     "ts-check": "yarn tsc --noEmit --skipLibCheck",
     "test": "TZ=UTC jest",
-    "pretest:e2e": "node test/playwright/generateTestData.js",
+    "pretest:e2e": "node apps/dashboard-parcel/test/playwright/generateTestData.js",
     "test:e2e": "yarn playwright test",
     "test:e2e:ui": "yarn playwright test --ui",
     "release": "release-it --",
@@ -269,7 +269,7 @@
     "$uswds": "~/packages/veda-ui/src/uswds",
     "$libs": "~/packages/veda-ui/src/libs",
     "$graphics": "~/packages/veda-ui/graphics",
-    "$test": "~/test",
+    "$test": "~/apps/dashboard-parcel/test",
     "$mock": "~/mock",
     "$static": "~/static"
   },

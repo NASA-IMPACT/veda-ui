@@ -5,7 +5,7 @@ import NasaLogoColor from '../nasa-logo-color';
 import { NavItem } from '../page-header/types.js';
 
 import PageFooter from './index';
-import { VedaUIConfigProvider } from '$test/utils.js';
+import { VedaUIConfigProvider } from '$test/utils';
 import { navItems } from '$mock/veda.config.js';
 
 const defaultFooterSetting = {
