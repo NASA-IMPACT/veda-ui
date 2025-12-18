@@ -124,18 +124,8 @@ During team discussion on [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull
 * Prefer incremental migration and preserve compatibility exports during transition
 * Build tooling work is related but out-of-scope here and should likely be addressed in v7 (see [#1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) and [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900))
 
-## Related Issues and Tickets
-
-* [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap
-* [Issue #1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900) - Build tool changes
-
 ## References
 
-* [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) - Original ADR proposal by @AliceR
-* [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898) - Monorepo structure implementation (merged; moved `app/scripts/` → `packages/veda-ui/src/`)
-* [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap (includes folder reorganization and build system updates)
+* [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) - Introduces ADR 004 (by @AliceR)
 * [ADR 006: VEDA2 Architecture Refactor](./006-veda2-architecture-refactor.md)
-* [ADR 002: Application Architecture for Configurability](./002-application-architecture-for-configurability.md)
-* [ADR 003: Design System Change](./003-design-system-change.md)
-* [VEDA UI Development Documentation](../development/DEVELOPMENT.md)
-* [Component Library Registry Documentation](../development/REGISTRY.md)
+* [Architecture documentation](../development/ARCHITECTURE.md)
