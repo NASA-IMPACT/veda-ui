@@ -9,21 +9,18 @@
 
 This work builds on broader architectural changes captured in [ADR 006: VEDA2 Architecture Refactor](./006-veda2-architecture-refactor.md). ADR 004 focuses on repository structure changes to better separate library code from runnable applications.
 
-The VEDA UI project currently has a split architecture where:
+VEDA UI had a split architecture:
 
-1. **Storybook** lives in a dedicated `/storybook` subdirectory with its own build system (Vite) and dependency management
-2. **Exported components** for the library package are scattered throughout the main `/app` directory structure and bundled via Parcel from `/app/scripts/libs/index.ts`
-3. **Two separate build systems** exist: Gulp/Parcel for the main application and library, and Vite for Storybook
+1. **Storybook** in `/storybook` (Vite, separate deps)
+2. **Library exports** scattered through `/app` and bundled from `/app/scripts/libs/index.ts`
+3. **Two build systems**: Gulp/Parcel (app + library) and Vite (Storybook)
 
-While the split architecture successfully addressed the original technical challenges with Gulp and enabled modern Storybook development with Vite, this has created new opportunities for improvement:
-
-* **Scattered component organization**: Library components are mixed within the application structure rather than being clearly separated
-* **Unclear library boundaries**: It's not immediately apparent which components are part of the exportable library vs. application-specific to the legacy dashboard setup
+This made library boundaries unclear and component discovery difficult.
 
 Previously, the library exports were managed through `/app/scripts/libs/index.ts` which imported components from various locations throughout the application. This has been moved to `packages/veda-ui/src/libs/index.ts` in PR #1898.
 
 ```ts
-// Current scattered structure
+// Scattered exports (pre-monorepo)
 export { PageHero } from '$components/common/page-hero';
 export { CatalogContent } from './page-components';
 export { PageHeader, PageFooter } from './uswds-components';
@@ -32,22 +29,10 @@ export { PageHeader, PageFooter } from './uswds-components';
 
 ## Primary Goal: Defining Clear Boundaries
 
-The primary goal of this restructure is to **define clear boundaries** between library packages and applications. This separation of concerns is essential for:
+Define clear boundaries between library packages and runnable applications:
 
-* **Maintainability**: Clear understanding of what belongs to the library vs. application-specific code
-* **Build system modernization**: Better organization facilitates the planned build system updates outlined in the [v7 roadmap](#references)
-* **Scalability**: Enables the codebase to grow with clear separation between reusable components and application code
-* **Developer experience**: Obvious location for new components and clear import patterns
-
-This goal was agreed upon by the team as the foundation for the restructure work.
-
-**Note**: This ADR represents **Phase 1** of a larger refactor effort. While this phase focuses on establishing clear boundaries and organizing the codebase structure, it sets the foundation for addressing broader developer experience concerns tracked in the [v7 roadmap](#references):
-
-* Uniform design system and style approach (USWDS, devseed-ui)
-* Consistent style customization patterns (styled components, SCSS, USWDS patterns)
-* Component modularity and decoupling (components currently entangled with logic and other components)
-* Improved developer experience (deeply nested props, intermixed logic/view code)
-* Build system reliability (mysterious build failures, swallowed errors)
+* Clear location for exportable components
+* Less ambiguity between “app code” and “library code”
 
 ## Decision Drivers
 
