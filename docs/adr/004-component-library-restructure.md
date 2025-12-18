@@ -48,25 +48,50 @@ Define clear boundaries between library packages and runnable applications:
 
 Keep exported components scattered under the app structure.
 
-**Pros:** minimal change
+**Pros:**
 
-**Cons:** unclear boundaries; poor discoverability
+* No immediate restructuring work required
+* Existing imports and references remain unchanged
+
+**Cons:**
+
+* Continued confusion about library boundaries
+* Dual build system maintenance
+* Difficult component discovery for library consumers
+* No clear migration path forward
 
 ### Option B: Move Everything to `/storybook` Immediately
 
 Relocate all library components into Storybook in one step.
 
-**Pros:** fast consolidation
+**Pros:**
 
-**Cons:** high-risk; likely breaks consumers
+* Clean break from legacy structure
+* Unified build system immediately
+* Clear component organization
+
+**Cons:**
+
+* High-risk, large-scale migration
+* Potential breaking changes for existing applications
+* Significant coordination required across team
 
 ### Option C: Gradual Migration with Renamed `/core` Directory (Original Proposal)
 
 Rename `/storybook` to `/core` to signal “library first”, keep Vite-based Storybook, and migrate components gradually.
 
-**Pros:** lower risk than Option B
+**Pros:**
 
-**Cons:** still unclear repo boundaries (without a package/app split)
+* Clear naming that reflects purpose (core library vs. just Storybook)
+* Gradual, lower-risk migration path
+* Maintains backward compatibility during transition
+* Vite build system advantages for modern component development
+
+**Cons:**
+
+* Temporary complexity during migration period
+* Requires coordination for new component placement
+* Doesn't establish broader monorepo structure
 
 ### Option D: Monorepo Structure with `/packages` and `/apps`
 
