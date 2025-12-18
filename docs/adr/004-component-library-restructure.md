@@ -164,21 +164,22 @@ From [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) discussion, th
 
 Build system updates are planned as part of the [v7 roadmap](#references). The monorepo structure facilitates this work by creating clear package boundaries. Build tool changes are tracked separately in [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900).
 
-### Updated Directory Structure (Target State)
+### Directory Structure (Guiding Shape)
+
+Storybook location may change. Recommendation: colocate it with the library package (e.g. `packages/veda-ui/storybook/`).
 
 ```text
 /
 ├── packages/
 │   └── veda-ui/                # Main component library package
-│       └── src/
-│           ├── index.ts        # Main library exports
-│           ├── components/     # All library components
-│           ├── hooks/          # Exported hooks
-│           ├── styles/         # Component styles
-│           └── libs/           # Legacy exports (during transition)
-└── apps/
-    ├── storybook/              # Storybook documentation app
-    └── legacy-spa/             # Legacy dashboard application
+│       └── src/                # Library source
+│           ├── index.ts        # Library exports
+│           ├── components/
+│           ├── hooks/
+│           ├── styles/
+│           └── libs/           # Legacy exports (transition)
+└── apps/                       # Runnable apps (structure may vary)
+    └── <app>/
 ```
 
 ### Migration Guidelines
