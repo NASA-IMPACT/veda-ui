@@ -70,11 +70,20 @@ Rename `/storybook` to `/core` to signal “library first”, keep Vite-based St
 
 ### Option D: Monorepo Structure with `/packages` and `/apps`
 
-Establish a monorepo split between reusable packages and runnable apps.
+Establish a monorepo split between reusable packages and runnable apps (library code lives under `packages/`, runnable apps live under `apps/`).
 
-**Pros:** clear boundaries; scalable structure
+**Trade-offs:**
 
-**Cons:** incremental migration work
+**Pros:**
+
+* Clear boundaries between package code and runnable apps
+* Easier component discovery
+* Supports evolving build tooling per-surface
+
+**Cons:**
+
+* Incremental migration work
+* Temporary ambiguity while old and new structures coexist
 
 ## Decision
 
@@ -156,18 +165,6 @@ Build system updates are planned as part of the [v7 roadmap](#references). The m
 * Component is part of the public API
 * Component is used across multiple instances
 * Update is substantial (major refactor/redesign)
-
-## Consequences
-
-### Positive
-
-* Clearer boundaries between package code and runnable apps
-* Easier component discovery and ownership
-
-### Negative
-
-* Temporary ambiguity while old and new structures coexist
-* Ongoing migration/coordination overhead
 
 ### Risks and Mitigations
 
