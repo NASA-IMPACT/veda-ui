@@ -1,9 +1,9 @@
 # Component Library Restructure: Consolidating Exported Components
 
-* Status: **In Progress**
+* Status: **Accepted**
 * Authors: @AliceR, @vgeorge, @ifsimicoded
-* Deciders: [To be updated with team decision makers]
-* As of: September 2025
+* Deciders: VEDA UI Team
+* As of: December 2025
 
 ## Context and Problem Statement
 
