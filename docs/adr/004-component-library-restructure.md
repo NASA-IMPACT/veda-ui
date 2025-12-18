@@ -7,6 +7,8 @@
 
 ## Context and Problem Statement
 
+This work builds on broader architectural changes captured in [ADR 006: VEDA2 Architecture Refactor](./006-veda2-architecture-refactor.md). ADR 004 focuses on repository structure changes to better separate library code from runnable applications.
+
 The VEDA UI project currently has a split architecture where:
 
 1. **Storybook** lives in a dedicated `/storybook` subdirectory with its own build system (Vite) and dependency management
@@ -244,6 +246,7 @@ Build system updates are planned as part of the [v7 roadmap](#references). The m
 * [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) - Original ADR proposal by @AliceR
 * [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898) - Monorepo structure implementation (merged; moved `app/scripts/` → `packages/veda-ui/src/`)
 * [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap (includes folder reorganization and build system updates)
+* [ADR 006: VEDA2 Architecture Refactor](./006-veda2-architecture-refactor.md)
 * [ADR 002: Application Architecture for Configurability](./002-application-architecture-for-configurability.md)
 * [ADR 003: Design System Change](./003-design-system-change.md)
 * [VEDA UI Development Documentation](../development/DEVELOPMENT.md)
