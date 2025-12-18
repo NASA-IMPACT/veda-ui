@@ -29,7 +29,7 @@ process.env.APP_BUILD_TIME = Date.now();
 
 const parcelCli = path.join(__dirname, './node_modules/parcel/lib/cli.js');
 const parcelConfig = path.join(__dirname, '.parcelrc');
-const parcelLibConfig = path.join(__dirname, '.parcelrc-lib');
+const parcelLibConfig = path.join(__dirname, 'packages/veda-ui/.parcelrc-lib');
 
 // /////////////////////////////////////////////////////////////////////////////
 // ----------------------- Watcher and custom tasks --------------------------//
@@ -89,7 +89,7 @@ function copyUswdsImages() {
 function parcelBuildLib(cb) {
   const args = [
     'build',
-    'app/scripts/libs/index.ts',
+    'packages/veda-ui/src/libs/index.ts',
     '--dist-dir=lib',
     '--config',
     parcelLibConfig

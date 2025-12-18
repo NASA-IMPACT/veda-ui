@@ -2,6 +2,7 @@
 
 - [Veda Dev Notes](#veda-dev-notes)
   - [Configuration](#configuration)
+  - [VEDA2 Architecture Refactor](#veda2-architecture-refactor)
   - [Veda modules](#veda-modules)
     - [parcel-resolver-veda](#parcel-resolver-veda)
     - [parcel-transformer-mdx-front](#parcel-transformer-mdx-front)
@@ -9,8 +10,13 @@
   - [Path aliases](#path-aliases)
 
 
-The base idea behind Veda architecture is the separation of concerns between ui code and configuration.  
+The base idea behind Veda architecture is the separation of concerns between ui code and configuration.
 That is why the ui repo (`veda-ui`) is used as a submodule of `veda-config`.
+
+## VEDA2 Architecture Refactor
+
+**Note:** In 2024, the team initiated a major architecture refactor (VEDA2) to modernize VEDA UI. See [ADR: VEDA2 Architecture Refactor](../adr/006-veda2-architecture-refactor.md) for details on the ongoing transition to a library-based approach.
+
 A user wishing to setup a new Veda instance, only has to fork `veda-config`, change the configuration variables and the content, and you are ready to launch your own instance.
 
 For development purposes, the ui repo can be run directly without the need to have the `veda-config` code around.  
@@ -77,10 +83,10 @@ To simplify file access we use aliases for the most common paths so that they ca
 For example, to access file inside the `styles` folder you'd use `$styles/filename` instead of having to use a relative path. This get's very handy when we have several nested folders.
 
 Currently the following aliases exist:
-- `$components/<file>` => `app/scripts/components`
-- `$styles/<file>` => `app/scripts/styles`
-- `$utils/<file>` => `app/scripts/utils`
-- `$context/<file>` => `app/scripts/context`
+- `$components/<file>` => `packages/veda-ui/src/components`
+- `$styles/<file>` => `packages/veda-ui/src/styles`
+- `$utils/<file>` => `packages/veda-ui/src/utils`
+- `$context/<file>` => `packages/veda-ui/src/context`
 
 To add a new alias, add the respecting naming and path under `alias` in the `package.json`.  
 The test runner (Jest) also has to be made aware of the mapping, and this is done through some code in `jest.config.js` under `moduleNameMapper`. You shouldn't need to do anything there, but if things break it is a place to look at.

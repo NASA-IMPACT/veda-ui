@@ -26,16 +26,14 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         // Application path aliases
-        $uswds: path.resolve(__dirname, '../app/scripts/uswds'),
-        $components: path.resolve(__dirname, '../app/scripts/components'),
-        $context: path.resolve(__dirname, '../app/scripts/context'),
-        $utils: path.resolve(__dirname, '../app/scripts/utils'),
-        $styles: path.resolve(__dirname, '../app/scripts/styles'),
-
-        // Shim for @devseed-ui/collecticons compatibility
-        // The library uses 'react-dom/server', which is not supported in Vite
-        // See: https://github.com/developmentseed/ui-library-seed/issues/237
-        stream: path.resolve(__dirname, './utils/stream-shim.js')
+        $uswds: path.resolve(__dirname, '../packages/veda-ui/src/uswds'),
+        $components: path.resolve(
+          __dirname,
+          '../packages/veda-ui/src/components'
+        ),
+        $context: path.resolve(__dirname, '../packages/veda-ui/src/context'),
+        $utils: path.resolve(__dirname, '../packages/veda-ui/src/utils'),
+        $styles: path.resolve(__dirname, '../packages/veda-ui/src/styles')
       }
     },
     define: {

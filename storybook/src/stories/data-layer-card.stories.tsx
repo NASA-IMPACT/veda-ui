@@ -41,10 +41,11 @@ const DataLayerCardExample: React.FC = () => {
   );
 };
 const meta: Meta<typeof DataLayerCardExample> = {
-  title: 'Components/DataLayerCard',
+  title: 'Library Components/Data Layers/Card',
   component: DataLayerCardExample,
   parameters: {
-    layout: 'fullscreen'
+    layout: 'fullscreen',
+    withProviders: true
   },
   tags: ['autodocs']
 };

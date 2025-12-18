@@ -4,7 +4,7 @@ import { ColormapOptions } from '$components/common/dataset-layer-card/colormap-
 import { colorMapScale } from '$components/exploration/types.d.ts';
 
 const meta: Meta<typeof ColormapOptions> = {
-  title: 'Components/Exploration/ColormapOptions',
+  title: 'Library Components/Data Layers/Colormap Options',
   component: ColormapOptions,
   parameters: {
     layout: 'padded',
