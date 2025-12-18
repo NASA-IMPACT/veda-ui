@@ -1,4 +1,4 @@
-# Component Library Restructure: Consolidating Exported Components
+# Component Library Restructure
 
 * Status: **Accepted**
 * Authors: @AliceR, @vgeorge, @ifsimicoded
