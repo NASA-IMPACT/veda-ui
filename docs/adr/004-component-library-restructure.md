@@ -46,71 +46,35 @@ Define clear boundaries between library packages and runnable applications:
 
 ### Option A: Keep Current Structure
 
-Continue with the existing scattered approach where library components remain throughout the application structure.
+Keep exported components scattered under the app structure.
 
-**Pros:**
+**Pros:** minimal change
 
-* No immediate restructuring work required
-* Existing imports and references remain unchanged
-
-**Cons:**
-
-* Continued confusion about library boundaries
-* Dual build system maintenance
-* Difficult component discovery for library consumers
-* No clear migration path forward
+**Cons:** unclear boundaries; poor discoverability
 
 ### Option B: Move Everything to `/storybook` Immediately
 
-Immediately relocate all library components to the Storybook directory and switch to Vite for all library builds.
+Relocate all library components into Storybook in one step.
 
-**Pros:**
+**Pros:** fast consolidation
 
-* Clean break from legacy structure
-* Unified build system immediately
-* Clear component organization
-
-**Cons:**
-
-* High-risk, large-scale migration
-* Potential breaking changes for existing applications
-* Significant coordination required across team
+**Cons:** high-risk; likely breaks consumers
 
 ### Option C: Gradual Migration with Renamed `/core` Directory (Original Proposal)
 
-Rename `/storybook` to `/core` and establish it as the primary location for library components, with gradual migration of existing components.
+Rename `/storybook` to `/core` to signal “library first”, keep Vite-based Storybook, and migrate components gradually.
 
-**Pros:**
+**Pros:** lower risk than Option B
 
-* Clear naming that reflects purpose (core library vs. just Storybook)
-* Gradual, low-risk migration path
-* Maintains backward compatibility during transition
-* Sets up future structure for standalone library
-* Vite build system advantages for modern component development
-
-**Cons:**
-
-* Temporary complexity during migration period
-* Requires coordination for new component placement
-* Doesn't establish broader monorepo structure
+**Cons:** still unclear repo boundaries (without a package/app split)
 
 ### Option D: Monorepo Structure with `/packages` and `/apps`
 
-Establish a monorepo structure with `/packages` for reusable libraries and `/apps` for runnable applications.
+Establish a monorepo split between reusable packages and runnable apps.
 
-**Pros:**
+**Pros:** clear boundaries; scalable structure
 
-* Clear separation between reusable packages and runnable apps
-* Proper decoupling between the library and its consumers
-* Standard, scalable setup that matches VEDA's growth needs
-* Supports build system modernization plans
-* Future-proof architecture aligned with v7 roadmap
-* Team consensus achieved without opposition
-
-**Cons:**
-
-* Requires more initial setup work
-* Temporary complexity during migration period
+**Cons:** incremental migration work
 
 ## Decision
 
@@ -197,19 +161,13 @@ Build system updates are planned as part of the [v7 roadmap](#references). The m
 
 ### Positive
 
-* **Clearer architecture** with obvious library boundaries
-* **Better developer experience** with modern tooling
-* **Simplified maintenance** with unified build system
-* **Future flexibility** for standalone library distribution
-* **Improved component discoverability** for library consumers
-* **Build system modernization** facilitated by better organization
+* Clearer boundaries between package code and runnable apps
+* Easier component discovery and ownership
 
 ### Negative
 
-* **Temporary complexity** during migration period
-* **Coordination overhead** for component placement decisions
-* **Documentation updates** required across multiple files
-* **Potential confusion** during transition period
+* Temporary ambiguity while old and new structures coexist
+* Ongoing migration/coordination overhead
 
 ### Risks and Mitigations
 
