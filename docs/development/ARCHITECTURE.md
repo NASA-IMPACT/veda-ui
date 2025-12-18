@@ -15,7 +15,7 @@ That is why the ui repo (`veda-ui`) is used as a submodule of `veda-config`.
 
 ## VEDA2 Architecture Refactor
 
-**Note:** In 2024, the team initiated a major architecture refactor (VEDA2) to modernize VEDA UI. See [ADR: VEDA2 Architecture Refactor](../adr/006-veda2-architecture-refactor.md) for details on the ongoing transition to a library-based approach.
+**Note:** In 2024, the team initiated a major architecture refactor (VEDA2) to modernize VEDA UI. See [ADR 006: VEDA2 Architecture Refactor](../adr/006-veda2-architecture-refactor.md). For the repo-structure direction (library under `packages/`, apps under `apps/`), see [ADR 004: Component Library Restructure](../adr/004-component-library-restructure.md).
 
 A user wishing to setup a new Veda instance, only has to fork `veda-config`, change the configuration variables and the content, and you are ready to launch your own instance.
 
