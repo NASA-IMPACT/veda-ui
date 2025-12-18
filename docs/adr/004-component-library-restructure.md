@@ -116,94 +116,16 @@ Establish a monorepo split between reusable packages and runnable apps (library 
 
 During team discussion on [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871), the proposal evolved from Option C to a monorepo structure. @ifsimicoded expressed skepticism about moving files around without addressing broader developer concerns, but did not oppose moving files around. @vgeorge moved forward with [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898), which was merged and established the monorepo structure (`packages/veda-ui/`).
 
-### Action Items
+## Direction
 
-From [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) discussion, the proposed scope includes:
-
-* [x] Move the library to a dedicated folder (completed in [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898))
-* [ ] Move the SPA to `apps/legacy-spa`
-* [ ] Move Storybook to `apps/storybook`
-* [x] Update this ADR with the results of these changes
-
-**Out of scope** (tracked separately):
-
-* Build tool changes (tracked in [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900); higher complexity)
-* Component refactors (tracked in [#1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889))
-
-### Implementation Plan
-
-#### Phase 1: Monorepo Structure
-
-* [x] Move library code to `packages/veda-ui/` (completed in PR #1898)
-* [ ] Move Storybook to `apps/storybook/`
-* [ ] Move SPA to `apps/legacy-spa/`
-
-#### Phase 2: Component Migration Strategy
-
-1. **New components**: All new library components must be created in `packages/veda-ui/src/components/`
-2. **Existing components**: Gradual migration based on:
-   * Components undergoing major updates
-   * Components with high reusability
-   * Components needed for new library features
-
-3. **Migration process per component**:
-   * Move component to `packages/veda-ui/src/components/[category]/[component-name]/`
-   * Update imports in applications to reference `packages/veda-ui/`
-   * Add Storybook stories
-   * Update library exports in `packages/veda-ui/src/index.ts`
-
-#### Phase 3: Build System Integration
-
-**Current Library Build Process:**
-
-* Entry: `packages/veda-ui/src/libs/index.ts` (moved from `/app/scripts/libs/index.ts` in PR #1898)
-* Build: Gulp + Parcel → `/lib/` directory
-* Output: `main.js` (CommonJS), `module.js` (ES modules), `index.d.ts`, CSS, assets
-
-**Build System Modernization:**
-
-Build system updates are planned as part of the [v7 roadmap](#references). The monorepo structure facilitates this work by creating clear package boundaries. Build tool changes are tracked separately in [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900).
-
-### Directory Structure (Guiding Shape)
-
-Storybook location may change. Recommendation: colocate it with the library package (e.g. `packages/veda-ui/storybook/`).
-
-```text
-/
-├── packages/
-│   └── veda-ui/                # Main component library package
-│       └── src/                # Library source
-│           ├── index.ts        # Library exports
-│           ├── components/
-│           ├── hooks/
-│           ├── styles/
-│           └── libs/           # Legacy exports (transition)
-└── apps/                       # Runnable apps (structure may vary)
-    └── <app>/
-```
-
-### Migration Guidelines
-
-**New components**: Create in `packages/veda-ui/src/components/`
-
-**Component updates**: Migrate to `packages/veda-ui/src/components/` when:
-
-* Component is part of the public API
-* Component is used across multiple instances
-* Update is substantial (major refactor/redesign)
-
-### Risks and Mitigations
-
-* **Risk**: Breaking changes during migration
-  * **Mitigation**: Maintain backward compatibility exports during transition
-* **Risk**: Team adoption of new structure
-  * **Mitigation**: Clear documentation and examples, gradual enforcement
-* **Risk**: Build system complexity during transition
-  * **Mitigation**: Maintain both systems until migration complete, clear deprecation timeline
+* Keep exportable library code under `packages/veda-ui/`
+* Keep runnable apps under `apps/`
+* Storybook placement is flexible; recommendation is to colocate it with the library package (`packages/veda-ui/storybook/`) when practical
+* Prefer incremental migration and preserve compatibility exports during transition
+* Build tooling work is related but out-of-scope here and should likely be addressed in v7 (see [#1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) and [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900))
 
 ## Related Issues and Tickets
 
-* [Issue #1290](https://github.com/NASA-IMPACT/veda-ui/issues/1290) - Fix build issues
 * [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap
 * [Issue #1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900) - Build tool changes
 
