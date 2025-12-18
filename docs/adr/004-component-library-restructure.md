@@ -1,7 +1,7 @@
 # Component Library Restructure
 
 * Status: **Accepted**
-* Authors: @AliceR, @vgeorge, @ifsimicoded
+* Authors: @AliceR, @vgeorge, @ifsimicoded, @dzole0311
 * Deciders: VEDA UI Team
 * As of: December 2025
 
