@@ -62,7 +62,7 @@ An issue template will be provided to assist in Initiative issue creation.
 
 Keep in mind, this is a living document, so as new documents are created, they should be linked here and as high level project definition changes, that should be reflected here as well.
 
-When an initiative is considered complete, if there are open tickets, a new Tech Debt issue should be created (ex. [Tech Debt] - EIE). All open tickets should be moved to sub-issues of this parent Tech Debt issue, or they may be closed as unplanned. 
+When an initiative is considered complete, if there are open tickets, a new Tech Debt issue should be created (ex. [Tech Debt] - EIE) under the parent initiative. All open tickets should be moved to sub-issues of this parent Tech Debt issue (or they may be closed as unplanned). [Tech Debt] issues can be used to track repo health.
 
 ### PI Objectives
 An initiative will be broken down into sub-issues labeled PI Objectives to fulfill stakeholder progress tracking. 
@@ -82,7 +82,7 @@ An issue template will be provided to assist in PI Objective issue creation.
 Tasks will be used to breakdown the work needed to complete an initiative. As timelines become more clear, these sub-issues can be moved under the appropriate Initiative's sub PI Objective ticket. Because these will be defined as issues under an initiative issue or a PI Objective issue, the heirarchy/relationship to the initiative or PI Objective will already be present. We should limit sub-issues to two levels beyond this for task visibility.
 
 An Issue should have:
-- a parent (unless it is the parent initiative, a parent tech debt issue or of type bug. [Tech Debt] can be it's own parent that can be used to track repo health)
+- a parent (unless it is the parent initiative or of type bug)
 - a title prefixed with the epic acronym (ex. [EIE] Initial repo/application scaffolding)
 - a subtitle if the issue will contain output that isn't production code, ie. ADR (it's my understanding that ADRs can be RFCs if their status is in progress / in review), Doc, Spike. (ex. [EIE] Spike: globe visualization, [EIE] Doc: deploy process). 
 - a description
