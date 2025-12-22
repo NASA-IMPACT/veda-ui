@@ -117,7 +117,7 @@
       }
     },
     {
-      "files": "test/playwright/**",
+      "files": "apps/dashboard-parcel/test/playwright/**",
       "extends": "plugin:playwright/recommended"
     },
     {
