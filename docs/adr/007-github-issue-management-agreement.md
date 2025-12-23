@@ -79,7 +79,7 @@ The PI Objective issue should have:
 An issue template will be provided to assist in PI Objective issue creation.
 
 ### Sub Issues
-Tasks will be used to breakdown the work needed to complete an initiative. As timelines become more clear, these sub-issues can be moved under the appropriate Initiative's sub PI Objective ticket. Because these will be defined as issues under an initiative issue or a PI Objective issue, the heirarchy/relationship to the initiative or PI Objective will already be present. We should limit sub-issues to two levels beyond this for task visibility.
+Tasks will be used to breakdown the work needed to complete an initiative. As timelines become more clear, these sub-issues can be moved under the appropriate Initiative's sub PI Objective ticket. Because these will be defined as issues under an initiative issue or a PI Objective issue, the hierarchy/relationship to the initiative or PI Objective will already be present. We should limit sub-issues to two levels beyond this for task visibility.
 
 An Issue should have:
 - a parent (unless it is the parent initiative or of type bug)
