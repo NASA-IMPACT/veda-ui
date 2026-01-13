@@ -1,3 +1,11 @@
+<!--
+  This file is used as the README for the published npm library.
+
+  During the build process (`npm run buildlib`), this file is copied to
+  `lib/README.md` and included in the npm package. Consumers of the
+  veda-ui library see this content.
+-->
+
 # VEDA Dashboard - Component Library
 
 ![VEDA logo](./docs/media/nasa-veda-logo-pos.svg)

@@ -1,6 +1,9 @@
-# VEDA Dashboard
+# VEDA Dashboard (Parcel)
 
 ![VEDA logo](../../docs/media/nasa-veda-logo-pos.svg)
+
+> **Note**: This is the Parcel-based dashboard. A migration to Vite is planned for v7.
+> See [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900) for details.
 
 VEDA is a dashboard to explore data.
 
