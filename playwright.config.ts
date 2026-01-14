@@ -1,7 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
 
+/**
+ * E2E Tests for the Dashboard Application (apps/dashboard-parcel)
+ */
 export default defineConfig({
-  testDir: './test',
+  testDir: './apps/dashboard-parcel/test/playwright/tests',
+  testMatch: '**/*.spec.ts',
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

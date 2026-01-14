@@ -17,7 +17,7 @@
       "$data-layer/*": ["packages/veda-ui/src/data-layer/*"],
       "$uswds": ["packages/veda-ui/src/uswds/"],
       "$graphics/*": ["packages/veda-ui/graphics/*"],
-      "$test/*": ["test/*"],
+      "$test/*": ["apps/dashboard-parcel/test/*"],
       "$mock/*": ["mock/*"],
       "$storybook": ["storybook/*"]
     }

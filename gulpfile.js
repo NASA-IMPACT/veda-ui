@@ -110,7 +110,8 @@ function parcelBuildLib(cb) {
 // package.json to use. When running this directly from the UI repo (for
 // development) we need to actively point parcel to the correct target
 // otherwise the site doesn't get built.
-const parcelTarget = process.cwd() === __dirname ? ['app/index.html'] : [];
+const parcelTarget =
+  process.cwd() === __dirname ? ['apps/dashboard-parcel/index.html'] : [];
 
 function parcelServe(cb) {
   portscanner.findAPortNotInUse(9000, 9999, function (error, port) {

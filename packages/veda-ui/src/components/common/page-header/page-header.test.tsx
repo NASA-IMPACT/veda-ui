@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom';
 import NasaLogoColor from '../nasa-logo-color';
 import { NavItem } from './types';
 import PageHeader from './index';
-import { VedaUIConfigProvider } from '$test/utils.js';
+import { VedaUIConfigProvider } from '$test/utils';
 import { navItems } from '$mock/veda.config.js';
 
 // @NOTE: Possible Test cases

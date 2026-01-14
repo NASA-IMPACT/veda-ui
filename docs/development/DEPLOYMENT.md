@@ -20,5 +20,5 @@ The app can then be run by any web server.
 If you want to use any other parcel feature it is also possible. Example:
 
 ```
-PARCEL_BUNDLE_ANALYZER=true yarn parcel build app/index.html
+PARCEL_BUNDLE_ANALYZER=true yarn parcel build apps/dashboard-parcel/index.html
 ```

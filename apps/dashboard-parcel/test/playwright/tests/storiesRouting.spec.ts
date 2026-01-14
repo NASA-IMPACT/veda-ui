@@ -2,7 +2,7 @@ import { test, expect } from '../pages/basePage';
 
 const stories = JSON.parse(
   // eslint-disable-next-line @typescript-eslint/no-require-imports
-  require('fs').readFileSync('test/playwright/playwrightTestData.json', 'utf8')
+  require('fs').readFileSync('apps/dashboard-parcel/test/playwright/playwrightTestData.json', 'utf8')
 )['stories'];
 
 test.describe('stories card routing', () => {
