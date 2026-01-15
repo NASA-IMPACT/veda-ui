@@ -95,7 +95,9 @@ All issues (initiatives, Tech Debt, PI Objectives, sub-issues, bugs) should live
 
 ### Pull Requests
 - Should be linked to an issue. You can use [GH keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) like 'closes' or the `#` to bring up issue numbers to link without automations.
-- TBD agreement on PR requirements and turnaround time
+- PR title should follow [conventional commit](https://www.conventionalcommits.org) and include Initiative acronym for traceability (e.g., "fix: [EIE] Add globe component")    
+- Required reviews: at least 1 technical reviewer
+- Turnaround time: Review requests are expected to be addressed within 2 business days, unless other time is specific by the team maintaining the repository
 
 ## Helpful Github links on using Issues to manage projects including views to track progress
 * https://docs.github.com/en/issues
