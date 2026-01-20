@@ -116,10 +116,45 @@ Establish a monorepo split between reusable packages and runnable apps (library 
 
 During team discussion on [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871), the proposal evolved from Option C to a monorepo structure. @ifsimicoded expressed skepticism about moving files around without addressing broader developer concerns, but did not oppose moving files around. @vgeorge moved forward with [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898), which was merged and established the monorepo structure (`packages/veda-ui/`).
 
+## Implementation Status
+
+### Completed
+
+* **[PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898)**: Established the monorepo structure and moved library exports into `packages/veda-ui/`
+* **[PR #1957](https://github.com/NASA-IMPACT/veda-ui/pull/1957)**: Moved the Parcel-based dashboard to `apps/dashboard-parcel/`
+
+  * Makes the build tool explicit at the app level
+  * Aligns with the v7 migration plan (#1900)
+  * Parcel-specific tooling (`/parcel-resolver/`, `/parcel-transformer/`) remains at the repo root as legacy infrastructure and will be removed when Parcel is deprecated in v7
+
+### Deferred
+
+The following items are intentionally deferred to v7 to avoid further incremental refactors in v6:
+
+* Migration from Parcel to Vite (tracked in #1900)
+* Relocating Storybook under `apps/` (e.g. `apps/storybook/`)
+
+These changes are coupled to the broader v7 reset and will be addressed as part of that effort rather than incrementally in v6.
+
+## Parcel notes / v7 follow-ups
+
+Tracking ticket: #1900.
+
+* v6 runnable dashboard: `apps/dashboard-parcel/`.
+* Legacy Parcel tooling remains at repo root (e.g. `/parcel-resolver/`, `/parcel-transformer/`) and can be removed when Parcel is deprecated (v7).
+* Once we migrate away from Parcel (v7) and introduce a new dashboard build (e.g. `apps/dashboard-vite/`, `apps/dashboard-nextjs/`), update:
+  * Docs that reference Parcel paths/behavior (e.g. `docs/content/MDX_BLOCKS.md`, `docs/development/ARCHITECTURE.md`, `docs/development/DEPLOYMENT.md`, `docs/development/PAGE_OVERRIDES_DEV.md`, `docs/development/SETUP.md`).
+  * Tests + test infra that assume Parcel paths (Playwright paths, TS `$test/*` alias, scripts referencing `apps/dashboard-parcel/`).
+  * Build targets: Parcel `targets.veda-app` (and related scripts) to the new app entrypoint.
+
 ## Direction
 
 * Keep exportable library code under `packages/veda-ui/`
 * Keep runnable apps under `apps/`
+* Build-tool-specific apps use naming pattern: `apps/{app-name}-{build-tool}/`
+  * Example: `apps/dashboard-parcel/` (v6, Parcel-based)
+  * Future: `apps/dashboard-vite/` or similar (v7, see #1900)
+  * Non-goal: support multiple dashboard implementations/build tools at the same time. The intent is to make the build tool explicit and enable a clean replacement during v7 migration.
 * Storybook placement is flexible; recommendation is to colocate it with the library package (`packages/veda-ui/storybook/`) when practical
 * Prefer incremental migration and preserve compatibility exports during transition
 * Build tooling work is related but out-of-scope here and should likely be addressed in v7 (see [#1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) and [#1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900))
@@ -127,5 +162,9 @@ During team discussion on [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull
 ## References
 
 * [PR #1871](https://github.com/NASA-IMPACT/veda-ui/pull/1871) - Introduces ADR 004 (by @AliceR)
+* [PR #1898](https://github.com/NASA-IMPACT/veda-ui/pull/1898) - Established monorepo structure (`packages/veda-ui/`)
+* [PR #1957](https://github.com/NASA-IMPACT/veda-ui/pull/1957) - Move parcel dashboard to `/apps/dashboard-parcel/`
+* [Issue #1889](https://github.com/NASA-IMPACT/veda-ui/issues/1889) - Version 7 Roadmap
+* [Issue #1900](https://github.com/NASA-IMPACT/veda-ui/issues/1900) - Migrate Parcel to Vite (v7 epic)
 * [ADR 006: VEDA2 Architecture Refactor](./006-veda2-architecture-refactor.md)
 * [Architecture documentation](../development/ARCHITECTURE.md)
