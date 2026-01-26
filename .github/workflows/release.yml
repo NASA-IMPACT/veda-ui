@@ -8,6 +8,7 @@ on:
 # Sets the GITHUB_TOKEN permissions to allow release
 permissions:
   contents: write
+  id-token: write # Required for OIDC connection with NPM
 
 # This action requires a GitHub app with content write access installed
 # to bypass the main branch  protection rule and dispatch the event to a different repo
@@ -91,8 +92,6 @@ jobs:
         run: |
           yarn buildlib
           npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
