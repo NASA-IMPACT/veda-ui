@@ -127,7 +127,8 @@ export async function fetchStacDatasetById(
       domain: normalizeDomain(featuresApiData.extent.temporal.interval[0])
     };
   } else if (type === 'wms' || type === 'wmts') {
-    let domain = data.summaries?.datetime?.[0]
+    const fromSummaries = !!data.summaries?.datetime?.[0];
+    let domain = fromSummaries
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
@@ -138,9 +139,18 @@ export async function fetchStacDatasetById(
       domain = [tempStart.toISOString(), new Date().toISOString()];
     }
 
+    // For non-periodic data with discrete dates from summaries.datetime,
+    // keep all dates instead of normalizing to just start/end.
+    // Only skip normalization if domain has >2 dates (normalization would truncate them).
+    const shouldKeepAllDates =
+      fromSummaries &&
+      !commonTimeseriesParams.isPeriodic &&
+      !data['dashboard:is_timeless'] &&
+      domain.length > 2;
+
     return {
       ...commonTimeseriesParams,
-      domain: normalizeDomain(domain)
+      domain: shouldKeepAllDates ? domain : normalizeDomain(domain)
     };
   } else if (type === 'cmr') {
     const domain = data.summaries?.datetime?.[0]
@@ -157,7 +167,8 @@ export async function fetchStacDatasetById(
       domain: [domainStart, normalized[1]]
     };
   } else {
-    const domain = data.summaries?.datetime?.[0]
+    const fromSummaries = !!data.summaries?.datetime?.[0];
+    const domain = fromSummaries
       ? data.summaries.datetime
       : data.extent.temporal.interval[0];
 
@@ -167,9 +178,15 @@ export async function fetchStacDatasetById(
       throw new Error('Invalid datetime domain');
     }
 
+    // For non-periodic data with discrete dates from summaries.datetime,
+    // keep all dates instead of normalizing to just start/end.
+    // Only skip normalization if domain has >2 dates (normalization would truncate them).
+    const shouldKeepAllDates =
+      fromSummaries && !commonTimeseriesParams.isPeriodic && domain.length > 2;
+
     return {
       ...commonTimeseriesParams,
-      domain: normalizeDomain(domain),
+      domain: shouldKeepAllDates ? domain : normalizeDomain(domain),
       renders
     };
   }

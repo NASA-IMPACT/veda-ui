@@ -171,4 +171,84 @@ describe('fetchStacDatasetById', () => {
     ]);
     expect(result.renders).toEqual([{ id: 'r2' }]);
   });
+
+  it('preserves all dates for non-periodic data with summaries.datetime', async () => {
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        summaries: {
+          datetime: [
+            '2000-01-01T00:00:00Z',
+            '2005-01-01T00:00:00Z',
+            '2010-01-01T00:00:00Z',
+            '2015-01-01T00:00:00Z',
+            '2020-01-01T00:00:00Z'
+          ]
+        },
+        extent: {
+          temporal: {
+            interval: [['2000-01-01T00:00:00Z', '2020-01-01T00:00:00Z']]
+          }
+        },
+        'dashboard:is_periodic': false,
+        'dashboard:time_density': 'year'
+      }
+    });
+
+    const dataset = {
+      data: { id: 'd6', type: 'raster', stacCol: 'col6' }
+    } as any;
+
+    const { fetchStacDatasetById } = await import(
+      './use-stac-metadata-datasets'
+    );
+    const result = await fetchStacDatasetById(dataset, 'http://fake');
+
+    // Should preserve all 5 dates, not just the first 2
+    expect(result.domain).toEqual([
+      '2000-01-01T00:00:00Z',
+      '2005-01-01T00:00:00Z',
+      '2010-01-01T00:00:00Z',
+      '2015-01-01T00:00:00Z',
+      '2020-01-01T00:00:00Z'
+    ]);
+    expect(result.isPeriodic).toBe(false);
+  });
+
+  it('preserves all dates for non-periodic wmts with summaries.datetime', async () => {
+    mockedGet.mockResolvedValueOnce({
+      data: {
+        summaries: {
+          datetime: [
+            '2000-01-01T00:00:00Z',
+            '2005-01-01T00:00:00Z',
+            '2010-01-01T00:00:00Z'
+          ]
+        },
+        extent: {
+          temporal: {
+            interval: [['2000-01-01T00:00:00Z', '2010-01-01T00:00:00Z']]
+          }
+        },
+        'dashboard:is_periodic': false,
+        'dashboard:time_density': 'year'
+      }
+    });
+
+    const dataset = {
+      data: { id: 'd7', type: 'wmts', stacCol: 'col7' }
+    } as any;
+
+    const { fetchStacDatasetById } = await import(
+      './use-stac-metadata-datasets'
+    );
+    const result = await fetchStacDatasetById(dataset, 'http://fake');
+
+    // Should preserve all 3 dates, not just the first 2
+    expect(result.domain).toEqual([
+      '2000-01-01T00:00:00Z',
+      '2005-01-01T00:00:00Z',
+      '2010-01-01T00:00:00Z'
+    ]);
+    expect(result.isPeriodic).toBe(false);
+  });
 });
