@@ -93,6 +93,21 @@ An Issue should have:
 
 All issues (initiatives, Tech Debt, PI Objectives, sub-issues, bugs) should live in their relevant corresponding repo where possible. Otherwise our current practice is to manage issues in the `veda-ui` repo. 
 
+### Bug Tickets
+
+Bug tickets are operational issues that require immediate attention and are exempt from the hierarchical structure.
+
+Bug tickets should:
+- Not have a parent issue (unless the bug is directly tied to an Initiative implementation)
+- Live in the repo where the bug occurs
+- Use the existing bug template, including context, priority (P1/P2/P3), and reproduction steps
+- Include an acronym prefix when Initiative-specific (e.g. `[EIE] Bug: Map not loading in Safari`)
+- Link to relevant PI Objectives in the comments for visibility
+
+Bug categorization:
+- Initiative bugs: scoped to a specific Initiative implementation
+- Infrastructure bugs: affect multiple repos or shared infrastructure
+- Production bugs: live site issues requiring immediate fixes
 ### Pull Requests
 - Should be linked to an issue. You can use [GH keywords](https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/linking-a-pull-request-to-an-issue#linking-a-pull-request-to-an-issue-using-a-keyword) like 'closes' or the `#` to bring up issue numbers to link without automations.
 - PR title should follow [conventional commit](https://www.conventionalcommits.org) and include Initiative acronym for traceability (e.g., "fix: [EIE] Add globe component")    
