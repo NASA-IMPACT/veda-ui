@@ -122,7 +122,7 @@ jobs:
   #               text:
   #                 type: "mrkdwn"
   #                 text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-  #     - name: Notify no commit through Slack
+      - name: Notify no commit through Slack
         if: needs.release.outputs.no_commit == 'true'
         uses: slackapi/slack-github-action@v2.0.0
         with:
