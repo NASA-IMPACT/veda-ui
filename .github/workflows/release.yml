@@ -16,8 +16,6 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
-    outputs:
-      no_commit: ${{ steps.git-release.outputs.NO_COMMIT }}
     steps:
       - name: Generate a token
         id: generate-token
@@ -57,37 +55,6 @@ jobs:
         run: npm install -g npm@^11.5.1
 
       - run: yarn
-      # Clean up any stale version tags left from failed release runs.
-      # Context:
-      # - Each release run uses release-it to bump package.json, create a new Git tag (e.g., v7.0.0),
-      #   and then publish to NPM. If the run fails after the tag is created but before publish,
-      #   that tag remains both locally in the local repo (inside the GitHub Actions runner) and remotely on GitHub.
-      # - "Locally" refers to the temporary clone created by actions/checkout@v4 inside the workflow runner.
-      # - "Remotely" refers to the GitHub repository itself ("origin" on GitHub.com).
-      #   The command `git push origin :refs/tags/v7.0.0` deletes the remote tag.
-      # - On the next run, if that stale tag still exists, release-it detects no version change
-      #   and fails with “Version not changed”.
-      # This step checks whether the tag for the current package.json version already exists,
-      # and deletes it locally and remotely so release-it can safely recreate it during this run.
-      # - name: Clean stale tags from failed releases
-      #   run: |
-      #     LAST_TAG=$(git describe --tags --abbrev=0 || echo "")
-      #     CURRENT_VERSION=$(node -p "require('./package.json').version")
-      #     if [ "$LAST_TAG" = "v$CURRENT_VERSION" ]; then
-      #       echo "Skipping cleanup: tag v$CURRENT_VERSION already valid."
-      #     else
-      #       STALE_TAG="v$CURRENT_VERSION"
-      #       if git rev-parse "$STALE_TAG" >/dev/null 2>&1; then
-      #         echo "Removing stale tag $STALE_TAG"
-      #         git tag -d "$STALE_TAG" || true
-      #         git push origin ":refs/tags/$STALE_TAG" || true
-      #       fi
-      #     fi
-      # - name: Release through Git
-      #   id: git-release
-      #   run: yarn release  --ci --verbose
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Set Version Variable
         id: set-version
         run: echo "VERSION=$(npm pkg get version)" >> $GITHUB_ENV
@@ -95,43 +62,3 @@ jobs:
         run: |
           yarn buildlib
           npm publish --dry-run
-      # - name: Repository Dispatch
-      #   uses: peter-evans/repository-dispatch@v3
-      #   with:
-      #     token: ${{steps.generate-token.outputs.token}}
-      #     repository: nasa-impact/veda-config
-      #     event-type: update-version
-      #     client-payload: '{"ref": "${{ github.ref }}", "VERSION_NUMBER": "${{ steps.git-release.outputs.VERSION_NUMBER }}"}'
-  # notify:
-  #   # If any of job fails
-  #   if: failure()
-  #   runs-on: ubuntu-latest
-  #   needs:
-  #     - release
-  #   steps:
-  #     - name: Notify failure through Slack
-  #       if: needs.release.outputs.no_commit != 'true'
-  #       uses: slackapi/slack-github-action@v2.0.0
-  #       with:
-  #         webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-  #         webhook-type: incoming-webhook
-  #         payload: |
-  #           text: "*VEDA UI Release failed*: "
-  #           blocks:
-  #             - type: "section"
-  #               text:
-  #                 type: "mrkdwn"
-  #                 text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-      - name: Notify no commit through Slack
-        if: needs.release.outputs.no_commit == 'true'
-        uses: slackapi/slack-github-action@v2.0.0
-        with:
-          webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
-          webhook-type: incoming-webhook
-          payload: |
-            text: "*VEDA UI Release skipped*: "
-            blocks:
-              - type: "section"
-                text:
-                  type: "mrkdwn"
-                  text: "VEDA UI release was skipped as there are no commits after the last release: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
