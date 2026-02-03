@@ -53,8 +53,6 @@ jobs:
         with:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
-      - name: Install npm 11.5.1+ for trusted publishing
-        run: npm install -g npm@^11.5.1
 
       - run: yarn
       # Clean up any stale version tags left from failed release runs.
@@ -94,7 +92,7 @@ jobs:
       - name: Publish package to NPM
         run: |
           yarn buildlib
-          npm publish
+          npx npm@^11.5.1 publish
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v3
         with:
