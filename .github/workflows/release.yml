@@ -51,9 +51,6 @@ jobs:
         with:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
-      - name: Install npm 11.5.1+ for trusted publishing
-        run: npm install -g npm@^11.5.1
-
       - run: yarn
       - name: Set Version Variable
         id: set-version
@@ -61,4 +58,4 @@ jobs:
       - name: Publish package to NPM
         run: |
           yarn buildlib
-          npm publish --dry-run
+          npx npm@^11.5.1 publish --dry-run
