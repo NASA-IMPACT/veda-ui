@@ -94,7 +94,7 @@ export function ExplorationMap(props: ExplorationMapProps) {
     )
     .slice()
     .reverse();
-
+  console.log(`loadedDatasets`, loadedDatasets);
   const onStyleUpdate = useCallback(
     (style: ExtendedStyle) => {
       const updatedDatasets = datasets.map((dataset) => {
@@ -116,7 +116,8 @@ export function ExplorationMap(props: ExplorationMapProps) {
         if (!layerMetadata) return dataset;
 
         const currentMeta = dataset.meta ?? {};
-
+        console.log('dataset', dataset);
+        console.log('layerMetadata', layerMetadata);
         return {
           ...dataset,
           meta: {
