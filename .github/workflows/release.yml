@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Generate a token
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@af35edadc00be37caa72ed9f3e6d5f7801bfdf09 # v1.11.7
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PEM }}
@@ -30,26 +30,24 @@ jobs:
             veda-ui
             veda-config
             next-veda-ui
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
           token: ${{ steps.generate-token.outputs.token }}
 
       - name: Cache node modules
         id: cache-npm
-        uses: actions/cache@v4
-        env:
-          cache-name: cache-node-modules
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           # npm cache files are stored in `~/.npm` on Linux/macOS
           path: node_modules
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package.json') }}
+          key: ${{ runner.os }}-build-${{ hashFiles('**/package.json', 'yarn.lock') }}
       - name: git config
         run: |
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - name: Use Node.js ${{ env.NODE }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
@@ -64,7 +62,7 @@ jobs:
       # - "Remotely" refers to the GitHub repository itself ("origin" on GitHub.com).
       #   The command `git push origin :refs/tags/v7.0.0` deletes the remote tag.
       # - On the next run, if that stale tag still exists, release-it detects no version change
-      #   and fails with “Version not changed”.
+      #   and fails with "Version not changed".
       # This step checks whether the tag for the current package.json version already exists,
       # and deletes it locally and remotely so release-it can safely recreate it during this run.
       - name: Clean stale tags from failed releases
@@ -94,7 +92,7 @@ jobs:
           yarn buildlib
           npx npm@^11.5.1 publish
       - name: Repository Dispatch
-        uses: peter-evans/repository-dispatch@v3
+        uses: peter-evans/repository-dispatch@ff45666b9427631e3450c54a1bcbee4d9ff4d7c0 # v3.0.0
         with:
           token: ${{steps.generate-token.outputs.token}}
           repository: nasa-impact/veda-config
@@ -109,7 +107,7 @@ jobs:
     steps:
       - name: Notify failure through Slack
         if: needs.release.outputs.no_commit != 'true'
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
@@ -122,7 +120,7 @@ jobs:
                   text: "*VEDA UI Release failed*: Check action page to see the details: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
       - name: Notify no commit through Slack
         if: needs.release.outputs.no_commit == 'true'
-        uses: slackapi/slack-github-action@v2.0.0
+        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
         with:
           webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
           webhook-type: incoming-webhook
