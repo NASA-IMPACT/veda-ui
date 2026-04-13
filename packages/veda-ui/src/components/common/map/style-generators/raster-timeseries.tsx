@@ -85,7 +85,7 @@ export function useStacResponse({
 
         setStacCollection(responseData.features);
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
-      } catch (error) {
+      } catch {
         if (!controller.signal.aborted) {
           setStacCollection([]);
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
