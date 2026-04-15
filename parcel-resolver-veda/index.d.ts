@@ -8,7 +8,7 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms' | 'wmts' | 'external-stac';
 
   //
   // Dataset Layers

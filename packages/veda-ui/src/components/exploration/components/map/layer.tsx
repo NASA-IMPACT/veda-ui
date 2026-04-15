@@ -15,6 +15,7 @@ import { ZarrTimeseries } from '$components/common/map/style-generators/zarr-tim
 import { CMRTimeseries } from '$components/common/map/style-generators/cmr-timeseries';
 import { WMSTimeseries } from '$components/common/map/style-generators/wms-timeseries';
 import { WMTSTimeseries } from '$components/common/map/style-generators/wmts-timeseries';
+import { ExternalStacTimeseries } from '$components/common/map/style-generators/external-stac-timeseries';
 import { ActionStatus } from '$utils/status';
 import { useVedaUI } from '$context/veda-ui-provider';
 
@@ -149,6 +150,26 @@ export function Layer(props: LayerProps) {
     case 'raster':
       return (
         <RasterTimeseries
+          id={layerId}
+          stacCol={dataset.data.stacCol}
+          stacApiEndpoint={dataset.data.stacApiEndpoint}
+          tileApiEndpoint={dataset.data.tileApiEndpoint}
+          date={relevantDate}
+          zoomExtent={params.zoomExtent}
+          sourceParams={params.sourceParams}
+          generatorOrder={order}
+          hidden={!isVisible}
+          opacity={opacity}
+          onStatusChange={onStatusChange}
+          colorMap={colorMap}
+          reScale={scale}
+          envApiStacEndpoint={envApiStacEndpoint}
+          envApiRasterEndpoint={envApiRasterEndpoint}
+        />
+      );
+    case 'external-stac':
+      return (
+        <ExternalStacTimeseries
           id={layerId}
           stacCol={dataset.data.stacCol}
           stacApiEndpoint={dataset.data.stacApiEndpoint}

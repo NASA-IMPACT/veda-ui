@@ -166,6 +166,20 @@ export async function fetchStacDatasetById(
       isPeriodic: true,
       domain: [domainStart, normalized[1]]
     };
+  } else if (type === 'external-stac') {
+    // External STAC servers may have different metadata structures
+    // Use time_density from MDX config, and normalize domain with null handling
+    const domain = data.summaries?.datetime?.[0]
+      ? data.summaries.datetime
+      : data.extent?.temporal?.interval?.[0];
+
+    const normalized = normalizeDomain(domain);
+
+    return {
+      ...commonTimeseriesParams,
+      isPeriodic: true,
+      domain: normalized
+    };
   } else {
     const fromSummaries = !!data.summaries?.datetime?.[0];
     const domain = fromSummaries

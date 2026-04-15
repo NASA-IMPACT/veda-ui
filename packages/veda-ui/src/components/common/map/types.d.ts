@@ -78,3 +78,24 @@ interface AssetUrlReplacement {
 export interface CMRTimeseriesProps extends BaseTimeseriesProps {
   assetUrlReplacements?: AssetUrlReplacement;
 }
+
+export interface ExternalStacTimeseriesProps extends BaseTimeseriesProps {
+  bounds?: number[];
+  isPositionSet?: boolean;
+}
+
+export interface ExternalStacItem {
+  id: string;
+  bbox: [number, number, number, number];
+  assets: Record<
+    string,
+    {
+      href: string;
+      alternate?: {
+        s3?: {
+          href: string;
+        };
+      };
+    }
+  >;
+}

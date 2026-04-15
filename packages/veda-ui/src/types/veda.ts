@@ -11,7 +11,8 @@ export type DatasetLayerType =
   | 'zarr'
   | 'cmr'
   | 'wms'
-  | 'wmts';
+  | 'wmts'
+  | 'external-stac';
 
 //
 // Dataset Layers
