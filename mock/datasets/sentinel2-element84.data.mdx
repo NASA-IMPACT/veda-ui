@@ -1,0 +1,49 @@
+---
+id: sentinel2-element84
+name: 'Sentinel-2 L2A (Element84 Earth Search)'
+featured: true
+sourceExclusive: Mock
+description: "Global Sentinel-2 Level-2A data from the Multispectral Instrument (MSI) via Element84 Earth Search."
+media:
+  src: ::file ./img-placeholder-3.jpg
+  alt: Sentinel-2 satellite imagery placeholder
+taxonomy:
+  - name: Source
+    values:
+      - Mock
+  - name: Topics
+    values:
+      - Agriculture
+layers:
+  - id: sentinel-2-l2a-element84
+    stacCol: sentinel-2-l2a
+    stacApiEndpoint: https://earth-search.aws.element84.com/v1
+    tileApiEndpoint: https://openveda.cloud/api/raster
+    name: Sentinel-2 Level-2A
+    type: external-stac
+    time_density: day
+    description: Global Sentinel-2 Level-2A surface reflectance data from Element84 Earth Search.
+    zoomExtent:
+      - 7
+      - 20
+    sourceParams:
+      assets: red
+      colormap_name: viridis
+      rescale:
+        - 0
+        - 10000
+    legend:
+      type: gradient
+      min: "0"
+      max: "10000"
+      stops:
+        - "#440154"
+        - "#3b528b"
+        - "#21918c"
+        - "#5ec962"
+        - "#fde725"
+---
+
+Test dataset for the `external-stac` data type using Element84 Earth Search STAC API.
+
+Sentinel-2 Level-2A provides atmospherically corrected surface reflectance data from the Sentinel-2 constellation.
