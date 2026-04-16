@@ -48,13 +48,15 @@ function useExternalStacSearch({
   changeStatus,
   stacCol,
   date,
-  stacApiEndpointToUse
+  stacApiEndpointToUse,
+  searchLimit
 }: {
   id: string;
   changeStatus: (params: { status: string; context: STATUS_KEY }) => void;
   stacCol: string;
   date: Date;
   stacApiEndpointToUse: string;
+  searchLimit: number;
 }): [
   ExternalStacItem[],
   Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
@@ -80,7 +82,7 @@ function useExternalStacSearch({
           datetime: `${userTzDate2utcString(
             startOfDay(date)
           )}/${userTzDate2utcString(endOfDay(date))}`,
-          limit: 1000
+          limit: searchLimit
         };
 
         if (LOG) {
@@ -143,7 +145,7 @@ function useExternalStacSearch({
       changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, stacCol, date, stacApiEndpointToUse]);
+  }, [id, stacCol, date, stacApiEndpointToUse, searchLimit]);
 
   // Markers to show where the data is when zoom is low
   const points = useMemo(() => {
@@ -251,6 +253,9 @@ function useExternalStacTileSources({
   return tileSources;
 }
 
+// Default search limit for STAC search
+const DEFAULT_SEARCH_LIMIT = 500;
+
 export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
   const {
     id,
@@ -269,7 +274,8 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
     colorMap,
     reScale,
     envApiStacEndpoint,
-    envApiRasterEndpoint
+    envApiRasterEndpoint,
+    searchLimit = DEFAULT_SEARCH_LIMIT
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -288,7 +294,8 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
     changeStatus,
     stacCol,
     date,
-    stacApiEndpointToUse
+    stacApiEndpointToUse,
+    searchLimit
   });
 
   // Get asset key from sourceParams for tile params

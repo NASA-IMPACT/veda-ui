@@ -185,6 +185,7 @@ export function Layer(props: LayerProps) {
           reScale={scale}
           envApiStacEndpoint={envApiStacEndpoint}
           envApiRasterEndpoint={envApiRasterEndpoint}
+          searchLimit={dataset.data.searchLimit}
         />
       );
     default:

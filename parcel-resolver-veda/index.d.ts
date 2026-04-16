@@ -81,6 +81,7 @@ declare module 'veda' {
     };
     time_density?: TimeDensity;
     info?: LayerInfo;
+    searchLimit?: number;
   }
 
   // TODO: Complete once known

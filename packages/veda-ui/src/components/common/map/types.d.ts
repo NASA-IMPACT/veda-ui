@@ -82,6 +82,7 @@ export interface CMRTimeseriesProps extends BaseTimeseriesProps {
 export interface ExternalStacTimeseriesProps extends BaseTimeseriesProps {
   bounds?: number[];
   isPositionSet?: boolean;
+  searchLimit?: number;
 }
 
 export interface ExternalStacItem {

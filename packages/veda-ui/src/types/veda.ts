@@ -93,6 +93,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   };
   time_density?: TimeDensity;
   info?: LayerInfo;
+  searchLimit?: number;
 }
 // A normalized compare layer is the result after the compare definition is
 // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The
