@@ -14,7 +14,7 @@ on:
       - ready_for_review
 
 env:
-  NODE: 20
+  NODE: 22
 
 jobs:
   prep:
