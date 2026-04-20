@@ -8,7 +8,7 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms' | 'wmts' | 'external-stac';
 
   //
   // Dataset Layers
@@ -81,6 +81,7 @@ declare module 'veda' {
     };
     time_density?: TimeDensity;
     info?: LayerInfo;
+    searchLimit?: number;
   }
 
   // TODO: Complete once known

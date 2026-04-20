@@ -1,0 +1,49 @@
+---
+id: hls-l30-external
+name: 'HLS Landsat 30m (External STAC)'
+featured: true
+sourceExclusive: Mock
+description: "Harmonized Landsat Sentinel-2 (HLS) Landsat 30m Surface Reflectance from NASA CMR STAC."
+media:
+  src: ::file ./img-placeholder-3.jpg
+  alt: HLS Landsat imagery placeholder
+taxonomy:
+  - name: Source
+    values:
+      - Mock
+  - name: Topics
+    values:
+      - Agriculture
+layers:
+  - id: hls-l30-external
+    stacCol: HLSL30_2.0
+    stacApiEndpoint: https://cmr.earthdata.nasa.gov/cloudstac/LPCLOUD
+    tileApiEndpoint: https://openveda.cloud/api/raster
+    name: HLS Landsat 30m
+    type: external-stac
+    time_density: day
+    description: Harmonized Landsat Sentinel-2 (HLS) Landsat Operational Land Imager Surface Reflectance and TOA Brightness Daily Global 30m v2.0.
+    zoomExtent:
+      - 7
+      - 20
+    sourceParams:
+      assets: s3_B04
+      colormap_name: viridis
+      rescale:
+        - 0
+        - 3000
+    legend:
+      type: gradient
+      min: "0"
+      max: "3000"
+      stops:
+        - "#440154"
+        - "#3b528b"
+        - "#21918c"
+        - "#5ec962"
+        - "#fde725"
+---
+
+Test dataset for the `external-stac` data type using NASA CMR STAC (LPCLOUD).
+
+HLS provides consistent surface reflectance data from a virtual constellation of Landsat and Sentinel-2 sensors.
