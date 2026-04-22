@@ -5,6 +5,9 @@ on:
     # At 10AM EST Monday
     - cron: '0 15 * * 1'
 
+env:
+  NODE: 24
+
 # Sets the GITHUB_TOKEN permissions to allow release
 permissions:
   contents: write
@@ -49,7 +52,7 @@ jobs:
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
       - name: Use Node.js ${{ env.NODE }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE }}
           registry-url: https://registry.npmjs.org/
