@@ -1,7 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { LngLatBoundsLike } from 'mapbox-gl';
+import styled from 'styled-components';
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
+import { Button } from '@devseed-ui/button';
+import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
 import { ExternalStacTimeseriesProps, ExternalStacItem } from '../types';
 import { FIT_BOUNDS_PADDING, getMergedBBox, requestQuickCache } from '../utils';
@@ -22,6 +25,48 @@ interface TileSource {
   bbox: [number, number, number, number];
 }
 
+interface StacLink {
+  rel: string;
+  href: string;
+  method?: string;
+  body?: Record<string, unknown>;
+}
+
+interface StacSearchResponse {
+  features: ExternalStacItem[];
+  context?: {
+    matched?: number;
+    returned?: number;
+  };
+  numberMatched?: number;
+  numberReturned?: number;
+  links?: StacLink[];
+}
+
+interface PaginationState {
+  hasMore: boolean;
+  totalMatched: number;
+  loadedCount: number;
+  isLoadingMore: boolean;
+  nextLink: StacLink | null;
+}
+
+const PaginationOverlay = styled.div`
+  position: absolute;
+  bottom: ${glsp(1)};
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: ${themeVal('color.surface')};
+  padding: ${glsp(0.5, 1)};
+  border-radius: ${themeVal('shape.rounded')};
+  box-shadow: ${themeVal('boxShadow.elevationA')};
+  display: flex;
+  align-items: center;
+  gap: ${glsp(0.5)};
+  font-size: 0.875rem;
+`;
+
 /**
  * Extracts the asset href from a STAC item, preferring S3 alternate if available.
  */
@@ -40,8 +85,7 @@ function getAssetHref(item: ExternalStacItem, assetKey: string): string | null {
 }
 
 /**
- * Hook to fetch STAC items from an external STAC server.
- * Similar to useStacResponse but fetches full item data including assets.
+ * Hook to fetch STAC items from an external STAC server with pagination support.
  */
 function useExternalStacSearch({
   id,
@@ -57,11 +101,32 @@ function useExternalStacSearch({
   date: Date;
   stacApiEndpointToUse: string;
   searchLimit: number;
-}): [
-  ExternalStacItem[],
-  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
-] {
+}): {
+  stacItems: ExternalStacItem[];
+  points: Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null;
+  pagination: PaginationState;
+  loadMore: () => void;
+} {
   const [stacItems, setStacItems] = useState<ExternalStacItem[]>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    hasMore: false,
+    totalMatched: 0,
+    loadedCount: 0,
+    isLoadingMore: false,
+    nextLink: null
+  });
+
+  // Reset when date or collection changes
+  useEffect(() => {
+    setStacItems([]);
+    setPagination({
+      hasMore: false,
+      totalMatched: 0,
+      loadedCount: 0,
+      isLoadingMore: false,
+      nextLink: null
+    });
+  }, [stacCol, date, stacApiEndpointToUse]);
 
   useEffect(() => {
     if (!id || !stacCol) return;
@@ -75,8 +140,6 @@ function useExternalStacSearch({
         const searchUrl = `${stacApiEndpointToUse}/search`;
 
         // Build search payload using standard STAC parameters
-        // Use 'collections' array (universally supported) instead of CQL2 filter for collection
-        // This ensures compatibility with external STAC servers that may use different CQL2 operators
         const payload = {
           collections: [stacCol],
           datetime: `${userTzDate2utcString(
@@ -98,9 +161,7 @@ function useExternalStacSearch({
           /* eslint-enable no-console */
         }
 
-        const responseData = await requestQuickCache<{
-          features: ExternalStacItem[];
-        }>({
+        const responseData = await requestQuickCache<StacSearchResponse>({
           url: searchUrl,
           payload,
           controller
@@ -118,11 +179,32 @@ function useExternalStacSearch({
           /* eslint-enable no-console */
         }
 
-        setStacItems(responseData.features);
+        const features = responseData.features || [];
+        const totalMatched =
+          responseData.context?.matched ||
+          responseData.numberMatched ||
+          features.length;
+        const nextLink = responseData.links?.find((l) => l.rel === 'next');
+
+        setStacItems(features);
+        setPagination({
+          hasMore: !!nextLink,
+          totalMatched,
+          loadedCount: features.length,
+          isLoadingMore: false,
+          nextLink: nextLink || null
+        });
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
       } catch (error) {
         if (!controller.signal.aborted) {
           setStacItems([]);
+          setPagination({
+            hasMore: false,
+            totalMatched: 0,
+            loadedCount: 0,
+            isLoadingMore: false,
+            nextLink: null
+          });
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
         if (LOG)
@@ -147,10 +229,52 @@ function useExternalStacSearch({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, stacCol, date, stacApiEndpointToUse, searchLimit]);
 
+  const loadMore = useCallback(async () => {
+    if (!pagination.nextLink || pagination.isLoadingMore) return;
+
+    setPagination((prev) => ({ ...prev, isLoadingMore: true }));
+
+    try {
+      const controller = new AbortController();
+      let responseData: StacSearchResponse;
+
+      // Handle both GET and POST next links
+      if (pagination.nextLink.method === 'POST' && pagination.nextLink.body) {
+        responseData = await requestQuickCache<StacSearchResponse>({
+          url: pagination.nextLink.href,
+          payload: pagination.nextLink.body,
+          controller
+        });
+      } else {
+        responseData = await requestQuickCache<StacSearchResponse>({
+          url: pagination.nextLink.href,
+          payload: null,
+          controller
+        });
+      }
+
+      const newFeatures = responseData.features || [];
+      const nextLink = responseData.links?.find((l) => l.rel === 'next');
+
+      setStacItems((prev) => [...prev, ...newFeatures]);
+      setPagination((prev) => ({
+        ...prev,
+        hasMore: !!nextLink,
+        loadedCount: prev.loadedCount + newFeatures.length,
+        isLoadingMore: false,
+        nextLink: nextLink || null
+      }));
+    } catch (error) {
+      /* eslint-disable-next-line no-console */
+      console.error('Error loading more items:', error);
+      setPagination((prev) => ({ ...prev, isLoadingMore: false }));
+    }
+  }, [pagination.nextLink, pagination.isLoadingMore]);
+
   // Markers to show where the data is when zoom is low
   const points = useMemo(() => {
     if (!stacItems.length) return null;
-    const pts = stacItems.map((f) => {
+    const points = stacItems.map((f) => {
       const [w, s, e, n] = f.bbox;
       return {
         bounds: [
@@ -161,10 +285,10 @@ function useExternalStacSearch({
       };
     });
 
-    return pts;
+    return points;
   }, [stacItems]);
 
-  return [stacItems, points];
+  return { stacItems, points, pagination, loadMore };
 }
 
 /**
@@ -289,7 +413,7 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const [stacItems, points] = useExternalStacSearch({
+  const { stacItems, points, pagination, loadMore } = useExternalStacSearch({
     id,
     changeStatus,
     stacCol,
@@ -311,9 +435,9 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
 
   // Listen to mouse events on the markers layer
   const onPointsClick = useCallback(
-    (features) => {
-      const b = JSON.parse(features[0].properties.bounds);
-      mapInstance?.fitBounds(b, { padding: FIT_BOUNDS_PADDING });
+    (features: { properties: { bounds: string } }[]) => {
+      const bounds = JSON.parse(features[0].properties.bounds);
+      mapInstance?.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     },
     [mapInstance]
   );
@@ -374,6 +498,20 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
           />
         );
       })}
+      {pagination.hasMore && !hidden && (
+        <PaginationOverlay>
+          <span>
+            Showing {pagination.loadedCount} of {pagination.totalMatched} items
+          </span>
+          <Button
+            size='small'
+            onClick={loadMore}
+            disabled={pagination.isLoadingMore}
+          >
+            {pagination.isLoadingMore ? 'Loading...' : 'Load More'}
+          </Button>
+        </PaginationOverlay>
+      )}
     </>
   );
 }
