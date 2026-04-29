@@ -85,7 +85,7 @@ export function useStacResponse({
 
         setStacCollection(responseData.features);
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
-      } catch (error) {
+      } catch {
         if (!controller.signal.aborted) {
           setStacCollection([]);
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
@@ -97,9 +97,6 @@ export function useStacResponse({
             'color: red;',
             id
           );
-        // Temporarily turning on log for debugging
-        /* eslint-disable-next-line no-console */
-        console.log(error);
         return;
       }
     };
