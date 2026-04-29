@@ -13,6 +13,14 @@ import { ActionStatus, S_SUCCEEDED } from '$utils/status';
 interface RasterPaintLayerProps extends BaseGeneratorParams {
   id: string;
   tileApiEndpoint?: string | string[];
+  /**
+   * If provided, this XYZ tile URL template (e.g.
+   * `https://.../cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png`) is used directly:
+   * no tilejson fetch, source spec uses `tiles: [...]` instead of `url: ...`.
+   * Use this when the tile template is known up-front (e.g. titiler's
+   * `/cog/tiles/...` for per-item COG layers).
+   */
+  tilesTemplate?: string;
   zoomExtent?: number[];
   colorMap?: string | undefined;
   tileParams: Record<string, any>;
@@ -33,6 +41,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
   const {
     id,
     tileApiEndpoint,
+    tilesTemplate,
     tileParams,
     zoomExtent,
     hidden,
@@ -68,35 +77,49 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
 
   useEffect(
     () => {
-      if (!tileApiEndpoint) return;
+      if (!tileApiEndpoint && !tilesTemplate) return;
       const controller = new AbortController();
       async function run() {
         // Create a modified version of the parameters
         const tileParamsAsString = formatTitilerParameter(updatedTileParams);
-        const tileUrl = `${tileApiEndpoint}?${tileParamsAsString}`;
+        const baseUrl = tilesTemplate ?? tileApiEndpoint;
+        const tileUrl = `${baseUrl}?${tileParamsAsString}`;
 
         try {
           let tileUrlMetadata;
-          if (
-            !generatorPrefix.includes('wms') &&
-            !generatorPrefix.includes('wmts')
-          ) {
-            // wms data doesn't have an endpoint for tilejson
-            const tileJsonData = await requestQuickCache<any>({
-              url: tileUrl,
-              method: 'GET',
-              payload: null,
-              controller
-            });
+          let mapSourceParams: Record<string, any>;
 
-            tileUrlMetadata =
-              metadataFormatter &&
-              metadataFormatter(tileJsonData, tileParamsAsString);
+          if (tilesTemplate) {
+            // Tile template is known up-front; skip the tilejson round trip.
+            // Mapbox uses the `tiles` array directly. tileSize: 256 matches
+            // titiler's default tile size.
+            tileUrlMetadata = metadataFormatter
+              ? metadataFormatter(null, tileParamsAsString)
+              : { xyzTileUrl: tileUrl };
+            mapSourceParams = { tiles: [tileUrl], tileSize: 256 };
           } else {
-            tileUrlMetadata =
-              metadataFormatter && metadataFormatter(null, tileParamsAsString);
+            if (
+              !generatorPrefix.includes('wms') &&
+              !generatorPrefix.includes('wmts')
+            ) {
+              // wms data doesn't have an endpoint for tilejson
+              const tileJsonData = await requestQuickCache<any>({
+                url: tileUrl,
+                method: 'GET',
+                payload: null,
+                controller
+              });
+
+              tileUrlMetadata =
+                metadataFormatter &&
+                metadataFormatter(tileJsonData, tileParamsAsString);
+            } else {
+              tileUrlMetadata =
+                metadataFormatter &&
+                metadataFormatter(null, tileParamsAsString);
+            }
+            mapSourceParams = sourceParamFormatter(tileUrl);
           }
-          const mapSourceParams = sourceParamFormatter(tileUrl);
 
           const rasterSource: RasterSourceSpecification = {
             type: 'raster',
@@ -154,6 +177,7 @@ export function RasterPaintLayer(props: RasterPaintLayerProps) {
       id,
       minZoom,
       tileApiEndpoint,
+      tilesTemplate,
       haveTileParamsChanged,
       generatorParams,
       colorMap,

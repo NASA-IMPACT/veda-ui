@@ -1,0 +1,51 @@
+---
+id: landsat-element84
+name: 'Landsat C2 L2 (Element84 Earth Search)'
+featured: true
+sourceExclusive: Mock
+description: "Atmospherically corrected global Landsat Collection 2 Level-2 data from Element84 Earth Search."
+media:
+  src: ::file ./img-placeholder-3.jpg
+  alt: Landsat satellite imagery placeholder
+taxonomy:
+  - name: Source
+    values:
+      - Mock
+  - name: Topics
+    values:
+      - Agriculture
+layers:
+  - id: landsat-c2-l2-element84
+    stacCol: landsat-c2-l2
+    stacApiEndpoint: https://earth-search.aws.element84.com/v1
+    tileApiEndpoint: https://openveda.cloud/api/raster
+    name: Landsat Collection 2 Level-2
+    type: raster
+    tilingMode: cog
+    time_density: day
+    description: Atmospherically corrected global Landsat Collection 2 Level-2 data from Element84 Earth Search.
+    zoomExtent:
+      - 7
+      - 20
+    searchLimit: 100
+    sourceParams:
+      assets: red
+      colormap_name: viridis
+      rescale:
+        - 0
+        - 20000
+    legend:
+      type: gradient
+      min: "0"
+      max: "20000"
+      stops:
+        - "#440154"
+        - "#3b528b"
+        - "#21918c"
+        - "#5ec962"
+        - "#fde725"
+---
+
+Test dataset for the `raster` type with `tilingMode: cog` using Element84 Earth Search STAC API.
+
+Landsat Collection 2 Level-2 includes atmospherically corrected surface reflectance data from Landsat 4-9 satellites.

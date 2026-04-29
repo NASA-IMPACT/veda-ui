@@ -8,7 +8,8 @@ declare module 'veda' {
   // ///////////////////////////////////////////////////////////////////////////
   //  Datasets                                                                //
   // ///////////////////////////////////////////////////////////////////////////
-  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms';
+  type DatasetLayerType = 'raster' | 'vector' | 'zarr' | 'cmr' | 'wms' | 'wmts';
+  type RasterTilingMode = 'mosaic' | 'cog';
 
   //
   // Dataset Layers
@@ -81,6 +82,26 @@ declare module 'veda' {
     };
     time_density?: TimeDensity;
     info?: LayerInfo;
+    /**
+     * Maximum number of STAC items returned per /search request.
+     *
+     * In `tilingMode: 'cog'` this directly caps how many per-item COG layers
+     * render at once. In `tilingMode: 'mosaic'` (default) tile rendering uses
+     * the server-side mosaic register and is NOT capped by this value; it
+     * only bounds the footprints we draw and the pagination overlay UX.
+     *
+     * Defaults to 500. Some STAC servers return errors for very large limits;
+     * Element84 Earth Search, for example, returns 502 above ~100.
+     */
+    searchLimit?: number;
+    /**
+     * `mosaic` (default): titiler `/searches/register` produces one tilejson
+     * for the whole filter (used by VEDA's STAC + raster API).
+     * `cog`: titiler `/cog/tiles` is invoked per STAC item, with `url` set to
+     * the asset href selected via `sourceParams.assets`. Use this for external
+     * STAC servers that don't expose VEDA's mosaic register endpoint.
+     */
+    tilingMode?: RasterTilingMode;
   }
 
   // TODO: Complete once known
