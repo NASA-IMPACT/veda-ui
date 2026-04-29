@@ -24,7 +24,7 @@ const LOG = process.env.NODE_ENV !== 'production' ? true : false;
 
 interface TileSource {
   id: string;
-  tileUrl: string;
+  tilesTemplate: string;
   bbox: [number, number, number, number];
   assetHref: string;
 }
@@ -331,15 +331,15 @@ function useCogTileSources({
             return acc;
           }
 
-          // Build the COG tile URL
-          // titiler COG endpoint: /cog/tiles/{tileMatrixSetId}/{z}/{x}/{y}.png
-          const tileUrl = `${tileApiEndpointToUse}/cog/WebMercatorQuad/tilejson.json`;
+          // Use titiler's COG tile template directly so Mapbox can fetch
+          // tiles without a tilejson round-trip per item.
+          const tilesTemplate = `${tileApiEndpointToUse}/cog/tiles/WebMercatorQuad/{z}/{x}/{y}.png`;
 
           return [
             ...acc,
             {
               id: `${id}-item-${i}`,
-              tileUrl,
+              tilesTemplate,
               bbox: item.bbox,
               assetHref
             }
@@ -471,7 +471,7 @@ export function RasterCogTimeseries(props: RasterCogTimeseriesProps) {
           <RasterPaintLayer
             key={source.id}
             id={source.id}
-            tileApiEndpoint={source.tileUrl}
+            tilesTemplate={source.tilesTemplate}
             tileParams={{
               url: source.assetHref,
               ...tileParams
@@ -484,11 +484,6 @@ export function RasterCogTimeseries(props: RasterCogTimeseriesProps) {
             reScale={reScale}
             generatorPrefix='raster-cog-timeseries'
             onStatusChange={changeStatus}
-            metadataFormatter={(tilejsonData) => {
-              return {
-                xyzTileUrl: tilejsonData?.tiles[0]
-              };
-            }}
           />
         );
       })}
