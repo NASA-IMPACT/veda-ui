@@ -1,17 +1,15 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import styled from 'styled-components';
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
-import { Button } from '@devseed-ui/button';
-import { glsp, themeVal } from '@devseed-ui/theme-provider';
 
-import { ExternalStacTimeseriesProps, ExternalStacItem } from '../types';
+import { RasterCogTimeseriesProps, StacItemWithAssets } from '../types';
 import { FIT_BOUNDS_PADDING, getMergedBBox, requestQuickCache } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
 import useMaps from '../hooks/use-maps';
 import FootprintsLayer from './footprints-layer';
 import { useRequestStatus, STATUS_KEY } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
+import PaginationOverlay from './pagination-overlay';
 import { userTzDate2utcString } from '$utils/date';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
@@ -32,7 +30,7 @@ interface StacLink {
 }
 
 interface StacSearchResponse {
-  features: ExternalStacItem[];
+  features: StacItemWithAssets[];
   context?: {
     matched?: number;
     returned?: number;
@@ -50,26 +48,13 @@ interface PaginationState {
   nextLink: StacLink | null;
 }
 
-const PaginationOverlay = styled.div`
-  position: absolute;
-  bottom: ${glsp(1)};
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  background: ${themeVal('color.surface')};
-  padding: ${glsp(0.5, 1)};
-  border-radius: ${themeVal('shape.rounded')};
-  box-shadow: ${themeVal('boxShadow.elevationA')};
-  display: flex;
-  align-items: center;
-  gap: ${glsp(0.5)};
-  font-size: 0.875rem;
-`;
-
 /**
  * Extracts the asset href from a STAC item, preferring S3 alternate if available.
  */
-function getAssetHref(item: ExternalStacItem, assetKey: string): string | null {
+function getAssetHref(
+  item: StacItemWithAssets,
+  assetKey: string
+): string | null {
   const asset = item.assets[assetKey];
   if (!asset) {
     return null;
@@ -84,9 +69,9 @@ function getAssetHref(item: ExternalStacItem, assetKey: string): string | null {
 }
 
 /**
- * Hook to fetch STAC items from an external STAC server with pagination support.
+ * Hook to fetch STAC items from a STAC server with pagination support.
  */
-function useExternalStacSearch({
+function useStacItemsSearch({
   id,
   changeStatus,
   stacCol,
@@ -101,15 +86,15 @@ function useExternalStacSearch({
   stacApiEndpointToUse: string;
   searchLimit: number;
 }): {
-  stacItems: ExternalStacItem[];
+  stacItems: StacItemWithAssets[];
   footprints: Array<{
     bounds: [[number, number], [number, number]];
-    geometry?: ExternalStacItem['geometry'];
+    geometry?: StacItemWithAssets['geometry'];
   }> | null;
   pagination: PaginationState;
   loadMore: () => void;
 } {
-  const [stacItems, setStacItems] = useState<ExternalStacItem[]>([]);
+  const [stacItems, setStacItems] = useState<StacItemWithAssets[]>([]);
   const [pagination, setPagination] = useState<PaginationState>({
     hasMore: false,
     totalMatched: 0,
@@ -153,7 +138,7 @@ function useExternalStacSearch({
         if (LOG) {
           /* eslint-disable no-console */
           console.groupCollapsed(
-            'ExternalStacTimeseries %cLoading STAC items',
+            'RasterCogTimeseries %cLoading STAC items',
             'color: orange;',
             id
           );
@@ -172,7 +157,7 @@ function useExternalStacSearch({
         if (LOG) {
           /* eslint-disable no-console */
           console.groupCollapsed(
-            'ExternalStacTimeseries %cReceived STAC items',
+            'RasterCogTimeseries %cReceived STAC items',
             'color: green;',
             id
           );
@@ -212,7 +197,7 @@ function useExternalStacSearch({
         if (LOG)
           /* eslint-disable-next-line no-console */
           console.log(
-            'ExternalStacTimeseries %cAborted STAC search',
+            'RasterCogTimeseries %cAborted STAC search',
             'color: red;',
             id
           );
@@ -294,7 +279,7 @@ function useExternalStacSearch({
 /**
  * Hook to build COG tile sources from STAC items.
  */
-function useExternalStacTileSources({
+function useCogTileSources({
   id,
   stacItems,
   tileApiEndpointToUse,
@@ -302,7 +287,7 @@ function useExternalStacTileSources({
   changeStatus
 }: {
   id: string;
-  stacItems: ExternalStacItem[];
+  stacItems: StacItemWithAssets[];
   tileApiEndpointToUse: string;
   assetKey: string;
   changeStatus: (params: { status: string; context: STATUS_KEY }) => void;
@@ -326,7 +311,7 @@ function useExternalStacTileSources({
             if (LOG) {
               /* eslint-disable-next-line no-console */
               console.warn(
-                `ExternalStacTimeseries: Asset '${assetKey}' not found in item ${item.id}`
+                `RasterCogTimeseries: Asset '${assetKey}' not found in item ${item.id}`
               );
             }
             return acc;
@@ -351,7 +336,7 @@ function useExternalStacTileSources({
       if (LOG) {
         /* eslint-disable no-console */
         console.groupCollapsed(
-          'ExternalStacTimeseries %cBuilt tile sources',
+          'RasterCogTimeseries %cBuilt tile sources',
           'color: green;',
           id
         );
@@ -365,7 +350,7 @@ function useExternalStacTileSources({
     } catch (error) {
       /* eslint-disable-next-line no-console */
       console.error(
-        'ExternalStacTimeseries: Error building tile sources',
+        'RasterCogTimeseries: Error building tile sources',
         error
       );
       setTileSources([]);
@@ -380,7 +365,7 @@ function useExternalStacTileSources({
 // Default search limit for STAC search
 const DEFAULT_SEARCH_LIMIT = 500;
 
-export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
+export function RasterCogTimeseries(props: RasterCogTimeseriesProps) {
   const {
     id,
     stacCol,
@@ -413,21 +398,19 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const { stacItems, footprints, pagination, loadMore } = useExternalStacSearch(
-    {
-      id,
-      changeStatus,
-      stacCol,
-      date,
-      stacApiEndpointToUse,
-      searchLimit
-    }
-  );
+  const { stacItems, footprints, pagination, loadMore } = useStacItemsSearch({
+    id,
+    changeStatus,
+    stacCol,
+    date,
+    stacApiEndpointToUse,
+    searchLimit
+  });
 
   // Get asset key from sourceParams for tile params
   const assetKey = sourceParams?.assets || 'cog_default';
 
-  const tileSources = useExternalStacTileSources({
+  const tileSources = useCogTileSources({
     id,
     stacItems,
     tileApiEndpointToUse,
@@ -493,7 +476,7 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
             colorMap={colorMap}
             generatorOrder={generatorOrder}
             reScale={reScale}
-            generatorPrefix='external-stac-timeseries'
+            generatorPrefix='raster-cog-timeseries'
             onStatusChange={changeStatus}
             metadataFormatter={(tilejsonData) => {
               return {
@@ -504,18 +487,12 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
         );
       })}
       {pagination.hasMore && !hidden && (
-        <PaginationOverlay>
-          <span>
-            Showing {pagination.loadedCount} of {pagination.totalMatched} items
-          </span>
-          <Button
-            size='small'
-            onClick={loadMore}
-            disabled={pagination.isLoadingMore}
-          >
-            {pagination.isLoadingMore ? 'Loading...' : 'Load More'}
-          </Button>
-        </PaginationOverlay>
+        <PaginationOverlay
+          loadedCount={pagination.loadedCount}
+          totalMatched={pagination.totalMatched}
+          isLoadingMore={pagination.isLoadingMore}
+          onLoadMore={loadMore}
+        />
       )}
     </>
   );

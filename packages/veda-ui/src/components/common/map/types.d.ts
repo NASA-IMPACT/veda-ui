@@ -68,6 +68,7 @@ export interface RasterTimeseriesProps extends BaseTimeseriesProps {
   bounds?: number[];
   isPositionSet?: boolean;
   envApiStacEndpoint: string;
+  searchLimit?: number;
 }
 
 interface AssetUrlReplacement {
@@ -79,13 +80,13 @@ export interface CMRTimeseriesProps extends BaseTimeseriesProps {
   assetUrlReplacements?: AssetUrlReplacement;
 }
 
-export interface ExternalStacTimeseriesProps extends BaseTimeseriesProps {
+export interface RasterCogTimeseriesProps extends BaseTimeseriesProps {
   bounds?: number[];
   isPositionSet?: boolean;
   searchLimit?: number;
 }
 
-export interface ExternalStacItem {
+export interface StacItemWithAssets {
   id: string;
   bbox: [number, number, number, number];
   geometry?: Polygon;

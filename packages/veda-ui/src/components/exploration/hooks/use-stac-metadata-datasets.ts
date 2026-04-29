@@ -96,7 +96,8 @@ export async function fetchStacDatasetById(
   dataset: TimelineDataset | VizDataset,
   envApiStacEndpoint: string
 ): Promise<StacDatasetData> {
-  const { type, stacCol, stacApiEndpoint, time_density } = dataset.data;
+  const { type, stacCol, stacApiEndpoint, time_density, tilingMode } =
+    dataset.data;
 
   const stacApiEndpointToUse = stacApiEndpoint ?? envApiStacEndpoint;
 
@@ -166,9 +167,10 @@ export async function fetchStacDatasetById(
       isPeriodic: true,
       domain: [domainStart, normalized[1]]
     };
-  } else if (type === 'external-stac') {
-    // External STAC servers may have different metadata structures
-    // Use time_density from MDX config, and normalize domain with null handling
+  } else if (type === 'raster' && tilingMode === 'cog') {
+    // External STAC servers used with COG tiling may have different metadata
+    // structures. Use time_density from MDX config, and normalize domain with
+    // null handling.
     const domain = data.summaries?.datetime?.[0]
       ? data.summaries.datetime
       : data.extent?.temporal?.interval?.[0];

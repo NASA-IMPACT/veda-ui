@@ -11,8 +11,9 @@ export type DatasetLayerType =
   | 'zarr'
   | 'cmr'
   | 'wms'
-  | 'wmts'
-  | 'external-stac';
+  | 'wmts';
+
+export type RasterTilingMode = 'mosaic' | 'cog';
 
 //
 // Dataset Layers
@@ -94,6 +95,7 @@ export interface DatasetLayer extends DatasetLayerCommonProps {
   time_density?: TimeDensity;
   info?: LayerInfo;
   searchLimit?: number;
+  tilingMode?: RasterTilingMode;
 }
 // A normalized compare layer is the result after the compare definition is
 // resolved from DatasetLayerCompareSTAC or DatasetLayerCompareInternal. The

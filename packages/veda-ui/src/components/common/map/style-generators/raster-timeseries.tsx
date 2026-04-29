@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { LngLatBoundsLike } from 'mapbox-gl';
 import { RasterTimeseriesProps, StacFeature } from '../types';
 import {
   FIT_BOUNDS_PADDING,
@@ -11,28 +10,88 @@ import {
 import useFitBbox from '../hooks/use-fit-bbox';
 import useMaps from '../hooks/use-maps';
 
-import PointsLayer from './points-layer';
+import FootprintsLayer from './footprints-layer';
 import { useRequestStatus, STATUS_KEY } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
+import PaginationOverlay from './pagination-overlay';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
 const LOG = process.env.NODE_ENV !== 'production' ? true : false;
+
+// Default search limit for STAC search
+const DEFAULT_SEARCH_LIMIT = 500;
+
+interface StacLink {
+  rel: string;
+  href: string;
+  method?: string;
+  body?: Record<string, unknown>;
+}
+
+interface StacSearchResponse {
+  features: StacFeature[];
+  context?: {
+    matched?: number;
+    returned?: number;
+  };
+  numberMatched?: number;
+  numberReturned?: number;
+  links?: StacLink[];
+}
+
+interface PaginationState {
+  hasMore: boolean;
+  totalMatched: number;
+  loadedCount: number;
+  isLoadingMore: boolean;
+  nextLink: StacLink | null;
+}
 
 export function useStacResponse({
   id,
   changeStatus,
   stacCol,
   date,
-  stacApiEndpointToUse
-}): [
-  StacFeature[],
-  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
-] {
+  stacApiEndpointToUse,
+  searchLimit
+}: {
+  id: string;
+  changeStatus: (params: { status: string; context: STATUS_KEY }) => void;
+  stacCol: string;
+  date: Date;
+  stacApiEndpointToUse: string;
+  searchLimit: number;
+}): {
+  stacCollection: StacFeature[];
+  footprints: Array<{ bounds: [[number, number], [number, number]] }> | null;
+  pagination: PaginationState;
+  loadMore: () => void;
+} {
   //
   // Load stac collection features
   //
   const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
+  const [pagination, setPagination] = useState<PaginationState>({
+    hasMore: false,
+    totalMatched: 0,
+    loadedCount: 0,
+    isLoadingMore: false,
+    nextLink: null
+  });
+
+  // Reset when date or collection changes
+  useEffect(() => {
+    setStacCollection([]);
+    setPagination({
+      hasMore: false,
+      totalMatched: 0,
+      loadedCount: 0,
+      isLoadingMore: false,
+      nextLink: null
+    });
+  }, [stacCol, date, stacApiEndpointToUse]);
+
   useEffect(() => {
     if (!id || !stacCol) return;
 
@@ -44,7 +103,7 @@ export function useStacResponse({
         const payload = {
           'filter-lang': 'cql2-json',
           filter: getFilterPayload(date, stacCol),
-          limit: 500,
+          limit: searchLimit,
           fields: {
             include: ['bbox'],
             exclude: ['collection', 'links']
@@ -63,9 +122,7 @@ export function useStacResponse({
           /* eslint-enable no-console */
         }
 
-        const responseData = await requestQuickCache<{
-          features: StacFeature[];
-        }>({
+        const responseData = await requestQuickCache<StacSearchResponse>({
           url: `${stacApiEndpointToUse}/search`,
           payload,
           controller
@@ -83,11 +140,32 @@ export function useStacResponse({
           /* eslint-enable no-console */
         }
 
-        setStacCollection(responseData.features);
+        const features = responseData.features || [];
+        const totalMatched =
+          responseData.context?.matched ||
+          responseData.numberMatched ||
+          features.length;
+        const nextLink = responseData.links?.find((l) => l.rel === 'next');
+
+        setStacCollection(features);
+        setPagination({
+          hasMore: !!nextLink,
+          totalMatched,
+          loadedCount: features.length,
+          isLoadingMore: false,
+          nextLink: nextLink || null
+        });
         changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
       } catch (error) {
         if (!controller.signal.aborted) {
           setStacCollection([]);
+          setPagination({
+            hasMore: false,
+            totalMatched: 0,
+            loadedCount: 0,
+            isLoadingMore: false,
+            nextLink: null
+          });
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
         if (LOG)
@@ -108,28 +186,67 @@ export function useStacResponse({
       controller.abort();
       changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
     };
-  }, [id, changeStatus, stacCol, date, stacApiEndpointToUse]);
+  }, [id, changeStatus, stacCol, date, stacApiEndpointToUse, searchLimit]);
+
+  const loadMore = useCallback(async () => {
+    if (!pagination.nextLink || pagination.isLoadingMore) return;
+
+    setPagination((prev) => ({ ...prev, isLoadingMore: true }));
+
+    try {
+      const controller = new AbortController();
+      let responseData: StacSearchResponse;
+
+      // Handle both GET and POST next links
+      if (pagination.nextLink.method === 'POST' && pagination.nextLink.body) {
+        responseData = await requestQuickCache<StacSearchResponse>({
+          url: pagination.nextLink.href,
+          payload: pagination.nextLink.body,
+          controller
+        });
+      } else {
+        responseData = await requestQuickCache<StacSearchResponse>({
+          url: pagination.nextLink.href,
+          payload: null,
+          controller
+        });
+      }
+
+      const newFeatures = responseData.features || [];
+      const nextLink = responseData.links?.find((l) => l.rel === 'next');
+
+      setStacCollection((prev) => [...prev, ...newFeatures]);
+      setPagination((prev) => ({
+        ...prev,
+        hasMore: !!nextLink,
+        loadedCount: prev.loadedCount + newFeatures.length,
+        isLoadingMore: false,
+        nextLink: nextLink || null
+      }));
+    } catch (error) {
+      /* eslint-disable-next-line no-console */
+      console.error('Error loading more items:', error);
+      setPagination((prev) => ({ ...prev, isLoadingMore: false }));
+    }
+  }, [pagination.nextLink, pagination.isLoadingMore]);
 
   //
-  // Markers to show where the data is when zoom is low
+  // Footprints to show where the data is when zoom is low
   //
-  const points = useMemo(() => {
+  const footprints = useMemo(() => {
     if (!stacCollection.length) return null;
-    const points = stacCollection.map((f) => {
+    return stacCollection.map((f) => {
       const [w, s, e, n] = f.bbox;
       return {
         bounds: [
           [w, s],
           [e, n]
-        ] as LngLatBoundsLike,
-        center: [(w + e) / 2, (s + n) / 2] as [number, number]
+        ] as [[number, number], [number, number]]
       };
     });
-
-    return points;
   }, [stacCollection]);
 
-  return [stacCollection, points];
+  return { stacCollection, footprints, pagination, loadMore };
 }
 
 function useMosaicUrl({
@@ -257,7 +374,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     colorMap,
     reScale,
     envApiStacEndpoint,
-    envApiRasterEndpoint
+    envApiRasterEndpoint,
+    searchLimit = DEFAULT_SEARCH_LIMIT
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -271,12 +389,13 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const [stacCollection, points] = useStacResponse({
+  const { stacCollection, footprints, pagination, loadMore } = useStacResponse({
     id,
     changeStatus,
     stacCol,
     date,
-    stacApiEndpointToUse
+    stacApiEndpointToUse,
+    searchLimit
   });
 
   const [mosaicUrl] = useMosaicUrl({
@@ -289,9 +408,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   });
 
   //
-  // Listen to mouse events on the markers layer
+  // Listen to mouse events on the footprints layer
   //
-  const onPointsClick = useCallback(
+  const onFootprintsClick = useCallback(
     (features) => {
       const bounds = JSON.parse(features[0].properties.bounds);
       mapInstance?.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
@@ -310,12 +429,15 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
   return (
     <>
-      {points && (
-        <PointsLayer
+      {footprints && (
+        <FootprintsLayer
           id={id}
-          points={points}
+          footprints={footprints}
           zoomExtent={zoomExtent}
-          onPointsClick={onPointsClick}
+          hidden={hidden}
+          opacity={opacity}
+          generatorOrder={generatorOrder}
+          onFootprintsClick={onFootprintsClick}
         />
       )}
       {mosaicUrl && (
@@ -341,6 +463,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
             };
           }}
+        />
+      )}
+      {pagination.hasMore && !hidden && (
+        <PaginationOverlay
+          loadedCount={pagination.loadedCount}
+          totalMatched={pagination.totalMatched}
+          isLoadingMore={pagination.isLoadingMore}
+          onLoadMore={loadMore}
         />
       )}
     </>
