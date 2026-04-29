@@ -20,7 +20,8 @@ layers:
     stacApiEndpoint: https://earth-search.aws.element84.com/v1
     tileApiEndpoint: https://openveda.cloud/api/raster
     name: Sentinel-2 Level-2A
-    type: external-stac
+    type: raster
+    tilingMode: cog
     time_density: day
     description: Global Sentinel-2 Level-2A surface reflectance data from Element84 Earth Search.
     zoomExtent:
@@ -45,6 +46,6 @@ layers:
         - "#fde725"
 ---
 
-Test dataset for the `external-stac` data type using Element84 Earth Search STAC API.
+Test dataset for the `raster` type with `tilingMode: cog` using Element84 Earth Search STAC API.
 
 Sentinel-2 Level-2A provides atmospherically corrected surface reflectance data from the Sentinel-2 constellation.

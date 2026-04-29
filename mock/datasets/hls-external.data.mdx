@@ -20,7 +20,8 @@ layers:
     stacApiEndpoint: https://cmr.earthdata.nasa.gov/cloudstac/LPCLOUD
     tileApiEndpoint: https://openveda.cloud/api/raster
     name: HLS Landsat 30m
-    type: external-stac
+    type: raster
+    tilingMode: cog
     time_density: day
     description: Harmonized Landsat Sentinel-2 (HLS) Landsat Operational Land Imager Surface Reflectance and TOA Brightness Daily Global 30m v2.0.
     zoomExtent:
@@ -44,6 +45,6 @@ layers:
         - "#fde725"
 ---
 
-Test dataset for the `external-stac` data type using NASA CMR STAC (LPCLOUD).
+Test dataset for the `raster` type with `tilingMode: cog` using NASA CMR STAC (LPCLOUD).
 
 HLS provides consistent surface reflectance data from a virtual constellation of Landsat and Sentinel-2 sensors.

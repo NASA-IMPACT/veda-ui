@@ -20,7 +20,8 @@ layers:
     stacApiEndpoint: https://earth-search.aws.element84.com/v1
     tileApiEndpoint: https://openveda.cloud/api/raster
     name: Landsat Collection 2 Level-2
-    type: external-stac
+    type: raster
+    tilingMode: cog
     time_density: day
     description: Atmospherically corrected global Landsat Collection 2 Level-2 data from Element84 Earth Search.
     zoomExtent:
@@ -45,6 +46,6 @@ layers:
         - "#fde725"
 ---
 
-Test dataset for the `external-stac` data type using Element84 Earth Search STAC API.
+Test dataset for the `raster` type with `tilingMode: cog` using Element84 Earth Search STAC API.
 
 Landsat Collection 2 Level-2 includes atmospherically corrected surface reflectance data from Landsat 4-9 satellites.
