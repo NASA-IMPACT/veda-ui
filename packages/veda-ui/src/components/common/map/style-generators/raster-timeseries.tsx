@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { RasterTimeseriesProps, StacFeature } from '../types';
 import {
   FIT_BOUNDS_PADDING,
@@ -19,7 +25,12 @@ import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 // Whether or not to print the request logs.
 const LOG = process.env.NODE_ENV !== 'production' ? true : false;
 
-// Default search limit for STAC search
+// Default search limit for STAC search.
+// Note: in mosaic mode this only bounds the items we *fetch* for footprints
+// and pagination UX. The rendered tiles come from the server-side mosaic
+// register, which uses the same CQL filter and therefore covers all matching
+// items regardless of `searchLimit`. Update the JSDoc on `searchLimit` in the
+// dataset config if this behavior changes.
 const DEFAULT_SEARCH_LIMIT = 500;
 
 interface StacLink {
@@ -79,9 +90,13 @@ export function useStacResponse({
     isLoadingMore: false,
     nextLink: null
   });
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
 
-  // Reset when date or collection changes
+  // Reset when date or collection changes. Also abort any in-flight loadMore
+  // request so its setState calls don't land after the dataset has changed.
   useEffect(() => {
+    loadMoreControllerRef.current?.abort();
+    loadMoreControllerRef.current = null;
     setStacCollection([]);
     setPagination({
       hasMore: false,
@@ -168,16 +183,16 @@ export function useStacResponse({
           });
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
-        if (LOG)
-          /* eslint-disable-next-line no-console */
+        if (LOG) {
+          /* eslint-disable no-console */
           console.log(
             'RasterTimeseries %cAborted STAC features',
             'color: red;',
             id
           );
-        // Temporarily turning on log for debugging
-        /* eslint-disable-next-line no-console */
-        console.log(error);
+          console.log(error);
+          /* eslint-enable no-console */
+        }
         return;
       }
     };
@@ -191,26 +206,23 @@ export function useStacResponse({
   const loadMore = useCallback(async () => {
     if (!pagination.nextLink || pagination.isLoadingMore) return;
 
+    const controller = new AbortController();
+    loadMoreControllerRef.current?.abort();
+    loadMoreControllerRef.current = controller;
+
     setPagination((prev) => ({ ...prev, isLoadingMore: true }));
 
     try {
-      const controller = new AbortController();
-      let responseData: StacSearchResponse;
+      const isPost =
+        pagination.nextLink.method === 'POST' && !!pagination.nextLink.body;
+      const responseData = await requestQuickCache<StacSearchResponse>({
+        url: pagination.nextLink.href,
+        method: isPost ? 'post' : 'get',
+        payload: isPost ? pagination.nextLink.body : null,
+        controller
+      });
 
-      // Handle both GET and POST next links
-      if (pagination.nextLink.method === 'POST' && pagination.nextLink.body) {
-        responseData = await requestQuickCache<StacSearchResponse>({
-          url: pagination.nextLink.href,
-          payload: pagination.nextLink.body,
-          controller
-        });
-      } else {
-        responseData = await requestQuickCache<StacSearchResponse>({
-          url: pagination.nextLink.href,
-          payload: null,
-          controller
-        });
-      }
+      if (controller.signal.aborted) return;
 
       const newFeatures = responseData.features || [];
       const nextLink = responseData.links?.find((l) => l.rel === 'next');
@@ -224,9 +236,14 @@ export function useStacResponse({
         nextLink: nextLink || null
       }));
     } catch (error) {
+      if (controller.signal.aborted) return;
       /* eslint-disable-next-line no-console */
       console.error('Error loading more items:', error);
       setPagination((prev) => ({ ...prev, isLoadingMore: false }));
+    } finally {
+      if (loadMoreControllerRef.current === controller) {
+        loadMoreControllerRef.current = null;
+      }
     }
   }, [pagination.nextLink, pagination.isLoadingMore]);
 
@@ -261,6 +278,10 @@ function useMosaicUrl({
   // Tiles
   //
   const [mosaicUrl, setMosaicUrl] = useState<string | undefined>(undefined);
+  // Track the count we registered for. Pagination only grows stacCollection;
+  // its filter (date+collection) is unchanged, so a re-register would just
+  // produce a duplicate request and cause the mapbox source to flicker.
+  const registeredForCountRef = useRef<number>(0);
   useEffect(() => {
     if (!id || !stacCol) return;
 
@@ -269,7 +290,16 @@ function useMosaicUrl({
     // though if a search returns no data, that date should not be available for
     // the dataset - may be a case of bad configuration.
     if (!stacCollection.length) {
+      registeredForCountRef.current = 0;
       setMosaicUrl(undefined);
+      return;
+    }
+
+    // Skip re-registration when stacCollection only grew via pagination.
+    if (
+      registeredForCountRef.current > 0 &&
+      stacCollection.length > registeredForCountRef.current
+    ) {
       return;
     }
 
@@ -304,6 +334,7 @@ function useMosaicUrl({
         setMosaicUrl(
           mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
         );
+        registeredForCountRef.current = stacCollection.length;
 
         /* eslint-disable no-console */
         if (LOG) {
@@ -352,6 +383,9 @@ function useMosaicUrl({
     // fires and `stacCollection` changes, causing this hook to run again. This
     // resulted in a race condition when adding the source to the map leading to
     // an error.
+    // Note: pagination also mutates `stacCollection` (appending to it) but
+    // does not require re-registration; that case is handled inside the effect
+    // via `registeredForCountRef`.
   ]);
   return [mosaicUrl];
 }

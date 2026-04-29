@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
 
@@ -20,6 +26,7 @@ interface TileSource {
   id: string;
   tileUrl: string;
   bbox: [number, number, number, number];
+  assetHref: string;
 }
 
 interface StacLink {
@@ -102,9 +109,13 @@ function useStacItemsSearch({
     isLoadingMore: false,
     nextLink: null
   });
+  const loadMoreControllerRef = useRef<AbortController | null>(null);
 
-  // Reset when date or collection changes
+  // Reset when date or collection changes. Also abort any in-flight loadMore
+  // request so its setState calls don't land after the dataset has changed.
   useEffect(() => {
+    loadMoreControllerRef.current?.abort();
+    loadMoreControllerRef.current = null;
     setStacItems([]);
     setPagination({
       hasMore: false,
@@ -194,15 +205,16 @@ function useStacItemsSearch({
           });
           changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
         }
-        if (LOG)
-          /* eslint-disable-next-line no-console */
+        if (LOG) {
+          /* eslint-disable no-console */
           console.log(
             'RasterCogTimeseries %cAborted STAC search',
             'color: red;',
             id
           );
-        /* eslint-disable-next-line no-console */
-        console.log(error);
+          console.log(error);
+          /* eslint-enable no-console */
+        }
         return;
       }
     };
@@ -219,26 +231,23 @@ function useStacItemsSearch({
   const loadMore = useCallback(async () => {
     if (!pagination.nextLink || pagination.isLoadingMore) return;
 
+    const controller = new AbortController();
+    loadMoreControllerRef.current?.abort();
+    loadMoreControllerRef.current = controller;
+
     setPagination((prev) => ({ ...prev, isLoadingMore: true }));
 
     try {
-      const controller = new AbortController();
-      let responseData: StacSearchResponse;
+      const isPost =
+        pagination.nextLink.method === 'POST' && !!pagination.nextLink.body;
+      const responseData = await requestQuickCache<StacSearchResponse>({
+        url: pagination.nextLink.href,
+        method: isPost ? 'post' : 'get',
+        payload: isPost ? pagination.nextLink.body : null,
+        controller
+      });
 
-      // Handle both GET and POST next links
-      if (pagination.nextLink.method === 'POST' && pagination.nextLink.body) {
-        responseData = await requestQuickCache<StacSearchResponse>({
-          url: pagination.nextLink.href,
-          payload: pagination.nextLink.body,
-          controller
-        });
-      } else {
-        responseData = await requestQuickCache<StacSearchResponse>({
-          url: pagination.nextLink.href,
-          payload: null,
-          controller
-        });
-      }
+      if (controller.signal.aborted) return;
 
       const newFeatures = responseData.features || [];
       const nextLink = responseData.links?.find((l) => l.rel === 'next');
@@ -252,9 +261,14 @@ function useStacItemsSearch({
         nextLink: nextLink || null
       }));
     } catch (error) {
+      if (controller.signal.aborted) return;
       /* eslint-disable-next-line no-console */
       console.error('Error loading more items:', error);
       setPagination((prev) => ({ ...prev, isLoadingMore: false }));
+    } finally {
+      if (loadMoreControllerRef.current === controller) {
+        loadMoreControllerRef.current = null;
+      }
     }
   }, [pagination.nextLink, pagination.isLoadingMore]);
 
@@ -326,7 +340,8 @@ function useCogTileSources({
             {
               id: `${id}-item-${i}`,
               tileUrl,
-              bbox: item.bbox
+              bbox: item.bbox,
+              assetHref
             }
           ];
         },
@@ -349,10 +364,7 @@ function useCogTileSources({
       changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.Layer });
     } catch (error) {
       /* eslint-disable-next-line no-console */
-      console.error(
-        'RasterCogTimeseries: Error building tile sources',
-        error
-      );
+      console.error('RasterCogTimeseries: Error building tile sources', error);
       setTileSources([]);
       changeStatus({ status: S_FAILED, context: STATUS_KEY.Layer });
     }
@@ -454,20 +466,14 @@ export function RasterCogTimeseries(props: RasterCogTimeseriesProps) {
           onFootprintsClick={onFootprintsClick}
         />
       )}
-      {tileSources.map((source, index) => {
-        // Get the asset href for this item to pass to the COG endpoint
-        const item = stacItems[index];
-        const assetHref = item ? getAssetHref(item, assetKey) : null;
-
-        if (!assetHref) return null;
-
+      {tileSources.map((source) => {
         return (
           <RasterPaintLayer
             key={source.id}
             id={source.id}
             tileApiEndpoint={source.tileUrl}
             tileParams={{
-              url: assetHref,
+              url: source.assetHref,
               ...tileParams
             }}
             zoomExtent={zoomExtent}
