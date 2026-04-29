@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { LngLatBoundsLike } from 'mapbox-gl';
 import styled from 'styled-components';
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
@@ -10,7 +9,7 @@ import { ExternalStacTimeseriesProps, ExternalStacItem } from '../types';
 import { FIT_BOUNDS_PADDING, getMergedBBox, requestQuickCache } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
 import useMaps from '../hooks/use-maps';
-import PointsLayer from './points-layer';
+import FootprintsLayer from './footprints-layer';
 import { useRequestStatus, STATUS_KEY } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
 import { userTzDate2utcString } from '$utils/date';
@@ -103,7 +102,10 @@ function useExternalStacSearch({
   searchLimit: number;
 }): {
   stacItems: ExternalStacItem[];
-  points: Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null;
+  footprints: Array<{
+    bounds: [[number, number], [number, number]];
+    geometry?: ExternalStacItem['geometry'];
+  }> | null;
   pagination: PaginationState;
   loadMore: () => void;
 } {
@@ -271,24 +273,22 @@ function useExternalStacSearch({
     }
   }, [pagination.nextLink, pagination.isLoadingMore]);
 
-  // Markers to show where the data is when zoom is low
-  const points = useMemo(() => {
+  // Footprints to show where the data is when zoom is low
+  const footprints = useMemo(() => {
     if (!stacItems.length) return null;
-    const points = stacItems.map((f) => {
+    return stacItems.map((f) => {
       const [w, s, e, n] = f.bbox;
       return {
         bounds: [
           [w, s],
           [e, n]
-        ] as LngLatBoundsLike,
-        center: [(w + e) / 2, (s + n) / 2] as [number, number]
+        ] as [[number, number], [number, number]],
+        geometry: f.geometry
       };
     });
-
-    return points;
   }, [stacItems]);
 
-  return { stacItems, points, pagination, loadMore };
+  return { stacItems, footprints, pagination, loadMore };
 }
 
 /**
@@ -413,14 +413,16 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const { stacItems, points, pagination, loadMore } = useExternalStacSearch({
-    id,
-    changeStatus,
-    stacCol,
-    date,
-    stacApiEndpointToUse,
-    searchLimit
-  });
+  const { stacItems, footprints, pagination, loadMore } = useExternalStacSearch(
+    {
+      id,
+      changeStatus,
+      stacCol,
+      date,
+      stacApiEndpointToUse,
+      searchLimit
+    }
+  );
 
   // Get asset key from sourceParams for tile params
   const assetKey = sourceParams?.assets || 'cog_default';
@@ -433,9 +435,9 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
     changeStatus
   });
 
-  // Listen to mouse events on the markers layer
-  const onPointsClick = useCallback(
-    (features: { properties: { bounds: string } }[]) => {
+  // Listen to mouse events on the footprints layer
+  const onFootprintsClick = useCallback(
+    (features) => {
       const bounds = JSON.parse(features[0].properties.bounds);
       mapInstance?.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
     },
@@ -458,12 +460,15 @@ export function ExternalStacTimeseries(props: ExternalStacTimeseriesProps) {
 
   return (
     <>
-      {points && (
-        <PointsLayer
+      {footprints && (
+        <FootprintsLayer
           id={id}
-          points={points}
+          footprints={footprints}
           zoomExtent={zoomExtent}
-          onPointsClick={onPointsClick}
+          hidden={hidden}
+          opacity={opacity}
+          generatorOrder={generatorOrder}
+          onFootprintsClick={onFootprintsClick}
         />
       )}
       {tileSources.map((source, index) => {

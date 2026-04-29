@@ -88,6 +88,7 @@ export interface ExternalStacTimeseriesProps extends BaseTimeseriesProps {
 export interface ExternalStacItem {
   id: string;
   bbox: [number, number, number, number];
+  geometry?: Polygon;
   assets: Record<
     string,
     {
