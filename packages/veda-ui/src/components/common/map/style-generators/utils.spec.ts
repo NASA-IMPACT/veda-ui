@@ -18,13 +18,13 @@ describe('formatTitilerParameter', () => {
     const params = {
       assets: ['visual', 'cog'],
       bidx: [1, 2, 3],
-      variable: ['NPP', 'FIRE']
+      variables: ['NPP', 'FIRE']
     };
 
     const result = formatTitilerParameter(params);
 
     expect(result).toBe(
-      'assets=visual&assets=cog&bidx=1&bidx=2&bidx=3&variable=NPP&variable=FIRE'
+      'assets=visual&assets=cog&bidx=1&bidx=2&bidx=3&variables=NPP&variables=FIRE'
     );
   });
 
