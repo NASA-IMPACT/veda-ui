@@ -20,10 +20,11 @@ import FootprintsLayer from './footprints-layer';
 import { useRequestStatus, STATUS_KEY } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
 import PaginationOverlay from './pagination-overlay';
+import { useStacSearchPagination } from './use-stac-search-pagination';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
-const LOG = process.env.NODE_ENV !== 'production' ? true : false;
+const LOG = process.env.NODE_ENV !== 'production';
 
 // Default search limit for STAC search.
 // Note: in mosaic mode this only bounds the items we *fetch* for footprints
@@ -32,239 +33,6 @@ const LOG = process.env.NODE_ENV !== 'production' ? true : false;
 // items regardless of `searchLimit`. Update the JSDoc on `searchLimit` in the
 // dataset config if this behavior changes.
 const DEFAULT_SEARCH_LIMIT = 500;
-
-interface StacLink {
-  rel: string;
-  href: string;
-  method?: string;
-  body?: Record<string, unknown>;
-}
-
-interface StacSearchResponse {
-  features: StacFeature[];
-  context?: {
-    matched?: number;
-    returned?: number;
-  };
-  numberMatched?: number;
-  numberReturned?: number;
-  links?: StacLink[];
-}
-
-interface PaginationState {
-  hasMore: boolean;
-  totalMatched: number;
-  loadedCount: number;
-  isLoadingMore: boolean;
-  nextLink: StacLink | null;
-}
-
-export function useStacResponse({
-  id,
-  changeStatus,
-  stacCol,
-  date,
-  stacApiEndpointToUse,
-  searchLimit
-}: {
-  id: string;
-  changeStatus: (params: { status: string; context: STATUS_KEY }) => void;
-  stacCol: string;
-  date: Date;
-  stacApiEndpointToUse: string;
-  searchLimit: number;
-}): {
-  stacCollection: StacFeature[];
-  footprints: Array<{ bounds: [[number, number], [number, number]] }> | null;
-  pagination: PaginationState;
-  loadMore: () => void;
-} {
-  //
-  // Load stac collection features
-  //
-  const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    hasMore: false,
-    totalMatched: 0,
-    loadedCount: 0,
-    isLoadingMore: false,
-    nextLink: null
-  });
-  const loadMoreControllerRef = useRef<AbortController | null>(null);
-
-  // Reset when date or collection changes. Also abort any in-flight loadMore
-  // request so its setState calls don't land after the dataset has changed.
-  useEffect(() => {
-    loadMoreControllerRef.current?.abort();
-    loadMoreControllerRef.current = null;
-    setStacCollection([]);
-    setPagination({
-      hasMore: false,
-      totalMatched: 0,
-      loadedCount: 0,
-      isLoadingMore: false,
-      nextLink: null
-    });
-  }, [stacCol, date, stacApiEndpointToUse]);
-
-  useEffect(() => {
-    if (!id || !stacCol) return;
-
-    const controller = new AbortController();
-
-    const load = async () => {
-      try {
-        changeStatus({ status: S_LOADING, context: STATUS_KEY.StacSearch });
-        const payload = {
-          'filter-lang': 'cql2-json',
-          filter: getFilterPayload(date, stacCol),
-          limit: searchLimit,
-          fields: {
-            include: ['bbox'],
-            exclude: ['collection', 'links']
-          }
-        };
-
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            'RasterTimeseries %cLoading STAC features',
-            'color: orange;',
-            id
-          );
-          console.log('Payload', payload);
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-
-        const responseData = await requestQuickCache<StacSearchResponse>({
-          url: `${stacApiEndpointToUse}/search`,
-          payload,
-          controller
-        });
-
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            'RasterTimeseries %cAdding STAC features',
-            'color: green;',
-            id
-          );
-          console.log('STAC response', responseData);
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-
-        const features = responseData.features || [];
-        const totalMatched =
-          responseData.context?.matched ||
-          responseData.numberMatched ||
-          features.length;
-        const nextLink = responseData.links?.find((l) => l.rel === 'next');
-
-        setStacCollection(features);
-        setPagination({
-          hasMore: !!nextLink,
-          totalMatched,
-          loadedCount: features.length,
-          isLoadingMore: false,
-          nextLink: nextLink || null
-        });
-        changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setStacCollection([]);
-          setPagination({
-            hasMore: false,
-            totalMatched: 0,
-            loadedCount: 0,
-            isLoadingMore: false,
-            nextLink: null
-          });
-          changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
-        }
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.log(
-            'RasterTimeseries %cAborted STAC features',
-            'color: red;',
-            id
-          );
-          console.log(error);
-          /* eslint-enable no-console */
-        }
-        return;
-      }
-    };
-    load();
-    return () => {
-      controller.abort();
-      changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
-    };
-  }, [id, changeStatus, stacCol, date, stacApiEndpointToUse, searchLimit]);
-
-  const loadMore = useCallback(async () => {
-    if (!pagination.nextLink || pagination.isLoadingMore) return;
-
-    const controller = new AbortController();
-    loadMoreControllerRef.current?.abort();
-    loadMoreControllerRef.current = controller;
-
-    setPagination((prev) => ({ ...prev, isLoadingMore: true }));
-
-    try {
-      const isPost =
-        pagination.nextLink.method === 'POST' && !!pagination.nextLink.body;
-      const responseData = await requestQuickCache<StacSearchResponse>({
-        url: pagination.nextLink.href,
-        method: isPost ? 'post' : 'get',
-        payload: isPost ? pagination.nextLink.body : null,
-        controller
-      });
-
-      if (controller.signal.aborted) return;
-
-      const newFeatures = responseData.features || [];
-      const nextLink = responseData.links?.find((l) => l.rel === 'next');
-
-      setStacCollection((prev) => [...prev, ...newFeatures]);
-      setPagination((prev) => ({
-        ...prev,
-        hasMore: !!nextLink,
-        loadedCount: prev.loadedCount + newFeatures.length,
-        isLoadingMore: false,
-        nextLink: nextLink || null
-      }));
-    } catch (error) {
-      if (controller.signal.aborted) return;
-      /* eslint-disable-next-line no-console */
-      console.error('Error loading more items:', error);
-      setPagination((prev) => ({ ...prev, isLoadingMore: false }));
-    } finally {
-      if (loadMoreControllerRef.current === controller) {
-        loadMoreControllerRef.current = null;
-      }
-    }
-  }, [pagination.nextLink, pagination.isLoadingMore]);
-
-  //
-  // Footprints to show where the data is when zoom is low
-  //
-  const footprints = useMemo(() => {
-    if (!stacCollection.length) return null;
-    return stacCollection.map((f) => {
-      const [w, s, e, n] = f.bbox;
-      return {
-        bounds: [
-          [w, s],
-          [e, n]
-        ] as [[number, number], [number, number]]
-      };
-    });
-  }, [stacCollection]);
-
-  return { stacCollection, footprints, pagination, loadMore };
-}
 
 function useMosaicUrl({
   id,
@@ -423,13 +191,35 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const { stacCollection, footprints, pagination, loadMore } = useStacResponse({
+  const searchUrl = `${stacApiEndpointToUse}/search`;
+  const searchPayload = useMemo(
+    () => ({
+      'filter-lang': 'cql2-json',
+      filter: getFilterPayload(date, stacCol),
+      limit: searchLimit,
+      fields: {
+        include: ['bbox'],
+        exclude: ['collection', 'links']
+      }
+    }),
+    [date, stacCol, searchLimit]
+  );
+  const searchKey = `${stacCol}|${date.toISOString()}|${stacApiEndpointToUse}|${searchLimit}|mosaic`;
+
+  const {
+    items: stacCollection,
+    footprints,
+    pagination,
+    loadMore
+  } = useStacSearchPagination<StacFeature>({
     id,
+    searchUrl,
+    payload: searchPayload,
+    searchKey,
+    enabled: !!stacCol,
     changeStatus,
-    stacCol,
-    date,
-    stacApiEndpointToUse,
-    searchLimit
+    logPrefix: 'RasterTimeseries',
+    log: LOG
   });
 
   const [mosaicUrl] = useMosaicUrl({

@@ -1,58 +1,30 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import startOfDay from 'date-fns/startOfDay';
 import endOfDay from 'date-fns/endOfDay';
 
 import { RasterCogTimeseriesProps, StacItemWithAssets } from '../types';
-import { FIT_BOUNDS_PADDING, getMergedBBox, requestQuickCache } from '../utils';
+import { FIT_BOUNDS_PADDING, getMergedBBox } from '../utils';
 import useFitBbox from '../hooks/use-fit-bbox';
 import useMaps from '../hooks/use-maps';
 import FootprintsLayer from './footprints-layer';
 import { useRequestStatus, STATUS_KEY } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
 import PaginationOverlay from './pagination-overlay';
+import { useStacSearchPagination } from './use-stac-search-pagination';
 import { userTzDate2utcString } from '$utils/date';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
-const LOG = process.env.NODE_ENV !== 'production' ? true : false;
+const LOG = process.env.NODE_ENV !== 'production';
+
+// Default search limit for STAC search.
+const DEFAULT_SEARCH_LIMIT = 500;
 
 interface TileSource {
   id: string;
   tilesTemplate: string;
   bbox: [number, number, number, number];
   assetHref: string;
-}
-
-interface StacLink {
-  rel: string;
-  href: string;
-  method?: string;
-  body?: Record<string, unknown>;
-}
-
-interface StacSearchResponse {
-  features: StacItemWithAssets[];
-  context?: {
-    matched?: number;
-    returned?: number;
-  };
-  numberMatched?: number;
-  numberReturned?: number;
-  links?: StacLink[];
-}
-
-interface PaginationState {
-  hasMore: boolean;
-  totalMatched: number;
-  loadedCount: number;
-  isLoadingMore: boolean;
-  nextLink: StacLink | null;
 }
 
 /**
@@ -73,221 +45,6 @@ function getAssetHref(
   }
 
   return asset.href;
-}
-
-/**
- * Hook to fetch STAC items from a STAC server with pagination support.
- */
-function useStacItemsSearch({
-  id,
-  changeStatus,
-  stacCol,
-  date,
-  stacApiEndpointToUse,
-  searchLimit
-}: {
-  id: string;
-  changeStatus: (params: { status: string; context: STATUS_KEY }) => void;
-  stacCol: string;
-  date: Date;
-  stacApiEndpointToUse: string;
-  searchLimit: number;
-}): {
-  stacItems: StacItemWithAssets[];
-  footprints: Array<{
-    bounds: [[number, number], [number, number]];
-    geometry?: StacItemWithAssets['geometry'];
-  }> | null;
-  pagination: PaginationState;
-  loadMore: () => void;
-} {
-  const [stacItems, setStacItems] = useState<StacItemWithAssets[]>([]);
-  const [pagination, setPagination] = useState<PaginationState>({
-    hasMore: false,
-    totalMatched: 0,
-    loadedCount: 0,
-    isLoadingMore: false,
-    nextLink: null
-  });
-  const loadMoreControllerRef = useRef<AbortController | null>(null);
-
-  // Reset when date or collection changes. Also abort any in-flight loadMore
-  // request so its setState calls don't land after the dataset has changed.
-  useEffect(() => {
-    loadMoreControllerRef.current?.abort();
-    loadMoreControllerRef.current = null;
-    setStacItems([]);
-    setPagination({
-      hasMore: false,
-      totalMatched: 0,
-      loadedCount: 0,
-      isLoadingMore: false,
-      nextLink: null
-    });
-  }, [stacCol, date, stacApiEndpointToUse]);
-
-  useEffect(() => {
-    if (!id || !stacCol) return;
-
-    const controller = new AbortController();
-
-    const load = async () => {
-      try {
-        changeStatus({ status: S_LOADING, context: STATUS_KEY.StacSearch });
-
-        const searchUrl = `${stacApiEndpointToUse}/search`;
-
-        // Build search payload using standard STAC parameters
-        const payload = {
-          collections: [stacCol],
-          datetime: `${userTzDate2utcString(
-            startOfDay(date)
-          )}/${userTzDate2utcString(endOfDay(date))}`,
-          limit: searchLimit
-        };
-
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            'RasterCogTimeseries %cLoading STAC items',
-            'color: orange;',
-            id
-          );
-          console.log('Search URL', searchUrl);
-          console.log('Payload', payload);
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-
-        const responseData = await requestQuickCache<StacSearchResponse>({
-          url: searchUrl,
-          payload,
-          controller
-        });
-
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            'RasterCogTimeseries %cReceived STAC items',
-            'color: green;',
-            id
-          );
-          console.log('STAC response', responseData);
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-
-        const features = responseData.features || [];
-        const totalMatched =
-          responseData.context?.matched ||
-          responseData.numberMatched ||
-          features.length;
-        const nextLink = responseData.links?.find((l) => l.rel === 'next');
-
-        setStacItems(features);
-        setPagination({
-          hasMore: !!nextLink,
-          totalMatched,
-          loadedCount: features.length,
-          isLoadingMore: false,
-          nextLink: nextLink || null
-        });
-        changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setStacItems([]);
-          setPagination({
-            hasMore: false,
-            totalMatched: 0,
-            loadedCount: 0,
-            isLoadingMore: false,
-            nextLink: null
-          });
-          changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
-        }
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.log(
-            'RasterCogTimeseries %cAborted STAC search',
-            'color: red;',
-            id
-          );
-          console.log(error);
-          /* eslint-enable no-console */
-        }
-        return;
-      }
-    };
-
-    load();
-
-    return () => {
-      controller.abort();
-      changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, stacCol, date, stacApiEndpointToUse, searchLimit]);
-
-  const loadMore = useCallback(async () => {
-    if (!pagination.nextLink || pagination.isLoadingMore) return;
-
-    const controller = new AbortController();
-    loadMoreControllerRef.current?.abort();
-    loadMoreControllerRef.current = controller;
-
-    setPagination((prev) => ({ ...prev, isLoadingMore: true }));
-
-    try {
-      const isPost =
-        pagination.nextLink.method === 'POST' && !!pagination.nextLink.body;
-      const responseData = await requestQuickCache<StacSearchResponse>({
-        url: pagination.nextLink.href,
-        method: isPost ? 'post' : 'get',
-        payload: isPost ? pagination.nextLink.body : null,
-        controller
-      });
-
-      if (controller.signal.aborted) return;
-
-      const newFeatures = responseData.features || [];
-      const nextLink = responseData.links?.find((l) => l.rel === 'next');
-
-      setStacItems((prev) => [...prev, ...newFeatures]);
-      setPagination((prev) => ({
-        ...prev,
-        hasMore: !!nextLink,
-        loadedCount: prev.loadedCount + newFeatures.length,
-        isLoadingMore: false,
-        nextLink: nextLink || null
-      }));
-    } catch (error) {
-      if (controller.signal.aborted) return;
-      /* eslint-disable-next-line no-console */
-      console.error('Error loading more items:', error);
-      setPagination((prev) => ({ ...prev, isLoadingMore: false }));
-    } finally {
-      if (loadMoreControllerRef.current === controller) {
-        loadMoreControllerRef.current = null;
-      }
-    }
-  }, [pagination.nextLink, pagination.isLoadingMore]);
-
-  // Footprints to show where the data is when zoom is low
-  const footprints = useMemo(() => {
-    if (!stacItems.length) return null;
-    return stacItems.map((f) => {
-      const [w, s, e, n] = f.bbox;
-      return {
-        bounds: [
-          [w, s],
-          [e, n]
-        ] as [[number, number], [number, number]],
-        geometry: f.geometry
-      };
-    });
-  }, [stacItems]);
-
-  return { stacItems, footprints, pagination, loadMore };
 }
 
 /**
@@ -374,9 +131,6 @@ function useCogTileSources({
   return tileSources;
 }
 
-// Default search limit for STAC search
-const DEFAULT_SEARCH_LIMIT = 500;
-
 export function RasterCogTimeseries(props: RasterCogTimeseriesProps) {
   const {
     id,
@@ -410,13 +164,33 @@ export function RasterCogTimeseries(props: RasterCogTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const { stacItems, footprints, pagination, loadMore } = useStacItemsSearch({
+  const searchUrl = `${stacApiEndpointToUse}/search`;
+  const dateStart = userTzDate2utcString(startOfDay(date));
+  const dateEnd = userTzDate2utcString(endOfDay(date));
+  const searchPayload = useMemo(
+    () => ({
+      collections: [stacCol],
+      datetime: `${dateStart}/${dateEnd}`,
+      limit: searchLimit
+    }),
+    [stacCol, dateStart, dateEnd, searchLimit]
+  );
+  const searchKey = `${stacCol}|${dateStart}|${dateEnd}|${stacApiEndpointToUse}|${searchLimit}|cog`;
+
+  const {
+    items: stacItems,
+    footprints,
+    pagination,
+    loadMore
+  } = useStacSearchPagination<StacItemWithAssets>({
     id,
+    searchUrl,
+    payload: searchPayload,
+    searchKey,
+    enabled: !!stacCol,
     changeStatus,
-    stacCol,
-    date,
-    stacApiEndpointToUse,
-    searchLimit
+    logPrefix: 'RasterCogTimeseries',
+    log: LOG
   });
 
   // Get asset key from sourceParams for tile params
