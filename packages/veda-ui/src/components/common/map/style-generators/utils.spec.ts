@@ -17,12 +17,15 @@ describe('formatTitilerParameter', () => {
   it('formats array parameters correctly', () => {
     const params = {
       assets: ['visual', 'cog'],
-      bidx: [1, 2, 3]
+      bidx: [1, 2, 3],
+      variables: ['NPP', 'FIRE']
     };
 
     const result = formatTitilerParameter(params);
 
-    expect(result).toBe('assets=visual&assets=cog&bidx=1&bidx=2&bidx=3');
+    expect(result).toBe(
+      'assets=visual&assets=cog&bidx=1&bidx=2&bidx=3&variables=NPP&variables=FIRE'
+    );
   });
 
   it('does not encode bbox parameter', () => {

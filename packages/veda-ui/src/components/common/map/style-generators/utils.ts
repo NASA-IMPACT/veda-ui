@@ -10,6 +10,7 @@ export function formatTitilerParameter(params): string {
     bbox,
     sel,
     sel_method,
+    variables,
     ...regularParams
   } = params;
 
@@ -19,7 +20,8 @@ export function formatTitilerParameter(params): string {
     bidx,
     asset_bidx,
     sel,
-    sel_method
+    sel_method,
+    variables
   };
 
   const regularParamsString = qs.stringify(regularParams, {
