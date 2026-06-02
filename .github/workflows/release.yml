@@ -1,9 +1,6 @@
-name: Release Every Monday
+name: Release
 on:
   workflow_dispatch:
-  schedule:
-    # At 10AM EST Monday
-    - cron: '0 15 * * 1'
 
 env:
   NODE: 24
