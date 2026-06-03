@@ -1,5 +1,7 @@
 # VEDA Dashboard
 
+> **Maintenance Mode:** veda-ui is in maintenance mode. Only bug fixes and blockers are accepted — no new features or large refactors. See [#1912](https://github.com/NASA-IMPACT/veda-ui/issues/1912) for context.
+
 ![VEDA logo](./docs/media/nasa-veda-logo-pos.svg)
 
 VEDA is a dashboard to explore data.
