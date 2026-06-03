@@ -20,7 +20,7 @@ After the last step, we can manually test if the release did not introduce any u
 
 ### GitHub Action Integration
 
-#### Trigger Through UI
+#### Trigger Through GitHub UI
 
 If you are a contributor, you can trigger a release through the Actions tab. Navigate to Actions, select the **Release** workflow (default branch set to `main`), and click the Run workflow button. Select a different branch if you need to make a hotfix patch release. Keep in mind that your commit message should follow the Conventional Commit format when releasing a hotfix, as the Conventional Commit action only recognizes Pull Requests made to the production branch (`main`). Be aware that any release made from branches other than `main` won't trigger instance previews.
 
