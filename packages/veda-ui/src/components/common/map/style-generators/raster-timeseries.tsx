@@ -1,6 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { LngLatBoundsLike } from 'mapbox-gl';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { RasterTimeseriesProps, StacFeature } from '../types';
 import {
   FIT_BOUNDS_PADDING,
@@ -11,126 +16,23 @@ import {
 import useFitBbox from '../hooks/use-fit-bbox';
 import useMaps from '../hooks/use-maps';
 
-import PointsLayer from './points-layer';
+import FootprintsLayer from './footprints-layer';
 import { useRequestStatus, STATUS_KEY } from './hooks';
 import { RasterPaintLayer } from './raster-paint-layer';
+import PaginationOverlay from './pagination-overlay';
+import { useStacSearchPagination } from './use-stac-search-pagination';
 import { S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 
 // Whether or not to print the request logs.
-const LOG = process.env.NODE_ENV !== 'production' ? true : false;
+const LOG = process.env.NODE_ENV !== 'production';
 
-export function useStacResponse({
-  id,
-  changeStatus,
-  stacCol,
-  date,
-  stacApiEndpointToUse
-}): [
-  StacFeature[],
-  Array<{ bounds: LngLatBoundsLike; center: [number, number] }> | null
-] {
-  //
-  // Load stac collection features
-  //
-  const [stacCollection, setStacCollection] = useState<StacFeature[]>([]);
-  useEffect(() => {
-    if (!id || !stacCol) return;
-
-    const controller = new AbortController();
-
-    const load = async () => {
-      try {
-        changeStatus({ status: S_LOADING, context: STATUS_KEY.StacSearch });
-        const payload = {
-          'filter-lang': 'cql2-json',
-          filter: getFilterPayload(date, stacCol),
-          limit: 500,
-          fields: {
-            include: ['bbox'],
-            exclude: ['collection', 'links']
-          }
-        };
-
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            'RasterTimeseries %cLoading STAC features',
-            'color: orange;',
-            id
-          );
-          console.log('Payload', payload);
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-
-        const responseData = await requestQuickCache<{
-          features: StacFeature[];
-        }>({
-          url: `${stacApiEndpointToUse}/search`,
-          payload,
-          controller
-        });
-
-        if (LOG) {
-          /* eslint-disable no-console */
-          console.groupCollapsed(
-            'RasterTimeseries %cAdding STAC features',
-            'color: green;',
-            id
-          );
-          console.log('STAC response', responseData);
-          console.groupEnd();
-          /* eslint-enable no-console */
-        }
-
-        setStacCollection(responseData.features);
-        changeStatus({ status: S_SUCCEEDED, context: STATUS_KEY.StacSearch });
-      } catch (error) {
-        if (!controller.signal.aborted) {
-          setStacCollection([]);
-          changeStatus({ status: S_FAILED, context: STATUS_KEY.StacSearch });
-        }
-        if (LOG)
-          /* eslint-disable-next-line no-console */
-          console.log(
-            'RasterTimeseries %cAborted STAC features',
-            'color: red;',
-            id
-          );
-        // Temporarily turning on log for debugging
-        /* eslint-disable-next-line no-console */
-        console.log(error);
-        return;
-      }
-    };
-    load();
-    return () => {
-      controller.abort();
-      changeStatus({ status: 'idle', context: STATUS_KEY.StacSearch });
-    };
-  }, [id, changeStatus, stacCol, date, stacApiEndpointToUse]);
-
-  //
-  // Markers to show where the data is when zoom is low
-  //
-  const points = useMemo(() => {
-    if (!stacCollection.length) return null;
-    const points = stacCollection.map((f) => {
-      const [w, s, e, n] = f.bbox;
-      return {
-        bounds: [
-          [w, s],
-          [e, n]
-        ] as LngLatBoundsLike,
-        center: [(w + e) / 2, (s + n) / 2] as [number, number]
-      };
-    });
-
-    return points;
-  }, [stacCollection]);
-
-  return [stacCollection, points];
-}
+// Default search limit for STAC search.
+// Note: in mosaic mode this only bounds the items we *fetch* for footprints
+// and pagination UX. The rendered tiles come from the server-side mosaic
+// register, which uses the same CQL filter and therefore covers all matching
+// items regardless of `searchLimit`. Update the JSDoc on `searchLimit` in the
+// dataset config if this behavior changes.
+const DEFAULT_SEARCH_LIMIT = 500;
 
 function useMosaicUrl({
   id,
@@ -144,6 +46,10 @@ function useMosaicUrl({
   // Tiles
   //
   const [mosaicUrl, setMosaicUrl] = useState<string | undefined>(undefined);
+  // Track the count we registered for. Pagination only grows stacCollection;
+  // its filter (date+collection) is unchanged, so a re-register would just
+  // produce a duplicate request and cause the mapbox source to flicker.
+  const registeredForCountRef = useRef<number>(0);
   useEffect(() => {
     if (!id || !stacCol) return;
 
@@ -152,7 +58,16 @@ function useMosaicUrl({
     // though if a search returns no data, that date should not be available for
     // the dataset - may be a case of bad configuration.
     if (!stacCollection.length) {
+      registeredForCountRef.current = 0;
       setMosaicUrl(undefined);
+      return;
+    }
+
+    // Skip re-registration when stacCollection only grew via pagination.
+    if (
+      registeredForCountRef.current > 0 &&
+      stacCollection.length > registeredForCountRef.current
+    ) {
       return;
     }
 
@@ -187,6 +102,7 @@ function useMosaicUrl({
         setMosaicUrl(
           mosaicUrl.replace('/{tileMatrixSetId}', '/WebMercatorQuad')
         );
+        registeredForCountRef.current = stacCollection.length;
 
         /* eslint-disable no-console */
         if (LOG) {
@@ -235,6 +151,9 @@ function useMosaicUrl({
     // fires and `stacCollection` changes, causing this hook to run again. This
     // resulted in a race condition when adding the source to the map leading to
     // an error.
+    // Note: pagination also mutates `stacCollection` (appending to it) but
+    // does not require re-registration; that case is handled inside the effect
+    // via `registeredForCountRef`.
   ]);
   return [mosaicUrl];
 }
@@ -257,7 +176,8 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     colorMap,
     reScale,
     envApiStacEndpoint,
-    envApiRasterEndpoint
+    envApiRasterEndpoint,
+    searchLimit = DEFAULT_SEARCH_LIMIT
   } = props;
 
   const { current: mapInstance } = useMaps();
@@ -271,12 +191,35 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
     requestsToTrack: [STATUS_KEY.StacSearch, STATUS_KEY.Layer]
   });
 
-  const [stacCollection, points] = useStacResponse({
+  const searchUrl = `${stacApiEndpointToUse}/search`;
+  const searchPayload = useMemo(
+    () => ({
+      'filter-lang': 'cql2-json',
+      filter: getFilterPayload(date, stacCol),
+      limit: searchLimit,
+      fields: {
+        include: ['bbox'],
+        exclude: ['collection', 'links']
+      }
+    }),
+    [date, stacCol, searchLimit]
+  );
+  const searchKey = `${stacCol}|${date.toISOString()}|${stacApiEndpointToUse}|${searchLimit}|mosaic`;
+
+  const {
+    items: stacCollection,
+    footprints,
+    pagination,
+    loadMore
+  } = useStacSearchPagination<StacFeature>({
     id,
+    searchUrl,
+    payload: searchPayload,
+    searchKey,
+    enabled: !!stacCol,
     changeStatus,
-    stacCol,
-    date,
-    stacApiEndpointToUse
+    logPrefix: 'RasterTimeseries',
+    log: LOG
   });
 
   const [mosaicUrl] = useMosaicUrl({
@@ -289,9 +232,9 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
   });
 
   //
-  // Listen to mouse events on the markers layer
+  // Listen to mouse events on the footprints layer
   //
-  const onPointsClick = useCallback(
+  const onFootprintsClick = useCallback(
     (features) => {
       const bounds = JSON.parse(features[0].properties.bounds);
       mapInstance?.fitBounds(bounds, { padding: FIT_BOUNDS_PADDING });
@@ -310,12 +253,15 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
 
   return (
     <>
-      {points && (
-        <PointsLayer
+      {footprints && (
+        <FootprintsLayer
           id={id}
-          points={points}
+          footprints={footprints}
           zoomExtent={zoomExtent}
-          onPointsClick={onPointsClick}
+          hidden={hidden}
+          opacity={opacity}
+          generatorOrder={generatorOrder}
+          onFootprintsClick={onFootprintsClick}
         />
       )}
       {mosaicUrl && (
@@ -341,6 +287,14 @@ export function RasterTimeseries(props: RasterTimeseriesProps) {
               wmtsTileUrl: `${wmtsBaseUrl}?${tileParamsAsString}`
             };
           }}
+        />
+      )}
+      {pagination.hasMore && !hidden && (
+        <PaginationOverlay
+          loadedCount={pagination.loadedCount}
+          totalMatched={pagination.totalMatched}
+          isLoadingMore={pagination.isLoadingMore}
+          onLoadMore={loadMore}
         />
       )}
     </>
