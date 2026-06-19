@@ -8,5 +8,5 @@ pre-commit:
       glob: '*.{js,ts,jsx,tsx}'
       run: yarn eslint {staged_files}
     stylelint:
-      glob: '*.{js,ts,jsx,tsx}'
+      glob: '*.{js,ts,jsx,tsx,scss,css}'
       run: yarn lint:css {staged_files}
