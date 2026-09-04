@@ -21,6 +21,7 @@ import useLayerInteraction from '../hooks/use-layer-interaction';
 import { MARKER_LAYOUT } from '../hooks/use-custom-marker';
 import useMaps from '../hooks/use-maps';
 import useGeneratorParams from '../hooks/use-generator-params';
+import { buildFeaturesTileUrl } from './utils';
 
 import { ActionStatus, S_FAILED, S_LOADING, S_SUCCEEDED } from '$utils/status';
 import { userTzDate2utcString } from '$utils/date';
@@ -133,12 +134,17 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
       datetime: `${start}/${end}`
     });
 
+    const featuresTileUrl = buildFeaturesTileUrl(
+      featuresApiEndpoint,
+      tileParams
+    );
+
     const vectorOpacity = typeof opacity === 'number' ? opacity / 100 : 1;
 
     const sources: Record<string, SourceSpecification> = {
       [id]: {
         type: 'vector',
-        tiles: [`${featuresApiEndpoint}/tiles/{z}/{x}/{y}?${tileParams}`]
+        tiles: [featuresTileUrl]
       } as VectorSourceSpecification
     };
 
@@ -169,7 +175,7 @@ export function VectorTimeseries(props: VectorTimeseriesProps) {
         metadata: {
           id,
           layerOrderPosition: 'raster',
-          xyzTileUrl: `${featuresApiEndpoint}/tiles/{z}/{x}/{y}?${tileParams}`
+          xyzTileUrl: featuresTileUrl
         }
       },
       {

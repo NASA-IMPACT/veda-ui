@@ -1,4 +1,8 @@
-import { formatTitilerParameter } from './utils';
+import {
+  DEFAULT_TILE_MATRIX_SET_ID,
+  buildFeaturesTileUrl,
+  formatTitilerParameter
+} from './utils';
 
 describe('formatTitilerParameter', () => {
   it('formats basic parameters correctly', () => {
@@ -96,5 +100,54 @@ describe('formatTitilerParameter', () => {
     const result = formatTitilerParameter(params);
 
     expect(result).toBe('return_mask=true&unscale=false');
+  });
+});
+
+describe('buildFeaturesTileUrl', () => {
+  const endpoint =
+    'https://openveda.cloud/api/features/collections/public.eis_fire_lf_perimeter_archive';
+
+  it('puts an explicit tile matrix set id in the path', () => {
+    const result = buildFeaturesTileUrl(endpoint, 'datetime=2020-01-01');
+
+    expect(result).toBe(
+      `${endpoint}/tiles/WebMercatorQuad/{z}/{x}/{y}?datetime=2020-01-01`
+    );
+  });
+
+  it('does not use the tiles endpoint that was removed in tipg v1', () => {
+    const result = buildFeaturesTileUrl(endpoint, 'datetime=2020-01-01');
+
+    expect(result).not.toContain(`${endpoint}/tiles/{z}/{x}/{y}`);
+  });
+
+  it('accepts a tile matrix set id other than the default', () => {
+    const result = buildFeaturesTileUrl(
+      endpoint,
+      'datetime=2020-01-01',
+      'WGS1984Quad'
+    );
+
+    expect(result).toBe(
+      `${endpoint}/tiles/WGS1984Quad/{z}/{x}/{y}?datetime=2020-01-01`
+    );
+  });
+
+  it('keeps the tile parameters untouched', () => {
+    const tileParams =
+      'datetime=2020-01-01T00%3A00%3A00Z%2F2020-01-01T23%3A59%3A59Z&limit=500';
+
+    const result = buildFeaturesTileUrl(endpoint, tileParams);
+
+    expect(result.endsWith(`?${tileParams}`)).toBe(true);
+  });
+
+  it('omits the query string when there are no tile parameters', () => {
+    expect(buildFeaturesTileUrl(endpoint)).toBe(
+      `${endpoint}/tiles/${DEFAULT_TILE_MATRIX_SET_ID}/{z}/{x}/{y}`
+    );
+    expect(buildFeaturesTileUrl(endpoint, '')).toBe(
+      `${endpoint}/tiles/${DEFAULT_TILE_MATRIX_SET_ID}/{z}/{x}/{y}`
+    );
   });
 });
